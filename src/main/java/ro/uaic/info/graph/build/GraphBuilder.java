@@ -318,8 +318,9 @@ public class GraphBuilder {
 
     private void validate() {
         int numVertices = vertices.length;
-        if (maxVertices == null || maxVertices < numVertices) {
-            maxVertices = numVertices;
+        int max = IntStream.of(vertices).max().orElse(0);
+        if (maxVertices == null || maxVertices < max) {
+            maxVertices = max + 1;
         }
         if (!edges.isEmpty()) {
             if (numEdges == null || numEdges < edges.size()) {

@@ -33,6 +33,18 @@ import java.util.stream.IntStream;
 public interface Graph<V, E> extends Weighted, Labeled<V, E> {
 
     /**
+     * 
+     * @return 
+     */
+    String getName();
+
+    /**
+     * 
+     * @param name 
+     */
+    void setName(String name);
+
+    /**
      *
      * @return the number of vertices in the graph
      */

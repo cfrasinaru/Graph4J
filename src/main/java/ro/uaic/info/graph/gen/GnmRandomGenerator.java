@@ -22,45 +22,28 @@ import ro.uaic.info.graph.build.GraphBuilder;
 import ro.uaic.info.graph.util.CheckArgument;
 
 /**
- * Methods for generating various random graphs.
+ *
  *
  * @author Cristian Frăsinaru
  */
-public class RandomGenerator {
+public class GnmRandomGenerator {
+
+    private final int n;
+    private final int m;
+    private final Random random;
+    private final int[] values;
 
     /**
-     * G(n,p) Erdős–Rényi model, where n is the number of vertices and p is the
-     * density (the probability that two vertices are connected).
      *
-     * @param n the number of nodes in the generated graph
-     * @param p the probabilty of edge occurance in the generated graph
-     * @return
+     * @param n number of vertices
+     * @param m number of edges
      */
-    public static Graph createGraphGnp(int n, double p) {
-        CheckArgument.numberOfVertices(n);
-        CheckArgument.probability(p);
-        var g = GraphBuilder.numVertices(n).density(p).buildGraph();
-        var rand = new Random();
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (rand.nextDouble() < p) {
-                    g.addEdge(i, j);
-                }
-            }
-        }
-        return g;
-    }
-
-    /**
-     * Fisher-Yates algorithm
-     *
-     * @param n the number of nodes in the generated graph
-     * @param m the number of edges in the generated graph
-     * @return
-     */
-    public static Graph createGraphGnm(int n, int m) {
+    public GnmRandomGenerator(int n, int m) {
         CheckArgument.numberOfVertices(n);
         CheckArgument.numberOfEdges(m);
+        this.n = n;
+        this.m = m;
+        random = new Random();
         long max = (long) n * (n - 1) / 2;
         if (m > max) {
             throw new IllegalArgumentException(
@@ -68,20 +51,26 @@ public class RandomGenerator {
         }
         if (max >= Integer.MAX_VALUE) {
             throw new IllegalArgumentException(
-                    "Cannot use Fisher-Yates, the number of vertices is too large");
+                    "The number of vertices is too large: " + n);
         }
-        int[] values = new int[(int) max];
-
+        this.values = new int[(int) max];
         int k = 0;
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
                 values[k++] = i * n + j;
             }
         }
-        var rand = new Random();
+    }
+
+    /**
+     * Fisher-Yates algorithm.
+     *
+     * @return
+     */
+    public Graph createGraph() {
         var g = GraphBuilder.numVertices(n).numEdges(m).buildGraph();
         for (int e = 0; e < m; e++) {
-            int pos = rand.nextInt(values.length - e);
+            int pos = random.nextInt(values.length - e);
             int v = values[pos] / n;
             int u = values[pos] % n;
             g.addEdge(v, u);

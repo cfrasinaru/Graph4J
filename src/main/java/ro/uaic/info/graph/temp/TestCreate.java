@@ -41,7 +41,7 @@ public class TestCreate {
     }
 
     private void init() {
-        n = 2_000;
+        n = 1_000_000;
         avgDegree = 20;
     }
 
@@ -52,7 +52,7 @@ public class TestCreate {
         //var g = app.createComplete();
         //app.testAdjacency(g);
         //app.testAdjacency(g);
-        app.testIterator(g);
+        //app.testIterator(g);
     }
 
     private static void testJGraph() {
@@ -61,7 +61,7 @@ public class TestCreate {
         var g = app.createSparseJGraph();
         //var g = app.createCompleteJGraph();
         //app.testAdjacency(g);
-        app.testIterator(g);
+        //app.testIterator(g);
     }
 
     private Graph createSparse() {

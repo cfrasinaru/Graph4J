@@ -16,34 +16,23 @@
  */
 package ro.uaic.info.graph.build;
 
-import java.util.BitSet;
-
 /**
  *
  * @author Cristian Frăsinaru
  */
-class EdgeBitSet {
+interface VertexContainer {
 
-    private final BitSet mem;
-    private final int maxVertices;
+    VertexContainer copy();
 
-    public EdgeBitSet(int maxVertices) {
-        this.maxVertices = maxVertices;
-        this.mem = new BitSet(maxVertices * maxVertices - 1);
-    }
+    void add(int v, int indx);
 
-    private int bitIndex(int v, int u) {
-        return v * maxVertices + u;
-    }
-    public void add(int v, int u) {
-        mem.set(bitIndex(v, u), true);
-    }
+    void remove(int v);
 
-    public void remove(int v, int u) {
-        mem.set(bitIndex(v, u), false);
-    }
+    int indexOf(int v);
 
-    public boolean contains(int v, int u) {
-        return mem.get(bitIndex(v, u));
-    }
+    int max();
+
+    void shiftLeft(int v);
+
+    void grow(int v);
 }

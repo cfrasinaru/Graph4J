@@ -16,13 +16,12 @@
  */
 package ro.uaic.info.graph.demo;
 
-import agent.InstrumentationAgent;
 import java.util.function.Supplier;
 import org.jgrapht.generate.GnmRandomGraphGenerator;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.util.SupplierUtil;
-import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.gen.WheelGenerator;
 
 /**
  * TODO: Move this to tests.
@@ -38,29 +37,24 @@ public class Main {
     }
 
     public static void printObjectSize(Object object) {
-
-        System.out.println("Object type: " + object.getClass()
-                + ", size: " + InstrumentationAgent.getObjectSize(object) + " bytes");
-
+        //System.out.println("Object type: " + object.getClass() + ", size: " + InstrumentationAgent.getObjectSize(object) + " bytes");
     }
 
     private void test() {
-        Graph<String, String> g = GraphBuilder.numVertices(3).buildGraph();
-        g.setVertexLabel(0, "a");
-        g.setVertexLabel(1, "b");
-        g.setVertexLabel(2, "c");
+        var g = new WheelGenerator(5,9).createGraph();
+        //g.setName("K4");
         System.out.println(g);
-        for (int v : g.vertices()) {
-            System.out.println(g.getVertexLabel(v));
-        }
+    }
 
-        g.addLabeledEdge(0, 1, "01");
-        g.addLabeledEdge(0, 2, "02");
-        g.addLabeledEdge(1, 2, "12");
-        for (int[] e : g.edges()) {
-            System.out.println(g.getEdgeLabel(e[0], e[1]));
-        }
+    private void demoMem() {
+        int n = 1_000;
+        long mem0 = Runtime.getRuntime().freeMemory();
+        var g = GraphBuilder.vertices(1, 2, 100_000_000).buildGraph();
+        //var g = RandomGenerator.createGraphGnp(n, 0.1);
         System.out.println(g);
+        long mem1 = Runtime.getRuntime().freeMemory();
+        System.out.println((mem0 - mem1) / (1024 * 1024) + " MB");
+        //printObjectSize(g);
     }
 
     private void demoContains() {

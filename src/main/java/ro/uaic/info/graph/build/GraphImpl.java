@@ -37,18 +37,19 @@ import ro.uaic.info.graph.util.Tools;
  */
 class GraphImpl<V, E> implements Graph<V, E> {
 
+    protected String name;
     protected int maxVertices; //maximum number of vertices
     protected int numVertices; //number of vertices
     protected int numEdges;  //number of edges
     protected int[] vertices; //vertices[i] is the vertex with the index i
-    protected int[] index; //index[v] is the index of the vertex v
     protected int[][] adjList; //adjList[i] is the adjacency list of the vertex with index i
     protected int[] degree; //degree[i] is the degree of the vertex with index i
     protected double[] vertexWeight;
     protected double[][] edgeWeight;
     protected Object[] vertexLabel;
     protected Object[][] edgeLabel;
-    protected EdgeBitSet edgeBitSet;//for fast check if an edge is present in the graph
+    protected VertexContainer vertexContainer; //to find the index of a vertex
+    protected EdgeContainer edgeContainer;//for fast check if an edge is present in the graph
 
     //
     protected boolean sorted; //true if the adjacency lists are maintained sorted
@@ -63,13 +64,21 @@ class GraphImpl<V, E> implements Graph<V, E> {
     protected GraphImpl() {
     }
 
+    protected GraphImpl(int numVertices, int maxVertices, int avgDegree,
+            boolean sorted, boolean directed, boolean allowsMultiEdges, boolean allowsSelfLoops) {
+        this(IntStream.range(0, numVertices).toArray(), maxVertices, avgDegree,
+                sorted, directed, allowsMultiEdges, allowsSelfLoops);
+    }
+
     /**
      *
      * @param vertices
+     * @param maxVertices
      * @param avgDegree
      * @param sorted
      * @param directed
-     * @param weighted
+     * @param allowsMultiEdges
+     * @param allowsSelfLoops
      */
     protected GraphImpl(int[] vertices, int maxVertices, int avgDegree,
             boolean sorted, boolean directed, boolean allowsMultiEdges, boolean allowsSelfLoops) {
@@ -91,19 +100,28 @@ class GraphImpl<V, E> implements Graph<V, E> {
         this.allowsMultiEdges = allowsMultiEdges;
         this.allowsSelfLoops = allowsSelfLoops;
         //
-        this.index = new int[1 + IntStream.of(vertices).max().orElse(maxVertices)];
-        Arrays.fill(index, -1);
         this.vertices = new int[maxVertices];
         for (int i = 0; i < numVertices; i++) {
             this.vertices[i] = vertices[i];
-            index[vertices[i]] = i;
         }
         this.degree = new int[maxVertices];
         this.adjList = new int[maxVertices][];
         this.numEdges = 0;
+        //edge container
         if (maxVertices > 0) {
-            this.edgeBitSet = new EdgeBitSet(maxVertices);
+            try {
+                this.edgeContainer = new EdgeContainerBitSet(maxVertices);
+            } catch (Exception e) {
+                //edgeBitSet remains null, containsEdge will have to iterate                
+            }
         }
+        //vertex container
+        int maxVertexNumber = IntStream.of(vertices).max().orElse(maxVertices);
+        vertexContainer = new VertexContainerArray(maxVertexNumber);
+        for (int i = 0; i < numVertices; i++) {
+            vertexContainer.add(vertices[i], i);
+        }
+
     }
 
     protected GraphImpl newInstance() {
@@ -126,7 +144,6 @@ class GraphImpl<V, E> implements Graph<V, E> {
         copy.allowsMultiEdges = allowsMultiEdges;
         copy.allowsSelfLoops = allowsSelfLoops;
         copy.vertices = Arrays.copyOf(vertices, numVertices);
-        copy.index = Arrays.copyOf(index, index.length);
         copy.degree = Arrays.copyOf(degree, numVertices);
         if (vertexWeight != null) {
             copy.vertexWeight = Arrays.copyOf(vertexWeight, numVertices);
@@ -146,16 +163,22 @@ class GraphImpl<V, E> implements Graph<V, E> {
                 }
             }
         }
+        //edge container
+        if (edgeContainer != null) {
+            copy.edgeContainer = edgeContainer.copy();
+        }
+        //vertex container
+        copy.vertexContainer = vertexContainer.copy();
         return copy;
     }
 
     @Override
     public void renumberAdding(int amount) {
-        growIndices(index.length + amount);
+        vertexContainer.grow(vertexContainer.max() + amount);
         for (int i = 0; i < numVertices; i++) {
-            index[vertices[i]] = -1;
+            vertexContainer.remove(vertices[i]);
             vertices[i] = vertices[i] + amount;
-            index[vertices[i]] = i;
+            vertexContainer.add(vertices[i], i);
         }
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < adjList[i].length; j++) {
@@ -179,10 +202,10 @@ class GraphImpl<V, E> implements Graph<V, E> {
 
     @Override
     public int indexOf(int v) {
-        if (v < 0 || v >= index.length) {
+        if (v < 0 || v > vertexContainer.max()) {
             throw new InvalidVertexException(v);
         }
-        return index[v];
+        return vertexContainer.indexOf(v);
     }
 
     protected void checkVertex(int v) {
@@ -209,13 +232,10 @@ class GraphImpl<V, E> implements Graph<V, E> {
             throw new InvalidVertexException(v, "Vertex numbers must be positive");
         }
         if (numVertices == maxVertices) {
-            edgeBitSet = null;
+            edgeContainer = null;
         }
         if (numVertices == vertices.length) {
             growVertices();
-        }
-        if (v >= index.length) {
-            growIndices(v);
         }
         int i = Arrays.binarySearch(vertices, 0, numVertices, v);
         if (i >= 0) {
@@ -241,7 +261,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
             }
         }
         vertices[i] = v;
-        index[v] = i;
+        vertexContainer.add(v, i);
         return numVertices++;
     }
 
@@ -273,9 +293,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
             if (edgeLabel != null) {
                 edgeLabel[i] = edgeLabel[i + 1];
             }
-            index[vertices[i]]--;
+            vertexContainer.shiftLeft(vertices[i]);
         }
-        index[v] = -1;
+        vertexContainer.remove(v);
         numVertices--;
     }
 
@@ -285,7 +305,6 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     protected void addEdge(int v, int u, Double weight, E label) {
-        System.out.println("adding edge " + v + "-" + u);
         if (!allowsSelfLoops && v == u) {
             throw new IllegalArgumentException("Loops are not allowed: " + v);
         }
@@ -331,9 +350,6 @@ class GraphImpl<V, E> implements Graph<V, E> {
         }
         adjList[vi][pos] = u;
         degree[vi]++;
-        if (edgeBitSet != null) {
-            edgeBitSet.add(v, u);
-        }
         if (weight != null) {
             if (edgeWeight == null) {
                 initEdgeWeights();
@@ -345,6 +361,13 @@ class GraphImpl<V, E> implements Graph<V, E> {
                 initEdgeLabels();
             }
             edgeLabel[vi][pos] = label;
+        }
+        if (edgeContainer != null) {
+            try {
+                edgeContainer.add(v, u);
+            } catch (Exception e) {
+                edgeContainer = null;
+            }
         }
         return pos;
     }
@@ -391,8 +414,8 @@ class GraphImpl<V, E> implements Graph<V, E> {
                 }
             }
         }
-        if (edgeBitSet != null) {
-            edgeBitSet.remove(v, u);
+        if (edgeContainer != null) {
+            edgeContainer.remove(v, u);
         }
         degree[vi]--;
     }
@@ -446,8 +469,8 @@ class GraphImpl<V, E> implements Graph<V, E> {
     public boolean containsEdge(int v, int u) {
         checkVertex(v);
         checkVertex(u);
-        if (edgeBitSet != null) {
-            return edgeBitSet.contains(v, u);
+        if (edgeContainer != null) {
+            return edgeContainer.contains(v, u);
         }
         return adjListPos(v, u) >= 0;
     }
@@ -665,13 +688,13 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     //Expands the array holding the indices corresponding to vertex numbers.
+    /*
     protected void growIndices(int v) {
         int oldLen = index.length;
         int newLen = v + (vertices.length >> 1);
         index = Arrays.copyOf(index, newLen);
         Arrays.fill(index, oldLen, newLen, -1);
-    }
-
+    }*/
     @Override
     public List<Edge> edgeList() {
         List<Edge> list = new ArrayList<>((int) numEdges());
@@ -704,7 +727,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
         int deg = (int) IntStream.of(vertices).map(v -> this.degree(v)).average().orElse(0);
         var sub = newInstance(vertices, n, deg, sorted, directed, allowsMultiEdges, allowsSelfLoops);
         for (int v : vertices) {
-            int vi = index[v];
+            int vi = indexOf(v);
             for (int j = 0; j < degree[v]; j++) {
                 int u = adjList[vi][j];
                 if ((directed || v <= u) && Tools.arrayContains(vertices, u)) {
@@ -836,15 +859,28 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
     public String toString() {
         var sb = new StringBuilder();
+        sb.append(name != null ? name + "=" : "");
+        sb.append("{");
         if (numVertices() <= 10) {
-            sb.append("V=").append(verticesToString());
-            sb.append(", E=").append(edgesToString());
+            sb.append(verticesToString());
+            sb.append(", ").append(edgesToString());
         } else {
             sb.append("|V|=").append(numVertices());
             sb.append(", |E|=").append(numEdges());
         }
+        sb.append("}");
         return sb.toString();
     }
 

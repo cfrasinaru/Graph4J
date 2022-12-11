@@ -20,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.gen.RandomGenerator;
+import ro.uaic.info.graph.gen.GnmRandomGenerator;
+import ro.uaic.info.graph.gen.GnpRandomGenerator;
 
 /**
  *
@@ -65,15 +66,15 @@ public class GraphsTest {
     public void randomGnm() {
         int n = 10;
         int m = 20;
-        Graph g = RandomGenerator.createGraphGnm(n, m);
+        Graph g = new GnmRandomGenerator(n, m).createGraph();
         assertEquals(m, g.numEdges());
     }
 
     @Test
     public void randomGnp() {
         int n = 100;
-        var g1 = RandomGenerator.createGraphGnp(n, 0);
-        var g2 = RandomGenerator.createGraphGnp(n, 1);
+        var g1 = new GnpRandomGenerator(n, 0).createGraph();
+        var g2 = new GnpRandomGenerator(n, 1).createGraph();
         assertEquals(0, g1.numEdges());
         assertEquals(n * (n - 1) / 2, g2.numEdges());
     }

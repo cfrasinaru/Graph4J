@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,18 @@
  */
 package ro.uaic.info.graph.demo;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 import org.jgrapht.generate.GnmRandomGraphGenerator;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.util.SupplierUtil;
+import ro.uaic.info.graph.alg.CycleDetector;
 import ro.uaic.info.graph.build.GraphBuilder;
-import ro.uaic.info.graph.gen.WheelGenerator;
+import ro.uaic.info.graph.search.BFSVisitor;
+import ro.uaic.info.graph.search.BreadthFirstSearch;
+import ro.uaic.info.graph.search.DFSVisitor;
+import ro.uaic.info.graph.search.DepthFirstSearch;
+import ro.uaic.info.graph.search.SearchNode;
 
 /**
  * TODO: Move this to tests.
@@ -33,6 +39,8 @@ public class Main {
     public static void main(String[] args) {
         var app = new Main();
         app.test();
+        //app.demoBFS();
+        //app.demoDFS();
         //app.demoContains();
     }
 
@@ -40,10 +48,110 @@ public class Main {
         //System.out.println("Object type: " + object.getClass() + ", size: " + InstrumentationAgent.getObjectSize(object) + " bytes");
     }
 
+    protected void demo(Runnable snippet) {
+        long m0 = Runtime.getRuntime().freeMemory();
+        long t0 = System.currentTimeMillis();
+        snippet.run();
+        long t1 = System.currentTimeMillis();
+        long m1 = Runtime.getRuntime().freeMemory();
+        System.out.println((t1 - t0) / 1000 + " s");
+        System.out.println((m0 - m1) / (1024 * 1024) + " MB");
+    }
+
     private void test() {
-        var g = new WheelGenerator(5,9).createGraph();
+        var g = GraphBuilder.vertexRange(1, 9)
+                .addPath(1, 2, 3, 4, 5, 6, 7).addEdge(7, 1)
+                .sorted()
+                .addClique(1, 8, 9)
+                .buildGraph();
+        var detector = new CycleDetector(g);
+        System.out.println(Arrays.toString(detector.findAnyCycle()));
+        System.out.println(Arrays.toString(detector.findShortestCycle()));
+    }
+
+    private void demoDFS() {
+        /*
+        var g = GraphBuilder
+                .vertexRange(1, 8)
+                .addPath(1, 2, 4, 6).addEdge(6, 2)
+                .addPath(1, 3, 5, 7).addEdge(5, 4).addEdge(5, 8).addEdge(1, 8)
+                .sorted()
+                .buildDigraph();
+         */
+        var g = GraphBuilder.numVertices(3).addEdges("0-1,0-1").buildMultigraph();
+        //var g = GraphBuilder.numVertices(3).addEdges("0-1,1-0").buildDigraph();
         //g.setName("K4");
         System.out.println(g);
+        new DepthFirstSearch(g).traverse(new DFSVisitor() {
+            @Override
+            public void root(SearchNode node) {
+                System.out.println("Root: " + node);
+            }
+
+            @Override
+            public void treeEdge(SearchNode from, SearchNode to) {
+                System.out.println("Tree edge: " + from + "->" + to);
+            }
+
+            @Override
+            public void backEdge(SearchNode from, SearchNode to) {
+                System.out.println("Back edge: " + from + "->" + to);
+                System.out.println("Cycle detected");
+            }
+
+            @Override
+            public void forwardEdge(SearchNode from, SearchNode to) {
+                System.out.println("Forward edge: " + from + "->" + to);
+            }
+
+            @Override
+            public void crossEdge(SearchNode from, SearchNode to) {
+                System.out.println("Cross edge: " + from + "->" + to);
+            }
+
+            @Override
+            public void upward(SearchNode from, SearchNode to) {
+                System.out.println("Return to parent: " + from + "->" + to);
+            }
+        });
+    }
+
+    private void demoBFS() {
+        /*
+        var g = GraphBuilder
+                .vertexRange(1, 8)
+                .addPath(1, 2, 4, 6).addEdge(6, 2)
+                .addPath(1, 3, 5, 7).addEdge(5, 4).addEdge(5, 8).addEdge(1, 8)
+                .sorted()
+                .buildDigraph();
+         */
+        //var g = GraphBuilder.numVertices(3).addEdges("0-0,1-1,0-1,1-0").buildPseudograph();
+        var g = GraphBuilder.vertexRange(1, 5).addEdges("1-2,2-3,3-4,4-5").buildGraph();
+        g.addEdge(2, 4);
+
+        //g.setName("K4");
+        System.out.println(g);
+        new BreadthFirstSearch(g).traverse(new BFSVisitor() {
+            @Override
+            public void root(SearchNode node) {
+                System.out.println("Root: " + node);
+            }
+
+            @Override
+            public void treeEdge(SearchNode from, SearchNode to) {
+                System.out.println("Tree edge: " + from + "->" + to);
+            }
+
+            @Override
+            public void backEdge(SearchNode from, SearchNode to) {
+                System.out.println("Back edge: " + from + "->" + to);
+            }
+
+            @Override
+            public void crossEdge(SearchNode from, SearchNode to) {
+                System.out.println("Cross edge: " + from + "->" + to);
+            }
+        });
     }
 
     private void demoMem() {

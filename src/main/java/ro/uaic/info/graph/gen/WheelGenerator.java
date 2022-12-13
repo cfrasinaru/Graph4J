@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ package ro.uaic.info.graph.gen;
 import java.util.stream.IntStream;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.build.GraphBuilder;
-import ro.uaic.info.graph.util.CheckArgument;
+import ro.uaic.info.graph.util.CheckArguments;
 
 /**
  * A <i>wheel graph</i> is a graph formed by connecting a single universal
@@ -29,38 +29,45 @@ import ro.uaic.info.graph.util.CheckArgument;
  */
 public class WheelGenerator {
 
-    private int n;
+    private int[] vertices;
     private int center;
 
     /**
-     *
-     * @param n the number of vertices, including the center
+     * 
+     * @param numVertices the number of vertices, including the center
      */
-    public WheelGenerator(int n) {
-        this(n, 0);
+    public WheelGenerator(int numVertices) {
+        CheckArguments.numberOfVertices(numVertices);
+        this.vertices = IntStream.range(0, numVertices).toArray();
+        this.center = 0;
     }
 
     /**
      *
-     * @param n the number of vertices, including the center
+     * @param firstVertex
+     * @param lastVertex
      * @param center the number of the center vertex
      */
-    public WheelGenerator(int n, int center) {
-        CheckArgument.numberOfVertices(n);
-        if (center < 0 || center >= n) {
+    public WheelGenerator(int firstVertex, int lastVertex, int center) {
+        CheckArguments.vertexRange(firstVertex, lastVertex);
+        if (center < firstVertex || center > lastVertex) {
             throw new IllegalArgumentException(
-                    "Center vertex must be in the range [0," + (n - 1) + "]");
+                    "Center vertex must be in the range [" + firstVertex + "," + lastVertex + "]");
         }
-        this.n = n;
+        this.vertices = IntStream.rangeClosed(firstVertex, lastVertex).toArray();
         this.center = center;
     }
 
+    /**
+     *
+     * @return
+     */
     public Graph createGraph() {
-        var g = GraphBuilder.numVertices(n).avgDegree(3).buildGraph();
-        int[] cycle = IntStream.range(0, n).filter(v -> v != center).toArray();
-        for (int i = 0; i < n - 1; i++) {
+        var g = GraphBuilder.vertices(vertices).avgDegree(3).buildGraph();
+        int[] cycle = IntStream.of(vertices).filter(v -> v != center).toArray();
+        for (int i = 0; i < cycle.length; i++) {
             int v = cycle[i];
-            int u = cycle[(i + 1) % (n - 1)];
+            int u = cycle[(i + 1) % cycle.length];
             g.addEdge(v, u);
         }
         for (int v : cycle) {

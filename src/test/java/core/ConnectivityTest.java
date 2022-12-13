@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ public class ConnectivityTest {
         var g = GraphBuilder.numVertices(7).addEdges("0-1,1-2,3-4,3-5").buildGraph();
         var cc = new GraphConnectivity(g);
         assertFalse(cc.isConnected());
-        assertEquals(3, cc.components().size());
+        assertEquals(3, cc.components().size()); //6 is isolated
     }
     
     @Test

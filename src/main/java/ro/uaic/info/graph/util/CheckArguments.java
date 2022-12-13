@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,26 +22,70 @@ import ro.uaic.info.graph.Graph;
  *
  * @author Cristian Frăsinaru
  */
-public class CheckArgument {
+public class CheckArguments {
 
+    public static void notNull(Object obj) {
+        notNull(obj, "The argument is null");
+    }
+
+    public static void notNull(Object obj, String msg) {
+        if (obj == null) {
+            throw new IllegalArgumentException(msg);
+        }
+    }
+
+    /**
+     *
+     * @param n
+     */
     public static void numberOfVertices(int n) {
         if (n < 0) {
             throw new IllegalArgumentException("Number of vertices must be non-negative: " + n);
         }
     }
 
+    /**
+     *
+     * @param first
+     * @param last
+     */
+    public static void vertexRange(int first, int last) {
+        if (first < 0) {
+            throw new IllegalArgumentException("Vertex numbers must be non-negative: " + first);
+        }
+        if (last < 0) {
+            throw new IllegalArgumentException("Vertex numbers must be non-negative: " + last);
+        }
+        if (first > last) {
+            throw new IllegalArgumentException("Incorrect vertex range: [" + first + "," + last + "]");
+        }
+    }
+
+    /**
+     *
+     * @param m
+     */
     public static void numberOfEdges(int m) {
         if (m < 0) {
             throw new IllegalArgumentException("Number of edges must be non-negative: " + m);
         }
     }
 
+    /**
+     *
+     * @param p
+     */
     public static void probability(double p) {
         if (p < 0 || p > 1) {
             throw new IllegalArgumentException("Probability must be in the range [0,1]: " + p);
         }
     }
 
+    /**
+     *
+     * @param g1
+     * @param g2
+     */
     public static void disjointVertices(Graph g1, Graph g2) {
         if (Tools.arrayIntersects(g1.vertices(), g2.vertices())) {
             throw new IllegalArgumentException("Graphs must have disjoint vertex sets");

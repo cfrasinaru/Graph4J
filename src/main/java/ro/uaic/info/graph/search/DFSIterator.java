@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ public class DFSIterator implements Iterator<SearchNode> {
         this.nextPos = new int[numVertices];
         this.stack = new ArrayDeque<>(numVertices);
         if (startVertex >= 0) {
-            stack.push(new SearchNode(0, startVertex, 0, order++));
+            stack.push(new SearchNode(0, startVertex, 0, order++, null));
             visited[graph.indexOf(startVertex)] = true;
         }
     }
@@ -84,7 +84,7 @@ public class DFSIterator implements Iterator<SearchNode> {
         if (stack.isEmpty()) {
             throw new IllegalStateException();
         }
-        var next = stack.peek();
+        var current = stack.peek();
         numIterations++;
         //
         boolean ok = false;
@@ -98,7 +98,9 @@ public class DFSIterator implements Iterator<SearchNode> {
                 int j = graph.indexOf(u);
                 nextPos[i]++;
                 if (!visited[j]) {
-                    stack.push(new SearchNode(component, u, node.level() + 1, order++));
+                    //prepare the next one
+                    var next = new SearchNode(component, u, node.level() + 1, order++, current);
+                    stack.push(next);
                     visited[j] = true;
                     ok = true;
                 }
@@ -112,13 +114,13 @@ public class DFSIterator implements Iterator<SearchNode> {
             for (int i = restartIndex; i < numVertices; i++) {
                 restartIndex++;
                 if (!visited[i]) {
-                    stack.push(new SearchNode(++component, graph.vertexAt(i), 0, order++));
+                    stack.push(new SearchNode(++component, graph.vertexAt(i), 0, order++, null));
                     visited[i] = true;
                     break;
                 }
             }
         }
-        return next;
+        return current;
     }
 
 }

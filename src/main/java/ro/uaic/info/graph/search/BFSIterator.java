@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ public class BFSIterator implements Iterator<SearchNode> {
         this.visited = new boolean[numVertices];
         this.queue = new LinkedList<>();
         if (startVertex >= 0) {
-            queue.offer(new SearchNode(0, startVertex, 0, orderNumber++));
+            queue.offer(new SearchNode(0, startVertex, 0, orderNumber++, null));
             visited[graph.indexOf(startVertex)] = true;
         }
     }
@@ -82,14 +82,14 @@ public class BFSIterator implements Iterator<SearchNode> {
         if (queue.isEmpty()) {
             throw new IllegalStateException();
         }
-        var next = queue.poll();
-        var v = next.vertex();
+        var current = queue.poll();
+        var v = current.vertex();
         numIterations++;
         //
         for (int u : graph.neighbors(v)) {
             int j = graph.indexOf(u);
             if (!visited[j]) {
-                queue.offer(new SearchNode(component, u, next.level() + 1, orderNumber++));
+                queue.offer(new SearchNode(component, u, current.level() + 1, orderNumber++, current));
                 visited[j] = true;
             }
         }
@@ -98,13 +98,13 @@ public class BFSIterator implements Iterator<SearchNode> {
             for (int i = restartIndex; i < numVertices; i++) {
                 restartIndex++;
                 if (!visited[i]) {
-                    queue.offer(new SearchNode(++component, graph.vertexAt(i), 0, orderNumber++));
+                    queue.offer(new SearchNode(++component, graph.vertexAt(i), 0, orderNumber++, null));
                     visited[i] = true;
                     break;
                 }
             }
         }
-        return next;
+        return current;
     }
 
 }

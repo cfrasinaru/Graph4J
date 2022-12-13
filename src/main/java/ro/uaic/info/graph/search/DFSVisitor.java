@@ -14,25 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ro.uaic.info.graph.build;
+package ro.uaic.info.graph.search;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
-interface VertexContainer {
+public interface DFSVisitor {
 
-    VertexContainer copy();
+    default void root(SearchNode node) {
+    }
 
-    void add(int v, int indx);
+    default void treeEdge(SearchNode from, SearchNode to) {
+    }
 
-    void remove(int v);
+    default void backEdge(SearchNode from, SearchNode to) {
+    }
 
-    int indexOf(int v);
+    default void forwardEdge(SearchNode from, SearchNode to) {
+    }
 
-    int max();
+    default void crossEdge(SearchNode from, SearchNode to) {
+    }
 
-    void shiftLeft(int v);
+    default void upward(SearchNode from, SearchNode to) {
+    }
 
-    void grow(int v);
+    default void interrupt() {
+        throw new InterruptedVisitorException();
+    }
 }

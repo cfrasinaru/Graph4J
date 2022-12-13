@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,10 @@
 package ro.uaic.info.graph.gen;
 
 import java.util.Random;
+import java.util.stream.IntStream;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.build.GraphBuilder;
-import ro.uaic.info.graph.util.CheckArgument;
+import ro.uaic.info.graph.util.CheckArguments;
 
 /**
  *
@@ -28,36 +29,48 @@ import ro.uaic.info.graph.util.CheckArgument;
  */
 public class GnmRandomGenerator {
 
-    private final int n;
-    private final int m;
-    private final Random random;
-    private final int[] values;
+    private final int numEdges;
+    private final int[] vertices;
+    private Random random;
+    private int[] edgeValues;
 
     /**
      *
-     * @param n number of vertices
-     * @param m number of edges
+     * @param numVertices number of vertices
+     * @param numEdges number of edges
      */
-    public GnmRandomGenerator(int n, int m) {
-        CheckArgument.numberOfVertices(n);
-        CheckArgument.numberOfEdges(m);
-        this.n = n;
-        this.m = m;
-        random = new Random();
+    public GnmRandomGenerator(int numVertices, int numEdges) {
+        this(0, numVertices - 1, numEdges);
+    }
+
+    /**
+     *
+     * @param firstVertex
+     * @param lastVertex
+     * @param numEdges
+     */
+    public GnmRandomGenerator(int firstVertex, int lastVertex, int numEdges) {
+        CheckArguments.vertexRange(firstVertex, lastVertex);
+        CheckArguments.numberOfEdges(numEdges);
+        this.vertices = IntStream.rangeClosed(firstVertex, lastVertex).toArray();
+        this.numEdges = numEdges;
+        int n = vertices.length;
         long max = (long) n * (n - 1) / 2;
-        if (m > max) {
+        if (numEdges > max) {
             throw new IllegalArgumentException(
-                    "The number of edges is greater than the maximum possible: " + m);
+                    "The number of edges is greater than the maximum possible: "
+                    + numEdges + " > " + max);
         }
         if (max >= Integer.MAX_VALUE) {
             throw new IllegalArgumentException(
                     "The number of vertices is too large: " + n);
         }
-        this.values = new int[(int) max];
+        this.random = new Random();
+        this.edgeValues = new int[(int) max];
         int k = 0;
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
-                values[k++] = i * n + j;
+                edgeValues[k++] = i * n + j;
             }
         }
     }
@@ -68,13 +81,14 @@ public class GnmRandomGenerator {
      * @return
      */
     public Graph createGraph() {
-        var g = GraphBuilder.numVertices(n).numEdges(m).buildGraph();
-        for (int e = 0; e < m; e++) {
-            int pos = random.nextInt(values.length - e);
-            int v = values[pos] / n;
-            int u = values[pos] % n;
+        var g = GraphBuilder.vertices(vertices).numEdges(numEdges).buildGraph();
+        int n = vertices.length;
+        for (int e = 0; e < numEdges; e++) {
+            int pos = random.nextInt(edgeValues.length - e);
+            int v = vertices[edgeValues[pos] / n];
+            int u = vertices[edgeValues[pos] % n];
             g.addEdge(v, u);
-            values[pos] = values[values.length - 1 - e];
+            edgeValues[pos] = edgeValues[edgeValues.length - 1 - e];
         }
         return g;
     }

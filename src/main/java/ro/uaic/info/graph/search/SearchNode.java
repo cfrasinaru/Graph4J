@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,14 @@ public class SearchNode {
     private final int vertex;
     private final int level;
     private final int order;
+    private final SearchNode parent;
 
-    public SearchNode(int component, int vertex, int level, int order) {
+    public SearchNode(int component, int vertex, int level, int order, SearchNode parent) {
         this.component = component;
         this.vertex = vertex;
         this.level = level;
         this.order = order;
+        this.parent = parent;
     }
 
     /**
@@ -66,9 +68,59 @@ public class SearchNode {
         return order;
     }
 
+    /**
+     *
+     * @return
+     */
+    public SearchNode parent() {
+        return parent;
+    }
+
+    /**
+     *
+     * @param other
+     * @return true, if this node is an ancestor of other
+     */
+    public boolean isAncestorOf(SearchNode other) {
+        while (other != null) {
+            if (this.equals(other)) {
+                return true;
+            }
+            other = other.parent;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + this.vertex;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final SearchNode other = (SearchNode) obj;
+        if (this.vertex != other.vertex) {
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
-        return vertex + ":" + component;
+        return String.valueOf(vertex);
+        //return vertex + ", component=" + component + ", order=" + order
+        //+ ", level=" + level + ", parent=" + (parent != null ? parent.vertex : -1);
     }
 
 }

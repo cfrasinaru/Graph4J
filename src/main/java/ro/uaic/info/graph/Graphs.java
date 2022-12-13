@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 import ro.uaic.info.graph.alg.GraphConnectivity;
-import ro.uaic.info.graph.util.CheckArgument;
+import ro.uaic.info.graph.util.CheckArguments;
 
 /**
  * This class consists of static methods that operate on or return graphs.
@@ -98,7 +98,7 @@ public class Graphs {
         int n = graphs.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
-                CheckArgument.disjointVertices(graphs[i], graphs[j]);
+                CheckArguments.disjointVertices(graphs[i], graphs[j]);
             }
         }
         int numVertices = Stream.of(graphs).mapToInt(g -> g.numVertices()).sum();
@@ -163,7 +163,7 @@ public class Graphs {
      * https://mathworld.wolfram.com/GraphJoin.html</a>
      */
     public static Graph join(Graph g1, Graph g2) {
-        CheckArgument.disjointVertices(g1, g2);
+        CheckArguments.disjointVertices(g1, g2);
         Graph result = disjointUnion(g1, g2);
 
         for (int v : g1.vertices()) {

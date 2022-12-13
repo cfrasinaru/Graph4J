@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.search.DFSIterator;
-import ro.uaic.info.graph.search.DepthFirstSearch;
-import ro.uaic.info.graph.search.SearchNode;
 import ro.uaic.info.graph.util.Tools;
 
 /**
@@ -32,8 +30,6 @@ public class GraphConnectivity {
 
     private final Graph graph;
     private List<Graph> components;
-    private List<Integer> current;
-    private int compIndex;
 
     /**
      *
@@ -69,24 +65,27 @@ public class GraphConnectivity {
             return components;
         }
         this.components = new ArrayList<>();
-        compIndex = -1;
-        current = null;
-        new DepthFirstSearch(graph).traverse(this::visit);
-        if (current != null && !current.isEmpty()) {
-            components.add(graph.subgraph(Tools.listAsArray(current)));
+        int compIndex = 0;
+        List<Integer> vertices = new ArrayList<>();
+        var dfs = new DFSIterator(graph);
+        while (dfs.hasNext()) {
+            var node = dfs.next();
+            if (node.component() > compIndex) {
+                //we finished creating a connected component
+                addComponent(vertices);
+                vertices = new ArrayList<>();
+                compIndex = node.component();
+            }
+            vertices.add(node.vertex());
+        }
+        if (!vertices.isEmpty()) {
+            addComponent(vertices);
         }
         return components;
     }
 
-    private boolean visit(SearchNode node) {
-        if (node.component() > compIndex) {
-            if (current != null) {
-                components.add(graph.subgraph(Tools.listAsArray(current)));
-            }
-            current = new ArrayList<>();
-            compIndex = node.component();
-        }
-        current.add(node.vertex());
-        return true;
+    private void addComponent(List<Integer> vertices) {
+        components.add(graph.subgraph(Tools.listAsArray(vertices)));
     }
+
 }

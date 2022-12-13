@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ro.uaic.info.graph.temp;
+package ro.uaic.info.graph.demo;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.DepthFirstIterator;
@@ -22,6 +22,8 @@ import ro.uaic.info.graph.build.GraphBuilder;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.Graphs;
 import ro.uaic.info.graph.search.DFSIterator;
+import ro.uaic.info.graph.search.DFSVisitor;
+import ro.uaic.info.graph.search.DepthFirstSearch;
 
 /**
  * Size of an object: https://www.baeldung.com/java-size-of-object
@@ -37,11 +39,11 @@ public class TestCreate {
 
     public static void main(String[] args) {
         test1();
-        testJGraph();
+        //testJGraph();
     }
 
     private void init() {
-        n = 1_000_000;
+        n = 10_000;
         avgDegree = 20;
     }
 
@@ -53,6 +55,8 @@ public class TestCreate {
         //app.testAdjacency(g);
         //app.testAdjacency(g);
         //app.testIterator(g);
+        //new BreadthFirstSearch(g).traverse(new BFSVisitor() {});
+        new DepthFirstSearch(g).traverse(new DFSVisitor() {});
     }
 
     private static void testJGraph() {
@@ -61,7 +65,7 @@ public class TestCreate {
         var g = app.createSparseJGraph();
         //var g = app.createCompleteJGraph();
         //app.testAdjacency(g);
-        //app.testIterator(g);
+        app.testIterator(g);
     }
 
     private Graph createSparse() {

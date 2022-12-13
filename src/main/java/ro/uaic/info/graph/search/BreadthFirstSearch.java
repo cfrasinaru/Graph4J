@@ -16,40 +16,33 @@
  */
 package ro.uaic.info.graph.search;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Queue;
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.Multigraph;
-import ro.uaic.info.graph.util.CheckArguments;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
-public class DepthFirstSearch {
+public class BreadthFirstSearch {
 
     private final Graph graph;
     private final boolean directed;
-    private DFSVisitor visitor;
+    private BFSVisitor visitor;
     //
+    private Queue<SearchNode> queue;
     private int orderIndex;
     private int compIndex;
     private SearchNode visited[];
-    private int nextPos[]; //used to iterate through adjancency lists    
-    private int restartIndex;
-    private Deque<SearchNode> stack;
+    private int restartIndex; //all the vertices up to restartIndex are visited
     private boolean interrupted;
 
     /**
      *
      * @param graph
      */
-    public DepthFirstSearch(Graph graph) {
-        CheckArguments.notNull(graph, "The graph is null");
-        if (graph instanceof Multigraph) {
-            throw new IllegalArgumentException("DFS is not supported for multigraphs");
-        }
+    public BreadthFirstSearch(Graph graph) {
         this.graph = graph;
         this.directed = (graph instanceof Digraph);
     }
@@ -57,8 +50,7 @@ public class DepthFirstSearch {
     private void init() {
         int n = graph.numVertices();
         this.visited = new SearchNode[n];
-        this.nextPos = new int[n];
-        this.stack = new ArrayDeque<>(n);
+        this.queue = new LinkedList<>();
         orderIndex = 0;
         compIndex = 0;
         interrupted = false;
@@ -68,7 +60,7 @@ public class DepthFirstSearch {
      *
      * @param visitor
      */
-    public void traverse(DFSVisitor visitor) {
+    public void traverse(BFSVisitor visitor) {
         if (graph.isEmpty()) {
             return;
         }
@@ -80,7 +72,7 @@ public class DepthFirstSearch {
      * @param visitor
      * @param start
      */
-    public void traverse(DFSVisitor visitor, int start) {
+    public void traverse(BFSVisitor visitor, int start) {
         if (!graph.containsVertex(start)) {
             throw new IllegalArgumentException("The start vertex does not belong to the graph: " + start);
         }
@@ -92,10 +84,10 @@ public class DepthFirstSearch {
         try {
             var node = new SearchNode(compIndex, start, 0, orderIndex++, null);
             visited[graph.indexOf(start)] = node;
-            stack.push(node);
+            queue.add(node);
             visitor.root(node);
             //start traversing the first component, with the initial vertex
-            dfs();
+            bfs();
             for (int i = restartIndex, n = graph.numVertices(); i < n; i++) {
                 restartIndex++;
                 if (visited[i] == null) {
@@ -103,9 +95,9 @@ public class DepthFirstSearch {
                     compIndex++;
                     node = new SearchNode(compIndex, graph.vertexAt(i), 0, orderIndex++, null);
                     visited[i] = node;
-                    stack.push(node);
+                    queue.add(node);
                     visitor.root(node);
-                    dfs();
+                    bfs();
                 }
             }
         } catch (InterruptedVisitorException e) {
@@ -113,51 +105,38 @@ public class DepthFirstSearch {
         }
     }
 
-    private void dfs() {
-        while (!stack.isEmpty()) {
-            var node = stack.peek();
+    private void bfs() {
+        while (!queue.isEmpty()) {
+            var node = queue.poll();
             var parent = node.parent();
             int v = node.vertex();
-            int i = graph.indexOf(v);
-            int[] neighbors = graph.neighbors(v);
-            boolean ok = false;
-            while (!ok && nextPos[i] < neighbors.length) {
-                int u = neighbors[nextPos[i]];
-                int j = graph.indexOf(u);
-                nextPos[i]++;
-                if (visited[j] == null) {
-                    var next = new SearchNode(compIndex, u, node.level() + 1, orderIndex++, node);
-                    stack.push(next);
-                    visited[j] = next;
-                    visitor.treeEdge(node, next);
-                    ok = true;
-                    break;
-                }
-                //back edge, forward edge or cross edge
-                var other = visited[j]; //already visited
-                if (other.equals(parent)) {
-                    //if (directed || (multigraph && ((Multigraph) graph).multiplicity(v, u) > 1)) {
-                    if (directed) {
-                        visitor.backEdge(node, other);
-                    }
+            for (int u : graph.neighbors(v)) {
+                int ui = graph.indexOf(u);
+                if (visited[ui] == null) {
+                    var child = new SearchNode(compIndex, u, node.level() + 1, orderIndex++, node);
+                    visited[ui] = child;
+                    queue.add(child);
+                    visitor.treeEdge(node, child);
                 } else {
-                    if (other.isAncestorOf(node)) {
+                    //back edge or cross edge
+                    var other = visited[ui]; //already visited
+                    if (other == node) {
                         visitor.backEdge(node, other);
+                    } else if (other.equals(parent)) {
+                        if (directed) {
+                            visitor.backEdge(node, other);
+                        }
                     } else {
-                        if (node.isAncestorOf(other)) {
-                            visitor.forwardEdge(node, other);
+                        if (other.isAncestorOf(node)) {
+                            visitor.backEdge(node, other);
                         } else {
-                            visitor.crossEdge(node, other);
+                            if (!directed || !node.isAncestorOf(other)) {
+                                visitor.crossEdge(node, other);
+                            }
+                            //no forward edges, ignore in case of multigraphs
                         }
                     }
                 }
-            }//while
-            if (!ok) {
-                stack.pop();
-                if (parent != null) {
-                    visitor.upward(node, parent);
-                }
-
             }
         }
     }

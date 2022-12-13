@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Faculty of Computer Science Iasi, Romania
+ * Copyright (C) 2022 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,41 +17,56 @@
 package ro.uaic.info.graph.gen;
 
 import java.util.Random;
+import java.util.stream.IntStream;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.build.GraphBuilder;
-import ro.uaic.info.graph.util.CheckArgument;
+import ro.uaic.info.graph.util.CheckArguments;
 
 /**
- * Erdős–Rényi model, where n is the number of vertices and p is the density
- * (the probability that two vertices are connected).
+ * Erdős–Rényi model.
  *
  * @author Cristian Frăsinaru
  */
 public class GnpRandomGenerator {
 
-    private final int n;
-    private final double p;
+    private final int[] vertices;
+    private final double edgeProbability;
     private final Random random;
 
     /**
      *
-     * @param n number of vertices
-     * @param p probability that two vertices are connected
+     * @param numVertices number of vertices
+     * @param edgeProbability probability that two vertices are connected
      */
-    public GnpRandomGenerator(int n, double p) {
-        CheckArgument.numberOfVertices(n);
-        CheckArgument.probability(p);
-        this.n = n;
-        this.p = p;
-        random = new Random();
+    public GnpRandomGenerator(int numVertices, double edgeProbability) {
+        this(0, numVertices - 1, edgeProbability);
     }
 
+    /**
+     *
+     * @param firstVertex first vertex number of the graph
+     * @param lastVertex last vertex number of the graph
+     * @param edgeProbability probability that two vertices are connected
+     */
+    public GnpRandomGenerator(int firstVertex, int lastVertex, double edgeProbability) {
+        CheckArguments.vertexRange(firstVertex, lastVertex);
+        CheckArguments.probability(edgeProbability);
+        this.vertices = IntStream.rangeClosed(firstVertex, lastVertex).toArray();
+        this.edgeProbability = edgeProbability;
+        this.random = new Random();
+    }
+
+    /**
+     *
+     * @return
+     */
     public Graph createGraph() {
-        var g = GraphBuilder.numVertices(n).density(p).buildGraph();
+        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildGraph();
+        int n = vertices.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
-                if (random.nextDouble() < p) {
-                    g.addEdge(i, j);
+                if (random.nextDouble() < edgeProbability) {
+                    g.addEdge(vertices[i], vertices[j]);
                 }
             }
         }

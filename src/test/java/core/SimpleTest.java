@@ -16,9 +16,14 @@
  */
 package core;
 
+import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+import ro.uaic.info.graph.Cycle;
 import ro.uaic.info.graph.Graph;
+import ro.uaic.info.graph.Path;
+import ro.uaic.info.graph.Trail;
+import ro.uaic.info.graph.Walk;
 import ro.uaic.info.graph.build.GraphBuilder;
 
 /**
@@ -26,10 +31,10 @@ import ro.uaic.info.graph.build.GraphBuilder;
  * @author Cristian Frăsinaru
  */
 public class SimpleTest {
-    
+
     public SimpleTest() {
     }
-    
+
     @Test
     public void testLabels() {
         Graph<String, String> g = GraphBuilder.numVertices(3).buildGraph();
@@ -37,9 +42,9 @@ public class SimpleTest {
         g.setVertexLabel(1, "b");
         g.setVertexLabel(2, "c");
         for (int v : g.vertices()) {
-            assertEquals(String.valueOf((char)('a' + v)), g.getVertexLabel(v));
+            assertEquals(String.valueOf((char) ('a' + v)), g.getVertexLabel(v));
         }
-        
+
         g.addLabeledEdge(0, 1, "01");
         g.addLabeledEdge(0, 2, "02");
         g.addLabeledEdge(1, 2, "12");
@@ -47,5 +52,30 @@ public class SimpleTest {
             assertEquals(e[0] + "" + e[1], g.getEdgeLabel(e[0], e[1]));
         }
     }
-    
+
+    @Test
+    public void testWalkTrailPath() {
+        var g = GraphBuilder.vertexRange(1, 6)
+                .addClique(1, 2, 3)
+                .addEdge(1, 4).addEdge(3, 4).addEdge(4, 5)
+                .buildGraph();
+        var badWalk = Assertions.assertThrows(IllegalArgumentException.class,
+                () -> new Walk(g, 1, 2, 1, 6));
+        assertNotNull(badWalk);
+        var badTrail = Assertions.assertThrows(IllegalArgumentException.class,
+                () -> new Trail(g, 1, 2, 3, 1, 2));
+        assertNotNull(badTrail);
+        var badPath = Assertions.assertThrows(IllegalArgumentException.class,
+                () -> new Path(g, 1, 2, 3, 1));
+        assertNotNull(badPath);
+        var badCycle = Assertions.assertThrows(IllegalArgumentException.class,
+                () -> new Cycle(g, 1, 3, 4, 5));
+        assertNotNull(badCycle);
+        //
+        assertEquals(5, new Walk(g, 1, 2, 1, 2, 3, 4).length());
+        assertEquals(4, new Trail(g, 1, 2, 3, 1, 4).length());
+        assertEquals(4, new Path(g, 1, 2, 3, 4, 5).length());
+        assertEquals(3, new Cycle(g, 1, 2, 3).length());
+    }
+
 }

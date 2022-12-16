@@ -46,7 +46,7 @@ public class DepthFirstSearch {
      * @param graph
      */
     public DepthFirstSearch(Graph graph) {
-        CheckArguments.notNull(graph, "The graph is null");
+        CheckArguments.graphNotNull(graph);
         if (graph instanceof Multigraph) {
             throw new IllegalArgumentException("DFS is not supported for multigraphs");
         }
@@ -81,9 +81,7 @@ public class DepthFirstSearch {
      * @param start
      */
     public void traverse(DFSVisitor visitor, int start) {
-        if (!graph.containsVertex(start)) {
-            throw new IllegalArgumentException("The start vertex does not belong to the graph: " + start);
-        }
+        CheckArguments.graphContainsVertex(graph, start);
         if (visitor == null) {
             throw new IllegalArgumentException("The visitor cannot be null");
         }

@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
+import ro.uaic.info.graph.util.CheckArguments;
 
 /**
  *
@@ -43,6 +44,7 @@ public class BreadthFirstSearch {
      * @param graph
      */
     public BreadthFirstSearch(Graph graph) {
+        CheckArguments.graphNotNull(graph);
         this.graph = graph;
         this.directed = (graph instanceof Digraph);
     }
@@ -73,9 +75,7 @@ public class BreadthFirstSearch {
      * @param start
      */
     public void traverse(BFSVisitor visitor, int start) {
-        if (!graph.containsVertex(start)) {
-            throw new IllegalArgumentException("The start vertex does not belong to the graph: " + start);
-        }
+        CheckArguments.graphContainsVertex(graph, start);
         if (visitor == null) {
             throw new IllegalArgumentException("The visitor cannot be null");
         }

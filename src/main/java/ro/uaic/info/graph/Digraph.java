@@ -26,6 +26,15 @@ package ro.uaic.info.graph;
 public interface Digraph<V, E> extends Graph<V, E> {
 
     /**
+     *
+     * @param numVertices
+     * @return
+     */
+    static long maxEdges(int numVertices) {
+        return (long)numVertices * (numVertices - 1);
+    }
+
+    /**
      * The <i>support graph</i> of a digraph G is an undirected graph containing
      * all the vertices of G and one edge vu for any pair of vertices v and u of
      * the digraph that are connected by an arc, in either direction: from v to
@@ -77,6 +86,14 @@ public interface Digraph<V, E> extends Graph<V, E> {
 
     /**
      *
+     * @return
+     */
+    default int[] outDegrees() {
+        return degrees();
+    }
+
+    /**
+     *
      * @param v
      * @return
      */
@@ -88,6 +105,19 @@ public interface Digraph<V, E> extends Graph<V, E> {
             }
         }
         return inDegree;
+    }
+
+    /**
+     *
+     * @return
+     */
+    default int[] inDegrees() {
+        int n = numVertices();
+        int[] inDegrees = new int[n];
+        for (int i = 0; i < n; i++) {
+            inDegrees[i] = inDegree(vertexAt(i));
+        }
+        return inDegrees;
     }
 
     /**

@@ -14,36 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ro.uaic.info.graph.util;
+package ro.uaic.info.graph.temp;
 
-import java.util.function.Supplier;
-import org.jgrapht.util.SupplierUtil;
+import java.util.Iterator;
 import ro.uaic.info.graph.Graph;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
-public class Tools {
+public class GraphVertexIterator implements Iterator<Integer> {
 
-    public static org.jgrapht.Graph createJGraph(Graph g) {
-        Supplier<Integer> vSupplier = new Supplier<Integer>() {
-            private int id = 0;
+    private final Graph graph;
+    private final int numVertices;
+    private int pos;
 
-            @Override
-            public Integer get() {
-                return id++;
-            }
-        };
-        var jg = new org.jgrapht.graph.SimpleGraph<>(vSupplier, SupplierUtil.createDefaultEdgeSupplier(), false);
-        if (g != null) {
-            for (int v : g.vertices()) {
-                jg.addVertex(v);
-            }
-            for (int[] e : g.edges()) {
-                jg.addEdge(e[0], e[1]);
-            }
-        }
-        return jg;
+    public GraphVertexIterator(Graph graph) {
+        this.graph = graph;
+        this.numVertices = graph.numVertices();
     }
+
+    @Override
+    public boolean hasNext() {
+        return pos < numVertices;
+    }
+
+    @Override
+    public Integer next() {
+        return graph.vertexAt(pos++);
+    }
+
 }

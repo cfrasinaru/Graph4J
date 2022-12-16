@@ -33,14 +33,14 @@ import java.util.stream.IntStream;
 public interface Graph<V, E> extends Weighted, Labeled<V, E> {
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     String getName();
 
     /**
-     * 
-     * @param name 
+     *
+     * @param name
      */
     void setName(String name);
 
@@ -55,6 +55,21 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * @return the number of edges in the graph
      */
     int numEdges();
+
+    /**
+     *
+     * @return
+     */
+    long maxEdges();
+
+    /**
+     * 
+     * @param numVertices
+     * @return 
+     */
+    static long maxEdges(int numVertices) {
+        return (long)numVertices * (numVertices - 1) / 2;
+    }
 
     /**
      *
@@ -109,6 +124,15 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
 
     /**
      *
+     * @param e
+     * @return
+     */
+    default boolean containsEdge(Edge e) {
+        return containsEdge(e.source(), e.target());
+    }
+
+    /**
+     *
      * @param v a vertex number
      * @return {@code true} if v belongs to the graph
      */
@@ -135,6 +159,12 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * @return the degree of the vertex v
      */
     int degree(int v);
+
+    /**
+     *
+     * @return
+     */
+    int[] degrees();
 
     /**
      *

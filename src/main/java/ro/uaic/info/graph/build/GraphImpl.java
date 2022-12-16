@@ -24,7 +24,7 @@ import ro.uaic.info.graph.Edge;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.InvalidEdgeException;
 import ro.uaic.info.graph.InvalidVertexException;
-import ro.uaic.info.graph.util.Tools;
+import ro.uaic.info.graph.util.IntArrays;
 
 /**
  * A generic, array based implementation of a graph. The graph may be simple,
@@ -54,7 +54,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
     //
     protected boolean sorted; //true if the adjacency lists are maintained sorted
     protected boolean directed;
-    protected boolean allowsMultiEdges;
+    protected boolean allowsMultipleEdges;
     protected boolean allowsSelfLoops;
     //
     protected int avgDegree; //this may improve the memory allocation
@@ -65,9 +65,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     protected GraphImpl(int numVertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowsMultiEdges, boolean allowsSelfLoops) {
+            boolean sorted, boolean directed, boolean allowsMultipleEdges, boolean allowsSelfLoops) {
         this(IntStream.range(0, numVertices).toArray(), maxVertices, avgDegree,
-                sorted, directed, allowsMultiEdges, allowsSelfLoops);
+                sorted, directed, allowsMultipleEdges, allowsSelfLoops);
     }
 
     /**
@@ -77,11 +77,11 @@ class GraphImpl<V, E> implements Graph<V, E> {
      * @param avgDegree
      * @param sorted
      * @param directed
-     * @param allowsMultiEdges
+     * @param allowsMultipleEdges
      * @param allowsSelfLoops
      */
     protected GraphImpl(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowsMultiEdges, boolean allowsSelfLoops) {
+            boolean sorted, boolean directed, boolean allowsMultipleEdges, boolean allowsSelfLoops) {
         if (maxVertices < numVertices) {
             throw new IllegalArgumentException("Invalid maximum number of vertices: " + maxVertices);
         }
@@ -97,7 +97,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
         this.avgDegree = avgDegree;
         this.sorted = sorted;
         this.directed = directed;
-        this.allowsMultiEdges = allowsMultiEdges;
+        this.allowsMultipleEdges = allowsMultipleEdges;
         this.allowsSelfLoops = allowsSelfLoops;
         //
         this.vertices = new int[maxVertices];
@@ -111,6 +111,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
         if (maxVertices > 0) {
             try {
                 this.edgeContainer = new EdgeContainerBitSet(maxVertices);
+                System.out.println("edge container ok: " + maxVertices);
             } catch (Exception e) {
                 //edgeBitSet remains null, containsEdge will have to iterate                
             }
@@ -129,8 +130,8 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     protected GraphImpl newInstance(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowsMultiEdges, boolean allowsSelfLoops) {
-        return new GraphImpl(vertices, maxVertices, avgDegree, sorted, directed, allowsMultiEdges, allowsSelfLoops);
+            boolean sorted, boolean directed, boolean allowsMultipleEdges, boolean allowsSelfLoops) {
+        return new GraphImpl(vertices, maxVertices, avgDegree, sorted, directed, allowsMultipleEdges, allowsSelfLoops);
     }
 
     @Override
@@ -141,7 +142,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
         copy.avgDegree = avgDegree;
         copy.sorted = sorted;
         copy.directed = directed;
-        copy.allowsMultiEdges = allowsMultiEdges;
+        copy.allowsMultipleEdges = allowsMultipleEdges;
         copy.allowsSelfLoops = allowsSelfLoops;
         copy.vertices = Arrays.copyOf(vertices, numVertices);
         copy.degree = Arrays.copyOf(degree, numVertices);
@@ -308,7 +309,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
         if (!allowsSelfLoops && v == u) {
             throw new IllegalArgumentException("Loops are not allowed: " + v);
         }
-        if (!allowsMultiEdges && containsEdge(v, u)) {
+        if (!allowsMultipleEdges && containsEdge(v, u)) {
             throw new IllegalArgumentException("Multiple edges are not allowed: " + v + "-" + u);
         }
         addToAdjList(v, u, weight, label);
@@ -450,6 +451,11 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     @Override
+    public long maxEdges() {
+        return Graph.maxEdges(numVertices);
+    }
+
+    @Override
     public int[] neighbors(int v) {
         int vi = indexOf(v);
         if (vi < 0) {
@@ -482,6 +488,15 @@ class GraphImpl<V, E> implements Graph<V, E> {
             throw new InvalidVertexException(v);
         }
         return degree[indexOf(v)];
+    }
+
+    /**
+     *
+     * @return a copy of the degree sequence of the graph vertices
+     */
+    @Override
+    public int[] degrees() {
+        return IntArrays.copyOf(degree);
     }
 
     private void initVertexWeights() {
@@ -725,12 +740,12 @@ class GraphImpl<V, E> implements Graph<V, E> {
     public Graph<V, E> subgraph(int... vertices) {
         int n = vertices.length;
         int deg = (int) IntStream.of(vertices).map(v -> this.degree(v)).average().orElse(0);
-        var sub = newInstance(vertices, n, deg, sorted, directed, allowsMultiEdges, allowsSelfLoops);
+        var sub = newInstance(vertices, n, deg, sorted, directed, allowsMultipleEdges, allowsSelfLoops);
         for (int v : vertices) {
             int vi = indexOf(v);
             for (int j = 0; j < degree[v]; j++) {
                 int u = adjList[vi][j];
-                if ((directed || v <= u) && Tools.arrayContains(vertices, u)) {
+                if ((directed || v <= u) && IntArrays.contains(vertices, u)) {
                     sub.addEdge(v, u,
                             edgeWeight != null ? edgeWeight[vi][j] : null,
                             edgeLabel != null ? edgeLabel[vi][j] : null);
@@ -755,11 +770,11 @@ class GraphImpl<V, E> implements Graph<V, E> {
 
     @Override
     public Graph<V, E> complement() {
-        if (allowsMultiEdges || allowsSelfLoops) {
+        if (allowsMultipleEdges || allowsSelfLoops) {
             throw new UnsupportedOperationException("Complement of a multigraph or pseudograph is not defined.");
         }
         int avg = (int) IntStream.of(degree).map(deg -> numVertices - deg).average().orElse(0);
-        var complement = newInstance(vertices, numVertices, avg, sorted, directed, allowsMultiEdges, allowsSelfLoops);
+        var complement = newInstance(vertices, numVertices, avg, sorted, directed, allowsMultipleEdges, allowsSelfLoops);
         for (int i = 0; i < numVertices - 1; i++) {
             int u = vertices[i];
             for (int j = i + 1; j < numVertices; j++) {
@@ -792,7 +807,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
         int newVertex = addVertex();
         for (int v : vertices) {
             for (int u : neighbors(v)) {
-                if (!Tools.arrayContains(vertices, u) && !containsEdge(newVertex, u)) {
+                if (!IntArrays.contains(vertices, u) && !containsEdge(newVertex, u)) {
                     addEdge(newVertex, u);
                 }
             }

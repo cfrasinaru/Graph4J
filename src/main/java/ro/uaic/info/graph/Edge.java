@@ -78,7 +78,7 @@ public class Edge<E> implements Comparable<Edge> {
         if (directed) {
             return 31 * (31 * this.source + this.target);
         } else {
-            return (this.source + 1) * (this.target + 1);
+            return (31 * this.source + 1) * (31 * this.target + 1);
         }
     }
 

@@ -46,6 +46,11 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     }
 
     @Override
+    public long maxEdges() {
+        return Digraph.maxEdges(numVertices);
+    }
+
+    @Override
     public Digraph<V, E> copy() {
         return (Digraph<V, E>) super.copy();
     }

@@ -54,7 +54,7 @@ public interface Multigraph<V, E> extends Graph<V, E> {
      *
      * @param v
      * @param u
-     * @return
+     * @return how many times u appears in the ajacency list of v
      */
     default int multiplicity(int v, int u) {
         int multi = 0;

@@ -14,106 +14,109 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ro.uaic.info.graph.util;
+package ro.uaic.info.graph;
 
 import java.util.Arrays;
+import ro.uaic.info.graph.util.CheckArguments;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
-public class IntArrayList {
+public abstract class VertexSet {
 
-    protected int[] values;
+    protected final Graph graph;
+    protected int[] vertices;
     protected int size;
     protected final static int DEFAULT_INITIAL_CAPACITY = 10;
 
-    
     /**
      *
+     * @param graph
      */
-    public IntArrayList() {
-        this(DEFAULT_INITIAL_CAPACITY);
+    protected VertexSet(Graph graph) {
+        this(graph, DEFAULT_INITIAL_CAPACITY);
     }
 
     /**
      *
+     * @param graph
      * @param initialCapacity
      */
-    public IntArrayList(int initialCapacity) {
-        this.values = new int[initialCapacity];
+    protected VertexSet(Graph graph, int initialCapacity) {
+        this.graph = graph;
+        this.vertices = new int[initialCapacity];
         this.size = 0;
     }
 
     /**
-     * 
-     * @param values 
+     *
+     * @param graph
+     * @param vertices
      */
-    public IntArrayList(int[] values) {
-        this.values = values;
-        this.size = values.length;
+    public VertexSet(Graph graph, int... vertices) {
+        CheckArguments.graphNotNull(graph);
+        CheckArguments.graphContainsVertices(graph, vertices);
+        this.graph = graph;
+        this.vertices = vertices;
+        this.size = vertices.length;
     }
-    
-    
+
     /**
      *
-     * @return
+     * @return the number of vertices
      */
-    public int size() {
+    public int numVertices() {
         return size;
     }
 
     /**
      *
-     * @param value
+     * @param v
+     * @return
      */
-    public void add(int value) {
-        if (values.length == size) {
+    public boolean add(int v) {
+        CheckArguments.graphContainsVertex(graph, v);
+        if (contains(v)) {
+            return false;
+        }
+        if (vertices.length == size) {
             grow();
         }
-        values[size++] = value;
+        vertices[size++] = v;
+        return true;
     }
 
     /**
      *
      * @return
      */
-    public int[] values() {
-        if (values.length > size) {
-            values = Arrays.copyOf(values, size);
+    public int[] vertices() {
+        if (vertices.length > size) {
+            vertices = Arrays.copyOf(vertices, size);
         }
-        return values;
+        return vertices;
     }
 
     /**
      *
-     * @param value
+     * @param v
      * @return
      */
-    public boolean contains(int value) {
+    public boolean contains(int v) {
         for (int i = 0; i < size; i++) {
-            if (values[i] == value) {
+            if (vertices[i] == v) {
                 return true;
             }
         }
         return false;
     }
-
-    /**
-     *
-     */
-    public void reverse() {
-        for (int i = 0; i < size / 2; i++) {
-            int temp = values[i];
-            values[i] = values[size - i - 1];
-            values[size - i - 1] = temp;
-        }
-    }
+    
 
     private void grow() {
-        int oldLen = values.length;
+        int oldLen = vertices.length;
         int newLen = oldLen + (oldLen >> 1);
-        values = Arrays.copyOf(values, newLen);
+        vertices = Arrays.copyOf(vertices, newLen);
     }
 
     @Override
@@ -124,7 +127,7 @@ public class IntArrayList {
             if (i > 0) {
                 sb.append(", ");
             }
-            sb.append(values[i]);
+            sb.append(vertices[i]);
         }
         sb.append("]");
         return sb.toString();
@@ -133,7 +136,7 @@ public class IntArrayList {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 53 * hash + Arrays.hashCode(this.values);
+        hash = 53 * hash + Arrays.hashCode(this.vertices);
         return hash;
     }
 
@@ -148,9 +151,11 @@ public class IntArrayList {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final IntArrayList other = (IntArrayList) obj;
-        if (!Arrays.equals(this.values, other.values)) {
-            return false;
+        final VertexSet other = (VertexSet) obj;
+        for (int v : vertices) {
+            if (!other.contains(v)) {
+                return false;
+            }
         }
         return true;
     }

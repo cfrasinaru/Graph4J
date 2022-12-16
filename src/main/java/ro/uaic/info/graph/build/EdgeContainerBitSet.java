@@ -17,6 +17,7 @@
 package ro.uaic.info.graph.build;
 
 import java.util.BitSet;
+import ro.uaic.info.graph.Digraph;
 
 /**
  *
@@ -26,11 +27,16 @@ class EdgeContainerBitSet implements EdgeContainer {
 
     private BitSet bitSet;
     private final int maxVertices;
+    private static final int MAX_BITS = (int) Digraph.maxEdges(10_000);
 
     public EdgeContainerBitSet(int maxVertices) {
         this.maxVertices = maxVertices;
-        int nbits = maxVertices * (maxVertices - 1);
-        this.bitSet = new BitSet(nbits);
+        long nbits = maxVertices * (maxVertices - 1);
+        if (nbits > MAX_BITS) {
+            //really?
+            throw new IllegalArgumentException("Too many vertices: " + maxVertices);
+        }
+        this.bitSet = new BitSet((int) nbits);
     }
 
     @Override

@@ -16,6 +16,7 @@
  */
 package ro.uaic.info.graph.util;
 
+import java.util.Arrays;
 import ro.uaic.info.graph.Graph;
 
 /**
@@ -24,13 +25,24 @@ import ro.uaic.info.graph.Graph;
  */
 public class CheckArguments {
 
-    public static void notNull(Object obj) {
-        notNull(obj, "The argument is null");
-    }
-
+    /**
+     *
+     * @param obj
+     * @param msg
+     */
     public static void notNull(Object obj, String msg) {
         if (obj == null) {
             throw new IllegalArgumentException(msg);
+        }
+    }
+
+    /**
+     *
+     * @param graph
+     */
+    public static void graphNotNull(Graph graph) {
+        if (graph == null) {
+            throw new IllegalArgumentException("The reference to the graph is null");
         }
     }
 
@@ -87,8 +99,44 @@ public class CheckArguments {
      * @param g2
      */
     public static void disjointVertices(Graph g1, Graph g2) {
-        if (Tools.arrayIntersects(g1.vertices(), g2.vertices())) {
+        if (IntArrays.intersects(g1.vertices(), g2.vertices())) {
             throw new IllegalArgumentException("Graphs must have disjoint vertex sets");
+        }
+    }
+
+    /**
+     *
+     * @param graph
+     * @param v
+     */
+    public static void graphContainsVertex(Graph graph, int v) {
+        if (!graph.containsVertex(v)) {
+            throw new IllegalArgumentException("Vertex does not belong to the graph: " + v);
+        }
+    }
+
+    /**
+     *
+     * @param graph
+     * @param vertices
+     */
+    public static void graphContainsVertices(Graph graph, int... vertices) {
+        if (vertices == null) {
+            throw new IllegalArgumentException("The references to the vertices is null");
+        }
+        for (int v : vertices) {
+            graphContainsVertex(graph, v);
+        }
+    }
+
+    /**
+     *
+     * @param values
+     */
+    public static void noDuplicates(int... values) {
+        Integer value = IntArrays.findDuplicate(values);
+        if (value != null) {
+            throw new IllegalArgumentException("Duplicates are not allowed: " + value);
         }
     }
 }

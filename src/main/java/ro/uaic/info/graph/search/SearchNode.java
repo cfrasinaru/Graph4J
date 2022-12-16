@@ -28,6 +28,10 @@ public class SearchNode {
     private final int order;
     private final SearchNode parent;
 
+    public SearchNode(int vertex) {
+        this(0, vertex, 0, 0, null);
+    }
+
     public SearchNode(int component, int vertex, int level, int order, SearchNode parent) {
         this.component = component;
         this.vertex = vertex;
@@ -89,6 +93,19 @@ public class SearchNode {
             other = other.parent;
         }
         return false;
+    }
+
+    /**
+     * 
+     * @param a
+     * @param b
+     * @return 
+     */
+    public static SearchNode nearestAncestor(SearchNode a, SearchNode b) {
+        while (!b.isAncestorOf(a)) {
+            b = b.parent();
+        }
+        return b;
     }
 
     @Override

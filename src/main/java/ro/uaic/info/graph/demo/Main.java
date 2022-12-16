@@ -17,17 +17,18 @@
 package ro.uaic.info.graph.demo;
 
 import java.util.Arrays;
-import java.util.function.Supplier;
-import org.jgrapht.generate.GnmRandomGraphGenerator;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.util.SupplierUtil;
-import ro.uaic.info.graph.alg.CycleDetector;
+import ro.uaic.info.graph.Graph;
+import ro.uaic.info.graph.Graphs;
+import ro.uaic.info.graph.alg.GraphMetrics;
+import ro.uaic.info.graph.alg.TopologicalSort;
 import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.gen.GnmRandomGenerator;
 import ro.uaic.info.graph.search.BFSVisitor;
 import ro.uaic.info.graph.search.BreadthFirstSearch;
 import ro.uaic.info.graph.search.DFSVisitor;
 import ro.uaic.info.graph.search.DepthFirstSearch;
 import ro.uaic.info.graph.search.SearchNode;
+import ro.uaic.info.graph.util.Tools;
 
 /**
  * TODO: Move this to tests.
@@ -36,37 +37,40 @@ import ro.uaic.info.graph.search.SearchNode;
  */
 public class Main {
 
+    Graph graph;
+
     public static void main(String[] args) {
         var app = new Main();
-        app.test();
-        //app.demoBFS();
-        //app.demoDFS();
-        //app.demoContains();
+        app.demo();
     }
 
+    private void demo() {
+        run(this::test);
+    }
+    
     public static void printObjectSize(Object object) {
         //System.out.println("Object type: " + object.getClass() + ", size: " + InstrumentationAgent.getObjectSize(object) + " bytes");
     }
 
-    protected void demo(Runnable snippet) {
+    protected void run(Runnable snippet) {
         long m0 = Runtime.getRuntime().freeMemory();
         long t0 = System.currentTimeMillis();
         snippet.run();
         long t1 = System.currentTimeMillis();
         long m1 = Runtime.getRuntime().freeMemory();
-        System.out.println((t1 - t0) / 1000 + " s");
+        System.out.println((t1 - t0) + " ms");
         System.out.println((m0 - m1) / (1024 * 1024) + " MB");
     }
-
+    
     private void test() {
-        var g = GraphBuilder.vertexRange(1, 9)
-                .addPath(1, 2, 3, 4, 5, 6, 7).addEdge(7, 1)
-                .sorted()
-                .addClique(1, 8, 9)
-                .buildGraph();
-        var detector = new CycleDetector(g);
-        System.out.println(Arrays.toString(detector.findAnyCycle()));
-        System.out.println(Arrays.toString(detector.findShortestCycle()));
+        //var g = GraphBuilder.numVertices(5).addEdges("4-3,4-2,4-1,4-0,3-2,3-1,3-0,2-1,2-0,1-0").buildDigraph();
+        //var g = GraphBuilder.numVertices(10_000).complete().buildDigraph();
+        var g = new GnmRandomGenerator(100, 5000).createDigraph();
+        System.out.println(g);
+        //int[] order = new TopologicalSort(g).sort();
+        //System.out.println(Arrays.toString(order));
+        //demo(this::iterate1);
+        //demo(this::iterate2);
     }
 
     private void demoDFS() {
@@ -181,29 +185,26 @@ public class Main {
     }
 
     private void demoRandom() {
-        int n = 500;
-        double p = 0.3;
+        int n = 50_000;
+        double p = 0.0005;
         int m = (int) (p * (n * (n - 1) / 2));
-        long t0 = System.currentTimeMillis();
         //var g = Graphs.randomGnp(n, p);
-        //var g = Graphs.randomGnm(n, m);
+        //var g = new GnmRandomGenerator(n, m).createGraph();
+        var g = Graphs.cycle(n);
+        //g.addEdge(n - 1000, n - 1);
+        g.addEdge(n / 2, n / 2 + 1000);
+        long t0 = System.currentTimeMillis();
+        System.out.println(GraphMetrics.girth(g));
         long t1 = System.currentTimeMillis();
         System.out.println((t1 - t0) + "ms");
 
+        var jg = Tools.createJGraph(g);
         t0 = System.currentTimeMillis();
-        Supplier<Integer> vSupplier = new Supplier<Integer>() {
-            private int id = 0;
-
-            @Override
-            public Integer get() {
-                return id++;
-            }
-        };
-        var jg = new org.jgrapht.graph.SimpleGraph<>(vSupplier, SupplierUtil.createDefaultEdgeSupplier(), false);
         //var gnp = new GnpRandomGraphGenerator<Integer, DefaultEdge>(n, p);
-        var gnp = new GnmRandomGraphGenerator<Integer, DefaultEdge>(n, m);
-        gnp.generateGraph(jg);
+        //var gnp = new GnmRandomGraphGenerator<Integer, DefaultEdge>(n, m);
+        //gnp.generateGraph(Tools.createJGraph(null));
         //System.out.println(jg);
+        System.out.println(org.jgrapht.GraphMetrics.getGirth(jg));
         t1 = System.currentTimeMillis();
         System.out.println((t1 - t0) + "ms");
     }

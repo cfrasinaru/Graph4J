@@ -16,52 +16,26 @@
  */
 package ro.uaic.info.graph.alg;
 
+import ro.uaic.info.graph.Cycle;
 import ro.uaic.info.graph.Graph;
 
 /**
+ * Various <i>distances</i> related to a graph.
  *
  * @author Cristian Frăsinaru
  */
-public class GraphInspector {
-
-    private final Graph graph;
-
-    public GraphInspector(Graph graph) {
-        this.graph = graph;
-    }
+public class GraphMetrics {
 
     /**
-     * 
-     * @return
-     */
-    public int minDegreeVertex() {
-        int minVertex = -1;
-        int minDeg = Integer.MAX_VALUE;
-        for (int v : graph.vertices()) {
-            int deg = graph.degree(v);
-            if (deg < minDeg) {
-                minDeg = deg;
-                minVertex = v;
-            }
-        }
-        return minVertex;
-    }
-
-    /**
+     * The girth of a graph is the length of its shortest cycle. Acyclic graphs
+     * are considered to have infinite girth.
      *
-     * @return
+     * @param graph
+     * @return the girth of the graph, or <code>Integer.MAX_VALUE</code> if the
+     * graph ia acyclic.
      */
-    public int maxDegreeVertex() {
-        int maxVertex = -1;
-        int maxDeg = -1;
-        for (int v : graph.vertices()) {
-            int deg = graph.degree(v);
-            if (deg > maxDeg) {
-                maxDeg = deg;
-                maxVertex = v;
-            }
-        }
-        return maxVertex;
+    public static int girth(Graph graph) {
+        Cycle cycle = new CycleDetector(graph).findShortestCycle();
+        return cycle != null ? cycle.length() : Integer.MAX_VALUE;
     }
-
 }

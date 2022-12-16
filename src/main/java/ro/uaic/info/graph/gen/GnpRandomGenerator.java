@@ -18,16 +18,25 @@ package ro.uaic.info.graph.gen;
 
 import java.util.Random;
 import java.util.stream.IntStream;
+import ro.uaic.info.graph.Digraph;
+import ro.uaic.info.graph.DirectedMultigraph;
+import ro.uaic.info.graph.DirectedPseudograph;
 import ro.uaic.info.graph.Graph;
+import ro.uaic.info.graph.Multigraph;
+import ro.uaic.info.graph.Pseudograph;
 import ro.uaic.info.graph.build.GraphBuilder;
 import ro.uaic.info.graph.util.CheckArguments;
 
 /**
- * Erdős–Rényi model.
+ * Erdős–Rényi model. Each possible edge is added cosidering a given
+ * probability. The time complexity of the algorithm is O(n^2), since it
+ * iterates through all possible edges, so it is not efficient for large sparse
+ * graphs.
  *
+ * @see GnmRandomGenerator
  * @author Cristian Frăsinaru
  */
-public class GnpRandomGenerator {
+public class GnpRandomGenerator extends AbstractGenerator {
 
     private final int[] vertices;
     private final double edgeProbability;
@@ -60,17 +69,88 @@ public class GnpRandomGenerator {
      *
      * @return
      */
+    @Override
     public Graph createGraph() {
         var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildGraph();
+        createEdges(g, false, false);
+        return g;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Digraph createDigraph() {
+        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildDigraph();
+        createEdges(g, true, false);
+        return g;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Multigraph createMultiGraph() {
+        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildMultigraph();
+        createEdges(g, false, false);
+        return g;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public DirectedMultigraph createDirectedMultigraph() {
+        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildDirectedMultigraph();
+        createEdges(g, true, false);
+        return g;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public Pseudograph createPseudograph() {
+        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildPseudograph();
+        createEdges(g, false, true);
+        return g;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public DirectedPseudograph createDirectedPseudograph() {
+        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildDirectedPseudograph();
+        createEdges(g, true, true);
+        return g;
+    }
+
+    /**
+     *
+     * @param g
+     * @param directed
+     * @param allowsSelfLoops
+     */
+    private void createEdges(Graph g, boolean directed, boolean allowsSelfLoops) {
         int n = vertices.length;
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
+        int n1 = directed ? n : n - 1;
+        for (int i = 0; i < n1; i++) {
+            int from = directed ? 0 : i + 1;
+            for (int j = from; j < n; j++) {
+                if (!allowsSelfLoops && i == j) {
+                    continue;
+                }
                 if (random.nextDouble() < edgeProbability) {
                     g.addEdge(vertices[i], vertices[j]);
                 }
             }
         }
-        return g;
     }
 
 }

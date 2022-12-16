@@ -54,6 +54,11 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
     }
 
     @Override
+    public long maxEdges() {
+        return Long.MAX_VALUE;
+    }
+
+    @Override
     public Multigraph<V, E> copy() {
         return (Multigraph<V, E>) super.copy();
     }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.search.DFSIterator;
-import ro.uaic.info.graph.util.Tools;
+import ro.uaic.info.graph.util.IntArrays;
 
 /**
  *
@@ -85,7 +85,7 @@ public class GraphConnectivity {
     }
 
     private void addComponent(List<Integer> vertices) {
-        components.add(graph.subgraph(Tools.listAsArray(vertices)));
+        components.add(graph.subgraph(IntArrays.fromList(vertices)));
     }
 
 }

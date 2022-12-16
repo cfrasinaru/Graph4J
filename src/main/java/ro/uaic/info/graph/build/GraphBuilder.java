@@ -348,11 +348,6 @@ public class GraphBuilder {
         }
     }
 
-    private int maxEdges() {
-        int n = vertices.length;
-        return n * (n - 1) / (directed ? 1 : 2);
-    }
-
     private int avgDegree() {
         if (avgDegree != null) {
             return avgDegree;

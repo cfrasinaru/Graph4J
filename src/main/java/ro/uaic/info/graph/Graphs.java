@@ -20,6 +20,8 @@ import ro.uaic.info.graph.build.GraphBuilder;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
+import ro.uaic.info.graph.alg.AcyclicOrientation;
+import ro.uaic.info.graph.alg.CycleFinder;
 import ro.uaic.info.graph.alg.GraphConnectivity;
 import ro.uaic.info.graph.util.CheckArguments;
 
@@ -32,59 +34,6 @@ import ro.uaic.info.graph.util.CheckArguments;
 public class Graphs {
 
     private Graphs() {
-    }
-
-    /**
-     * Creates a graph with a specified number of vertices and no edge.
-     *
-     * @param n the number of vertices
-     * @return
-     */
-    public static Graph empty(int n) {
-        return GraphBuilder.numVertices(n).buildGraph();
-    }
-
-    /**
-     *
-     * @param n
-     * @return
-     */
-    public static Graph complete(int n) {
-        return GraphBuilder.numVertices(n).complete().buildGraph();
-    }
-
-    /**
-     *
-     * @param n1
-     * @param n2
-     * @return
-     */
-    public static Graph completeBipartite(int n1, int n2) {
-        var g = GraphBuilder.numVertices(n1 + n2).numEdges(n1 * n2).buildGraph();
-        for (int i = 0; i < n1; i++) {
-            for (int j = n1; j < n1 + n2; j++) {
-                g.addEdge(i, j);
-            }
-        }
-        return g;
-    }
-
-    /**
-     *
-     * @param n
-     * @return
-     */
-    public static Graph path(int n) {
-        return GraphBuilder.numVertices(n).path().buildGraph();
-    }
-
-    /**
-     *
-     * @param n
-     * @return
-     */
-    public static Graph cycle(int n) {
-        return GraphBuilder.numVertices(n).cycle().buildGraph();
     }
 
     /**
@@ -165,7 +114,6 @@ public class Graphs {
     public static Graph join(Graph g1, Graph g2) {
         CheckArguments.disjointVertices(g1, g2);
         Graph result = disjointUnion(g1, g2);
-
         for (int v : g1.vertices()) {
             for (int u : g2.vertices()) {
                 result.addEdge(v, u);
@@ -176,31 +124,58 @@ public class Graphs {
 
     /**
      *
-     * @param g
+     * @param graph
      * @return
      */
-    public static boolean isConnected(Graph g) {
-        return new GraphConnectivity(g).isConnected();
+    public static boolean isConnected(Graph graph) {
+        return new GraphConnectivity(graph).isConnected();
+    }
+
+    /**
+     *
+     * @param graph
+     * @return
+     */
+    public static boolean isAcyclic(Graph graph) {
+        return !new CycleFinder(graph).containsCycle();
     }
 
     /**
      * The corresponding directed graph of an undirected graph G has all the
      * vertices of G and a pair of symmetrical arcs for each edge of G.
      *
-     * @param g
+     * @param graph
      * @return the digraph corresponding to this graph
      */
-    public Digraph toDigraph(Graph g) {
-        var digraph = GraphBuilder.vertices(g.vertices()).buildDigraph();
-        for (int v : g.vertices()) {
-            for (int u : g.neighbors(v)) {
+    public static Digraph toDigraph(Graph graph) {
+        var digraph = GraphBuilder.vertices(graph.vertices()).buildDigraph();
+        for (int v : graph.vertices()) {
+            if (graph.isVertexWeighted()) {
+                digraph.setVertexWeight(v, graph.getVertexWeight(v));
+            }
+            for (int u : graph.neighbors(v)) {
                 if (v < u) {
-                    Object label = g.getEdgeLabel(v, u);
-                    digraph.addLabeledEdge(v, u, label);
-                    digraph.addLabeledEdge(u, v, label);
+                    Edge e = graph.edge(v, u);
+                    digraph.addEdge(e);
+                    digraph.addEdge(e.flip());
                 }
             }
         }
         return digraph;
     }
+
+    /**
+     * An <i>acyclic orientation</i> of an undirected graph is an assignment of
+     * a direction to each edge (an orientation) that does not form any directed
+     * cycle and therefore makes it into a directed acyclic graph. Every graph
+     * has an acyclic orientation.
+     *
+     * @see AcyclicOrientation
+     * @param graph an undirected graph
+     * @return a directed acyclic graph, corresponding to the input graph
+     */
+    public static Digraph acyclicOrientation(Graph graph) {
+        return new AcyclicOrientation(graph).create();
+    }
+
 }

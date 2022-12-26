@@ -37,6 +37,7 @@ public class BreadthFirstSearch {
     private int compIndex;
     private SearchNode visited[];
     private int restartIndex; //all the vertices up to restartIndex are visited
+    private int maxLevel;
     private boolean interrupted;
 
     /**
@@ -44,7 +45,6 @@ public class BreadthFirstSearch {
      * @param graph
      */
     public BreadthFirstSearch(Graph graph) {
-        CheckArguments.graphNotNull(graph);
         this.graph = graph;
         this.directed = (graph instanceof Digraph);
     }
@@ -55,6 +55,7 @@ public class BreadthFirstSearch {
         this.queue = new LinkedList<>();
         orderIndex = 0;
         compIndex = 0;
+        maxLevel = -1;
         interrupted = false;
     }
 
@@ -71,14 +72,20 @@ public class BreadthFirstSearch {
 
     /**
      *
+     * @param start
+     */
+    public void traverse(int start) {
+        traverse(new BFSVisitor() {
+        }, start);
+    }
+
+    /**
+     *
      * @param visitor
      * @param start
      */
     public void traverse(BFSVisitor visitor, int start) {
         CheckArguments.graphContainsVertex(graph, start);
-        if (visitor == null) {
-            throw new IllegalArgumentException("The visitor cannot be null");
-        }
         init();
         this.visitor = visitor;
         try {
@@ -103,11 +110,16 @@ public class BreadthFirstSearch {
         } catch (InterruptedVisitorException e) {
             interrupted = true;
         }
+        visited = null;
+        queue = null;
     }
 
     private void bfs() {
         while (!queue.isEmpty()) {
             var node = queue.poll();
+            if (maxLevel < node.level()) {
+                maxLevel = node.level();
+            }
             var parent = node.parent();
             int v = node.vertex();
             for (int u : graph.neighbors(v)) {
@@ -141,7 +153,28 @@ public class BreadthFirstSearch {
         }
     }
 
+    /**
+     *
+     * @return the number of connected components identified by the traversal
+     */
+    public int numComponents() {
+        return compIndex;
+    }
+
+    /**
+     *
+     * @return the maximum level in the search tree, root is at level 0.
+     */
+    public int maxLevel() {
+        return maxLevel;
+    }
+
+    /**
+     *
+     * @return
+     */
     public boolean isInterrupted() {
         return interrupted;
     }
+
 }

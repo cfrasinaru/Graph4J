@@ -20,10 +20,13 @@ import java.util.stream.IntStream;
 import ro.uaic.info.graph.Graph;
 
 /**
- * Various <i>sizes</i> related to a graph.
+ * Various <i>sizes</i> related to a graph. 
+ * 
+ * Rewrite!
  *
  * @author Cristian Frăsinaru
  */
+@Deprecated
 public class GraphMeasures {
 
     /**
@@ -40,7 +43,7 @@ public class GraphMeasures {
      * @param graph
      * @return
      */
-    public static int minDegreeVertex(Graph graph) { 
+    public static int minDegreeVertex(Graph graph) {
         int minVertex = -1;
         int minDeg = Integer.MAX_VALUE;
         for (int v : graph.vertices()) {

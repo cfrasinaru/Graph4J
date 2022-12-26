@@ -17,28 +17,22 @@
 package ro.uaic.info.graph.gen;
 
 import java.util.stream.IntStream;
+import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.build.GraphBuilder;
-import ro.uaic.info.graph.util.CheckArguments;
 
 /**
- * A <i>wheel graph</i> is a graph formed by connecting a single universal
- * vertex, called <i>center</i>, to all vertices of a cycle.
+ * A <i>wheel</i> is a graph formed by connecting a single universal vertex,
+ * called <i>center</i> (or hub), to all vertices of a cycle.
  *
  * @author Cristian Frăsinaru
  */
-public class WheelGenerator {
-
-    private int[] vertices;
+public class WheelGenerator extends AbstractGenerator {
+    
     private int center;
-
-    /**
-     * 
-     * @param numVertices the number of vertices, including the center
-     */
+    
     public WheelGenerator(int numVertices) {
-        CheckArguments.numberOfVertices(numVertices);
-        this.vertices = IntStream.range(0, numVertices).toArray();
+        super(numVertices);
         this.center = 0;
     }
 
@@ -49,12 +43,11 @@ public class WheelGenerator {
      * @param center the number of the center vertex
      */
     public WheelGenerator(int firstVertex, int lastVertex, int center) {
-        CheckArguments.vertexRange(firstVertex, lastVertex);
+        super(firstVertex, lastVertex);
         if (center < firstVertex || center > lastVertex) {
             throw new IllegalArgumentException(
                     "Center vertex must be in the range [" + firstVertex + "," + lastVertex + "]");
         }
-        this.vertices = IntStream.rangeClosed(firstVertex, lastVertex).toArray();
         this.center = center;
     }
 
@@ -63,17 +56,43 @@ public class WheelGenerator {
      * @return
      */
     public Graph createGraph() {
-        var g = GraphBuilder.vertices(vertices).avgDegree(3).buildGraph();
+        int n = vertices.length;
+        var g = GraphBuilder.vertices(vertices).avgDegree(3)
+                .named("W" + n).buildGraph();
+        addEdges(g, true, true);
+        return g;
+    }
+
+    /**
+     *
+     * @param clockwise the orientation of the cycle
+     * @param outward the orientation of the edges connecting the center
+     * @return
+     */
+    public Digraph createDigraph(boolean clockwise, boolean outward) {
+        var g = GraphBuilder.vertices(vertices).avgDegree(2).buildDigraph();
+        addEdges(g, clockwise, outward);
+        return g;
+    }
+    
+    private void addEdges(Graph g, boolean clockwise, boolean outward) {
         int[] cycle = IntStream.of(vertices).filter(v -> v != center).toArray();
         for (int i = 0; i < cycle.length; i++) {
             int v = cycle[i];
             int u = cycle[(i + 1) % cycle.length];
-            g.addEdge(v, u);
+            if (clockwise) {
+                g.addEdge(v, u);
+            } else {
+                g.addEdge(u, v);
+            }
         }
         for (int v : cycle) {
-            g.addEdge(center, v);
+            if (outward) {
+                g.addEdge(center, v);
+            } else {
+                g.addEdge(v, center);
+            }
         }
-        return g;
     }
-
+    
 }

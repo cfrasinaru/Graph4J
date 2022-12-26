@@ -46,4 +46,5 @@ public interface Pseudograph<V, E> extends Multigraph<V, E> {
      */
     @Override
     Pseudograph<V, E> subgraph(int... vertices);
+
 }

@@ -22,10 +22,19 @@ package ro.uaic.info.graph;
  */
 public class InvalidVertexException extends RuntimeException {
 
+    /**
+     * 
+     * @param v a vertex number
+     */
     public InvalidVertexException(int v) {
         super("Invalid vertex: " + v);
     }
 
+    /**
+     * 
+     * @param v a vertex number
+     * @param msg a message
+     */
     public InvalidVertexException(int v, String msg) {
         super(msg + ": " + v);
     }

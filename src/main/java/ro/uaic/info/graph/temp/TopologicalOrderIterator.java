@@ -24,6 +24,7 @@ import ro.uaic.info.graph.Digraph;
  *
  * @author Cristian Frăsinaru
  */
+@Deprecated
 public class TopologicalOrderIterator {
 
     private final Digraph digraph;
@@ -36,7 +37,7 @@ public class TopologicalOrderIterator {
      */
     public TopologicalOrderIterator(Digraph digraph) {
         this.digraph = digraph;
-        this.inDegrees = digraph.inDegrees();
+        this.inDegrees = digraph.indegrees();
         int n = digraph.numVertices();
         this.queue = new ArrayDeque<>(n);
         for (int i = 0; i < n; i++) {

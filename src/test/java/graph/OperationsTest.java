@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package core;
+package graph;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import ro.uaic.info.graph.Digraphs;
 import ro.uaic.info.graph.build.GraphBuilder;
 import ro.uaic.info.graph.Graphs;
+import ro.uaic.info.graph.gen.CompleteGenerator;
+import ro.uaic.info.graph.gen.GraphGenerator;
 
 /**
  *
@@ -36,12 +36,12 @@ public class OperationsTest {
     @Test
     public void copy() {
         int n = 10;
-        var g = Graphs.complete(n);
+        var g = GraphGenerator.complete(n);
         var g1 = g.copy();
         assertEquals(g.numVertices(), g1.numVertices());
         assertEquals(g.numEdges(), g1.numEdges());
 
-        var dg = Digraphs.complete(n);
+        var dg = new CompleteGenerator(n).createDigraph();
         var dg1 = dg.copy();
         assertEquals(dg.numVertices(), dg1.numVertices());
         assertEquals(dg.numEdges(), dg1.numEdges());
@@ -50,7 +50,7 @@ public class OperationsTest {
     @Test
     public void subgraph() {
         int n = 10;
-        var g = Digraphs.complete(n);
+        var g = new CompleteGenerator(n).createDigraph();
 
         int k = n / 2;
         var array = new int[k];
@@ -142,12 +142,12 @@ public class OperationsTest {
 
     @Test
     public void supportGraph() {
-        var g1 = GraphBuilder.numVertices(3).complete().buildDigraph();
+        var g1 = GraphBuilder.numVertices(3).addClique(0, 1, 2).buildDigraph();
         assertEquals(6, g1.numEdges());
         assertEquals(3, g1.supportGraph().numEdges());
 
         var g2 = GraphBuilder.numVertices(3).addEdges("0-0,0-0,0-1,0-1,1-2,2-2").buildPseudograph();
         assertEquals(2, g2.supportGraph().numEdges());
     }
- 
+
 }

@@ -16,128 +16,47 @@
  */
 package ro.uaic.info.graph;
 
-import java.util.Arrays;
-import ro.uaic.info.graph.util.CheckArguments;
+import java.util.StringJoiner;
+import java.util.stream.IntStream;
+import ro.uaic.info.graph.util.IntArrays;
 
 /**
+ * A set of vertices of a graph. No duplicates are allowed.
  *
  * @author Cristian Frăsinaru
  */
-public abstract class VertexSet {
+public class VertexSet extends VertexCollection {
 
-    protected final Graph graph;
-    protected int[] vertices;
-    protected int size;
-    protected final static int DEFAULT_INITIAL_CAPACITY = 10;
-
-    /**
-     *
-     * @param graph
-     */
-    protected VertexSet(Graph graph) {
-        this(graph, DEFAULT_INITIAL_CAPACITY);
-    }
-
-    /**
-     *
-     * @param graph
-     * @param initialCapacity
-     */
-    protected VertexSet(Graph graph, int initialCapacity) {
-        this.graph = graph;
-        this.vertices = new int[initialCapacity];
-        this.size = 0;
-    }
-
-    /**
-     *
-     * @param graph
-     * @param vertices
-     */
     public VertexSet(Graph graph, int... vertices) {
-        CheckArguments.graphNotNull(graph);
-        CheckArguments.graphContainsVertices(graph, vertices);
-        this.graph = graph;
-        this.vertices = vertices;
-        this.size = vertices.length;
-    }
-
-    /**
-     *
-     * @return the number of vertices
-     */
-    public int numVertices() {
-        return size;
-    }
-
-    /**
-     *
-     * @param v
-     * @return
-     */
-    public boolean add(int v) {
-        CheckArguments.graphContainsVertex(graph, v);
-        if (contains(v)) {
-            return false;
-        }
-        if (vertices.length == size) {
-            grow();
-        }
-        vertices[size++] = v;
-        return true;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public int[] vertices() {
-        if (vertices.length > size) {
-            vertices = Arrays.copyOf(vertices, size);
-        }
-        return vertices;
-    }
-
-    /**
-     *
-     * @param v
-     * @return
-     */
-    public boolean contains(int v) {
-        for (int i = 0; i < size; i++) {
-            if (vertices[i] == v) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-
-    private void grow() {
-        int oldLen = vertices.length;
-        int newLen = oldLen + (oldLen >> 1);
-        vertices = Arrays.copyOf(vertices, newLen);
+        super(graph, vertices.length);
+        addAll(vertices);
     }
 
     @Override
-    public String toString() {
-        var sb = new StringBuilder();
-        sb.append("[");
-        for (int i = 0; i < size; i++) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            sb.append(vertices[i]);
+    public boolean add(int v) {
+        if (contains(v)) {
+            return false;
         }
-        sb.append("]");
-        return sb.toString();
+        return super.add(v);
+    }
+
+    /**
+     * Returns and removes an the last element added to the set.
+     *
+     * @return an element from the set
+     */
+    public int getAndRemoveLast() {
+        if (isEmpty()) {
+            throw new RuntimeException("The vertex set is empty");
+        }
+        int v = vertices[numVertices - 1];
+        remove(v);
+        return v;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 53 * hash + Arrays.hashCode(this.vertices);
-        return hash;
+        return IntStream.of(vertices).sum();
     }
 
     @Override
@@ -152,12 +71,15 @@ public abstract class VertexSet {
             return false;
         }
         final VertexSet other = (VertexSet) obj;
-        for (int v : vertices) {
-            if (!other.contains(v)) {
-                return false;
-            }
-        }
-        return true;
+        return IntArrays.sameValues(this.vertices(), other.vertices());
     }
 
+    @Override
+    public String toString() {
+        var sb = new StringJoiner(",", "{", "}");
+        for (int i = 0; i < numVertices; i++) {
+            sb.add(String.valueOf(vertices[i]));
+        }
+        return sb.toString();
+    }
 }

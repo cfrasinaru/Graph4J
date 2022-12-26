@@ -17,7 +17,6 @@
 package ro.uaic.info.graph.gen;
 
 import java.util.Random;
-import java.util.stream.IntStream;
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.DirectedMultigraph;
 import ro.uaic.info.graph.DirectedPseudograph;
@@ -38,7 +37,6 @@ import ro.uaic.info.graph.util.CheckArguments;
  */
 public class GnpRandomGenerator extends AbstractGenerator {
 
-    private final int[] vertices;
     private final double edgeProbability;
     private final Random random;
 
@@ -58,20 +56,22 @@ public class GnpRandomGenerator extends AbstractGenerator {
      * @param edgeProbability probability that two vertices are connected
      */
     public GnpRandomGenerator(int firstVertex, int lastVertex, double edgeProbability) {
-        CheckArguments.vertexRange(firstVertex, lastVertex);
+        super(firstVertex, lastVertex);
         CheckArguments.probability(edgeProbability);
-        this.vertices = IntStream.rangeClosed(firstVertex, lastVertex).toArray();
         this.edgeProbability = edgeProbability;
         this.random = new Random();
     }
 
+    private GraphBuilder builder() {
+        return GraphBuilder.vertices(vertices).density(edgeProbability);
+    }
+
     /**
      *
      * @return
      */
-    @Override
     public Graph createGraph() {
-        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildGraph();
+        var g = builder().buildGraph();
         createEdges(g, false, false);
         return g;
     }
@@ -80,9 +80,8 @@ public class GnpRandomGenerator extends AbstractGenerator {
      *
      * @return
      */
-    @Override
     public Digraph createDigraph() {
-        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildDigraph();
+        var g = builder().buildDigraph();
         createEdges(g, true, false);
         return g;
     }
@@ -91,9 +90,8 @@ public class GnpRandomGenerator extends AbstractGenerator {
      *
      * @return
      */
-    @Override
     public Multigraph createMultiGraph() {
-        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildMultigraph();
+        var g = builder().buildMultigraph();
         createEdges(g, false, false);
         return g;
     }
@@ -102,9 +100,8 @@ public class GnpRandomGenerator extends AbstractGenerator {
      *
      * @return
      */
-    @Override
     public DirectedMultigraph createDirectedMultigraph() {
-        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildDirectedMultigraph();
+        var g = builder().buildDirectedMultigraph();
         createEdges(g, true, false);
         return g;
     }
@@ -113,9 +110,8 @@ public class GnpRandomGenerator extends AbstractGenerator {
      *
      * @return
      */
-    @Override
     public Pseudograph createPseudograph() {
-        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildPseudograph();
+        var g = builder().buildPseudograph();
         createEdges(g, false, true);
         return g;
     }
@@ -124,9 +120,8 @@ public class GnpRandomGenerator extends AbstractGenerator {
      *
      * @return
      */
-    @Override
     public DirectedPseudograph createDirectedPseudograph() {
-        var g = GraphBuilder.vertices(vertices).density(edgeProbability).buildDirectedPseudograph();
+        var g = builder().buildDirectedPseudograph();
         createEdges(g, true, true);
         return g;
     }
@@ -141,13 +136,15 @@ public class GnpRandomGenerator extends AbstractGenerator {
         int n = vertices.length;
         int n1 = directed ? n : n - 1;
         for (int i = 0; i < n1; i++) {
+            int v = vertices[i];
             int from = directed ? 0 : i + 1;
             for (int j = from; j < n; j++) {
                 if (!allowsSelfLoops && i == j) {
                     continue;
                 }
+                int u = vertices[j];
                 if (random.nextDouble() < edgeProbability) {
-                    g.addEdge(vertices[i], vertices[j]);
+                    g.addEdge(v, u);
                 }
             }
         }

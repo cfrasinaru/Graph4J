@@ -16,12 +16,8 @@
  */
 package ro.uaic.info.graph.gen;
 
-import ro.uaic.info.graph.Digraph;
-import ro.uaic.info.graph.DirectedMultigraph;
-import ro.uaic.info.graph.DirectedPseudograph;
-import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.Multigraph;
-import ro.uaic.info.graph.Pseudograph;
+import java.util.stream.IntStream;
+import ro.uaic.info.graph.util.CheckArguments;
 
 /**
  *
@@ -29,28 +25,29 @@ import ro.uaic.info.graph.Pseudograph;
  */
 public abstract class AbstractGenerator {
 
-    public Graph createGraph() {
-        throw new UnsupportedOperationException();
+    protected int[] vertices;
+
+    protected AbstractGenerator() {
+        vertices = null;
     }
 
-    public Digraph createDigraph() {
-        throw new UnsupportedOperationException();
+    /**
+     *
+     * @param numVertices the number of vertices
+     */
+    public AbstractGenerator(int numVertices) {
+        CheckArguments.numberOfVertices(numVertices);
+        this.vertices = IntStream.range(0, numVertices).toArray();
     }
 
-    public Multigraph createMultiGraph() {
-        throw new UnsupportedOperationException();
-    }
-
-    public Pseudograph createPseudograph() {
-        throw new UnsupportedOperationException();
-    }
-
-    public DirectedMultigraph createDirectedMultigraph() {
-        throw new UnsupportedOperationException();
-    }
-
-    public DirectedPseudograph createDirectedPseudograph() {
-        throw new UnsupportedOperationException();
+    /**
+     *
+     * @param firstVertex
+     * @param lastVertex
+     */
+    public AbstractGenerator(int firstVertex, int lastVertex) {
+        CheckArguments.vertexRange(firstVertex, lastVertex);
+        this.vertices = IntStream.rangeClosed(firstVertex, lastVertex).toArray();
     }
 
 }

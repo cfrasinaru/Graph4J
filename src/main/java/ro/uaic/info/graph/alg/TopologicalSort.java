@@ -24,16 +24,10 @@ import ro.uaic.info.graph.Digraph;
  *
  * @author Cristian Frăsinaru
  */
-public class TopologicalSort {
+public class TopologicalSort extends DirectedGraphAlgorithm {
 
-    private final Digraph digraph;
-
-    /**
-     *
-     * @param digraph
-     */
     public TopologicalSort(Digraph digraph) {
-        this.digraph = digraph;
+        super(digraph);
     }
 
     /**
@@ -42,7 +36,7 @@ public class TopologicalSort {
      */
     public int[] sort() {
         int n = digraph.numVertices();
-        int[] inDegrees = digraph.inDegrees();
+        int[] inDegrees = digraph.indegrees();
         Queue<Integer> queue = new ArrayDeque<>(n);
         for (int i = 0; i < n; i++) {
             if (inDegrees[i] == 0) {

@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package core;
+package graph;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.gen.GraphGenerator;
 
 /**
  *
@@ -38,7 +38,7 @@ public class BuilderTest {
     }
 
     @Test
-    public void buildGraph1() {
+    public void buildGraph() {
         var g = GraphBuilder.vertexRange(0, 3)
                 .addClique(0, 1, 2, 3).buildGraph();
         assertEquals(6, g.numEdges());
@@ -55,8 +55,7 @@ public class BuilderTest {
 
     public void buildGraph2() {
         int n = 10;
-        var g = GraphBuilder.vertexRange(1, n)
-                .complete().buildGraph();
+        var g = GraphGenerator.complete(n);
         assertEquals(n * (n - 1) / 2, g.numEdges());
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
@@ -73,11 +72,11 @@ public class BuilderTest {
                 .addEdges("0-2, 0-3, 1-2, 1-3, 2-3, 3-4")
                 .buildDigraph();
         assertEquals(6, g.numEdges());
-        assertEquals(0, g.inDegree(0));
-        assertEquals(0, g.inDegree(1));
-        assertEquals(2, g.inDegree(2));
-        assertEquals(3, g.inDegree(3));
-        assertEquals(1, g.inDegree(4));
+        assertEquals(0, g.indegree(0));
+        assertEquals(0, g.indegree(1));
+        assertEquals(2, g.indegree(2));
+        assertEquals(3, g.indegree(3));
+        assertEquals(1, g.indegree(4));
     }
 
     @Test
@@ -121,6 +120,5 @@ public class BuilderTest {
         assertEquals(3.0, g.getVertexWeight(3));
         assertEquals(2.0, g.getEdgeWeight(2, 3));
     }
-    
 
 }

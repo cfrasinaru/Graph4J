@@ -16,7 +16,7 @@
  */
 package ro.uaic.info.graph.util;
 
-import java.util.Arrays;
+import ro.uaic.info.graph.Edge;
 import ro.uaic.info.graph.Graph;
 
 /**
@@ -24,27 +24,6 @@ import ro.uaic.info.graph.Graph;
  * @author Cristian Frăsinaru
  */
 public class CheckArguments {
-
-    /**
-     *
-     * @param obj
-     * @param msg
-     */
-    public static void notNull(Object obj, String msg) {
-        if (obj == null) {
-            throw new IllegalArgumentException(msg);
-        }
-    }
-
-    /**
-     *
-     * @param graph
-     */
-    public static void graphNotNull(Graph graph) {
-        if (graph == null) {
-            throw new IllegalArgumentException("The reference to the graph is null");
-        }
-    }
 
     /**
      *
@@ -70,6 +49,12 @@ public class CheckArguments {
         }
         if (first > last) {
             throw new IllegalArgumentException("Incorrect vertex range: [" + first + "," + last + "]");
+        }
+    }
+
+    public static void indexInRange(int index, int numVertices) {
+        if (index < 0 || index >= numVertices) {
+            throw new IllegalArgumentException("Index must be in the range [0," + (numVertices - 1) + "]: " + index);
         }
     }
 
@@ -112,6 +97,27 @@ public class CheckArguments {
     public static void graphContainsVertex(Graph graph, int v) {
         if (!graph.containsVertex(v)) {
             throw new IllegalArgumentException("Vertex does not belong to the graph: " + v);
+        }
+    }
+
+    /**
+     *
+     * @param graph
+     * @param v
+     * @param u
+     */
+    public static void graphContainsEdge(Graph graph, int v, int u) {
+        graphContainsEdge(graph, new Edge(v, u));
+    }
+
+    /**
+     *
+     * @param graph
+     * @param e
+     */
+    public static void graphContainsEdge(Graph graph, Edge e) {
+        if (!graph.containsEdge(e)) {
+            throw new IllegalArgumentException("Edge does not belong to the graph: " + e);
         }
     }
 

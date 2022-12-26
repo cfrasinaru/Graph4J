@@ -16,56 +16,12 @@
  */
 package ro.uaic.info.graph;
 
-import ro.uaic.info.graph.build.GraphBuilder;
-
 /**
- *
+ * 
  * @author Cristian Frăsinaru
  */
 public class Digraphs {
 
     private Digraphs() {
     }
-
-    public static Digraph empty(int n) {
-        return GraphBuilder.numVertices(n).buildDigraph();
-    }
-
-    /**
-     *
-     * @param n
-     * @return
-     */
-    public static Digraph complete(int n) {
-        return GraphBuilder.numVertices(n).complete().buildDigraph();
-    }
-
-    public static Digraph path(int n) {
-        throw new UnsupportedOperationException();
-    }
-
-    public static Digraph cycle(int n) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     *
-     * @param n
-     * @param p
-     * @return
-     */
-    public static Digraph randomGnp(int n, double p) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     *
-     * @param n
-     * @param m
-     * @return
-     */
-    public static Digraph randomGnm(int n, int m) {
-        throw new UnsupportedOperationException();
-    }
-
 }

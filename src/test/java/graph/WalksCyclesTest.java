@@ -14,68 +14,84 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package core;
+package graph;
 
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import ro.uaic.info.graph.Cycle;
-import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.Path;
 import ro.uaic.info.graph.Trail;
 import ro.uaic.info.graph.Walk;
 import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.gen.CompleteGenerator;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
-public class SimpleTest {
+public class WalksCyclesTest {
 
-    public SimpleTest() {
+    public WalksCyclesTest() {
     }
 
     @Test
-    public void testLabels() {
-        Graph<String, String> g = GraphBuilder.numVertices(3).buildGraph();
-        g.setVertexLabel(0, "a");
-        g.setVertexLabel(1, "b");
-        g.setVertexLabel(2, "c");
-        for (int v : g.vertices()) {
-            assertEquals(String.valueOf((char) ('a' + v)), g.getVertexLabel(v));
-        }
-
-        g.addLabeledEdge(0, 1, "01");
-        g.addLabeledEdge(0, 2, "02");
-        g.addLabeledEdge(1, 2, "12");
-        for (int[] e : g.edges()) {
-            assertEquals(e[0] + "" + e[1], g.getEdgeLabel(e[0], e[1]));
-        }
-    }
-
-    @Test
-    public void testWalkTrailPath() {
+    public void walkTrailPathCycle() {
         var g = GraphBuilder.vertexRange(1, 6)
                 .addClique(1, 2, 3)
                 .addEdge(1, 4).addEdge(3, 4).addEdge(4, 5)
                 .buildGraph();
         var badWalk = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Walk(g, 1, 2, 1, 6));
+                () -> new Walk(g, 1, 2, 1, 6).validate());
         assertNotNull(badWalk);
         var badTrail = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Trail(g, 1, 2, 3, 1, 2));
+                () -> new Trail(g, 1, 2, 3, 1, 2).validate());
         assertNotNull(badTrail);
         var badPath = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Path(g, 1, 2, 3, 1));
+                () -> new Path(g, 1, 2, 3, 1).validate());
         assertNotNull(badPath);
         var badCycle = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Cycle(g, 1, 3, 4, 5));
+                () -> new Cycle(g, 1, 3, 4, 5).validate());
         assertNotNull(badCycle);
         //
         assertEquals(5, new Walk(g, 1, 2, 1, 2, 3, 4).length());
         assertEquals(4, new Trail(g, 1, 2, 3, 1, 4).length());
         assertEquals(4, new Path(g, 1, 2, 3, 4, 5).length());
         assertEquals(3, new Cycle(g, 1, 2, 3).length());
+    }
+
+    @Test
+    public void equalsCycleWalkUndirected() {
+        var g = new CompleteGenerator(5).createGraph();
+        Cycle c1 = new Cycle(g, 0, 1, 2, 3, 4);
+        Cycle c2 = new Cycle(g, 2, 3, 4, 0, 1);
+        Cycle c3 = new Cycle(g, 0, 4, 3, 2, 1);
+        assertEquals(c1, c2);
+        assertEquals(c1, c3);
+        assertEquals(c2, c3);
+
+        Path p1 = new Path(g, 0, 1, 2, 3, 4);
+        Path p2 = new Path(g, 4, 3, 2, 1, 0);
+        Path p3 = new Path(g, 1, 2, 3, 4, 0);
+        assertEquals(p1, p2);
+        assertNotEquals(p1, p3);
+    }
+
+    @Test
+    public void equalsCycleWalkDirected() {
+        var g = new CompleteGenerator(5).createDigraph();
+        Cycle c1 = new Cycle(g, 0, 1, 2, 3, 4);
+        Cycle c2 = new Cycle(g, 2, 3, 4, 0, 1);
+        Cycle c3 = new Cycle(g, 0, 4, 3, 2, 1);
+        assertEquals(c1, c2);
+        assertNotEquals(c1, c3);
+        assertNotEquals(c2, c3);
+
+        Path p1 = new Path(g, 0, 1, 2, 3, 4);
+        Path p2 = new Path(g, 4, 3, 2, 1, 0);
+        Path p3 = new Path(g, 1, 2, 3, 4, 0);
+        assertNotEquals(p1, p2);
+        assertNotEquals(p1, p3);
     }
 
 }

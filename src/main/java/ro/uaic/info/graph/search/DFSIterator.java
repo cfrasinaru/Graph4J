@@ -19,8 +19,9 @@ package ro.uaic.info.graph.search;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.InvalidVertexException;
+import ro.uaic.info.graph.util.CheckArguments;
 
 /**
  *
@@ -55,11 +56,9 @@ public class DFSIterator implements Iterator<SearchNode> {
      * @param start
      */
     public DFSIterator(Graph graph, int start) {
+        CheckArguments.graphContainsVertex(graph, start);
         this.graph = graph;
         this.startVertex = start;
-        if (!graph.containsVertex(start)) {
-            throw new InvalidVertexException(start);
-        }
         init();
     }
 
@@ -82,7 +81,7 @@ public class DFSIterator implements Iterator<SearchNode> {
     @Override
     public SearchNode next() {
         if (stack.isEmpty()) {
-            throw new IllegalStateException();
+            throw new NoSuchElementException();
         }
         var current = stack.peek();
         numIterations++;

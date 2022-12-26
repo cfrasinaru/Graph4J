@@ -44,6 +44,7 @@ public class GraphBuilder {
     private boolean directed;
     private boolean allowsSelfLoops;
     private boolean allowsMultiEdges;
+    private String name;
     //
     private final List<int[]> edges = new ArrayList<>();
     private final List<int[]> paths = new ArrayList<>();
@@ -212,33 +213,6 @@ public class GraphBuilder {
 
     /**
      *
-     * @return
-     */
-    public GraphBuilder complete() {
-        addClique(vertices);
-        return this;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public GraphBuilder path() {
-        addPath(vertices);
-        return this;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public GraphBuilder cycle() {
-        addCycle(vertices);
-        return this;
-    }
-
-    /**
-     *
      * @param v
      * @param u
      * @return
@@ -315,6 +289,16 @@ public class GraphBuilder {
         cliques.add(clique);
         return this;
     }
+    
+    /**
+     * 
+     * @param name
+     * @return 
+     */
+    public GraphBuilder named(String name) {
+        this.name = name;
+        return this;
+    }
 
     private void validate() {
         int numVertices = vertices.length;
@@ -368,6 +352,7 @@ public class GraphBuilder {
     private GraphImpl build() {
         validate();
         var g = newInstance();
+        g.setName(name);
         //edges
         for (int[] e : edges) {
             g.addEdge(e[0], e[1]);

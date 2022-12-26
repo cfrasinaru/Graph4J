@@ -14,38 +14,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package core;
+package shortestpath;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+import ro.uaic.info.graph.Path;
+import ro.uaic.info.graph.alg.sp.BellmanFordShortestPath;
+import ro.uaic.info.graph.alg.sp.DijkstraShortestPathDefault;
 import ro.uaic.info.graph.build.GraphBuilder;
-import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.alg.GraphConnectivity;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
-public class ConnectivityTest {
+public class BellmanFordTest {
+
+    public BellmanFordTest() {
+    }
 
     @Test
-    public void graphConnected1() {
-        var g = GraphBuilder.numVertices(7).addEdges("0-1,1-2,3-4,3-5").buildGraph();
-        var cc = new GraphConnectivity(g);
-        assertFalse(cc.isConnected());
-        assertEquals(3, cc.components().size()); //6 is isolated
+    public void simple() {
+        var g = GraphBuilder.vertexRange(1, 5)
+                .addEdges("1-2,1-3,2-3,2-4,2-5,3-5,4-5").buildGraph();
+        g.setEdgeWeight(1, 2, 3);
+        g.setEdgeWeight(1, 3, 1);
+        g.setEdgeWeight(2, 3, 1);
+        g.setEdgeWeight(2, 4, 1);
+        g.setEdgeWeight(2, 5, 3);
+        g.setEdgeWeight(3, 5, 9);
+        g.setEdgeWeight(4, 5, 1);
+        var alg = new BellmanFordShortestPath(g, 1);
+        assertEquals(0, alg.getPath(1).length());//source
+        assertEquals(new Path(g, 1, 3, 2, 4, 5), alg.getPath(5));//vertex 5
     }
-    
-    @Test
-    public void graphConnected2() {
-        var g1 = GraphBuilder.vertexRange(0,9).path().buildGraph();
-        var g2 = GraphBuilder.vertexRange(10,19).cycle().buildGraph();
-        var g3 = Graphs.disjointUnion(g1,g2);
-        assertTrue(Graphs.isConnected(g1));
-        assertTrue(Graphs.isConnected(g2));
-        assertFalse(Graphs.isConnected(Graphs.disjointUnion(g1,g2)));        
-        assertTrue(Graphs.isConnected(Graphs.join(g1,g2)));        
-    }
-    
 
 }

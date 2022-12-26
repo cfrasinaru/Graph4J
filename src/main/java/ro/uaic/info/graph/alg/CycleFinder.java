@@ -17,7 +17,6 @@
 package ro.uaic.info.graph.alg;
 
 import ro.uaic.info.graph.Cycle;
-import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.Multigraph;
 import ro.uaic.info.graph.Pseudograph;
@@ -27,31 +26,21 @@ import ro.uaic.info.graph.search.DFSVisitor;
 import ro.uaic.info.graph.search.DepthFirstSearch;
 import ro.uaic.info.graph.search.SearchNode;
 import ro.uaic.info.graph.util.CheckArguments;
-import ro.uaic.info.graph.util.IntArrayList;
 
 /**
- * https://jgrapht.org/javadoc-1.4.0/org/jgrapht/alg/shortestpath/GraphMeasurer.html
- * https://jgrapht.org/javadoc-1.4.0/org/jgrapht/GraphMetrics.html
+ *
  * http://www.cs.technion.ac.il/~itai/publications/Algorithms/min-circuit.pdf
  *
  * @author Cristian Frăsinaru
  */
-public class CycleDetector {
+public class CycleFinder extends GraphAlgorithm {
 
-    private final Graph graph;
-    private final boolean directed;
     private int target;
     private int parity;
     private boolean shortest;
 
-    /**
-     *
-     * @param graph
-     */
-    public CycleDetector(Graph graph) {
-        CheckArguments.graphNotNull(graph);
-        this.graph = graph;
-        this.directed = (graph instanceof Digraph);
+    public CycleFinder(Graph graph) {
+        super(graph);
     }
 
     private void reset() {
@@ -101,7 +90,6 @@ public class CycleDetector {
         }
         Cycle cycle = checkSpecialCases();
         if (cycle != null) {
-            System.out.println("special");
             return cycle;
         }
         if (shortest) {
@@ -151,22 +139,6 @@ public class CycleDetector {
         reset();
         this.shortest = true;
         return findCycle();
-        /*
-        Cycle shortest = null;
-        for (int v : graph.vertices()) {
-            Cycle cycle = findShortestCycle(v);
-            if (cycle == null) {
-                continue;
-            }
-            if (shortest == null || cycle.length() < shortest.length()) {
-                shortest = cycle;
-                if (shortest.length() == 3) {
-                    break;
-                }
-            }
-        }
-        return shortest;
-         */
     }
 
     /**
@@ -217,36 +189,36 @@ public class CycleDetector {
     }
 
     private Cycle createCycleFromBackEdge(SearchNode from, SearchNode to) {
-        var list = new IntArrayList();
+        var cycle = new Cycle(graph);
         SearchNode firstNode = to;
         SearchNode lastNode = from;
         while (!firstNode.equals(lastNode)) {
-            list.add(lastNode.vertex());
+            cycle.add(lastNode.vertex());
             lastNode = lastNode.parent();
         }
-        list.add(firstNode.vertex());
-        list.reverse();
-        return new Cycle(graph, list.values());
+        cycle.add(firstNode.vertex());
+        cycle.reverse();
+        return cycle;
     }
 
     //only for undirected graphs
     //we have to find the closest ancestor of the nodes forming the cross edge
     //to is at the same level with from, or a level below
     private Cycle createCycleFromCrossEdge(SearchNode from, SearchNode to) {
-        var list = new IntArrayList();
-        list.add(from.vertex());
+        var cycle = new Cycle(graph);
+        cycle.add(from.vertex());
         var parent = from.parent();
-        list.add(parent.vertex());
+        cycle.add(parent.vertex());
         while (!parent.isAncestorOf(to)) {
             parent = parent.parent();
-            list.add(parent.vertex());
+            cycle.add(parent.vertex());
         }
-        list.reverse();
+        cycle.reverse();
         while (!to.equals(parent)) {
-            list.add(to.vertex());
+            cycle.add(to.vertex());
             to = to.parent();
         }
-        return new Cycle(graph, list.values());
+        return cycle;
     }
 
     //

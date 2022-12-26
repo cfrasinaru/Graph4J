@@ -16,8 +16,6 @@
  */
 package ro.uaic.info.graph;
 
-import java.util.stream.IntStream;
-
 /**
  *
  * @author Cristian Frăsinaru
@@ -26,52 +24,52 @@ interface Labeled<V, E> {
     
     /**
      *
-     * @param v
+     * @param v a vertex number
      * @param label
      */
     int addLabeledVertex(int v, V label);
 
     /**
      *
-     * @param v
+     * @param v a vertex number
      * @param label
      */
     int addLabeledVertex(V label);
     
     /**
      *
-     * @param v
-     * @param u
+     * @param v a vertex number
+     * @param u a vertex number
      * @param label
      */
     void addLabeledEdge(int v, int u, E label);
 
     /**
      *
-     * @param v
+     * @param v a vertex number
      * @param label
      */
     void setVertexLabel(int v, V label);
 
     /**
      *
-     * @param v
+     * @param v a vertex number
      * @return
      */
     V getVertexLabel(int v);
 
     /**
      *
-     * @param v
-     * @param u
+     * @param v a vertex number
+     * @param u a vertex number
      * @param label
      */
     void setEdgeLabel(int v, int u, E label);
 
     /**
      *
-     * @param v
-     * @param u
+     * @param v a vertex number
+     * @param u a vertex number
      * @return
      */
     E getEdgeLabel(int v, int u);

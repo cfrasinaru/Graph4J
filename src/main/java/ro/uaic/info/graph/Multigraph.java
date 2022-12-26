@@ -16,6 +16,9 @@
  */
 package ro.uaic.info.graph;
 
+import java.util.HashSet;
+import static ro.uaic.info.graph.build.GraphBuilder.numVertices;
+
 /**
  * Multiple (parallel) edges are allowed.
  *
@@ -49,20 +52,30 @@ public interface Multigraph<V, E> extends Graph<V, E> {
      */
     @Override
     Multigraph<V, E> subgraph(int... vertices);
-    
+
     /**
      *
-     * @param v
-     * @param u
+     * @param v a vertex number
+     * @param u a vertex number
      * @return how many times u appears in the ajacency list of v
      */
-    default int multiplicity(int v, int u) {
-        int multi = 0;
-        for (int w : neighbors(v)) {
-            if (u == w) {
-                multi++;
-            }
+    int multiplicity(int v, int u);
+
+    /**
+     *
+     * @param e an edge
+     * @return how many times an edge appears in the multigraph
+     */
+    default int multiplicity(Edge e) {
+        return multiplicity(e.source(), e.target());
+    }
+
+    @Override
+    default boolean isUniversal(int v) {
+        var set = new HashSet<>();
+        for (int u : neighbors(v)) {
+            set.add(v);
         }
-        return multi;
+        return set.size() == numVertices() - 1;
     }
 }

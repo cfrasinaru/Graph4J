@@ -16,6 +16,8 @@
  */
 package ro.uaic.info.graph;
 
+import java.util.Arrays;
+
 /**
  * A <i>cycle</i> is a closed path, meaning that the last vertex of the path is
  * connected to the first one.
@@ -25,18 +27,27 @@ package ro.uaic.info.graph;
  * The length of a cycle is the number of edges in the path plus the one between
  * the endpoints.
  *
+ * @see Walk
+ * @see Trail
+ * @see Circuit
+ * @see Path
  * @author Cristian Frăsinaru
  */
 public class Cycle extends Path {
 
     /**
      *
-     * @param graph
-     * @param vertices
+     * @param graph the graph this cycle belongs to
+     * @param vertices the vertices of the cycle
      */
     public Cycle(Graph graph, int... vertices) {
         super(graph, vertices);
-        Edge e = new Edge(vertices[size - 1], vertices[0]);
+    }
+
+    @Override
+    public final void validate() {
+        super.validate();
+        Edge e = new Edge(vertices[numVertices - 1], vertices[0]);
         if (!graph.containsEdge(e)) {
             throw new IllegalArgumentException(
                     "Vertices do not form a cycle, there is no edge: " + e);
@@ -50,18 +61,75 @@ public class Cycle extends Path {
 
     @Override
     public int length() {
-        return numEdges + 1; //equals to size
+        return numVertices;
+    }
+
+    @Override
+    public double computeEdgesWeight() {
+        return super.computeEdgesWeight()
+                + graph.getEdgeWeight(vertices[vertices.length - 1], vertices[0]);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + Arrays.hashCode(this.vertices);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Cycle other = (Cycle) obj;
+        for (int k = 0; k < numVertices - 1; k++) {
+            boolean equals = true;
+            for (int i = 0; i < numVertices; i++) {
+                if (this.vertices[i] != other.vertices[(i + k) % numVertices]) {
+                    equals = false;
+                    break;
+                }
+            }
+            if (equals) {
+                return true;
+            }
+        }
+        if (!directed) {
+            for (int k = 0; k < numVertices - 1; k++) {
+                boolean equals = true;
+                for (int i = 0; i < numVertices; i++) {
+                    if (this.vertices[i] != other.vertices[(numVertices - i + k) % numVertices]) {
+                        equals = false;
+                        break;
+                    }
+                }
+                if (equals) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
     public String toString() {
+        if (numVertices == 0) {
+            return "[]";
+        }
         var sb = new StringBuilder();
         sb.append("[");
-        for (int i = 0; i <= size; i++) {
+        for (int i = 0; i <= numVertices; i++) {
             if (i > 0) {
                 sb.append(directed ? " -> " : " - ");
             }
-            sb.append(vertices[i % size]);
+            sb.append(vertices[i % numVertices]);
         }
         sb.append("]");
         return sb.toString();

@@ -16,49 +16,88 @@
  */
 package ro.uaic.info.graph;
 
+import java.util.Arrays;
+
 /**
  * A <i>walk</i> is a sequence of graph vertices such that any two consecutive
- * vertices form an edge of the graph. A walk is closed if the last vertex
- * equals the first one.
+ * vertices form an edge of the graph. Vertices can repeat. Edges can repeat.
  *
- * Vertices can repeat. Edges can repeat.
+ * In order to ensure these properties are respected, call {@code validate}.
+ *
+ * A walk is closed if the last vertex equals the first one.
+ *
+ *
  *
  * The length of a walk is its number of edges.
  *
+ * @see Trail
+ * @see Circuit
+ * @see Path
+ * @see Cycle
  * @author Cristian Frăsinaru
  */
-public class Walk extends VertexSet {
+public class Walk extends VertexList {
 
     protected final boolean directed;
     protected int numEdges;
 
+    public Walk(Graph graph) {
+        super(graph);
+        this.directed = graph.isDirected();
+    }
+
     /**
      *
-     * @param graph
-     * @param vertices
+     * @param graph the graph this walk belongs to
+     * @param vertices the vertices of the walk
      */
     public Walk(Graph graph, int... vertices) {
         super(graph, vertices);
-        checkAndCountEdges();
-        this.directed = (graph instanceof Digraph);
+        this.numEdges = numVertices - 1;
+        this.directed = graph.isDirected();
     }
 
-    protected final void checkAndCountEdges() {
-        for (int i = 0; i < size - 1; i++) {
-            Edge e = new Edge(vertices[i], vertices[i + 1]);
-            if (!graph.containsEdge(e)) {
-                throw new IllegalArgumentException(
-                        "Vertices do not form a "
-                        + this.getClass().getSimpleName().toLowerCase()
-                        + ", there is no edge: " + e);
-            }
-            numEdges++;
+    //type of vertex collection: walk, trail, path, cycle, etc.
+    protected String type() {
+        return this.getClass().getSimpleName().toLowerCase();
+    }
+
+    protected void checkEdge(Edge e) {
+        if (!graph.containsEdge(e)) {
+            throw new IllegalArgumentException(
+                    "Vertices do not form a " + type()
+                    + ", there is no edge " + e);
+        }
+    }
+
+    protected final void checkEdges(int[] vertices) {
+        for (int i = 0; i < numVertices - 1; i++) {
+            checkEdge(new Edge(vertices[i], vertices[i + 1]));
+
         }
     }
 
     /**
+     * Throws an exception if the vertices do not represent the intendended
+     * structure.
+     */
+    public void validate() {
+        checkEdges(vertices);
+    }
+
+    /**
+     * Adds the vertex at the end of the walk, trail or path.
      *
-     * @return
+     * @param v a vertex number
+     */
+    @Override
+    public boolean add(int v) {
+        return super.add(v);
+    }
+
+    /**
+     *
+     * @return true, if it belongs to a directed graph
      */
     public boolean isDirected() {
         return directed;
@@ -66,15 +105,10 @@ public class Walk extends VertexSet {
 
     /**
      *
-     * @return
+     * @return true, if the first vertex equals the last one
      */
     public boolean isClosed() {
-        return vertices[0] == vertices[size - 1];
-    }
-
-    @Override
-    public boolean add(int v) {
-        throw new UnsupportedOperationException("Cycles are imutable");
+        return vertices[0] == vertices[numVertices - 1];
     }
 
     /**
@@ -83,14 +117,38 @@ public class Walk extends VertexSet {
      * @return the number of edges
      */
     public int length() {
-        return numEdges;
+        return numVertices - 1;
+    }
+
+    /**
+     *
+     * @return the sum of the edge weights
+     */
+    public double computeEdgesWeight() {
+        double weight = 0;
+        for (int i = 0; i < numVertices - 1; i++) {
+            weight += graph.getEdgeWeight(vertices[i], vertices[i + 1]);
+        }
+        return weight;
+    }
+
+    /**
+     * Reverses the walk. 1-2-3 becomes 3-2-1. In case of directed graphs we
+     * have to check the reversed walk is valid.
+     */
+    public void reverse() {
+        for (int i = 0; i < numVertices / 2; i++) {
+            int temp = vertices[i];
+            vertices[i] = vertices[numVertices - i - 1];
+            vertices[numVertices - i - 1] = temp;
+        }
     }
 
     @Override
     public String toString() {
         var sb = new StringBuilder();
         sb.append("[");
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < numVertices; i++) {
             if (i > 0) {
                 sb.append(directed ? " -> " : " - ");
             }
@@ -98,6 +156,36 @@ public class Walk extends VertexSet {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + Arrays.hashCode(this.vertices);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        if (super.equals(obj)) {
+            return true;
+        }
+        if (!directed) {
+            final Walk other = (Walk) obj;
+            for (int i = 0; i < numVertices; i++) {
+                if (this.vertices[i] != other.vertices[numVertices - i - 1]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
 }

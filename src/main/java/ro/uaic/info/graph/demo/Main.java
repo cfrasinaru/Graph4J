@@ -18,17 +18,17 @@ package ro.uaic.info.graph.demo;
 
 import java.util.Arrays;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.Graphs;
+import ro.uaic.info.graph.VertexSet;
 import ro.uaic.info.graph.alg.GraphMetrics;
-import ro.uaic.info.graph.alg.TopologicalSort;
+import ro.uaic.info.graph.alg.HierholzerEulerianCircuit;
+import ro.uaic.info.graph.alg.sp.BellmanFordShortestPath;
+import ro.uaic.info.graph.alg.sp.DijkstraShortestPathDefault;
+import ro.uaic.info.graph.alg.sp.FloydWarshallShortestPath;
 import ro.uaic.info.graph.build.GraphBuilder;
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
-import ro.uaic.info.graph.search.BFSVisitor;
-import ro.uaic.info.graph.search.BreadthFirstSearch;
-import ro.uaic.info.graph.search.DFSVisitor;
-import ro.uaic.info.graph.search.DepthFirstSearch;
-import ro.uaic.info.graph.search.SearchNode;
-import ro.uaic.info.graph.util.Tools;
+import ro.uaic.info.graph.gen.CompleteGenerator;
+import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
+import ro.uaic.info.graph.gen.GnpRandomGenerator;
+import ro.uaic.info.graph.gen.GraphGenerator;
 
 /**
  * TODO: Move this to tests.
@@ -36,22 +36,74 @@ import ro.uaic.info.graph.util.Tools;
  * @author Cristian Frăsinaru
  */
 public class Main {
-
+    
     Graph graph;
-
+    org.jgrapht.Graph jgraph;
+    
     public static void main(String[] args) {
         var app = new Main();
+        //var app = new DFSIteratorDemo();
+        //var app = new BFSIteratorDemo();
+        //var app = new EulerianCircuitDemo();
+        //var app = new DijkstraDemo();
+        //var app = new BellmanFordDemo();
+        //var app = new FloydWarshallDemo();
+        //var app = new IterateAllEdgesDemo();
+        //var app = new ContainsEdgeDemo();
+        //var app = new GraphCreationDemo();
         app.demo();
     }
-
+    
     private void demo() {
         run(this::test);
+        //run(this::prepare);
     }
     
-    public static void printObjectSize(Object object) {
-        //System.out.println("Object type: " + object.getClass() + ", size: " + InstrumentationAgent.getObjectSize(object) + " bytes");
-    }
+    private void test() {
+        //var g = new CompleteGenerator(5).createDigraph();
+        //var g = GraphBuilder.numVertices(8).addCycle(0, 1, 2, 3, 4, 5).addCycle(6, 1, 5, 7, 4, 2).buildGraph();
+        var g = GraphBuilder.vertexRange(0, 3).addClique(0, 1, 2, 3).buildGraph();
+        //var g = GraphBuilder.numVertices(6).addEdges("0-1, 0-2, 0-3, 0-4, 0-5, 4-5,1-2, 1-3, 2-3").buildGraph();
+        System.out.println(g);
+        
+        
+        g.addVertices(8, 9);
+        g.addEdge(0, 8);
+        g.addEdge(0, 9);
+        g.addEdge(8, 9);
+        
+        System.out.println(g);
+        System.out.println(Arrays.deepToString(g.edges()));
+        System.out.println(Arrays.toString(g.neighbors(8)));
+        System.out.println(Arrays.toString(g.neighbors(9)));
+        
+       // g.removeVertex(0);
+        //System.out.println(g);
+        
+        //g.addEdge(8, 9);
+        //System.out.println(g);
+        /*
+        Circuit c1 = new Circuit(g, 0, 1, 2, 3, 4, 5);
+        Circuit c2 = new Circuit(g, 6, 1, 5, 7, 4, 2);
+        System.out.println(c1.join(c2));
+         */
+        //var g = GraphBuilder.numVertices(7).addCycle(0, 1, 2).addCycle(0, 3, 4).addCycle(0, 5, 6).buildGraph();
+        //var g = GraphBuilder.numVertices(4).addEdges("0-1,0-1,0-0").buildPseudograph();
+        //var g = GraphBuilder.numVertices(4).addCycle(0, 1, 2, 3).addEdges("0-1,0-1,0-0,1-1,1-1,1-1").buildPseudograph();
+        //var g = GraphBuilder.numVertices(2).addEdges("0-1,0-1,0-0,0-0,1-1,1-1").buildPseudograph();
+        //var h = new HierholzerEulerianCircuit(g);
+        //System.out.println(h.findCircuit());
 
+        /*
+       var it = g.edgeIterator(0);
+        System.out.println(g);
+       while (it.hasNext()) {
+           System.out.println(it.next());
+           it.remove();
+           System.out.println(g);
+       }*/
+    }
+    
     protected void run(Runnable snippet) {
         long m0 = Runtime.getRuntime().freeMemory();
         long t0 = System.currentTimeMillis();
@@ -60,153 +112,7 @@ public class Main {
         long m1 = Runtime.getRuntime().freeMemory();
         System.out.println((t1 - t0) + " ms");
         System.out.println((m0 - m1) / (1024 * 1024) + " MB");
+        System.out.println("------------------------------------------------");
     }
     
-    private void test() {
-        //var g = GraphBuilder.numVertices(5).addEdges("4-3,4-2,4-1,4-0,3-2,3-1,3-0,2-1,2-0,1-0").buildDigraph();
-        //var g = GraphBuilder.numVertices(10_000).complete().buildDigraph();
-        var g = new GnmRandomGenerator(100, 5000).createDigraph();
-        System.out.println(g);
-        //int[] order = new TopologicalSort(g).sort();
-        //System.out.println(Arrays.toString(order));
-        //demo(this::iterate1);
-        //demo(this::iterate2);
-    }
-
-    private void demoDFS() {
-        /*
-        var g = GraphBuilder
-                .vertexRange(1, 8)
-                .addPath(1, 2, 4, 6).addEdge(6, 2)
-                .addPath(1, 3, 5, 7).addEdge(5, 4).addEdge(5, 8).addEdge(1, 8)
-                .sorted()
-                .buildDigraph();
-         */
-        var g = GraphBuilder.numVertices(3).addEdges("0-1,0-1").buildMultigraph();
-        //var g = GraphBuilder.numVertices(3).addEdges("0-1,1-0").buildDigraph();
-        //g.setName("K4");
-        System.out.println(g);
-        new DepthFirstSearch(g).traverse(new DFSVisitor() {
-            @Override
-            public void root(SearchNode node) {
-                System.out.println("Root: " + node);
-            }
-
-            @Override
-            public void treeEdge(SearchNode from, SearchNode to) {
-                System.out.println("Tree edge: " + from + "->" + to);
-            }
-
-            @Override
-            public void backEdge(SearchNode from, SearchNode to) {
-                System.out.println("Back edge: " + from + "->" + to);
-                System.out.println("Cycle detected");
-            }
-
-            @Override
-            public void forwardEdge(SearchNode from, SearchNode to) {
-                System.out.println("Forward edge: " + from + "->" + to);
-            }
-
-            @Override
-            public void crossEdge(SearchNode from, SearchNode to) {
-                System.out.println("Cross edge: " + from + "->" + to);
-            }
-
-            @Override
-            public void upward(SearchNode from, SearchNode to) {
-                System.out.println("Return to parent: " + from + "->" + to);
-            }
-        });
-    }
-
-    private void demoBFS() {
-        /*
-        var g = GraphBuilder
-                .vertexRange(1, 8)
-                .addPath(1, 2, 4, 6).addEdge(6, 2)
-                .addPath(1, 3, 5, 7).addEdge(5, 4).addEdge(5, 8).addEdge(1, 8)
-                .sorted()
-                .buildDigraph();
-         */
-        //var g = GraphBuilder.numVertices(3).addEdges("0-0,1-1,0-1,1-0").buildPseudograph();
-        var g = GraphBuilder.vertexRange(1, 5).addEdges("1-2,2-3,3-4,4-5").buildGraph();
-        g.addEdge(2, 4);
-
-        //g.setName("K4");
-        System.out.println(g);
-        new BreadthFirstSearch(g).traverse(new BFSVisitor() {
-            @Override
-            public void root(SearchNode node) {
-                System.out.println("Root: " + node);
-            }
-
-            @Override
-            public void treeEdge(SearchNode from, SearchNode to) {
-                System.out.println("Tree edge: " + from + "->" + to);
-            }
-
-            @Override
-            public void backEdge(SearchNode from, SearchNode to) {
-                System.out.println("Back edge: " + from + "->" + to);
-            }
-
-            @Override
-            public void crossEdge(SearchNode from, SearchNode to) {
-                System.out.println("Cross edge: " + from + "->" + to);
-            }
-        });
-    }
-
-    private void demoMem() {
-        int n = 1_000;
-        long mem0 = Runtime.getRuntime().freeMemory();
-        var g = GraphBuilder.vertices(1, 2, 100_000_000).buildGraph();
-        //var g = RandomGenerator.createGraphGnp(n, 0.1);
-        System.out.println(g);
-        long mem1 = Runtime.getRuntime().freeMemory();
-        System.out.println((mem0 - mem1) / (1024 * 1024) + " MB");
-        //printObjectSize(g);
-    }
-
-    private void demoContains() {
-        int n = 10_000;
-        var g = GraphBuilder.numVertices(n).complete().buildGraph();
-        long t0 = System.currentTimeMillis();
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
-                g.containsEdge(g.vertexAt(i), g.vertexAt(j));
-            }
-        }
-        long t1 = System.currentTimeMillis();
-        System.out.println((t1 - t0) + " ms");
-        System.out.println(g);
-        System.out.println((int) g.numEdges());
-    }
-
-    private void demoRandom() {
-        int n = 50_000;
-        double p = 0.0005;
-        int m = (int) (p * (n * (n - 1) / 2));
-        //var g = Graphs.randomGnp(n, p);
-        //var g = new GnmRandomGenerator(n, m).createGraph();
-        var g = Graphs.cycle(n);
-        //g.addEdge(n - 1000, n - 1);
-        g.addEdge(n / 2, n / 2 + 1000);
-        long t0 = System.currentTimeMillis();
-        System.out.println(GraphMetrics.girth(g));
-        long t1 = System.currentTimeMillis();
-        System.out.println((t1 - t0) + "ms");
-
-        var jg = Tools.createJGraph(g);
-        t0 = System.currentTimeMillis();
-        //var gnp = new GnpRandomGraphGenerator<Integer, DefaultEdge>(n, p);
-        //var gnp = new GnmRandomGraphGenerator<Integer, DefaultEdge>(n, m);
-        //gnp.generateGraph(Tools.createJGraph(null));
-        //System.out.println(jg);
-        System.out.println(org.jgrapht.GraphMetrics.getGirth(jg));
-        t1 = System.currentTimeMillis();
-        System.out.println((t1 - t0) + "ms");
-    }
-
 }

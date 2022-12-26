@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package core;
+package graph;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import ro.uaic.info.graph.Cycle;
 import ro.uaic.info.graph.build.GraphBuilder;
-import ro.uaic.info.graph.alg.CycleDetector;
+import ro.uaic.info.graph.alg.CycleFinder;
 
 /**
  *
@@ -31,7 +31,7 @@ public class CycleDetectorTest {
     @Test
     public void graphAnyCycle() {
         var g = GraphBuilder.vertexRange(1, 5).addEdges("1-2,2-3,3-4,4-5").buildGraph();
-        var detector = new CycleDetector(g);
+        var detector = new CycleFinder(g);
         assertFalse(detector.containsCycle());
 
         g.addEdge(2, 4);
@@ -42,7 +42,7 @@ public class CycleDetectorTest {
     @Test
     public void digraphAnyCycle() {
         var g = GraphBuilder.vertexRange(1, 5).addEdges("1-2,2-3,3-4,4-5").buildDigraph();
-        var detector = new CycleDetector(g);
+        var detector = new CycleFinder(g);
         assertFalse(detector.containsCycle());
 
         g.addEdge(2, 4);
@@ -63,7 +63,7 @@ public class CycleDetectorTest {
                 .addPath(1, 10, 11)
                 .addEdge(9, 11)
                 .buildGraph();
-        var detector = new CycleDetector(g);
+        var detector = new CycleFinder(g);
         assertEquals(new Cycle(g, 1, 2, 3, 4, 5, 6, 7), detector.findAnyCycle());
         assertEquals(new Cycle(g, 1, 8, 9, 11, 10), detector.findShortestCycle());
     }
@@ -75,7 +75,7 @@ public class CycleDetectorTest {
                 .addClique(6, 10, 11)
                 .sorted()
                 .buildGraph();
-        var detector = new CycleDetector(g);
+        var detector = new CycleFinder(g);
         Cycle c1 = new Cycle(g, 3, 4, 5, 6, 7, 8);
         Cycle c2 = new Cycle(g, 6, 10, 11);
         assertEquals(c1, detector.findAnyCycle(6));
@@ -87,11 +87,11 @@ public class CycleDetectorTest {
     @Test
     public void specialCases() {
         var g1 = GraphBuilder.vertexRange(0,2).addEdges("0-1,1-1,1-2").buildPseudograph();
-        assertEquals(1, new CycleDetector(g1).findAnyCycle().length()); //1-1
+        assertEquals(1, new CycleFinder(g1).findAnyCycle().length()); //1-1
         var g2 = GraphBuilder.vertexRange(0,2).addEdges("0-1,1-2,1-2").buildMultigraph();
-        assertEquals(2, new CycleDetector(g2).findAnyCycle().length()); //1-2
+        assertEquals(2, new CycleFinder(g2).findAnyCycle().length()); //1-2
         var g3 = GraphBuilder.vertexRange(0,2).addEdges("0-1,1-2,2-1").buildDigraph();
-        assertEquals(2, new CycleDetector(g3).findAnyCycle().length()); //1-2
+        assertEquals(2, new CycleFinder(g3).findAnyCycle().length()); //1-2
     }
     
 

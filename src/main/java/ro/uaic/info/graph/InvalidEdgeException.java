@@ -22,6 +22,11 @@ package ro.uaic.info.graph;
  */
 public class InvalidEdgeException extends RuntimeException {
 
+    /**
+     *
+     * @param v a vertex number
+     * @param u a vertex number
+     */
     public InvalidEdgeException(int v, int u) {
         super("Invalid edge: (" + v + ", " + u + ")");
     }

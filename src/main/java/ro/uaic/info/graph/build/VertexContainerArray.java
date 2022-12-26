@@ -19,12 +19,12 @@ package ro.uaic.info.graph.build;
 import java.util.Arrays;
 
 /**
+ * Index of vertices.
  *
  * @author Cristian Frăsinaru
  */
 class VertexContainerArray implements VertexContainer {
 
-    private final int maxVertexNumber;
     private int[] index;
 
     /**
@@ -33,21 +33,20 @@ class VertexContainerArray implements VertexContainer {
      * @param maxVertexNumber
      */
     public VertexContainerArray(int maxVertexNumber) {
-        this.maxVertexNumber = maxVertexNumber;
         this.index = new int[maxVertexNumber + 1];
         Arrays.fill(index, -1);
     }
 
     @Override
     public VertexContainerArray copy() {
-        var copy = new VertexContainerArray(maxVertexNumber);
+        var copy = new VertexContainerArray(max());
         copy.index = Arrays.copyOf(index, index.length);
         return copy;
     }
 
-    @Override    
+    @Override
     public int max() {
-        return index.length;
+        return index.length - 1;
     }
 
     @Override
@@ -86,5 +85,4 @@ class VertexContainerArray implements VertexContainer {
         return Arrays.toString(index);
     }
 
-    
 }

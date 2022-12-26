@@ -18,9 +18,10 @@ package ro.uaic.info.graph.search;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.Queue;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.InvalidVertexException;
+import ro.uaic.info.graph.util.CheckArguments;
 
 /**
  *
@@ -35,8 +36,9 @@ public class BFSIterator implements Iterator<SearchNode> {
     private boolean visited[];
     private int restartIndex; //all the vertices up to restartIndex are visited
     private int numIterations;
-    private int component;
+    private int compIndex;
     private int orderNumber;
+    private int maxLevel = -1;
 
     /**
      *
@@ -54,11 +56,9 @@ public class BFSIterator implements Iterator<SearchNode> {
      * @param start
      */
     public BFSIterator(Graph graph, int start) {
+        CheckArguments.graphContainsVertex(graph, start);
         this.graph = graph;
         this.startVertex = start;
-        if (!graph.containsVertex(start)) {
-            throw new InvalidVertexException(start);
-        }
         init();
     }
 
@@ -80,16 +80,20 @@ public class BFSIterator implements Iterator<SearchNode> {
     @Override
     public SearchNode next() {
         if (queue.isEmpty()) {
-            throw new IllegalStateException();
+            throw new NoSuchElementException();
         }
         var current = queue.poll();
+        if (current.level() > maxLevel) {
+            maxLevel = current.level();
+        }
         var v = current.vertex();
         numIterations++;
         //
-        for (int u : graph.neighbors(v)) {
+        for (var it = graph.neighborIterator(v); it.hasNext();) {
+            int u = it.next();
             int j = graph.indexOf(u);
             if (!visited[j]) {
-                queue.offer(new SearchNode(component, u, current.level() + 1, orderNumber++, current));
+                queue.offer(new SearchNode(compIndex, u, current.level() + 1, orderNumber++, current));
                 visited[j] = true;
             }
         }
@@ -98,7 +102,7 @@ public class BFSIterator implements Iterator<SearchNode> {
             for (int i = restartIndex; i < numVertices; i++) {
                 restartIndex++;
                 if (!visited[i]) {
-                    queue.offer(new SearchNode(++component, graph.vertexAt(i), 0, orderNumber++, null));
+                    queue.offer(new SearchNode(++compIndex, graph.vertexAt(i), 0, orderNumber++, null));
                     visited[i] = true;
                     break;
                 }
@@ -107,4 +111,20 @@ public class BFSIterator implements Iterator<SearchNode> {
         return current;
     }
 
+    /**
+     *
+     * @return the number of connected components identified so far by the
+     * iterator
+     */
+    public int numComponents() {
+        return compIndex;
+    }
+
+    /**
+     *
+     * @return the maximum level in the search tree, root is at level 0.
+     */
+    public int maxLevel() {
+        return maxLevel;
+    }
 }

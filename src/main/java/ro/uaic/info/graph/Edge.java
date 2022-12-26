@@ -23,24 +23,25 @@ package ro.uaic.info.graph;
 public class Edge<E> implements Comparable<Edge> {
 
     private boolean directed;
-    private final int source;
-    private final int target;
+    private int source;
+    private int target;
     private Double weight;
     private E label;
 
     public Edge(int first, int second) {
-        this(first, second, false, null);
+        this(first, second, false, null, null);
     }
 
     public Edge(int first, int second, boolean directed) {
-        this(first, second, directed, null);
+        this(first, second, directed, null, null);
     }
 
-    public Edge(int first, int second, boolean directed, Double weight) {
+    public Edge(int first, int second, boolean directed, Double weight, E label) {
         this.source = first;
         this.target = second;
         this.directed = directed;
         this.weight = weight;
+        this.label = label;
     }
 
     public int source() {
@@ -59,7 +60,7 @@ public class Edge<E> implements Comparable<Edge> {
         return source == target;
     }
 
-    public double weight() {
+    public Double weight() {
         return weight;
     }
 
@@ -67,10 +68,32 @@ public class Edge<E> implements Comparable<Edge> {
         return label;
     }
 
+    /**
+     * Flips source and target, for directed edges.
+     *
+     * @return
+     */
+    public Edge<E> flip() {
+        return new Edge(target, source, directed, weight, label);
+    }
+
     @Override
     public String toString() {
-        return source + (directed ? "->" : "-") + target
-                + (weight == null ? "" : "(" + weight + ")");
+        var sb = new StringBuilder();
+        sb.append(source).append(directed ? "->" : "-").append(target);
+        if (weight != null || label != null) {
+            sb.append("(");
+            if (label != null) {
+                sb.append(label);
+                if (weight != null) {
+                    sb.append(":").append(weight);
+                }
+            } else {
+                sb.append(weight);
+            }
+            sb.append(")");
+        }
+        return sb.toString();
     }
 
     @Override

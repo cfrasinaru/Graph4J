@@ -1,0 +1,40 @@
+https://github.com/jgrapht/jgrapht
+https://github.com/kevin-wayne/algs4
+https://github.com/jrtom/jung
+https://github.com/google/guava/tree/master/guava/src/com/google/common/graph
+https://github.com/earlygrey/simple-graphs
+
+BGL https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
+
+NetworkX or the BGL. or Igraph
+JGraphT—A Java Library for Graph Data Structures and Algorithms
+
+
+Comparatii legate de modul de rulare / performanta:
+- crearea de grafuri (empty,random,complete)
+- dfs, bfs
+- conectivitate
+- cicluri
+
+
+Implementare de noi algoritmi
+Shortest Paths:
+	-Bidirectional Dijkstra (multithreaded Dijkstra?)
+	https://en.wikipedia.org/wiki/Johnson%27s_algorithm
+Johnson's algorithm
+	https://en.wikipedia.org/wiki/Johnson%27s_algorithm	
+Finding the k-shortest path between two nodes
+	https://cs.stackexchange.com/questions/18849/finding-the-k-shortest-path-between-two-nodes
+	https://en.wikipedia.org/wiki/K_shortest_path_routing
+
+Metrici si masuri specifice relatiilor sociale
+
+
+Generaratoare de grafuri
+- k-regulate
+	https://math.stackexchange.com/questions/142112/how-to-construct-a-k-regular-graph
+	https://mediatum.ub.tum.de/doc/1315533/1315533.pdf
+
+- care au o anumita secventa (di)grafica
+	folosind fluxuri
+

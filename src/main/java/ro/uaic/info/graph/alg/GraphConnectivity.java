@@ -19,6 +19,7 @@ package ro.uaic.info.graph.alg;
 import java.util.ArrayList;
 import java.util.List;
 import ro.uaic.info.graph.Graph;
+import ro.uaic.info.graph.VertexSet;
 import ro.uaic.info.graph.search.DFSIterator;
 import ro.uaic.info.graph.util.IntArrays;
 
@@ -26,17 +27,12 @@ import ro.uaic.info.graph.util.IntArrays;
  *
  * @author Cristian Frăsinaru
  */
-public class GraphConnectivity {
+public class GraphConnectivity extends SimpleGraphAlgorithm {
 
-    private final Graph graph;
-    private List<Graph> components;
+    private List<VertexSet> components;
 
-    /**
-     *
-     * @param graph
-     */
     public GraphConnectivity(Graph graph) {
-        this.graph = graph;
+        super(graph);
     }
 
     /**
@@ -60,32 +56,33 @@ public class GraphConnectivity {
      *
      * @return
      */
-    public List<Graph> components() {
+    public List<VertexSet> components() {
         if (components != null) {
             return components;
         }
         this.components = new ArrayList<>();
         int compIndex = 0;
-        List<Integer> vertices = new ArrayList<>();
+        var vertexSet = new VertexSet(graph);
         var dfs = new DFSIterator(graph);
         while (dfs.hasNext()) {
             var node = dfs.next();
             if (node.component() > compIndex) {
                 //we finished creating a connected component
-                addComponent(vertices);
-                vertices = new ArrayList<>();
+                components.add(vertexSet);
+                vertexSet = new VertexSet(graph);
                 compIndex = node.component();
             }
-            vertices.add(node.vertex());
+            vertexSet.add(node.vertex());
         }
-        if (!vertices.isEmpty()) {
-            addComponent(vertices);
+        if (!vertexSet.isEmpty()) {
+            components.add(vertexSet);
         }
         return components;
     }
 
-    private void addComponent(List<Integer> vertices) {
-        components.add(graph.subgraph(IntArrays.fromList(vertices)));
+    @Deprecated
+    private void addComponent(VertexSet vertices) {
+        //components.add(graph.subgraph(IntArrays.fromList(vertices)));
     }
 
 }

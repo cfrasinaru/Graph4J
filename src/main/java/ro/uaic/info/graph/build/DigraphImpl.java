@@ -30,8 +30,8 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     }
 
     protected DigraphImpl(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowsMultiEdges, boolean allowsSelfLoops) {
-        super(vertices, maxVertices, avgDegree, sorted, directed, allowsMultiEdges, allowsSelfLoops);
+            boolean sorted, boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
+        super(vertices, maxVertices, avgDegree, sorted, directed, allowingMultipleEdges, allowingSelfLoops);
     }
 
     @Override
@@ -41,8 +41,8 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
 
     @Override
     protected GraphImpl newInstance(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowsMultiEdges, boolean allowsSelfLoops) {
-        return new DigraphImpl(vertices, maxVertices, avgDegree, sorted, directed, allowsMultiEdges, allowsSelfLoops);
+            boolean sorted, boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
+        return new DigraphImpl(vertices, maxVertices, avgDegree, sorted, directed, allowingMultipleEdges, allowingSelfLoops);
     }
 
     @Override

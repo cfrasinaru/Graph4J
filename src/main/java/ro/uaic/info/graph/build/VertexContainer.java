@@ -24,7 +24,7 @@ interface VertexContainer {
 
     VertexContainer copy();
 
-    void add(int v, int indx);
+    void add(int v, int idx);
 
     void remove(int v);
 

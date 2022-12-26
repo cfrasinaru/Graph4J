@@ -28,8 +28,8 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
     }
 
     protected MultigraphImpl(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowsMultiEdges, boolean allowsSelfLoops) {
-        super(vertices, maxVertices, avgDegree, sorted, directed, allowsMultiEdges, allowsSelfLoops);
+            boolean sorted, boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
+        super(vertices, maxVertices, avgDegree, sorted, directed, allowingMultipleEdges, allowingSelfLoops);
     }
 
     @Override
@@ -39,8 +39,8 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
 
     @Override
     protected MultigraphImpl newInstance(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowsMultiEdges, boolean allowsSelfLoops) {
-        return new MultigraphImpl(vertices, maxVertices, avgDegree, sorted, directed, allowsMultiEdges, allowsSelfLoops);
+            boolean sorted, boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
+        return new MultigraphImpl(vertices, maxVertices, avgDegree, sorted, directed, allowingMultipleEdges, allowingSelfLoops);
     }
 
     @Override
@@ -67,4 +67,17 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
     public Multigraph<V, E> subgraph(int... vertices) {
         return (Multigraph<V, E>) super.subgraph(vertices);
     }
+
+    @Override
+    public double[][] costMatrix() {
+        throw new UnsupportedOperationException(
+                "Cost-matrix is not supported for multigraphs and pseudographs.");
+    }
+
+    @Override
+    public int[][] incidenceMatrix() {
+        throw new UnsupportedOperationException(
+                "Incidence-matrix is not supported for multigraphs and pseudographs.");
+    }
+   
 }

@@ -24,7 +24,7 @@ interface Weighted {
 
     /**
      *
-     * @param v
+     * @param v a vertex number
      * @param weight
      */
     int addWeightedVertex(int v, double weight);
@@ -38,39 +38,54 @@ interface Weighted {
 
     /**
      *
-     * @param v
-     * @param u
-     * @param weight
+     * @param v a vertex number
+     * @param u a vertex number
+     * @param weight the weigth to be set for the edge vu
      */
     void addWeightedEdge(int v, int u, double weight);
 
     /**
      *
-     * @param v
-     * @param weight
+     * @param v a vertex number
+     * @param weight the weight to be set for vertex v
      */
     void setVertexWeight(int v, double weight);
 
     /**
+     * The default weight of a vertex is 0.
      *
-     * @param v
-     * @return
+     * @param v a vertex number
+     * @return the weight of the vertex, 0 if the graph is unweighted
      */
     double getVertexWeight(int v);
 
     /**
      *
-     * @param v
-     * @param u
-     * @param weight
+     * @param v a vertex number
+     * @param u a vertex number
+     * @param weight the weigth to be set for the edge vu
      */
     void setEdgeWeight(int v, int u, double weight);
 
     /**
+     * The default weight of an edge is 1.
      *
-     * @param v
-     * @param u
-     * @return
+     * @param v a vertex number
+     * @param u a vertex number
+     * @return the weight of the edge vu, 1 if the graph is unweighted, and
+     * <code>Graph.NO_EDGE_WEIGHT</code> if vu is not an edge of the graph.
      */
     double getEdgeWeight(int v, int u);
+
+    /**
+     *
+     * @return true, if weights have been set on edges
+     */
+    boolean isEdgeWeighted();
+
+    /**
+     *
+     * @return true, if weights have been set on vertices
+     */
+    boolean isVertexWeighted();
 }

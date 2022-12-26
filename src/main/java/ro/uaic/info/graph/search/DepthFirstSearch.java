@@ -46,7 +46,6 @@ public class DepthFirstSearch {
      * @param graph
      */
     public DepthFirstSearch(Graph graph) {
-        CheckArguments.graphNotNull(graph);
         if (graph instanceof Multigraph) {
             throw new IllegalArgumentException("DFS is not supported for multigraphs");
         }
@@ -109,6 +108,9 @@ public class DepthFirstSearch {
         } catch (InterruptedVisitorException e) {
             interrupted = true;
         }
+        visited = null;
+        nextPos = null;
+        stack = null;
     }
 
     private void dfs() {
@@ -116,23 +118,23 @@ public class DepthFirstSearch {
             var node = stack.peek();
             var parent = node.parent();
             int v = node.vertex();
-            int i = graph.indexOf(v);
+            int vi = graph.indexOf(v);
             int[] neighbors = graph.neighbors(v);
             boolean ok = false;
-            while (!ok && nextPos[i] < neighbors.length) {
-                int u = neighbors[nextPos[i]];
-                int j = graph.indexOf(u);
-                nextPos[i]++;
-                if (visited[j] == null) {
+            while (!ok && nextPos[vi] < neighbors.length) {
+                int u = neighbors[nextPos[vi]];
+                int ui = graph.indexOf(u);
+                nextPos[vi]++;
+                if (visited[ui] == null) {
                     var next = new SearchNode(compIndex, u, node.level() + 1, orderIndex++, node);
                     stack.push(next);
-                    visited[j] = next;
+                    visited[ui] = next;
                     visitor.treeEdge(node, next);
                     ok = true;
                     break;
                 }
                 //back edge, forward edge or cross edge
-                var other = visited[j]; //already visited
+                var other = visited[ui]; //already visited
                 if (other.equals(parent)) {
                     //if (directed || (multigraph && ((Multigraph) graph).multiplicity(v, u) > 1)) {
                     if (directed) {
@@ -160,6 +162,18 @@ public class DepthFirstSearch {
         }
     }
 
+    /**
+     *
+     * @return the number of connected components identified by the traversal
+     */
+    public int numComponents() {
+        return compIndex;
+    }
+
+    /**
+     *
+     * @return
+     */
     public boolean isInterrupted() {
         return interrupted;
     }

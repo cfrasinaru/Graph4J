@@ -28,8 +28,8 @@ class DirectedPseudographImpl<V, E> extends PseudographImpl<V, E> implements Dir
     }
 
     protected DirectedPseudographImpl(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowsMultiEdges, boolean allowsSelfLoops) {
-        super(vertices, maxVertices, avgDegree, sorted, directed, allowsMultiEdges, allowsSelfLoops);
+            boolean sorted, boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
+        super(vertices, maxVertices, avgDegree, sorted, directed, allowingMultipleEdges, allowingSelfLoops);
     }
 
     @Override
@@ -39,8 +39,8 @@ class DirectedPseudographImpl<V, E> extends PseudographImpl<V, E> implements Dir
 
     @Override
     protected DirectedPseudographImpl newInstance(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowsMultiEdges, boolean allowsSelfLoops) {
-        return new DirectedPseudographImpl(vertices, maxVertices, avgDegree, sorted, directed, allowsMultiEdges, allowsSelfLoops);
+            boolean sorted, boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
+        return new DirectedPseudographImpl(vertices, maxVertices, avgDegree, sorted, directed, allowingMultipleEdges, allowingSelfLoops);
     }
 
     @Override

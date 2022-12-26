@@ -16,41 +16,53 @@
  */
 package ro.uaic.info.graph;
 
-import java.util.HashSet;
+import java.util.HashMap;
 
 /**
- * A <i>trail</i> is a walk with no repeated edge. A trail is closed if the last
- * vertex equals the first one.
+ * A <i>trail</i> is a walk with no repeated edge. Vertices can repeat. Edges
+ * can not repeat.
  *
- * Vertices can repeat. Edges can not repeat.
+ * In order to ensure these properties are respected, call {@code validate}.
+ *
+ * A trail is closed if the last vertex equals the first one.
  *
  * The length of a walk is its number of edges.
  *
+ * @see Walk
+ * @see Circuit
+ * @see Path
+ * @see Cycle
  * @author Cristian Frăsinaru
  */
 public class Trail extends Walk {
 
-    /**
-     *
-     * @param graph
-     * @param vertices
-     */
-    public Trail(Graph graph, int... vertices) {
-        this(graph, true, vertices);
+    public Trail(Graph graph) {
+        super(graph);
     }
 
-    protected Trail(Graph graph, boolean checkEdges, int... vertices) {
+    public Trail(Graph graph, int... vertices) {
         super(graph, vertices);
-        if (checkEdges) {
-            var edges = new HashSet<>();
-            for (int i = 0; i < size - 1; i++) {
-                Edge e = new Edge(vertices[i], vertices[i + 1]);
-                if (edges.contains(e)) {
-                    throw new IllegalArgumentException(
-                            "Vertices do not form a trail, duplicate edge: " + e);
-                }
-                edges.add(e);
+    }
+
+    @Override
+    public void validate() {
+        super.validate();
+        checkDuplicateEdges();
+    }
+
+    protected final void checkDuplicateEdges() {
+        var edges = new HashMap<Edge, Integer>();
+        for (int i = 0, n = vertices.length; i < n - 1; i++) {
+            Edge e = new Edge(vertices[i], vertices[i + 1], directed);
+            int max = 1;
+            if (graph.isAllowingMultipleEdges()) {
+                max = ((Multigraph) graph).multiplicity(e);
             }
+            if (edges.getOrDefault(e, 0) >= max) {
+                throw new IllegalArgumentException(
+                        "Vertices do not form a trail, duplicate edge: " + e);
+            }
+            edges.put(e, edges.getOrDefault(e, 0) + 1);
         }
     }
 

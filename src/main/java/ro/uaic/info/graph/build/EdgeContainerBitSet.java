@@ -33,7 +33,6 @@ class EdgeContainerBitSet implements EdgeContainer {
         this.maxVertices = maxVertices;
         long nbits = maxVertices * (maxVertices - 1);
         if (nbits > MAX_BITS) {
-            //really?
             throw new IllegalArgumentException("Too many vertices: " + maxVertices);
         }
         this.bitSet = new BitSet((int) nbits);

@@ -28,10 +28,11 @@ public interface Digraph<V, E> extends Graph<V, E> {
     /**
      *
      * @param numVertices
-     * @return
+     * @return the maximum number of edges (arcs) in a digraph with
+     * {@code numVertices}
      */
     static long maxEdges(int numVertices) {
-        return (long)numVertices * (numVertices - 1);
+        return (long) numVertices * (numVertices - 1);
     }
 
     /**
@@ -52,12 +53,6 @@ public interface Digraph<V, E> extends Graph<V, E> {
     @Override
     Digraph<V, E> copy();
 
-    /**
-     *
-     * @param amount
-     * @return
-     */
-    //Digraph<V, E> copyAndRenumberAdding(int amount);
     /**
      * The <i>complement</i> of a digraph G has the same vertex set as G, but
      * its edge set consists of the edges not present in G.
@@ -80,7 +75,7 @@ public interface Digraph<V, E> extends Graph<V, E> {
      * @param v
      * @return
      */
-    default int outDegree(int v) {
+    default int outdegree(int v) {
         return degree(v);
     }
 
@@ -88,16 +83,16 @@ public interface Digraph<V, E> extends Graph<V, E> {
      *
      * @return
      */
-    default int[] outDegrees() {
+    default int[] outdegrees() {
         return degrees();
     }
 
     /**
      *
-     * @param v
-     * @return
+     * @param v a vertex number
+     * @return the indegree of v
      */
-    default int inDegree(int v) {
+    default int indegree(int v) {
         int inDegree = 0;
         for (int i = 0, n = numVertices(); i < n; i++) {
             if (containsEdge(vertexAt(i), v)) {
@@ -111,19 +106,19 @@ public interface Digraph<V, E> extends Graph<V, E> {
      *
      * @return
      */
-    default int[] inDegrees() {
+    default int[] indegrees() {
         int n = numVertices();
         int[] inDegrees = new int[n];
         for (int i = 0; i < n; i++) {
-            inDegrees[i] = inDegree(vertexAt(i));
+            inDegrees[i] = indegree(vertexAt(i));
         }
         return inDegrees;
     }
 
     /**
      *
-     * @param v
-     * @return
+     * @param v a vertex number
+     * @return the succesors of v
      */
     default int[] succesors(int v) {
         return neighbors(v);
@@ -131,11 +126,11 @@ public interface Digraph<V, E> extends Graph<V, E> {
 
     /**
      *
-     * @param v
-     * @return
+     * @param v a vertex number
+     * @return the predecessors of v
      */
     default int[] predecessors(int v) {
-        int[] pred = new int[inDegree(v)];
+        int[] pred = new int[indegree(v)];
         int k = 0;
         for (int i = 0, n = numVertices(); i < n; i++) {
             int u = vertexAt(i);
@@ -146,4 +141,20 @@ public interface Digraph<V, E> extends Graph<V, E> {
         return pred;
     }
 
+    /**
+     * A <i>symmetrical</i> digraph has only pairs of symmetrical edges: if the
+     * edge vu belongs to the digraph, so does uv.
+     *
+     * @return {@code true} if the digraph is symmetrical
+     */
+    default boolean isSymmetrical() {
+        for (int v : vertices()) {
+            for (int u : neighbors(v)) {
+                if (!containsEdge(u, v)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }

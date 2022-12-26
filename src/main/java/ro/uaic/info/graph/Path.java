@@ -25,17 +25,26 @@ import ro.uaic.info.graph.util.CheckArguments;
  *
  * The length of a walk is its number of edges.
  *
+ * @see Walk
+ * @see Trail
+ * @see Circuit
+ * @see Cycle
  * @author Cristian Frăsinaru
  */
 public class Path extends Trail {
 
     /**
      *
-     * @param graph
-     * @param vertices
+     * @param graph the graph this path belongs to
+     * @param vertices the vertices of the path
      */
     public Path(Graph graph, int... vertices) {
-        super(graph, false, vertices);
+        super(graph, vertices);
+    }
+
+    @Override
+    public void validate() {
+        super.validate();
         CheckArguments.noDuplicates(vertices);
     }
 

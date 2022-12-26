@@ -28,7 +28,6 @@ public class IntArrayList {
     protected int size;
     protected final static int DEFAULT_INITIAL_CAPACITY = 10;
 
-    
     /**
      *
      */
@@ -46,21 +45,28 @@ public class IntArrayList {
     }
 
     /**
-     * 
-     * @param values 
+     *
+     * @param values
      */
     public IntArrayList(int[] values) {
         this.values = values;
         this.size = values.length;
     }
-    
-    
+
     /**
      *
      * @return
      */
     public int size() {
         return size;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isEmpty() {
+        return size == 0;
     }
 
     /**
@@ -97,6 +103,24 @@ public class IntArrayList {
             }
         }
         return false;
+    }
+
+    /**
+     *
+     * @param pos
+     * @return
+     */
+    public int get(int pos) {
+        return values[pos];
+    }
+
+    /**
+     *
+     * @param pos
+     * @param value
+     */
+    public void set(int pos, int value) {
+        values[pos] = value;
     }
 
     /**

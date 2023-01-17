@@ -16,7 +16,10 @@
  */
 package ro.uaic.info.graph.demo;
 
-import ro.uaic.info.graph.GraphBuilder;
+import com.google.common.graph.Traverser;
+import org.jgrapht.traverse.DepthFirstIterator;
+import ro.uaic.info.graph.gen.GnpRandomGenerator;
+import ro.uaic.info.graph.search.DFSIterator;
 import ro.uaic.info.graph.search.DFSVisitor;
 import ro.uaic.info.graph.search.DepthFirstSearch;
 import ro.uaic.info.graph.search.SearchNode;
@@ -25,57 +28,45 @@ import ro.uaic.info.graph.search.SearchNode;
  *
  * @author Cristian Frăsinaru
  */
-public class DFSVisitorDemo {
+public class DFSVisitorDemo extends PerformanceDemo {
 
-    private void demoDFS() {
-        var g = new GraphBuilder()
-                .vertexRange(1, 8)
-                .addPath(1, 2, 4, 6).addEdge(6, 2)
-                .addPath(1, 3, 5, 7).addEdge(5, 4).addEdge(5, 8).addEdge(1, 8)
-                .sorted()
-                .buildDigraph();
-        System.out.println(g);
-        new DepthFirstSearch(g).traverse(new DFSVisitor() {
-            @Override
-            public void startVertex(SearchNode node) {
-                System.out.println((node.order() == 0 ? "Root: " : "Start vertex: ") + node);
-            }
+    public DFSVisitorDemo() {
+        runGuava = true;
+    }
 
-            @Override
-            public void treeEdge(SearchNode from, SearchNode to) {
-                System.out.println("Tree edge: " + from + "->" + to);
-            }
+    @Override
+    protected void createGraph() {
+        graph = new GnpRandomGenerator(1000, 0.2).createGraph();
+    }
 
-            @Override
-            public void backEdge(SearchNode from, SearchNode to) {
-                System.out.println("Back edge: " + from + "->" + to);
-                System.out.println("Cycle detected");
-            }
+    private int k1=0;
+    @Override
+    protected void testGraph4J() {
+        for (int v : graph.vertices()) {
+            new DepthFirstSearch(graph).traverse(new DFSVisitor(){
+                @Override
+                public void startVertex(SearchNode node) {
+                    k1++;
+                }
+            },v);
+        }
+        System.out.println(k1);
+    }
 
-            @Override
-            public void forwardEdge(SearchNode from, SearchNode to) {
-                System.out.println("Forward edge: " + from + "->" + to);
-            }
+    
+    private int k2 = 0;
 
-            @Override
-            public void crossEdge(SearchNode from, SearchNode to) {
-                System.out.println("Cross edge: " + from + "->" + to);
-            }
-
-            @Override
-            public void finishVertex(SearchNode node) {
-                System.out.println("Finish vertex: " + node);
-            }
-
-            
-            @Override
-            public void upward(SearchNode from, SearchNode to) {
-                System.out.println("Return to parent: " + from + "->" + to);
-            }
-        });
+    @Override
+    protected void testGuava() {
+        for (var v : guavaGraph.nodes()) {
+            Traverser.forGraph(guavaGraph).depthFirstPostOrder(v)
+                    .forEach(x -> k2++);
+        }
+        System.out.println(k2);
     }
 
     public static void main(String args[]) {
-        new DFSVisitorDemo().demoDFS();
+        var app = new DFSVisitorDemo();
+        app.demo();
     }
 }

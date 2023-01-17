@@ -39,8 +39,10 @@ public class Main {
         //var app = new StrongConnectivityDemo();
         //var app = new BiconnectivityDemo();
         //var app = new ConnectivityDemo();
+        //var app = new DFSVisitorDemo();
+        var app = new BFSVisitorDemo();
         //var app = new DFSIteratorDemo();
-        var app = new BFSIteratorDemo();
+        //var app = new BFSIteratorDemo();
         //var app = new EulerianCircuitDemo();
         //var app = new DijkstraDemo();
         //var app = new BellmanFordDemo();

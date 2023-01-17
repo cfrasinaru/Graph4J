@@ -184,7 +184,7 @@ public class Graphs {
             return null;
         }
         int m = graph.numEdges();
-        var lineGraph = new GraphBuilder<Edge, Object>().maxVertices(m).buildGraph();
+        var lineGraph = new GraphBuilder<Edge, Object>().estimatedMaxVertices(m).buildGraph();
         int vertexIndex = 0;
         for (Edge e : graph.edges()) {
             lineGraph.addLabeledVertex(vertexIndex++, e);
@@ -212,7 +212,7 @@ public class Graphs {
             return null;
         }
         int m = digraph.numEdges();
-        var lineGraph = new GraphBuilder<Edge, Object>().maxVertices(m).buildDigraph();
+        var lineGraph = new GraphBuilder<Edge, Object>().estimatedMaxVertices(m).buildDigraph();
         int vertexIndex = 0;
         for (Edge e : digraph.edges()) {
             lineGraph.addLabeledVertex(vertexIndex++, e);

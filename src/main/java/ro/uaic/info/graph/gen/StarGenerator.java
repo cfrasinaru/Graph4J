@@ -60,7 +60,7 @@ public class StarGenerator extends AbstractGenerator {
      */
     public Graph createGraph() {
         int n = vertices.length;
-        var g = new GraphBuilder().vertices(vertices).avgDegree(1)
+        var g = new GraphBuilder().vertices(vertices).estimatedAvgDegree(1)
                 .named("S" + n).buildGraph();
         addEdges(g, true);
         return g;
@@ -72,7 +72,7 @@ public class StarGenerator extends AbstractGenerator {
      * @return
      */
     public Digraph createDigraph(boolean outward) {
-        var g = new GraphBuilder().vertices(vertices).avgDegree(1).buildDigraph();
+        var g = new GraphBuilder().vertices(vertices).estimatedAvgDegree(1).buildDigraph();
         addEdges(g, outward);
         return g;
     }

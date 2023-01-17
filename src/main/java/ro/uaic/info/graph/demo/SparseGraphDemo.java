@@ -37,7 +37,7 @@ public class SparseGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testGraph4J() {
-        var g = new GraphBuilder().numVertices(n).avgDegree(avgDegree).buildGraph();
+        var g = new GraphBuilder().numVertices(n).estimatedAvgDegree(avgDegree).buildGraph();
         for (int v = 0; v < n; v++) {
             for (int j = 0; j < avgDegree; j++) {
                 int u = (v + j + 1) % n;

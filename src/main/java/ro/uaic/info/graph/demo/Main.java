@@ -32,7 +32,7 @@ public class Main {
     org.jgrapht.Graph jgraph;
 
     public static void main(String[] args) {
-        //var app = new Main();
+        var app = new Main();
         //var app = new LineGraphDemo();
         //var app = new GreedyColoringDemo();
         //var app = new BipartiteDemo();
@@ -40,7 +40,7 @@ public class Main {
         //var app = new BiconnectivityDemo();
         //var app = new ConnectivityDemo();
         //var app = new DFSVisitorDemo();
-        var app = new BFSVisitorDemo();
+        //var app = new BFSVisitorDemo();
         //var app = new DFSIteratorDemo();
         //var app = new BFSIteratorDemo();
         //var app = new EulerianCircuitDemo();
@@ -58,7 +58,7 @@ public class Main {
     }
 
     private void demo() {
-        run(this::test);
+        run(this::testGuava);
         //run(this::prepare);
     }
 
@@ -67,7 +67,7 @@ public class Main {
         g.addEdge(0, 1);
         g.addEdge(0, 1);
         System.out.println(g);
-        for(var it=g.edgeIterator();it.hasNext();) {
+        for (var it = g.edgeIterator(); it.hasNext();) {
             Edge e = it.next();
             System.out.println(e);
             it.remove();
@@ -77,11 +77,15 @@ public class Main {
     }
 
     private void testGuava() {
-        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(10).build();
-        g.addNode(0);
+        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(5).build();
+        g.addNode(3);
+        g.addNode(2);
         g.addNode(1);
-        g.putEdge(0, 1);
-        g.putEdge(0, 1);
+        g.putEdge(1, 2);
+        g.putEdge(1, 3);
+        g.putEdge(1, 4);
+        g.putEdge(1, 5);
+        System.out.println(g.nodes());
         System.out.println(g.edges());
     }
 

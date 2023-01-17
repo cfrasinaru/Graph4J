@@ -44,7 +44,7 @@ public class RandomTreeGenerator extends AbstractGenerator {
      */
     public Graph create() {
         int n = vertices.length;
-        var g = new GraphBuilder().vertices(vertices).numEdges(n - 1).buildGraph();
+        var g = new GraphBuilder().vertices(vertices).estimatedMaxEdges(n - 1).buildGraph();
         var random = new Random();
         int[] shuffled = IntArrays.shuffle(vertices, random);
         for (int i = 1; i < n; i++) {

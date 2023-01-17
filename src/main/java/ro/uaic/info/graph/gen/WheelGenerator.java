@@ -57,7 +57,7 @@ public class WheelGenerator extends AbstractGenerator {
      */
     public Graph createGraph() {
         int n = vertices.length;
-        var g = new GraphBuilder().vertices(vertices).avgDegree(3)
+        var g = new GraphBuilder().vertices(vertices).estimatedAvgDegree(3)
                 .named("W" + n).buildGraph();
         addEdges(g, true, true);
         return g;
@@ -70,7 +70,7 @@ public class WheelGenerator extends AbstractGenerator {
      * @return
      */
     public Digraph createDigraph(boolean clockwise, boolean outward) {
-        var g = new GraphBuilder().vertices(vertices).avgDegree(2).buildDigraph();
+        var g = new GraphBuilder().vertices(vertices).estimatedAvgDegree(2).buildDigraph();
         addEdges(g, clockwise, outward);
         return g;
     }

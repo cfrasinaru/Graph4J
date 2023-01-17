@@ -40,8 +40,10 @@ public class CycleGenerator extends AbstractGenerator {
      */
     public Graph createGraph() {
         int n = vertices.length;
-        var g = new GraphBuilder().vertices(vertices).avgDegree(2)
-                .named("C" + n).buildGraph();
+        var g = new GraphBuilder().vertices(vertices)
+                .estimatedAvgDegree(2)
+                .named("C" + n)
+                .buildGraph();
         addEdges(g, true);
         return g;
     }
@@ -52,7 +54,9 @@ public class CycleGenerator extends AbstractGenerator {
      * @return
      */
     public Digraph createDigraph(boolean clockwise) {
-        var g = new GraphBuilder().vertices(vertices).avgDegree(1).buildDigraph();
+        var g = new GraphBuilder().vertices(vertices)
+                .estimatedAvgDegree(1)
+                .buildDigraph();
         addEdges(g, clockwise);
         return g;
     }

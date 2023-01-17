@@ -63,7 +63,7 @@ public class GnpRandomGenerator extends AbstractGenerator {
     }
 
     private GraphBuilder builder() {
-        return new GraphBuilder().vertices(vertices).density(edgeProbability);
+        return new GraphBuilder().vertices(vertices).estimatedDensity(edgeProbability);
     }
 
     /**

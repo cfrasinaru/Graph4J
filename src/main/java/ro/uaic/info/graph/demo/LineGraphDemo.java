@@ -27,12 +27,15 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class LineGraphDemo extends PerformanceDemo {
 
+    public LineGraphDemo() {
+        runJGraphT = true;
+    }
+
+    
     @Override
-    protected void prepare() {
+    protected void createGraph() {
         graph = new GnpRandomGenerator(1_000, 0.1).createGraph();
         //graph = GraphGenerator.complete(300);
-        jgraph = Tools.createJGraph(graph);
-
     }
 
     @Override

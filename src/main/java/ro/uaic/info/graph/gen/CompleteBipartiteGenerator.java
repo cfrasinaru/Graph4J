@@ -81,7 +81,7 @@ public class CompleteBipartiteGenerator extends AbstractGenerator {
     public Graph createGraph() {
         int n1 = last1 - first1 + 1;
         int n2 = last2 - first2 + 1;
-        var g = new GraphBuilder().vertices(vertices).avgDegree(Math.max(n1, n2))
+        var g = new GraphBuilder().vertices(vertices).estimatedAvgDegree(Math.max(n1, n2))
                 .named("K" + n1 + "," + n2).buildGraph();
         addEdges(g, true);
         return g;
@@ -96,7 +96,7 @@ public class CompleteBipartiteGenerator extends AbstractGenerator {
         int n1 = last1 - first1 + 1;
         int n2 = last2 - first2 + 1;
         var g = new GraphBuilder().vertices(vertices)
-                .avgDegree(Math.max(n1, n2)).buildDigraph();
+                .estimatedAvgDegree(Math.max(n1, n2)).buildDigraph();
         addEdges(g, leftToRight);
         return g;
     }

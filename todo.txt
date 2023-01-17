@@ -2,9 +2,17 @@ https://github.com/jgrapht/jgrapht
 https://github.com/kevin-wayne/algs4
 https://github.com/jrtom/jung
 https://github.com/google/guava/tree/master/guava/src/com/google/common/graph
-https://github.com/earlygrey/simple-graphs
+https://github.com/earlygrey/simple-graphsâ
 
+Python
+https://networkx.org/
+https://github.com/networkx/networkx/tree/main/networkx/algorithms
+
+C++
 BGL https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
+
+.NET
+https://github.com/YaccConstructor/QuickGraph/tree/master/src/QuickGraph/Algorithms
 
 NetworkX or the BGL. or Igraph
 JGraphT—A Java Library for Graph Data Structures and Algorithms
@@ -18,6 +26,7 @@ Comparatii legate de modul de rulare / performanta:
 
 
 Implementare de noi algoritmi
+
 Shortest Paths:
 	-Bidirectional Dijkstra (multithreaded Dijkstra?)
 	https://en.wikipedia.org/wiki/Johnson%27s_algorithm
@@ -37,4 +46,6 @@ Generaratoare de grafuri
 
 - care au o anumita secventa (di)grafica
 	folosind fluxuri
+
+Planarity
 

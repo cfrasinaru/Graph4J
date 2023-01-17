@@ -27,6 +27,26 @@ public class CheckArguments {
 
     /**
      *
+     * @param graph
+     */
+    public static void graphNotNull(Graph graph) {
+        if (graph == null) {
+            throw new IllegalArgumentException("Graph reference must not be null.");
+        }
+    }
+
+    /**
+     *
+     * @param graph
+     */
+    public static void graphNotEmpty(Graph graph) {
+        if (graph.isEmpty()) {
+            throw new IllegalArgumentException("Graph must not be empty.");
+        }
+    }
+
+    /**
+     *
      * @param n
      */
     public static void numberOfVertices(int n) {

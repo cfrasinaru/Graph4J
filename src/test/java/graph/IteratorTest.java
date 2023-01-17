@@ -18,7 +18,7 @@ package graph;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.search.BFSIterator;
 import ro.uaic.info.graph.search.DFSIterator;
 
@@ -30,9 +30,9 @@ public class IteratorTest {
 
     @Test
     public void testDFS() {
-        var g = GraphBuilder
+        var g = new GraphBuilder()
                 .numVertices(8)
-                .addEdges(new int[][]{{0, 1}, {1, 2}, {0, 3}, {3, 4}, {0, 5}, {5, 6}})
+                .addEdges("0-1,1-2,0-3,3-4,0-5,5-6")
                 .buildGraph();
         var sb = new StringBuilder();
         var dfs = new DFSIterator(g);
@@ -44,9 +44,9 @@ public class IteratorTest {
 
     @Test
     public void testBFS() {
-        var g = GraphBuilder
+        var g = new GraphBuilder()
                 .numVertices(8)
-                .addEdges(new int[][]{{0, 1}, {1, 2}, {0, 3}, {3, 4}, {0, 5}, {5, 6}})
+                .addEdges("0-1,1-2,0-3,3-4,0-5,5-6")
                 .buildGraph();
         var sb = new StringBuilder();
         var dfs = new BFSIterator(g);

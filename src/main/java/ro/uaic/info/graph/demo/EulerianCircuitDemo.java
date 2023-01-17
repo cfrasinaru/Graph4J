@@ -16,7 +16,7 @@
  */
 package ro.uaic.info.graph.demo;
 
-import ro.uaic.info.graph.alg.HierholzerEulerianCircuit;
+import ro.uaic.info.graph.alg.eulerian.HierholzerEulerianCircuit;
 import ro.uaic.info.graph.gen.GraphGenerator;
 import ro.uaic.info.graph.util.Tools;
 
@@ -29,17 +29,17 @@ public class EulerianCircuitDemo extends PerformanceDemo {
     @Override
     protected void prepare() {
         //graph = new GnpRandomGenerator(10, 0.5).createGraph();
-        graph = GraphGenerator.complete(4003);
+        graph = GraphGenerator.complete(3003);
         jgraph = Tools.createJGraph(graph);
     }
 
     @Override
-    protected void test1() {
+    protected void testGraph4J() {
         new HierholzerEulerianCircuit(graph).findCircuit();
     }
 
     @Override
-    protected void test2() {
+    protected void testJGraphT() {
         new org.jgrapht.alg.cycle.HierholzerEulerianCycle().getEulerianCycle(jgraph);
     }
 

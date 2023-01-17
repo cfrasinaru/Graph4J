@@ -16,10 +16,11 @@
  */
 package ro.uaic.info.graph.alg;
 
+import ro.uaic.info.graph.alg.cycle.CycleDetectionAlgorithm;
 import java.util.Arrays;
-import ro.uaic.info.graph.Cycle;
+import ro.uaic.info.graph.model.Cycle;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.VertexSet;
+import ro.uaic.info.graph.model.VertexSet;
 import ro.uaic.info.graph.alg.sp.FloydWarshallShortestPath;
 import ro.uaic.info.graph.search.BFSIterator;
 import ro.uaic.info.graph.util.CheckArguments;
@@ -48,7 +49,7 @@ public class GraphMetrics extends GraphAlgorithm {
      * graph ia acyclic.
      */
     public int girth() {
-        Cycle cycle = new CycleFinder(graph).findShortestCycle();
+        Cycle cycle = new CycleDetectionAlgorithm(graph).findShortestCycle();
         return cycle != null ? cycle.length() : Integer.MAX_VALUE;
     }
 
@@ -140,12 +141,12 @@ public class GraphMetrics extends GraphAlgorithm {
      *
      * @return the eccentricities
      */
-    public int[] computeOrGetEccentricities() {
+    public int[] eccentricities() {
         if (ecc != null) {
             return ecc;
         }
         if (dist == null) {
-            computeOrGetDistances();
+            distances();
         }
         int n = graph.numVertices();
         this.ecc = new int[n];
@@ -184,7 +185,7 @@ public class GraphMetrics extends GraphAlgorithm {
      *
      * @return the distances matrix
      */
-    public int[][] computeOrGetDistances() {
+    public int[][] distances() {
         int n = graph.numVertices();
         this.dist = new int[n][n];
         var alg = new FloydWarshallShortestPath(graph);
@@ -218,7 +219,7 @@ public class GraphMetrics extends GraphAlgorithm {
      */
     public int diameter() {
         if (ecc == null) {
-            computeOrGetEccentricities();
+            eccentricities();
         }
         return diameter;
     }
@@ -234,7 +235,7 @@ public class GraphMetrics extends GraphAlgorithm {
      */
     public int radius() {
         if (ecc == null) {
-            computeOrGetEccentricities();
+            eccentricities();
         }
         return radius;
     }
@@ -246,7 +247,7 @@ public class GraphMetrics extends GraphAlgorithm {
      * @return the graph center
      */
     public VertexSet center() {
-        computeOrGetEccentricities(); //also computes the radius
+        eccentricities(); //also computes the radius
         VertexSet set = new VertexSet(graph);
         if (radius == Integer.MAX_VALUE) {
             return set;
@@ -266,7 +267,7 @@ public class GraphMetrics extends GraphAlgorithm {
      * @return the graph periphery
      */
     public VertexSet periphery() {
-        computeOrGetEccentricities();
+        eccentricities();
         VertexSet set = new VertexSet(graph);
         if (diameter == Integer.MAX_VALUE) {
             return set;
@@ -287,7 +288,7 @@ public class GraphMetrics extends GraphAlgorithm {
      * @return the graph pseudo periphery
      */
     public VertexSet pseudoPeriphery() {
-        computeOrGetEccentricities();
+        eccentricities();
         VertexSet set = new VertexSet(graph);
         for (int i = 0, n = graph.numVertices(); i < n; i++) {
             for (int j = 0; j < n; j++) {

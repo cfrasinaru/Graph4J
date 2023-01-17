@@ -16,9 +16,12 @@
  */
 package graph;
 
+import java.util.ArrayList;
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
+import ro.uaic.info.graph.demo.City;
 import ro.uaic.info.graph.gen.GraphGenerator;
 
 /**
@@ -32,14 +35,14 @@ public class BuilderTest {
 
     @Test
     public void empty() {
-        var g = GraphBuilder.empty().buildGraph();
+        var g = new GraphBuilder().buildGraph();
         assertEquals(0, g.numVertices());
         assertEquals(0, g.numEdges());
     }
 
     @Test
     public void buildGraph() {
-        var g = GraphBuilder.vertexRange(0, 3)
+        var g = new GraphBuilder().vertexRange(0, 3)
                 .addClique(0, 1, 2, 3).buildGraph();
         assertEquals(6, g.numEdges());
 
@@ -68,7 +71,7 @@ public class BuilderTest {
 
     @Test
     public void buildDigraph() {
-        var g = GraphBuilder.vertexRange(0, 4)
+        var g = new GraphBuilder().vertexRange(0, 4)
                 .addEdges("0-2, 0-3, 1-2, 1-3, 2-3, 3-4")
                 .buildDigraph();
         assertEquals(6, g.numEdges());
@@ -81,7 +84,7 @@ public class BuilderTest {
 
     @Test
     public void buildWeightedGraph() {
-        var g = GraphBuilder.vertexRange(0, 3)
+        var g = new GraphBuilder().vertexRange(0, 3)
                 .addClique(0, 1, 2, 3)
                 .buildGraph();
         double x = 0.0, y = 0.0;
@@ -107,7 +110,7 @@ public class BuilderTest {
 
     @Test
     public void buildWeightedDigraph() {
-        var g = GraphBuilder.vertexRange(0, 3)
+        var g = new GraphBuilder().vertexRange(0, 3)
                 .addPath(0, 1, 2, 3)
                 .buildDigraph();
         double x = 0.0, y = 0.0;
@@ -119,6 +122,38 @@ public class BuilderTest {
         }
         assertEquals(3.0, g.getVertexWeight(3));
         assertEquals(2.0, g.getEdgeWeight(2, 3));
+    }
+
+    @Test
+    public void buildLabeledGraph1() {
+        var g = new GraphBuilder<String, String>().labeledVertices("a", "b", "c").buildDigraph();
+        g.addLabeledVertex("d");
+        int v = g.findSingleVertex("a");
+        int u = g.findSingleVertex("b");
+        g.addEdge(v, u);
+        g.addEdge("b", "c");
+        g.addLabeledEdge("c", "d", "Hello");
+
+        assertEquals(4, g.numVertices());
+        assertEquals(3, g.numEdges());
+        assertEquals(g.findSingleVertex("c"), g.findSingleEdge("Hello").source());
+        assertEquals(g.findSingleVertex("d"), g.findSingleEdge("Hello").target());
+    }
+
+    @Test
+    public void buildLabeledGraph2() {
+        List<City> cities = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            cities.add(new City("City" + i));
+        }
+        var g = new GraphBuilder<City, String>()
+                .labeledVertices(cities)
+                .addEdges("City1-City2, City2-City3")
+                .addEdge(cities.get(3), cities.get(4))
+                .buildGraph();
+        g.addEdge(cities.get(4), cities.get(5));
+
+        assertEquals(4, g.numEdges());
     }
 
 }

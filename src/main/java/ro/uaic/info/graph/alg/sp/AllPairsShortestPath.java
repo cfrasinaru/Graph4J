@@ -16,7 +16,7 @@
  */
 package ro.uaic.info.graph.alg.sp;
 
-import ro.uaic.info.graph.Path;
+import ro.uaic.info.graph.model.Path;
 
 /**
  *
@@ -46,7 +46,7 @@ public interface AllPairsShortestPath {
      * <code>Double.POSTIVE_INFINITY</code> if no path exist.
      */
     default double getPathWeight(int source, int target) {
-        return getPath(source, target).length();
+        return getPath(source, target).computeEdgesWeight();
     }
 
 }

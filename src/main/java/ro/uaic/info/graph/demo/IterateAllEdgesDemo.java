@@ -34,7 +34,7 @@ public class IterateAllEdgesDemo extends PerformanceDemo {
     }
 
     @Override
-    protected void test1() {
+    protected void testGraph4J() {
         int k = 0;
         for (int v : graph.vertices()) {
             for (var it = graph.neighborIterator(v); it.hasNext();) {
@@ -46,7 +46,7 @@ public class IterateAllEdgesDemo extends PerformanceDemo {
     }
 
     @Override
-    protected void test2() {
+    protected void testJGraphT() {
         int k = 0;
         for (var v : jgraph.vertexSet()) {
             for (var e : jgraph.iterables().edgesOf(v)) {

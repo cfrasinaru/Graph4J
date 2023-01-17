@@ -16,7 +16,7 @@
  */
 package ro.uaic.info.graph.alg.sp;
 
-import ro.uaic.info.graph.Path;
+import ro.uaic.info.graph.model.Path;
 
 /**
  * Contract for single-source shortest path algorithms. The graph and the source
@@ -67,7 +67,7 @@ public interface SingleSourceShortestPath {
      * <code>Double.POSTIVE_INFINITY</code> if no path exist.
      */
     default double getPathWeight(int target) {
-        return getPath(target).length();
+        return getPath(target).computeEdgesWeight();
     }
 
 }

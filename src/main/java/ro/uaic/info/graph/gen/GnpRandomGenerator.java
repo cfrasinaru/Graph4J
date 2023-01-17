@@ -23,7 +23,7 @@ import ro.uaic.info.graph.DirectedPseudograph;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.Multigraph;
 import ro.uaic.info.graph.Pseudograph;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.util.CheckArguments;
 
 /**
@@ -63,7 +63,7 @@ public class GnpRandomGenerator extends AbstractGenerator {
     }
 
     private GraphBuilder builder() {
-        return GraphBuilder.vertices(vertices).density(edgeProbability);
+        return new GraphBuilder().vertices(vertices).density(edgeProbability);
     }
 
     /**

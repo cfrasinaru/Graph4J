@@ -16,12 +16,15 @@
  */
 package ro.uaic.info.graph;
 
+import ro.uaic.info.graph.model.EdgeSet;
+import ro.uaic.info.graph.model.VertexSet;
+
 /**
  *
  * @author Cristian Frăsinaru
  */
 interface Labeled<V, E> {
-    
+
     /**
      *
      * @param v a vertex number
@@ -35,7 +38,7 @@ interface Labeled<V, E> {
      * @param label
      */
     int addLabeledVertex(V label);
-    
+
     /**
      *
      * @param v a vertex number
@@ -43,6 +46,12 @@ interface Labeled<V, E> {
      * @param label
      */
     void addLabeledEdge(int v, int u, E label);
+
+    default void addLabeledEdge(V firstVertexLabel, V secondVertexLabel, E edgeLabel) {
+        int v = findSingleVertex(firstVertexLabel);
+        int u = findSingleVertex(secondVertexLabel);
+        addLabeledEdge(v, u, edgeLabel);
+    }
 
     /**
      *
@@ -73,5 +82,46 @@ interface Labeled<V, E> {
      * @return
      */
     E getEdgeLabel(int v, int u);
-    
+
+    /**
+     *
+     * @return {@code true}, if weights have been set on edges.
+     */
+    boolean isEdgeLabeled();
+
+    /**
+     *
+     * @return {@code true}, if weights have been set on vertices.
+     */
+    boolean isVertexLabeled();
+
+    /**
+     *
+     * @param label a label.
+     * @return the number of the (first) vertex which has the specified label,
+     * or {@code -1} if no such vertex exists.
+     */
+    int findSingleVertex(V label);
+
+    /**
+     *
+     * @param label a label.
+     * @return all the vertices of the graph which have been assigned the
+     * specified label.
+     */
+    VertexSet findAllVertices(V label);
+
+    /**
+     *
+     * @param label
+     * @return
+     */
+    Edge findSingleEdge(E label);
+
+    /**
+     *
+     * @param label
+     * @return all the edges woth the specific label.
+     */
+    EdgeSet findAllEdges(E label);
 }

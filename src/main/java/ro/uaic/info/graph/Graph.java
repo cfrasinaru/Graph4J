@@ -16,19 +16,16 @@
  */
 package ro.uaic.info.graph;
 
-import java.util.Iterator;
-import java.util.stream.IntStream;
-
 /**
  * Support interface for all types of graphs: directed or not, weighted or not,
  * allowing self loops and multiple edges or not.
  *
- * Vertices and edges of all graph types can be labelled using any reference
- * data type.
+ * Vertices and edges of all graph types can be labeled using any reference data
+ * type.
  *
  * @author Cristian Frăsinaru
- * @param <V> the type of vertex labels in this graphs
- * @param <E> the type of edge labels in this graphs
+ * @param <V> the type of vertex labels in this graph
+ * @param <E> the type of edge labels in this graph
  */
 public interface Graph<V, E> extends Weighted, Labeled<V, E> {
 
@@ -44,28 +41,28 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     /**
      * Returns the name of the graph, or {@code null} if the graph has no name.
      *
-     * @return the name of the graph
+     * @return the name of the graph.
      */
     String getName();
 
     /**
      * A graph may receive a name, for example "K4", "C5", "Petersen", etc.
      *
-     * @param name the name of the graph
+     * @param name the name of the graph.
      */
     void setName(String name);
 
     /**
      * The number of vertices is also called the <i>order</i> of the graph.
      *
-     * @return the number of vertices in the graph
+     * @return the number of vertices in the graph.
      */
     int numVertices();
 
     /**
      * The number of edges is also called the <i>dimension</i> of the graph.
      *
-     * @return the number of edges in the graph
+     * @return the number of edges in the graph.
      */
     int numEdges();
 
@@ -75,7 +72,7 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * arcs). For multigraphs and pseudographs, this method returns
      * {@code Long.MAX_VALUE}.
      *
-     * @return the maximum number of edges the graph can have
+     * @return the maximum number of edges the graph can have.
      */
     long maxEdges();
 
@@ -83,59 +80,78 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * A simple graph with {@code n} vertices may have at most {@code n*(n-1)/2}
      * edges.
      *
-     * @param numVertices
+     * @param numVertices a number of vertices.
      * @return the maximum number of edges a graph with {@code numVertices} can
-     * have
+     * have.
      */
     static long maxEdges(int numVertices) {
         return (long) numVertices * (numVertices - 1) / 2;
     }
 
     /**
+     * The vertices of the graph are stored in an array. By default, the
+     * vertices have numbers between 0 and {@code numVertices()-1}, however this
+     * is not mandatory. Vertices can be removed from the graph, new vertices
+     * with any number can be added, etc.
      *
-     * @return the vertices of the graph
+     * For performance reasons, this is the actual array where the vertices are
+     * stored, so do not modify it.
+     *
+     * @return the vertices of the graph.
      */
     int[] vertices();
 
     /**
+     * A graph is considered empty if it has no vertices.
      *
-     * @return true if the number of vertices is 0, otherwise false
+     * @return {@code true} if the number of vertices is 0, otherwise false.
      */
     default boolean isEmpty() {
         return numVertices() == 0;
     }
 
     /**
+     * Vertices, having various numbers, are stored indexed in an array.
      *
-     * @param index between 0 and vertexCount() - 1
-     * @return the vertex with the specified index
+     * @param index a value between 0 and {@code numVertices() - 1}.
+     * @return the vertex at the specified index (position) in the array.
      */
     int vertexAt(int index);
 
     /**
-     * The vertices of the graph are maintained sorted in an array. The index of
-     * a vertex represents the position where it is stored in the array.
+     * The index of a vertex represents the position where it is stored in the
+     * array.
      *
-     * @param v a vertex number
-     * @return the index of the specified vertex number
+     * @param v a vertex number.
+     * @return the index of the specified vertex number.
      */
     int indexOf(int v);
 
     /**
-     * The array has {@code numEdges()} rows and two columns, so
-     * {@code e = edges()[i]} represents the edge {@code (v=e[0],u=e[1])}, where
-     * v and u are vertex numbers.
+     * The edge objects are not stored internally in the graph so this method
+     * should only be used if all the edges are required to be in the same data
+     * structure for a specific purpose. In order to iterate over the edges of
+     * the graph it is better to use {@link Graph#edgeIterator()}.
      *
-     * @return an array of all the edges in the graph
+     * @return an array of all the edges in the graph.
      */
-    int[][] edges();
+    Edge[] edges();
 
     /**
-     * Creates an iterator through all edges in the graph.
      *
-     * @return an iterator through all edges in the graph
+     * @param v a vertex number;
+     * @return the edges formed by v with its neighbors (successors).
      */
-    Iterator<Edge> edgeIterator();
+    Edge[] edgesOf(int v);
+
+    /**
+     * Returns an iterator over the edges in this graph. There are no guarantees
+     * concerning the order in which the edges are returned, unless the graph is
+     * sorted.
+     *
+     * @return an iterator over the edges in this graph.
+     */
+    EdgeIterator edgeIterator();
 
     /**
      * Returns an edge object corresponding to the edge vu, containing all the
@@ -143,12 +159,12 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      *
      * @param v a vertex number
      * @param u a vertex number
-     * @return the edge corresponding to the vertices v and u
+     * @return the edge corresponding to the vertices v and u.
      */
     Edge<E> edge(int v, int u);
 
     /**
-     * Check if two vertices of the graph, v and u, are adjacent. In case of
+     * Checks if two vertices of the graph, v and u, are adjacent. In case of
      * undirected graphs, that means that v is in the adjacency list of u and u
      * is also in the adjacency list of v. In case of directed graphs, the
      * method returns {@code true} only if u is in the adjacency list of v (u is
@@ -156,7 +172,7 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      *
      * @param u a vertex number
      * @param v a vertex number
-     * @return {@code true} if u is in the adjacency list of v
+     * @return {@code true} if u is in the adjacency list of v.
      */
     boolean containsEdge(int v, int u);
 
@@ -164,8 +180,8 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * Convenience method for {@code containsEdge(e.source(), e.target()}. See
      * {@link #containsEdge(int, int)}.
      *
-     * @param e an edge
-     * @return {@code true} if the edge belongs to the graph
+     * @param e an edge.
+     * @return {@code true} if the edge belongs to the graph.
      */
     default boolean containsEdge(Edge e) {
         return containsEdge(e.source(), e.target());
@@ -174,8 +190,8 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     /**
      * Verifies if the graph contains a specific vertex number.
      *
-     * @param v a vertex number
-     * @return {@code true} if v belongs to the graph
+     * @param v a vertex number.
+     * @return {@code true} if v belongs to the graph.
      */
     default boolean containsVertex(int v) {
         return indexOf(v) >= 0;
@@ -186,33 +202,52 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * of v. In case of directed graphs, this method returns the same as
      * {@link  Digraph#succesors(int)}.
      *
-     * @param v a vertex number
-     * @return the vertices that are adjacent to v
+     * For a more efficient iteration over the neighbors of a vertex, use
+     * {@link #neighborIterator(int)}.
+     *
+     * @param v a vertex number.
+     * @return the vertices that are adjacent to v.
      */
     int[] neighbors(int v);
 
     /**
+     * Iterates over the edges incident from v, returning the neighbors of v,
+     * along with information regarding their edges.
      *
-     * @param v
-     * @return
+     * @param v a vertex number.
+     * @return an iterator over the neigbors of v.
      */
-    NeighborIterator<E> neighborIterator(int v);
+    default NeighborIterator<E> neighborIterator(int v) {
+        return neighborIterator(v, -1);
+    }
+
+    /**
+     * Iterates over the edges incident from v, returning the neighbors of v,
+     * starting from a specified position in the adjacency list of v, along with
+     * information regarding their edges.
+     *
+     * @param v a vertex number.
+     * @param pos a position in the adjacency list of v.
+     * @return an iterator over the neigbors of v, starting from a specified
+     * position in the adjacency list of v.
+     */
+    NeighborIterator<E> neighborIterator(int v, int pos);
 
     /**
      * The degree of a vertex is the number of its neighbors, that is vertices
      * that are in its adjacency list. In case of directed graphs, this method
      * returns the same as {@link  Digraph#outDegree(int)}.
      *
-     * @param v a vertex number
-     * @return the degree of the vertex v
+     * @param v a vertex number.
+     * @return the degree of the vertex v.
      */
     int degree(int v);
 
     /**
      * An <i>isolated</i> vertex has no neighbors in its adjacency list.
      *
-     * @param v a vertex number
-     * @return {@code true} if v has degree 0
+     * @param v a vertex number.
+     * @return {@code true} if v has degree 0.
      */
     default boolean isIsolated(int v) {
         return degree(v) == 0;
@@ -221,8 +256,8 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     /**
      * A <i>pendant</i> vertex has a single neighbor in its adjacency list.
      *
-     * @param v a vertex number
-     * @return {@code true} if v has degree 1
+     * @param v a vertex number.
+     * @return {@code true} if v has degree 1.
      */
     default boolean isPendant(int v) {
         return degree(v) == 1;
@@ -233,8 +268,8 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * case of simple graphs, it has the degree {@code numVertices()-1}. In case
      * of directed graphs it has the outdegree {@code numVertices()-1}.
      *
-     * @param v a vertex number
-     * @return {@code true} if v is universal
+     * @param v a vertex number.
+     * @return {@code true} if v is universal.
      */
     default boolean isUniversal(int v) {
         return degree(v) == numVertices() - 1;
@@ -245,51 +280,84 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * {@code degrees()[idx]} represents the degree of the vertex with the index
      * idx, that is {@code vertexAt(idx)}.
      *
-     * @return the degree sequence of the graph
+     * @return the degree sequence of the graph.
      */
     int[] degrees();
 
     /**
+     * Adds a new edge to the graph. The endpoints of the edge are identified
+     * using their vertex numbers.
      *
-     * @param v a vertex number
-     * @param u a vertex number
+     * @param v a vertex number.
+     * @param u a vertex number.
      */
     void addEdge(int v, int u);
 
     /**
+     * Adds a new edge to the graph. The {@code Edge} object contains its
+     * endpoints and, if necessary, its weight and label. The {@code directed}
+     * property of an edge is ignored when it is added to the graph as it will
+     * assume the graph type.
      *
-     * @param e an edge
+     * Note that the {@code Edge} objects are not stored in the graph object,
+     * they represent only a a convenient method to add the required
+     * information.
+     *
+     * @param e an edge object.
      */
     void addEdge(Edge<E> e);
 
     /**
+     * Adds a new edge to the graph. The endpoints of the edge are identified
+     * using the labels of the vertices, which should be uniquely identifiable.
      *
-     * @param v a vertex number
-     * @param u a vertex number
+     * @param firstVertexLabel the label of a uniquely identifiable vertex.
+     * @param secondVertexLabel the label of a uniquely identifiable vertex.
+     */
+    default void addEdge(V firstVertexLabel, V secondVertexLabel) {
+        int v = findSingleVertex(firstVertexLabel);
+        int u = findSingleVertex(secondVertexLabel);
+        addEdge(v, u);
+    }
+
+    /**
+     * Removes the specified edge from the graph. If the specified edge does not
+     * exist, it will throw an exception.
+     *
+     * @param v a vertex number.
+     * @param u a vertex number.
      */
     void removeEdge(int v, int u);
+
+    /**
+     * Removes all edges incident with (from in case of digraphs) v.
+     *
+     * @param v a vertex number.
+     */
+    void removeAllEdges(int v);
 
     /**
      * Adds a new vertex to the graph having the number equal to the maximum
      * vertex number plus one. The weight and the label are null.
      *
-     * @return the number of the added vertex
+     * @return the number of the added vertex.
      */
-    default int addVertex() {
-        int v = 1 + IntStream.of(vertices()).max().orElse(1);
-        return addVertex(v);
-    }
+    int addVertex();
 
     /**
+     * Adds a new vertex to the graph having the number. The vertex numbers
+     * should not be negative. Adding vertices with unnecessary large numbers
+     * may increase the memory occupied by the graph.
      *
-     * @param v a vertex number that does not exist in the graph
-     * @return the index of the added vertex
+     * @param v a vertex number that does not exist in the graph.
+     * @return the index of the added vertex.
      */
     int addVertex(int v);
 
     /**
+     * Adds a sequence of vertices to the graph.
      *
-     * @param vertices
+     * @param vertices a sequence of vertices.
      */
     default void addVertices(int... vertices) {
         for (int v : vertices) {
@@ -298,14 +366,17 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     }
 
     /**
+     * Removes the specified vertex from the graph, along with all edges
+     * incident to it. If the vertex does not exist, an exception will be
+     * thrown.
      *
-     * @param v
+     * @param v a vertex number.
      */
     void removeVertex(int v);
 
     /**
      *
-     * @param vertices
+     * @param vertices a sequence of vertices.
      */
     default void removeVertices(int... vertices) {
         for (int v : vertices) {
@@ -316,8 +387,8 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     /**
      * Creates a new vertex adjacent to all the neigbors of v
      *
-     * @param v the vertex to be duplicated
-     * @return the number of the newly created vertex
+     * @param v the vertex to be duplicated.
+     * @return the number of the newly created vertex.
      */
     int duplicateVertex(int v);
 
@@ -325,36 +396,54 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * Creates a new vertex that will replace the given arguments, connected to
      * all their neigbors.
      *
-     * @param vertices
-     * @return the number of the newly created vertex
+     * @param vertices the vertices which will be contracted.
+     * @return the number of the newly created vertex.
      */
     int contractVertices(int... vertices);
 
     /**
      * Creates a new vertex adjacent to v and u, and removes the edge (v,u).
      *
-     * @param v
-     * @param u
-     * @return the number of the newly created vertex
+     * @param v a vertex number.
+     * @param u a vertex number.
+     * @return the number of the newly created vertex.
      */
     int splitEdge(int v, int u);
 
     /**
+     * Renumbers all the vertices of the graph, adding the specified amount to
+     * each of them.
      *
-     * @param amount
+     * @param amount a positive number.
      */
     void renumberAdding(int amount);
 
     /**
+     * Creates and returns an identical copy of the graph.
      *
-     * @return
+     * @return an identical copy of the graph.
      */
     Graph<V, E> copy();
 
     /**
+     * Creates and returns a copy of the graph. Vertices are copied by default.
+     * All other elements may or may not be copied.
      *
-     * @param vertices
-     * @return the subgraph induced by the given vertices
+     * @param vertexWeights {@code true} if the vertex weights should be copied.
+     * @param vertexLabels {@code true} if the vertex labels should be copied.
+     * @param edges {@code true} if the edges should be copied.
+     * @param edgeWeights {@code true} if the edge weights should be copied.
+     * @param edgeLabels {@code true} if the edge labels should be copied.
+     * @return a copy of the graph.
+     */
+    Graph<V, E> copy(boolean vertexWeights, boolean vertexLabels,
+            boolean edges, boolean edgeWeights, boolean edgeLabels);
+
+    /**
+     * Creates and returns the subgraph induced by some vertices.
+     *
+     * @param vertices a sequence of vertices.
+     * @return the subgraph induced by the given vertices.
      */
     Graph<V, E> subgraph(int... vertices);
 
@@ -362,7 +451,7 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * The <i>complement</i> of a graph G has the same vertex set as G, but its
      * edge set consists of the edges not present in G.
      *
-     * @return the complement of the graph
+     * @return the complement of the graph.
      */
     Graph<V, E> complement();
 
@@ -382,7 +471,7 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * implementation does not allow self-loops, the elements on the main
      * diagonal are all 0.
      *
-     * @return the adjacency matrix
+     * @return the adjacency matrix.
      */
     int[][] adjacencyMatrix();
 
@@ -397,7 +486,7 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      *
      * The cost-matrix is not defined for multigraphs and pseudographs.
      *
-     * @return the cost matrix
+     * @return the cost matrix.
      */
     double[][] costMatrix();
 
@@ -419,16 +508,18 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * <code>v = vertexAt(i)</code>, -1 if it is incident <i>to</i> v, and 0
      * otherwise.
      *
-     * The incidence-matrix is not defined for multigraphs and pseudographs.
      *
-     *
-     * @return
+     * @return the incidence matrix.
      */
     int[][] incidenceMatrix();
 
     /**
+     * If the graph is sorted, its vertices and their adjacency lists will be
+     * maintained sorted ascending by their number. This is expensive when
+     * creating large graphs.
      *
-     * @return true, if the adjacency lists of the graph are maintained sorted
+     * @return {@code true}, if the adjacency lists of the graph are maintained
+     * sorted.
      */
     boolean isSorted();
 
@@ -436,22 +527,21 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * Convenience method for testing if this graph is actually a directed
      * graph.
      *
-     * @see Digraph
-     * @return true, if this is an instance of <code>Digraph</code>
+     * @return {@code true}, if this is an instance of {@link Digraph}.
      */
     boolean isDirected();
 
     /**
      * Convenience method for testing if this graph is actually a multigraph.
      *
-     * @return true, if this is an instance of <code>Multigraph</code>
+     * @return true, if this is an instance of {@link Multigraph}.
      */
     boolean isAllowingMultipleEdges();
 
     /**
      * Convenience method for testing if this graph is actually a pseudograph.
      *
-     * @return true, if this is an instance of <code>Pseudograph</code>
+     * @return true, if this is an instance of {@link Pseudograph}.
      */
     boolean isAllowingSelfLoops();
 

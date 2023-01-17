@@ -58,6 +58,19 @@ public interface NeighborIterator<E> {
     int previous();
 
     /**
+     * Returns the current position in the adjacency list.
+     *
+     * @return current position in the adjacency list
+     */
+    int position();
+
+    /**
+     * 
+     * @return the current edge;
+     */
+    Edge edge();
+    
+    /**
      * Returns the weight for the current edge.
      *
      * @return the weight of the edge from the source vertex to the current

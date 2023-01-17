@@ -16,9 +16,9 @@
  */
 package ro.uaic.info.graph.demo;
 
+import edu.princeton.cs.algs4.FloydWarshall;
 import ro.uaic.info.graph.alg.sp.FloydWarshallShortestPath;
 import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
 import ro.uaic.info.graph.gen.GraphGenerator;
 import ro.uaic.info.graph.util.Tools;
 
@@ -30,29 +30,44 @@ public class FloydWarshallDemo extends PerformanceDemo {
 
     @Override
     protected void prepare() {
-        //graph = new GnpRandomGenerator(300, 0.3).createGraph();
+        //graph = new GnpRandomGenerator(1000, 0.3).createGraph();
         //EdgeWeightsGenerator.randomIntegers(graph, 1, 1000);
-        graph = GraphGenerator.complete(500);
-        EdgeWeightsGenerator.consecutiveIntegers(graph);        
+        graph = GraphGenerator.complete(1000);
+        EdgeWeightsGenerator.consecutiveIntegers(graph);
         jgraph = Tools.createJGraph(graph);
+        adjMatrixEwd = Tools.createAlgs4AdjMatrixEwd(graph);
+
     }
 
     @Override
-    protected void test1() {
+    protected void testGraph4J() {
+        var alg = new FloydWarshallShortestPath(graph);
         for (int i = 1; i < graph.numVertices(); i++) {
-            var result = new FloydWarshallShortestPath(graph).getPath(0, i);
+            alg.getPath(0, i);
+            //alg.getPathWeight(0, i);
         }
     }
 
     @Override
-    protected void test2() {
+    protected void testJGraphT() {
+        var alg = new org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths(jgraph);
         for (int i = 1; i < graph.numVertices(); i++) {
-            var result = new org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths(jgraph).getPath(0, i);
+            alg.getPath(0, i);
+            //alg.getPathWeight(0, i);
+        }
+    }
+
+    @Override
+    protected void testAlgs4() {
+        var alg = new FloydWarshall(adjMatrixEwd);
+        for (int i = 1; i < graph.numVertices(); i++) {
+            alg.path(0, i);
+            //alg.dist(0, i);
         }
     }
 
     public static void main(String args[]) {
-        var app = new DijkstraDemo();
+        var app = new FloydWarshallDemo();
         app.demo();
     }
 

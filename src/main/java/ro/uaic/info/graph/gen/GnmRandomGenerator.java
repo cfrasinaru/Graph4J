@@ -23,7 +23,7 @@ import ro.uaic.info.graph.DirectedPseudograph;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.Multigraph;
 import ro.uaic.info.graph.Pseudograph;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.util.CheckArguments;
 
 /**
@@ -65,7 +65,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public Graph createGraph() {
-        var g = GraphBuilder.vertices(vertices).numEdges(numEdges).buildGraph();
+        var g = new GraphBuilder().vertices(vertices).numEdges(numEdges).buildGraph();
         createEdges(g, false);
         return g;
     }
@@ -103,7 +103,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public Digraph createDigraph() {
-        var g = GraphBuilder.vertices(vertices).numEdges(numEdges).buildDigraph();
+        var g = new GraphBuilder().vertices(vertices).numEdges(numEdges).buildDigraph();
         createEdges(g, true);
         return g;
     }
@@ -113,7 +113,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public Multigraph createMultiGraph() {
-        var g = GraphBuilder.vertices(vertices).numEdges(numEdges).buildMultigraph();
+        var g = new GraphBuilder().vertices(vertices).numEdges(numEdges).buildMultigraph();
         createEdgesProbabilistic(g, true, false);
         return g;
     }
@@ -123,7 +123,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public DirectedMultigraph createDirectedMultigraph() {
-        var g = GraphBuilder.vertices(vertices).numEdges(numEdges).buildDirectedMultigraph();
+        var g = new GraphBuilder().vertices(vertices).numEdges(numEdges).buildDirectedMultigraph();
         createEdgesProbabilistic(g, true, false);
         return g;
     }
@@ -133,7 +133,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public Pseudograph createPseudograph() {
-        var g = GraphBuilder.vertices(vertices).numEdges(numEdges).buildPseudograph();
+        var g = new GraphBuilder().vertices(vertices).numEdges(numEdges).buildPseudograph();
         createEdgesProbabilistic(g, true, true);
         return g;
     }
@@ -143,7 +143,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public DirectedPseudograph createDirectedPseudograph() {
-        var g = GraphBuilder.vertices(vertices).numEdges(numEdges).buildDirectedPseudograph();
+        var g = new GraphBuilder().vertices(vertices).numEdges(numEdges).buildDirectedPseudograph();
         createEdgesProbabilistic(g, true, true);
         return g;
     }

@@ -18,8 +18,8 @@ package algorithms;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.alg.HierholzerEulerianCircuit;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.alg.eulerian.HierholzerEulerianCircuit;
+import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.gen.CompleteGenerator;
 import ro.uaic.info.graph.gen.GraphGenerator;
 
@@ -34,7 +34,7 @@ public class EulerianCircuitTest {
 
     @Test
     public void twoIntersectingCycles() {
-        var g = GraphBuilder.numVertices(8)
+        var g = new GraphBuilder().numVertices(8)
                 .addCycle(0, 1, 2, 3, 4, 5)
                 .addCycle(6, 1, 5, 7, 4, 2).buildGraph();
 
@@ -60,8 +60,8 @@ public class EulerianCircuitTest {
     public void completeDigraphs() {
         var g1 = new CompleteGenerator(6).createDigraph();
         var alg1 = new HierholzerEulerianCircuit(g1);
-        assertFalse(alg1.isEulerian());
-        assertNull(alg1.findCircuit());
+        assertTrue(alg1.isEulerian());
+        assertNotNull(alg1.findCircuit());
 
         var g2 = new CompleteGenerator(7).createDigraph();
         var alg2 = new HierholzerEulerianCircuit(g2);

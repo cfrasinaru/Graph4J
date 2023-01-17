@@ -17,7 +17,7 @@
 package ro.uaic.info.graph.alg.sp;
 
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.util.VertexHeap;
+import ro.uaic.info.graph.model.VertexHeap;
 
 /**
  * {@inheritDoc}
@@ -30,7 +30,7 @@ import ro.uaic.info.graph.util.VertexHeap;
  *
  * @author Cristian Frăsinaru
  */
-public class DijkstraShortestPathHeap extends DijkstraShortestPathSupport {
+public class DijkstraShortestPathHeap extends DijkstraShortestPathBase {
 
     private VertexHeap heap;
 

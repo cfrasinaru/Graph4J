@@ -16,7 +16,7 @@
  */
 package ro.uaic.info.graph.alg.sp;
 
-import ro.uaic.info.graph.Cycle;
+import ro.uaic.info.graph.model.Cycle;
 
 /**
  *

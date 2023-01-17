@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -144,6 +145,21 @@ public class IntArrays {
         int[] array = new int[n];
         for (int i = 0; i < n; i++) {
             array[i] = list.get(i);
+        }
+        return array;
+    }
+
+    /**
+     * 
+     * @param set
+     * @return 
+     */
+    public static int[] fromSet(Set<Integer> set) {
+        int n = set.size();
+        int[] array = new int[n];
+        int i = 0;
+        for (int a : set) {
+            array[i++] = a;
         }
         return array;
     }

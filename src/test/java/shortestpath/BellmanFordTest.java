@@ -18,10 +18,10 @@ package shortestpath;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.Path;
+import ro.uaic.info.graph.model.Path;
 import ro.uaic.info.graph.alg.sp.BellmanFordShortestPath;
 import ro.uaic.info.graph.alg.sp.DijkstraShortestPathDefault;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
 
 /**
  *
@@ -34,7 +34,7 @@ public class BellmanFordTest {
 
     @Test
     public void simple() {
-        var g = GraphBuilder.vertexRange(1, 5)
+        var g = new GraphBuilder().vertexRange(1, 5)
                 .addEdges("1-2,1-3,2-3,2-4,2-5,3-5,4-5").buildGraph();
         g.setEdgeWeight(1, 2, 3);
         g.setEdgeWeight(1, 3, 1);

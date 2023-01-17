@@ -32,6 +32,18 @@ public class Edge<E> implements Comparable<Edge> {
         this(first, second, false, null, null);
     }
 
+    public Edge(int first, int second, Double weight, E label) {
+        this(first, second, false, weight, label);
+    }
+
+    public Edge(int first, int second, Double weight) {
+        this(first, second, false, weight, null);
+    }
+
+    public Edge(int first, int second, E label) {
+        this(first, second, false, null, label);
+    }
+
     public Edge(int first, int second, boolean directed) {
         this(first, second, directed, null, null);
     }
@@ -75,6 +87,16 @@ public class Edge<E> implements Comparable<Edge> {
      */
     public Edge<E> flip() {
         return new Edge(target, source, directed, weight, label);
+    }
+
+    /**
+     *
+     * @param other
+     * @return
+     */
+    public boolean isAdjacentTo(Edge other) {
+        return this.source == other.source || this.source == other.target
+                || this.target == other.source || this.target == other.target;
     }
 
     @Override

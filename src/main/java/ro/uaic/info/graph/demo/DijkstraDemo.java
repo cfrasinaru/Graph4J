@@ -38,7 +38,7 @@ public class DijkstraDemo extends PerformanceDemo {
     }
 
     @Override
-    protected void test1() {
+    protected void testGraph4J() {
         for (int i = 1; i < graph.numVertices(); i++) {
             //var result = new DijkstraShortestPathDefault(graph, 0).getPath(i);
             var result = new DijkstraShortestPathHeap(graph, 0).getPath(i);
@@ -46,7 +46,7 @@ public class DijkstraDemo extends PerformanceDemo {
     }
 
     @Override
-    protected void test2() {
+    protected void testJGraphT() {
         for (int i = 1; i < graph.numVertices(); i++) {
             var result = new org.jgrapht.alg.shortestpath.DijkstraShortestPath(jgraph).getPath(0, i);
         }

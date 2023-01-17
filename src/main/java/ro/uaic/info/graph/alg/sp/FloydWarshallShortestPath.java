@@ -16,9 +16,10 @@
  */
 package ro.uaic.info.graph.alg.sp;
 
-import ro.uaic.info.graph.Cycle;
+import java.util.Arrays;
+import ro.uaic.info.graph.model.Cycle;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.Path;
+import ro.uaic.info.graph.model.Path;
 import ro.uaic.info.graph.alg.GraphAlgorithm;
 
 /**
@@ -52,73 +53,90 @@ public class FloydWarshallShortestPath extends GraphAlgorithm
     @Override
     public double getPathWeight(int source, int target) {
         if (cost == null) {
-            computeAll();
-            /*
             if (directed) {
                 computeAll();
             } else {
                 computeWeights();
-            }*/
+            }
         }
         return cost[graph.indexOf(source)][graph.indexOf(target)];
     }
 
-    private void computeAll() {
+    private void initBefore() {
         int n = graph.numVertices();
-        this.cost = graph.costMatrix();
         this.before = new int[n][n];
+        /*
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                before[i][j] = (i == j ? -1 : i);
+                before[i][j] = i;
             }
         }
+        for (int i = 0; i < n; i++) {
+            before[i][i] = -1;
+        }*/
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(before[i], -1);
+        }
+        for (int v : graph.vertices()) {
+            int vi = graph.indexOf(v);
+            for (var it = graph.neighborIterator(v); it.hasNext();) {
+                int ui = graph.indexOf(it.next());
+                before[vi][ui] = vi;
+            }
+        }
+        if (graph.isAllowingSelfLoops()) {
+            for (int i = 0; i < n; i++) {
+                before[i][i] = -1;
+            }
+        }
+    }
+
+    private void computeAll() {
+        this.cost = graph.costMatrix();
+        initBefore();
+        int n = graph.numVertices();
+        //compute shortest paths using only k=0,1,...,n-1 as intermediate vertices
         for (int k = 0; k < n; k++) {
             for (int i = 0; i < n; i++) {
-                if (i == k || cost[i][k] == Double.POSITIVE_INFINITY) {
+                if (before[i][k] < 0) {
                     continue;
                 }
                 for (int j = 0; j < n; j++) {
-                    if (j == k || cost[k][j] == Double.POSITIVE_INFINITY) {
-                        continue;
-                    }
                     if (cost[i][j] > cost[i][k] + cost[k][j]) {
                         cost[i][j] = cost[i][k] + cost[k][j];
                         before[i][j] = before[k][j];
-                        if (i == j && cost[i][j] < 0) {
-                            Cycle cycle = createCycleBetween(i, j);
-                            if (directed || cycle.length() > 2) {
-                                throw new NegativeCycleException(cycle);
-                            }
-                        }
+                    }
+                }
+                if (cost[i][i] < 0) {
+                    Cycle cycle = createCycleBetween(i, i);
+                    if (directed || cycle.length() > 2) {
+                        throw new NegativeCycleException(cycle);
                     }
                 }
             }
         }
     }
 
-    //weights only for undirected graphs
-    @Deprecated //Not correct.Why?
+    //weights only - optimized for undirected graphs
     private void computeWeights() {
+        this.cost = graph.costMatrix();
         int n = graph.numVertices();
-        this.cost = graph.costMatrix(); //symmetrical
+        //compute shortest paths using only k=0,1,...,n-1 as intermediate vertices
         for (int k = 0; k < n; k++) {
             for (int i = 0; i < n; i++) {
                 if (i == k || cost[i][k] == Double.POSITIVE_INFINITY) {
                     continue;
                 }
                 for (int j = i; j < n; j++) {
-                    if (j == k || cost[k][j] == Double.POSITIVE_INFINITY) {
-                        continue;
-                    }
                     if (cost[i][j] > cost[i][k] + cost[k][j]) {
                         cost[i][j] = cost[i][k] + cost[k][j];
                         cost[j][i] = cost[i][j];
-                        if (i == j && cost[i][j] < 0) {
-                            Cycle cycle = createCycleBetween(i, j);
-                            if (cycle.length() > 2) {
-                                throw new NegativeCycleException(cycle);
-                            }
-                        }
+                    }
+                }
+                if (cost[i][i] < 0) {
+                    Cycle cycle = createCycleBetween(i, i);
+                    if (cycle.length() > 2) {
+                        throw new NegativeCycleException(cycle);
                     }
                 }
             }

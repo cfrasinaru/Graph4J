@@ -29,7 +29,7 @@ import ro.uaic.info.graph.Graph;
  *
  * @author Cristian Frăsinaru
  */
-public class DijkstraShortestPathDefault extends DijkstraShortestPathSupport {
+public class DijkstraShortestPathDefault extends DijkstraShortestPathBase {
 
     public DijkstraShortestPathDefault(Graph graph, int source) {
         super(graph, source);

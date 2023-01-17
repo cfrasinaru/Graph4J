@@ -17,9 +17,9 @@
 package ro.uaic.info.graph.alg.sp;
 
 import java.util.Arrays;
-import ro.uaic.info.graph.Cycle;
+import ro.uaic.info.graph.model.Cycle;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.Path;
+import ro.uaic.info.graph.model.Path;
 import ro.uaic.info.graph.alg.GraphAlgorithm;
 import ro.uaic.info.graph.util.CheckArguments;
 import ro.uaic.info.graph.util.IntArrayList;

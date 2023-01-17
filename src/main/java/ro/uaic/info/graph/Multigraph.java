@@ -17,7 +17,6 @@
 package ro.uaic.info.graph;
 
 import java.util.HashSet;
-import static ro.uaic.info.graph.build.GraphBuilder.numVertices;
 
 /**
  * Multiple (parallel) edges are allowed.

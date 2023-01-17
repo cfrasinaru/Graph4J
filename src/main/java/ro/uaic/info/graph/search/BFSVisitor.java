@@ -22,7 +22,13 @@ package ro.uaic.info.graph.search;
  */
 public interface BFSVisitor {
 
-    default void root(SearchNode node) {
+    //whenever a vertex is reached for the first time
+    //as root or after a tree edge
+    default void startVertex(SearchNode node) {        
+    }
+           
+    //visiting the vertex on the way up, before upward
+    default void finishVertex(SearchNode node) {        
     }
 
     default void treeEdge(SearchNode from, SearchNode to) {

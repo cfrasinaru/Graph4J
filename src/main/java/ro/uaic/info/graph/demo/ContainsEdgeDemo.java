@@ -16,8 +16,7 @@
  */
 package ro.uaic.info.graph.demo;
 
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
-import ro.uaic.info.graph.util.Tools;
+import ro.uaic.info.graph.gen.GraphGenerator;
 
 /**
  *
@@ -25,14 +24,24 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class ContainsEdgeDemo extends PerformanceDemo {
 
+    public ContainsEdgeDemo() {
+        runGuava = true;
+        runJung = false;
+        runJGraphT = false;
+        runAlgs4 = false;
+    }
+
+    
     @Override
-    protected void prepare() {
-        graph = new GnmRandomGenerator(10_000, 10_000).createGraph();
-        jgraph = Tools.createJGraph(graph);
+    protected void createGraph() {
+        int n = 10_000;
+        //graph = new GnmRandomGenerator(n, n).createGraph();
+        graph = GraphGenerator.complete(n);
+        
     }
 
     @Override
-    protected void test1() {
+    protected void testGraph4J() {
         int k = 0;
         for (int i = 0, n = graph.numVertices(); i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
@@ -45,11 +54,37 @@ public class ContainsEdgeDemo extends PerformanceDemo {
     }
 
     @Override
-    protected void test2() {
+    protected void testJGraphT() {
         int k = 0;
         for (int i = 0, n = jgraph.vertexSet().size(); i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
                 if (jgraph.containsEdge(i, j)) {
+                    k++;
+                }
+            }
+        }
+        System.out.println(k + " = " + jgraph.edgeSet().size());
+    }
+
+    @Override
+    protected void testGuava() {
+        int k = 0;
+        for (int i = 0, n = guavaGraph.nodes().size(); i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (guavaGraph.hasEdgeConnecting(i, j)) {
+                    k++;
+                }
+            }
+        }
+        System.out.println(k + " = " + graph.numEdges());
+    }
+
+    @Override
+    protected void testJung() {
+        int k = 0;
+        for (int i = 0, n = jungGraph.getVertexCount(); i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (jungGraph.isNeighbor(j, j)) {
                     k++;
                 }
             }

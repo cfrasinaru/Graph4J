@@ -16,14 +16,13 @@
  */
 package graph;
 
-import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.Cycle;
-import ro.uaic.info.graph.Path;
-import ro.uaic.info.graph.Trail;
-import ro.uaic.info.graph.Walk;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.model.Cycle;
+import ro.uaic.info.graph.model.Path;
+import ro.uaic.info.graph.model.Trail;
+import ro.uaic.info.graph.model.Walk;
+import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.gen.CompleteGenerator;
 
 /**
@@ -37,22 +36,14 @@ public class WalksCyclesTest {
 
     @Test
     public void walkTrailPathCycle() {
-        var g = GraphBuilder.vertexRange(1, 6)
+        var g = new GraphBuilder().vertexRange(1, 6)
                 .addClique(1, 2, 3)
                 .addEdge(1, 4).addEdge(3, 4).addEdge(4, 5)
                 .buildGraph();
-        var badWalk = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Walk(g, 1, 2, 1, 6).validate());
-        assertNotNull(badWalk);
-        var badTrail = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Trail(g, 1, 2, 3, 1, 2).validate());
-        assertNotNull(badTrail);
-        var badPath = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Path(g, 1, 2, 3, 1).validate());
-        assertNotNull(badPath);
-        var badCycle = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> new Cycle(g, 1, 3, 4, 5).validate());
-        assertNotNull(badCycle);
+        assertFalse(new Walk(g, 1, 2, 1, 6).isValid());
+        assertFalse(new Trail(g, 1, 2, 3, 1, 2).isValid());
+        assertFalse(new Path(g, 1, 2, 3, 1).isValid());
+        assertFalse(new Cycle(g, 1, 3, 4, 5).isValid());
         //
         assertEquals(5, new Walk(g, 1, 2, 1, 2, 3, 4).length());
         assertEquals(4, new Trail(g, 1, 2, 3, 1, 4).length());

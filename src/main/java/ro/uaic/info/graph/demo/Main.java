@@ -16,19 +16,10 @@
  */
 package ro.uaic.info.graph.demo;
 
-import java.util.Arrays;
+import ro.uaic.info.graph.Edge;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.VertexSet;
-import ro.uaic.info.graph.alg.GraphMetrics;
-import ro.uaic.info.graph.alg.HierholzerEulerianCircuit;
-import ro.uaic.info.graph.alg.sp.BellmanFordShortestPath;
-import ro.uaic.info.graph.alg.sp.DijkstraShortestPathDefault;
-import ro.uaic.info.graph.alg.sp.FloydWarshallShortestPath;
-import ro.uaic.info.graph.build.GraphBuilder;
-import ro.uaic.info.graph.gen.CompleteGenerator;
-import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.GraphBuilder;
+import ro.uaic.info.graph.alg.coloring.GreedyColoring;
 
 /**
  * TODO: Move this to tests.
@@ -36,74 +27,87 @@ import ro.uaic.info.graph.gen.GraphGenerator;
  * @author Cristian Frăsinaru
  */
 public class Main {
-    
+
     Graph graph;
     org.jgrapht.Graph jgraph;
-    
+
     public static void main(String[] args) {
-        var app = new Main();
+        //var app = new Main();
+        //var app = new LineGraphDemo();
+        //var app = new GreedyColoringDemo();
+        //var app = new BipartiteDemo();
+        //var app = new StrongConnectivityDemo();
+        //var app = new BiconnectivityDemo();
+        //var app = new ConnectivityDemo();
         //var app = new DFSIteratorDemo();
-        //var app = new BFSIteratorDemo();
+        var app = new BFSIteratorDemo();
         //var app = new EulerianCircuitDemo();
         //var app = new DijkstraDemo();
         //var app = new BellmanFordDemo();
         //var app = new FloydWarshallDemo();
         //var app = new IterateAllEdgesDemo();
         //var app = new ContainsEdgeDemo();
-        //var app = new GraphCreationDemo();
+        //var app = new LabeledGraphDemo();
+        //var app = new RandomGraphDemo();
+        //var app = new SparseGraphDemo();
+        //var app = new CompleteGraphDemo();
+        //var app = new EmptyGraphDemo();
         app.demo();
     }
-    
+
     private void demo() {
         run(this::test);
         //run(this::prepare);
     }
-    
+
     private void test() {
-        //var g = new CompleteGenerator(5).createDigraph();
-        //var g = GraphBuilder.numVertices(8).addCycle(0, 1, 2, 3, 4, 5).addCycle(6, 1, 5, 7, 4, 2).buildGraph();
-        var g = GraphBuilder.vertexRange(0, 3).addClique(0, 1, 2, 3).buildGraph();
-        //var g = GraphBuilder.numVertices(6).addEdges("0-1, 0-2, 0-3, 0-4, 0-5, 4-5,1-2, 1-3, 2-3").buildGraph();
+        var g = new GraphBuilder().numVertices(4).buildMultigraph();
+        g.addEdge(0, 1);
+        g.addEdge(0, 1);
         System.out.println(g);
-        
-        
-        g.addVertices(8, 9);
-        g.addEdge(0, 8);
-        g.addEdge(0, 9);
-        g.addEdge(8, 9);
-        
+        for(var it=g.edgeIterator();it.hasNext();) {
+            Edge e = it.next();
+            System.out.println(e);
+            it.remove();
+            System.out.println(g);
+            System.out.println(g.containsEdge(e));
+        }
+    }
+
+    private void testGuava() {
+        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(10).build();
+        g.addNode(0);
+        g.addNode(1);
+        g.putEdge(0, 1);
+        g.putEdge(0, 1);
+        System.out.println(g.edges());
+    }
+
+    private void testCol() {
+        //System.out.println("StrongConnectivityAlgorithmBase".length());
+        var g = new GraphBuilder().addClique(1, 2, 3, 4).buildGraph();
+        //var g = new GraphBuilder().vertexRange(1, 5).addCycle(1, 2, 3, 4, 5).buildGraph();
+        //var g= GraphGenerator.complete(10_000);
+        //var g = GraphGenerator.completeBipartite(1000, 1000);
         System.out.println(g);
-        System.out.println(Arrays.deepToString(g.edges()));
-        System.out.println(Arrays.toString(g.neighbors(8)));
-        System.out.println(Arrays.toString(g.neighbors(9)));
-        
-       // g.removeVertex(0);
-        //System.out.println(g);
-        
-        //g.addEdge(8, 9);
-        //System.out.println(g);
-        /*
-        Circuit c1 = new Circuit(g, 0, 1, 2, 3, 4, 5);
-        Circuit c2 = new Circuit(g, 6, 1, 5, 7, 4, 2);
-        System.out.println(c1.join(c2));
-         */
-        //var g = GraphBuilder.numVertices(7).addCycle(0, 1, 2).addCycle(0, 3, 4).addCycle(0, 5, 6).buildGraph();
-        //var g = GraphBuilder.numVertices(4).addEdges("0-1,0-1,0-0").buildPseudograph();
-        //var g = GraphBuilder.numVertices(4).addCycle(0, 1, 2, 3).addEdges("0-1,0-1,0-0,1-1,1-1,1-1").buildPseudograph();
-        //var g = GraphBuilder.numVertices(2).addEdges("0-1,0-1,0-0,0-0,1-1,1-1").buildPseudograph();
-        //var h = new HierholzerEulerianCircuit(g);
-        //System.out.println(h.findCircuit());
+        var alg = new GreedyColoring(g);
+        var col = alg.findColoring();
+        System.out.println(col.numUsedColors());
+        System.out.println(col.isProper());
 
         /*
-       var it = g.edgeIterator(0);
-        System.out.println(g);
-       while (it.hasNext()) {
-           System.out.println(it.next());
-           it.remove();
-           System.out.println(g);
-       }*/
+        var col = new VertexColoring<String>(g);
+        col.setColor(1, "red");
+        col.setColor(2, "green");
+        System.out.println(col.isComplete());
+        System.out.println(col.isProper());
+        col.setColor(3, "blue");
+        System.out.println(col.getColorClasses());
+        System.out.println(col.isProper());
+        System.out.println(col);
+         */
     }
-    
+
     protected void run(Runnable snippet) {
         long m0 = Runtime.getRuntime().freeMemory();
         long t0 = System.currentTimeMillis();
@@ -114,5 +118,5 @@ public class Main {
         System.out.println((m0 - m1) / (1024 * 1024) + " MB");
         System.out.println("------------------------------------------------");
     }
-    
+
 }

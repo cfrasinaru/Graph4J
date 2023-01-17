@@ -18,10 +18,10 @@ package graph;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
+import ro.uaic.info.graph.Edge;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
 
 /**
  *
@@ -34,7 +34,7 @@ public class SimpleTest {
 
     @Test
     public void labels() {
-        Graph<String, String> g = GraphBuilder.numVertices(3).buildGraph();
+        Graph<String, String> g = new GraphBuilder().numVertices(3).buildGraph();
         g.setVertexLabel(0, "a");
         g.setVertexLabel(1, "b");
         g.setVertexLabel(2, "c");
@@ -45,14 +45,14 @@ public class SimpleTest {
         g.addLabeledEdge(0, 1, "01");
         g.addLabeledEdge(0, 2, "02");
         g.addLabeledEdge(1, 2, "12");
-        for (int[] e : g.edges()) {
-            assertEquals(e[0] + "" + e[1], g.getEdgeLabel(e[0], e[1]));
+        for (Edge e : g.edges()) {
+            assertEquals(e.source() + "" + e.target(), g.getEdgeLabel(e.source(), e.target()));
         }
     }
 
     @Test
     public void matrix4Graph() {
-        var g = GraphBuilder.numVertices(5).addPath(0, 1, 2, 3, 4).buildGraph();
+        var g = new GraphBuilder().numVertices(5).addPath(0, 1, 2, 3, 4).buildGraph();
         EdgeWeightsGenerator.fill(g, 99);
 
         int[][] a = g.adjacencyMatrix();
@@ -68,9 +68,9 @@ public class SimpleTest {
 
         int[][] im = g.incidenceMatrix();
         int k = 0;
-        for (int[] e : g.edges()) {
-            int vi = g.indexOf(e[0]);
-            int ui = g.indexOf(e[1]);
+        for (Edge e : g.edges()) {
+            int vi = g.indexOf(e.source());
+            int ui = g.indexOf(e.target());
             assertEquals(1, im[vi][k]);
             assertEquals(1, im[ui][k]);
             k++;
@@ -79,7 +79,7 @@ public class SimpleTest {
 
     @Test
     public void matrix4Digraph() {
-        var g = GraphBuilder.numVertices(5).addCycle(0, 1, 2, 3, 4).buildDigraph();
+        var g = new GraphBuilder().numVertices(5).addCycle(0, 1, 2, 3, 4).buildDigraph();
         EdgeWeightsGenerator.fill(g, 99);
         int[][] a = g.adjacencyMatrix();
         assertEquals(0, a[0][2]);
@@ -94,9 +94,9 @@ public class SimpleTest {
 
         int[][] im = g.incidenceMatrix();
         int k = 0;
-        for (int[] e : g.edges()) {
-            int vi = g.indexOf(e[0]);
-            int ui = g.indexOf(e[1]);
+        for (Edge e : g.edges()) {
+            int vi = g.indexOf(e.source());
+            int ui = g.indexOf(e.target());
             assertEquals(1, im[vi][k]);
             assertEquals(-1, im[ui][k]);
             k++;

@@ -16,10 +16,10 @@
  */
 package ro.uaic.info.graph.demo;
 
+import com.google.common.graph.Traverser;
 import org.jgrapht.traverse.BreadthFirstIterator;
 import ro.uaic.info.graph.gen.GnpRandomGenerator;
 import ro.uaic.info.graph.search.BFSIterator;
-import ro.uaic.info.graph.util.Tools;
 
 /**
  *
@@ -27,14 +27,18 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class BFSIteratorDemo extends PerformanceDemo {
 
-    @Override
-    protected void prepare() {
-        graph = new GnpRandomGenerator(1000, 0.2).createGraph();
-        jgraph = Tools.createJGraph(graph);
+    public BFSIteratorDemo() {
+        runGuava = true;
+        //runJGraphT = true;
     }
 
     @Override
-    protected void test1() {
+    protected void createGraph() {
+        graph = new GnpRandomGenerator(1000, 0.2).createGraph();
+    }
+
+    @Override
+    protected void testGraph4J() {
         int k = 0;
         for (int v : graph.vertices()) {
             var it = new BFSIterator(graph);
@@ -47,7 +51,7 @@ public class BFSIteratorDemo extends PerformanceDemo {
     }
 
     @Override
-    protected void test2() {
+    protected void testJGraphT() {
         int k = 0;
         for (var v : jgraph.vertexSet()) {
             var it = new BreadthFirstIterator<>(jgraph, v);
@@ -57,6 +61,17 @@ public class BFSIteratorDemo extends PerformanceDemo {
             }
         }
         System.out.println(k);
+    }
+
+    private int gk = 0;
+
+    @Override
+    protected void testGuava() {
+        for (var v : guavaGraph.nodes()) {
+            Traverser.forGraph(guavaGraph).depthFirstPostOrder(v)
+                    .forEach(x -> gk++);
+        }
+        System.out.println(gk);
     }
 
     public static void main(String args[]) {

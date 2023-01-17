@@ -19,7 +19,7 @@ package ro.uaic.info.graph.gen;
 import java.util.stream.IntStream;
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.util.CheckArguments;
 
 /**
@@ -81,7 +81,7 @@ public class CompleteBipartiteGenerator extends AbstractGenerator {
     public Graph createGraph() {
         int n1 = last1 - first1 + 1;
         int n2 = last2 - first2 + 1;
-        var g = GraphBuilder.vertices(vertices).avgDegree(Math.max(n1, n2))
+        var g = new GraphBuilder().vertices(vertices).avgDegree(Math.max(n1, n2))
                 .named("K" + n1 + "," + n2).buildGraph();
         addEdges(g, true);
         return g;
@@ -95,7 +95,7 @@ public class CompleteBipartiteGenerator extends AbstractGenerator {
     public Digraph createDigraph(boolean leftToRight) {
         int n1 = last1 - first1 + 1;
         int n2 = last2 - first2 + 1;
-        var g = GraphBuilder.vertices(vertices)
+        var g = new GraphBuilder().vertices(vertices)
                 .avgDegree(Math.max(n1, n2)).buildDigraph();
         addEdges(g, leftToRight);
         return g;

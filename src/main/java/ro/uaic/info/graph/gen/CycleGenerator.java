@@ -18,7 +18,7 @@ package ro.uaic.info.graph.gen;
 
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
 
 /**
  *
@@ -40,7 +40,7 @@ public class CycleGenerator extends AbstractGenerator {
      */
     public Graph createGraph() {
         int n = vertices.length;
-        var g = GraphBuilder.vertices(vertices).avgDegree(2)
+        var g = new GraphBuilder().vertices(vertices).avgDegree(2)
                 .named("C" + n).buildGraph();
         addEdges(g, true);
         return g;
@@ -52,7 +52,7 @@ public class CycleGenerator extends AbstractGenerator {
      * @return
      */
     public Digraph createDigraph(boolean clockwise) {
-        var g = GraphBuilder.vertices(vertices).avgDegree(1).buildDigraph();
+        var g = new GraphBuilder().vertices(vertices).avgDegree(1).buildDigraph();
         addEdges(g, clockwise);
         return g;
     }

@@ -18,7 +18,7 @@ package ro.uaic.info.graph.gen;
 
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
 
 /**
  * Generates complete graphs or digraphs. A complete graph contains edges
@@ -43,7 +43,7 @@ public class CompleteGenerator extends AbstractGenerator {
      */
     public Graph createGraph() {
         int n = vertices.length;
-        var g = GraphBuilder.vertices(vertices).avgDegree(n - 1)
+        var g = new GraphBuilder().vertices(vertices).avgDegree(n - 1)
                 .named("K" + n).buildGraph();
         addEdges(g, false);
         return g;
@@ -54,7 +54,7 @@ public class CompleteGenerator extends AbstractGenerator {
      * @return a complete digraph
      */
     public Digraph createDigraph() {
-        var g = GraphBuilder.vertices(vertices)
+        var g = new GraphBuilder().vertices(vertices)
                 .avgDegree(vertices.length - 1).buildDigraph();
         addEdges(g, true);
         return g;
@@ -62,16 +62,19 @@ public class CompleteGenerator extends AbstractGenerator {
 
     private void addEdges(Graph g, boolean directed) {
         int n = vertices.length;
-        int n1 = directed ? n : n - 1;
-        for (int i = 0; i < n1; i++) {
-            int from = directed ? 0 : i + 1;
-            for (int j = from; j < n; j++) {
-                if (i == j) {
-                    continue;
+        if (directed) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (i != j) {
+                        g.addEdge(vertices[i], vertices[j]);
+                    }
                 }
-                int v = vertices[i];
-                int u = vertices[j];
-                g.addEdge(v, u);
+            }
+        } else {
+            for (int i = 0; i < n - 1; i++) {
+                for (int j = i + 1; j < n; j++) {
+                    g.addEdge(vertices[i], vertices[j]);
+                }
             }
         }
     }

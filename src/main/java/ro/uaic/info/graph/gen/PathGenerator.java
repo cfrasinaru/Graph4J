@@ -18,7 +18,7 @@ package ro.uaic.info.graph.gen;
 
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
 
 /**
  *
@@ -40,7 +40,7 @@ public class PathGenerator extends AbstractGenerator {
      */
     public Graph createGraph() {
         int n = vertices.length;
-        var g = GraphBuilder.vertices(vertices).avgDegree(2)
+        var g = new GraphBuilder().vertices(vertices).avgDegree(2)
                 .named("P" + n).buildGraph();
         addEdges(g, true);
         return g;
@@ -52,7 +52,7 @@ public class PathGenerator extends AbstractGenerator {
      * @return
      */
     public Digraph createDigraph(boolean leftToRight) {
-        var g = GraphBuilder.vertices(vertices).avgDegree(1).buildDigraph();
+        var g = new GraphBuilder().vertices(vertices).avgDegree(1).buildDigraph();
         addEdges(g, leftToRight);
         return g;
     }

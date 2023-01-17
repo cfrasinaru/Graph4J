@@ -18,8 +18,8 @@ package ro.uaic.info.graph.alg;
 
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.VertexList;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.model.VertexList;
+import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.util.IntArrays;
 
 /**
@@ -63,14 +63,12 @@ public class AcyclicOrientation extends SimpleGraphAlgorithm {
      */
     public Digraph create() {
         var vertices = new VertexList(graph, vertexOrdering);
-        var digraph = GraphBuilder.vertices(graph.vertices()).buildDigraph();
+        var digraph = new GraphBuilder().verticesFrom(graph).buildDigraph();
         for (int v : vertexOrdering) {
-            if (graph.isVertexWeighted()) {
-                digraph.setVertexWeight(v, graph.getVertexWeight(v));
-            }
-            for (int u : graph.neighbors(v)) {
+            for (var it = graph.neighborIterator(v); it.hasNext();) {
+                int u = it.next();
                 if (vertices.indexOf(v) < vertices.indexOf(u)) {
-                    digraph.addEdge(graph.edge(v, u));
+                    digraph.addEdge(it.edge());
                 }
             }
         }

@@ -126,8 +126,8 @@ public interface Digraph<V, E> extends Graph<V, E> {
 
     /**
      *
-     * @param v a vertex number
-     * @return the predecessors of v
+     * @param v a vertex number.
+     * @return the predecessors of v.
      */
     default int[] predecessors(int v) {
         int[] pred = new int[indegree(v)];
@@ -139,6 +139,32 @@ public interface Digraph<V, E> extends Graph<V, E> {
             }
         }
         return pred;
+    }
+
+    /**
+     *
+     * @param v a vertex number.
+     * @return outgoing edges from v.
+     */
+    default Edge[] outgoingEdgesFrom(int v) {
+        return edgesOf(v);
+    }
+
+    /**
+     *
+     * @param v a vertex number.
+     * @return incoming edges to v.
+     */
+    default Edge[] incomingEdgesTo(int v) {
+        Edge[] edges = new Edge[indegree(v)];
+        int k = 0;
+        for (int i = 0, n = numVertices(); i < n; i++) {
+            int u = vertexAt(i);
+            if (containsEdge(u, v)) {
+                edges[k++] = edge(u, v);
+            }
+        }
+        return edges;
     }
 
     /**

@@ -17,7 +17,7 @@
 package ro.uaic.info.graph.gen;
 
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.util.CheckArguments;
 
 /**
@@ -38,7 +38,7 @@ public class GraphGenerator {
      */
     public static Graph empty(int n) {
         CheckArguments.numberOfVertices(n);
-        return GraphBuilder.numVertices(n).named("N" + n).buildGraph();
+        return new GraphBuilder().numVertices(n).named("N" + n).buildGraph();
     }
 
     /**

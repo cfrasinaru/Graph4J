@@ -19,7 +19,7 @@ package ro.uaic.info.graph.alg;
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.Multigraph;
-import ro.uaic.info.graph.util.Tools;
+import ro.uaic.info.graph.util.CheckArguments;
 
 /**
  * Accepts only simple, undirected graphs as input.
@@ -39,12 +39,12 @@ public abstract class SimpleGraphAlgorithm {
      * @param graph the input graph
      */
     public SimpleGraphAlgorithm(Graph graph) {
-        if (graph instanceof Digraph digraph) {
-            System.out.println("Got a digraph");
+        CheckArguments.graphNotEmpty(graph);
+        if (graph instanceof Digraph) {
+            Digraph digraph = (Digraph) graph;
             this.graph = digraph.supportGraph();
-            System.out.println(this.graph);
-            Tools.printMatrix(this.graph.adjacencyMatrix());
-        } else if (graph instanceof Multigraph multigraph) {
+        } else if (graph instanceof Multigraph) {
+            Multigraph multigraph = (Multigraph) graph;
             this.graph = multigraph.supportGraph();
         } else {
             this.graph = graph;

@@ -33,6 +33,7 @@ public class BreadthFirstSearch {
     private BFSVisitor visitor;
     //
     private Queue<SearchNode> queue;
+    private boolean inqueue[];
     private int orderIndex;
     private int compIndex;
     private SearchNode visited[];
@@ -53,6 +54,7 @@ public class BreadthFirstSearch {
         int n = graph.numVertices();
         this.visited = new SearchNode[n];
         this.queue = new LinkedList<>();
+        this.inqueue = new boolean[n];
         orderIndex = 0;
         compIndex = 0;
         maxLevel = -1;
@@ -92,7 +94,7 @@ public class BreadthFirstSearch {
             var node = new SearchNode(compIndex, start, 0, orderIndex++, null);
             visited[graph.indexOf(start)] = node;
             queue.add(node);
-            visitor.root(node);
+            inqueue[graph.indexOf(node.vertex())] = true;
             //start traversing the first component, with the initial vertex
             bfs();
             for (int i = restartIndex, n = graph.numVertices(); i < n; i++) {
@@ -103,7 +105,7 @@ public class BreadthFirstSearch {
                     node = new SearchNode(compIndex, graph.vertexAt(i), 0, orderIndex++, null);
                     visited[i] = node;
                     queue.add(node);
-                    visitor.root(node);
+                    inqueue[i] = true;
                     bfs();
                 }
             }
@@ -117,17 +119,21 @@ public class BreadthFirstSearch {
     private void bfs() {
         while (!queue.isEmpty()) {
             var node = queue.poll();
+            int v = node.vertex();
+            int vi = graph.indexOf(v);
+            inqueue[vi] = false;
+            visitor.startVertex(node);
             if (maxLevel < node.level()) {
                 maxLevel = node.level();
             }
             var parent = node.parent();
-            int v = node.vertex();
             for (int u : graph.neighbors(v)) {
                 int ui = graph.indexOf(u);
                 if (visited[ui] == null) {
                     var child = new SearchNode(compIndex, u, node.level() + 1, orderIndex++, node);
                     visited[ui] = child;
                     queue.add(child);
+                    inqueue[ui] = true;
                     visitor.treeEdge(node, child);
                 } else {
                     //back edge or cross edge
@@ -139,20 +145,23 @@ public class BreadthFirstSearch {
                             visitor.backEdge(node, other);
                         }
                     } else {
-                        if (other.isAncestorOf(node)) {
+                        if (inqueue[ui] && other.order() < node.order()) { 
+                            //other.isAncestorOf(node)
                             visitor.backEdge(node, other);
                         } else {
-                            if (!directed || !node.isAncestorOf(other)) {
+                            if (!directed || !(inqueue[vi] && node.order() < other.order())) {
+                                //!node.isAncestorOf(other)
                                 visitor.crossEdge(node, other);
                             }
                             //no forward edges, ignore in case of multigraphs
                         }
                     }
                 }
-            }
-        }
+            }//for
+            visitor.finishVertex(node);
+        }//while
     }
-
+       
     /**
      *
      * @return the number of connected components identified by the traversal

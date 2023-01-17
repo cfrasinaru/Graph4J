@@ -19,7 +19,7 @@ package ro.uaic.info.graph.gen;
 import java.util.stream.IntStream;
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.build.GraphBuilder;
+import ro.uaic.info.graph.GraphBuilder;
 
 /**
  * A <i>star</i> is a graph formed by connecting a single universal vertex,
@@ -60,7 +60,7 @@ public class StarGenerator extends AbstractGenerator {
      */
     public Graph createGraph() {
         int n = vertices.length;
-        var g = GraphBuilder.vertices(vertices).avgDegree(1)
+        var g = new GraphBuilder().vertices(vertices).avgDegree(1)
                 .named("S" + n).buildGraph();
         addEdges(g, true);
         return g;
@@ -72,7 +72,7 @@ public class StarGenerator extends AbstractGenerator {
      * @return
      */
     public Digraph createDigraph(boolean outward) {
-        var g = GraphBuilder.vertices(vertices).avgDegree(1).buildDigraph();
+        var g = new GraphBuilder().vertices(vertices).avgDegree(1).buildDigraph();
         addEdges(g, outward);
         return g;
     }

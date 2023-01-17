@@ -16,11 +16,16 @@
  */
 package ro.uaic.info.graph.util;
 
+import edu.princeton.cs.algs4.AdjMatrixEdgeWeightedDigraph;
+import edu.princeton.cs.algs4.DirectedEdge;
+import edu.princeton.cs.algs4.EdgeWeightedDigraph;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.function.Supplier;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.util.SupplierUtil;
+import ro.uaic.info.graph.Digraph;
+import ro.uaic.info.graph.Edge;
 import ro.uaic.info.graph.Graph;
 
 /**
@@ -30,6 +35,24 @@ import ro.uaic.info.graph.Graph;
 public class Tools {
 
     public static org.jgrapht.Graph createJGraph(Graph g) {
+        org.jgrapht.Graph jg;
+        if (g != null) {
+            jg = new org.jgrapht.graph.SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class);
+            for (int v : g.vertices()) {
+                jg.addVertex(v);
+            }
+            for (Edge e : g.edges()) {
+                var je = jg.addEdge(e.source(), e.target());
+            }
+        } else {
+            jg = new org.jgrapht.graph.SimpleGraph<>(
+                    SupplierUtil.createIntegerSupplier(), SupplierUtil.createDefaultEdgeSupplier(), false);
+        }
+        return jg;
+    }
+
+    @Deprecated
+    private  static org.jgrapht.Graph createJGraphOld(Graph g) {
         Supplier<Integer> vSupplier = new Supplier<Integer>() {
             private int id = 0;
 
@@ -40,18 +63,79 @@ public class Tools {
         };
         org.jgrapht.Graph jg;
         if (g != null) {
-            jg = new org.jgrapht.graph.SimpleWeightedGraph<Integer, DefaultEdge>(DefaultEdge.class);
+            if (g instanceof Digraph) {
+                jg = new org.jgrapht.graph.DefaultDirectedWeightedGraph<Integer, DefaultEdge>(DefaultEdge.class);
+            } else {
+                jg = new org.jgrapht.graph.SimpleWeightedGraph<Integer, DefaultEdge>(DefaultEdge.class);
+            }
             for (int v : g.vertices()) {
                 jg.addVertex(v);
             }
-            for (int[] e : g.edges()) {
-                var je = jg.addEdge(e[0], e[1]);
-                jg.setEdgeWeight(je, g.getEdgeWeight(e[0], e[1]));
+            for (Edge e : g.edges()) {
+                var je = jg.addEdge(e.source(), e.target());
+                jg.setEdgeWeight(je, g.getEdgeWeight(e.source(), e.target()));
             }
         } else {
             jg = new org.jgrapht.graph.SimpleGraph<>(vSupplier, SupplierUtil.createDefaultEdgeSupplier(), false);
         }
         return jg;
+    }
+
+    public static com.google.common.graph.Graph createGuavaGraph(Graph graph) {
+        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(graph.numVertices()).build();
+        for (int i = 0; i < graph.numVertices(); i++) {
+            g.addNode(i);
+        }
+        for (var it = graph.edgeIterator(); it.hasNext();) {
+            Edge e = it.next();
+            g.putEdge(e.source(), e.target());
+        }
+        return g;
+    }
+
+    public static edu.uci.ics.jung.graph.SparseGraph createJungGraph(Graph graph) {
+        var g = new edu.uci.ics.jung.graph.SparseGraph<Integer, Object>();
+        for (int i = 0; i < graph.numVertices(); i++) {
+            g.addVertex(i);
+        }
+        for (var it = graph.edgeIterator(); it.hasNext();) {
+            Edge e = it.next();
+            g.addEdge(e, e.source(), e.target());
+        }
+        return g;
+    }
+
+    public static EdgeWeightedDigraph createAlgs4EdgeWeightedDigraph(Graph graph) {
+        EdgeWeightedDigraph ewd = new EdgeWeightedDigraph(graph.numVertices());
+        for (var it = graph.edgeIterator(); it.hasNext();) {
+            Edge e = it.next();
+            ewd.addEdge(new DirectedEdge(e.source(), e.target(), e.weight()));
+            if (!(graph instanceof Digraph)) {
+                ewd.addEdge(new DirectedEdge(e.target(), e.source(), e.weight()));
+            }
+        }
+        return ewd;
+    }
+
+    public static AdjMatrixEdgeWeightedDigraph createAlgs4AdjMatrixEwd(Graph graph) {
+        AdjMatrixEdgeWeightedDigraph adjMatrixEwd = new AdjMatrixEdgeWeightedDigraph(graph.numVertices());
+        for (var it = graph.edgeIterator(); it.hasNext();) {
+            Edge e = it.next();
+            adjMatrixEwd.addEdge(new DirectedEdge(e.source(), e.target(), e.weight()));
+            if (!(graph instanceof Digraph)) {
+                adjMatrixEwd.addEdge(new DirectedEdge(e.target(), e.source(), e.weight()));
+            }
+        }
+        return adjMatrixEwd;
+    }
+
+    public static edu.princeton.cs.algs4.Graph createAlgs4Graph(Graph graph) {
+        var g = new edu.princeton.cs.algs4.Graph(graph.numVertices());
+        for (var it = graph.edgeIterator(); it.hasNext();) {
+            Edge e = it.next();
+            g.addEdge(e.source(), e.target());
+        }
+        return g;
     }
 
     /**

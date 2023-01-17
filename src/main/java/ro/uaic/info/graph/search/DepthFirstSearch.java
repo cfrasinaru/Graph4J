@@ -39,6 +39,7 @@ public class DepthFirstSearch {
     private int nextPos[]; //used to iterate through adjancency lists    
     private int restartIndex;
     private Deque<SearchNode> stack;
+    private boolean[] instack;
     private boolean interrupted;
 
     /**
@@ -58,6 +59,7 @@ public class DepthFirstSearch {
         this.visited = new SearchNode[n];
         this.nextPos = new int[n];
         this.stack = new ArrayDeque<>(n);
+        this.instack = new boolean[n];
         orderIndex = 0;
         compIndex = 0;
         interrupted = false;
@@ -90,7 +92,8 @@ public class DepthFirstSearch {
             var node = new SearchNode(compIndex, start, 0, orderIndex++, null);
             visited[graph.indexOf(start)] = node;
             stack.push(node);
-            visitor.root(node);
+            instack[graph.indexOf(start)] = true;
+            visitor.startVertex(node);
             //start traversing the first component, with the initial vertex
             dfs();
             for (int i = restartIndex, n = graph.numVertices(); i < n; i++) {
@@ -101,7 +104,8 @@ public class DepthFirstSearch {
                     node = new SearchNode(compIndex, graph.vertexAt(i), 0, orderIndex++, null);
                     visited[i] = node;
                     stack.push(node);
-                    visitor.root(node);
+                    instack[i] = true;
+                    visitor.startVertex(node);
                     dfs();
                 }
             }
@@ -128,8 +132,10 @@ public class DepthFirstSearch {
                 if (visited[ui] == null) {
                     var next = new SearchNode(compIndex, u, node.level() + 1, orderIndex++, node);
                     stack.push(next);
+                    instack[ui] = true;
                     visited[ui] = next;
                     visitor.treeEdge(node, next);
+                    visitor.startVertex(next);
                     ok = true;
                     break;
                 }
@@ -141,19 +147,27 @@ public class DepthFirstSearch {
                         visitor.backEdge(node, other);
                     }
                 } else {
-                    if (other.isAncestorOf(node)) {
+                    if (!directed) {
                         visitor.backEdge(node, other);
                     } else {
-                        if (node.isAncestorOf(other)) {
-                            visitor.forwardEdge(node, other);
+                        if (instack[ui] && other.order() < node.order()) {
+                            //other.isAncestorOf(node)
+                            visitor.backEdge(node, other);
                         } else {
-                            visitor.crossEdge(node, other);
+                            if (instack[vi] && node.order() < other.order()) {
+                                //node.isAncestorOf(other)
+                                visitor.forwardEdge(node, other);
+                            } else {
+                                visitor.crossEdge(node, other);
+                            }
                         }
                     }
                 }
             }//while
             if (!ok) {
                 stack.pop();
+                instack[vi] = false;
+                visitor.finishVertex(node);
                 if (parent != null) {
                     visitor.upward(node, parent);
                 }

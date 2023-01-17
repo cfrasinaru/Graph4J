@@ -16,7 +16,6 @@
  */
 package ro.uaic.info.graph.alg;
 
-import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Graph;
 
 /**
@@ -24,7 +23,7 @@ import ro.uaic.info.graph.Graph;
  *
  * For example, DFS or BFS traversal algorithms are implemented exactly the
  * same, regardless the fact that the graph is directed or not, by inspecting
- * the adjacency lists of the vertices provided by the <code>Graph</code> data
+ * the adjacency lists of the vertices provided by the {@link Graph} data
  * type.
  *
  * @author Cristian Frăsinaru
@@ -36,7 +35,7 @@ public abstract class GraphAlgorithm {
 
     /**
      *
-     * @param graph the input graph
+     * @param graph the input graph.
      */
     public GraphAlgorithm(Graph graph) {
         this.graph = graph;

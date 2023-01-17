@@ -16,13 +16,15 @@
  */
 package ro.uaic.info.graph;
 
-import ro.uaic.info.graph.build.GraphBuilder;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 import ro.uaic.info.graph.alg.AcyclicOrientation;
-import ro.uaic.info.graph.alg.CycleFinder;
-import ro.uaic.info.graph.alg.GraphConnectivity;
+import ro.uaic.info.graph.alg.cycle.CycleDetectionAlgorithm;
+import ro.uaic.info.graph.alg.connectivity.GraphBiconnectivity;
+import ro.uaic.info.graph.alg.connectivity.GraphConnectivity;
 import ro.uaic.info.graph.util.CheckArguments;
 
 /**
@@ -58,7 +60,7 @@ public class Graphs {
                 vertices[i++] = v;
             }
         }
-        Graph result = GraphBuilder.vertices(vertices).buildGraph();
+        Graph result = new GraphBuilder().vertices(vertices).buildGraph();
         for (Graph g : graphs) {
             for (int v : g.vertices()) {
                 for (int u : g.neighbors(v)) {
@@ -87,7 +89,7 @@ public class Graphs {
             }
         }
         int[] vertices = set.stream().mapToInt(v -> v).toArray();
-        Graph result = GraphBuilder.vertices(vertices).buildGraph();
+        Graph result = new GraphBuilder().vertices(vertices).buildGraph();
         for (Graph g : graphs) {
             for (int v : g.vertices()) {
                 for (int u : g.neighbors(v)) {
@@ -123,45 +125,106 @@ public class Graphs {
     }
 
     /**
-     *
-     * @param graph
-     * @return
+     * @see GraphConnectivity
+     * @param graph the input graph
+     * @return {@code true} if the graph is connected
      */
     public static boolean isConnected(Graph graph) {
         return new GraphConnectivity(graph).isConnected();
     }
 
     /**
-     *
-     * @param graph
-     * @return
+     * @see GraphBiconnectivity
+     * @param graph the input graph
+     * @return {@code true} if the graph is biconnected (2-connected)
+     */
+    public static boolean isBiconnected(Graph graph) {
+        return new GraphBiconnectivity(graph).isBiconnected();
+    }
+
+    /**
+     * @see CycleDetectionAlgorithm
+     * @param graph the input graph
+     * @return {@code true} if the graph is acyclic
      */
     public static boolean isAcyclic(Graph graph) {
-        return !new CycleFinder(graph).containsCycle();
+        return !new CycleDetectionAlgorithm(graph).containsCycle();
     }
 
     /**
      * The corresponding directed graph of an undirected graph G has all the
      * vertices of G and a pair of symmetrical arcs for each edge of G.
      *
-     * @param graph
-     * @return the digraph corresponding to this graph
+     * @param graph the input graph.
+     * @return the digraph corresponding to the input graph.
      */
     public static Digraph toDigraph(Graph graph) {
-        var digraph = GraphBuilder.vertices(graph.vertices()).buildDigraph();
+        if (graph == null) {
+            return null;
+        }
+        if (graph instanceof Digraph) {
+            return (Digraph) graph.copy();
+        }
+        var digraph = new GraphBuilder().verticesFrom(graph).buildDigraph();
+        for (var it = graph.edgeIterator(); it.hasNext();) {
+            Edge e = it.next();
+            digraph.addEdge(e);
+            digraph.addEdge(e.flip());
+        }
+        return digraph;
+    }
+
+    /**
+     *
+     * @param graph the input graph.
+     * @return the line graph of the input graph.
+     */
+    public static Graph<Edge, Object> lineGraph(Graph graph) {
+        if (graph == null) {
+            return null;
+        }
+        int m = graph.numEdges();
+        var lineGraph = new GraphBuilder<Edge, Object>().maxVertices(m).buildGraph();
+        int vertexIndex = 0;
+        for (Edge e : graph.edges()) {
+            lineGraph.addLabeledVertex(vertexIndex++, e);
+        }
         for (int v : graph.vertices()) {
-            if (graph.isVertexWeighted()) {
-                digraph.setVertexWeight(v, graph.getVertexWeight(v));
-            }
-            for (int u : graph.neighbors(v)) {
-                if (v < u) {
-                    Edge e = graph.edge(v, u);
-                    digraph.addEdge(e);
-                    digraph.addEdge(e.flip());
+            Edge[] edges = graph.edgesOf(v);
+            for (Edge e1 : edges) {
+                for (Edge e2 : edges) {
+                    if (e1.compareTo(e2) < 0) {
+                        lineGraph.addEdge(e1, e2);
+                    }
                 }
             }
         }
-        return digraph;
+        return lineGraph;
+    }
+
+    /**
+     *
+     * @param digraph the input directed graph.
+     * @return the line graph of the input digraph.
+     */
+    public static Digraph<Edge, Object> lineGraph(Digraph digraph) {
+        if (digraph == null) {
+            return null;
+        }
+        int m = digraph.numEdges();
+        var lineGraph = new GraphBuilder<Edge, Object>().maxVertices(m).buildDigraph();
+        int vertexIndex = 0;
+        for (Edge e : digraph.edges()) {
+            lineGraph.addLabeledVertex(vertexIndex++, e);
+        }
+        for (int v : digraph.vertices()) {
+            for (Edge e1 : digraph.incomingEdgesTo(v)) {
+                for (Edge e2 : digraph.outgoingEdgesFrom(v)) {
+                    lineGraph.addEdge(e1, e2);
+                }
+            }
+        }
+        return lineGraph;
     }
 
     /**

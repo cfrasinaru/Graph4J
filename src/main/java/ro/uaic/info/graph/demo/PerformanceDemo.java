@@ -17,6 +17,7 @@
 package ro.uaic.info.graph.demo;
 
 import ro.uaic.info.graph.Graph;
+import ro.uaic.info.graph.util.Tools;
 
 /**
  *
@@ -26,32 +27,87 @@ public abstract class PerformanceDemo {
 
     protected Graph graph;
     protected org.jgrapht.Graph jgraph;
+    protected com.google.common.graph.Graph guavaGraph;
+    protected edu.uci.ics.jung.graph.SparseGraph jungGraph;
+    //
+    protected edu.princeton.cs.algs4.Graph algs4Graph;
+    protected edu.princeton.cs.algs4.EdgeWeightedDigraph algs4Ewd;
+    protected edu.princeton.cs.algs4.AdjMatrixEdgeWeightedDigraph adjMatrixEwd;
+    //
+    protected boolean runGraph4J = true;
+    protected boolean runJGraphT = false;
+    protected boolean runGuava = false;
+    protected boolean runJung = false;
+    protected boolean runAlgs4 = false;
 
-    protected void run(Runnable snippet) {
-        long m0 = Runtime.getRuntime().freeMemory();
+    protected void run(Runnable snippet, String info) {
+        System.gc();
+        Runtime runtime = Runtime.getRuntime();
+        long usedMemoryBefore = runtime.totalMemory() - runtime.freeMemory();
         long t0 = System.currentTimeMillis();
         snippet.run();
         long t1 = System.currentTimeMillis();
-        long m1 = Runtime.getRuntime().freeMemory();
+        long usedMemoryAfter = runtime.totalMemory() - runtime.freeMemory();
+        long memoryIncrease = usedMemoryAfter - usedMemoryBefore;
+        System.out.println(info);
         System.out.println((t1 - t0) + " ms");
-        System.out.println((m0 - m1) / (1024 * 1024) + " MB");
+        System.out.println(memoryIncrease / (1024 * 1024) + " MB");
         System.out.println("------------------------------------------------");
     }
 
-    protected void printObjectSize(Object object) {
-        //System.out.println("Object type: " + object.getClass() + ", size: " + InstrumentationAgent.getObjectSize(object) + " bytes");
+    protected void createGraph() {
     }
 
-    protected abstract void prepare();
+    protected void prepare() {
+        if (graph == null) {
+            return;
+        }
+        if (runJGraphT) {
+            jgraph = Tools.createJGraph(graph);
+        }
+        if (runJung) {
+            jungGraph = Tools.createJungGraph(graph);
+        }
+        if (runGuava) {
+            guavaGraph = Tools.createGuavaGraph(graph);
+        }
+        if (runAlgs4) {
+            algs4Graph = Tools.createAlgs4Graph(graph);
+        }
+    }
 
-    protected abstract void test1();
+    protected abstract void testGraph4J();
 
-    protected abstract void test2();
+    protected void testJGraphT() {
+    }
+
+    protected void testAlgs4() {
+    }
+
+    protected void testJung() {
+    }
+
+    protected void testGuava() {
+    }
 
     protected void demo() {
-        run(this::prepare);
-        run(this::test1);
-        run(this::test2);
+        run(this::createGraph, "Create graph");
+        run(this::prepare, "Prepare other");
+        if (runGraph4J) {
+            run(this::testGraph4J, "Graph4J");
+        }
+        if (runGuava) {
+            run(this::testGuava, "Guava");
+        }
+        if (runJung) {
+            run(this::testJung, "JUNG");
+        }
+        if (runJGraphT) {
+            run(this::testJGraphT, "JGraphT");
+        }
+        if (runAlgs4) {
+            run(this::testAlgs4, "Algs4");
+        }
     }
 
 }

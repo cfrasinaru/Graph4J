@@ -79,13 +79,13 @@ interface Weighted {
 
     /**
      *
-     * @return true, if weights have been set on edges
+     * @return {@code true}, if weights have been set on edges.
      */
     boolean isEdgeWeighted();
 
     /**
      *
-     * @return true, if weights have been set on vertices
+     * @return {@code true}, if weights have been set on vertices.
      */
     boolean isVertexWeighted();
 }

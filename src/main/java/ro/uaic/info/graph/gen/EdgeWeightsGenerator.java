@@ -74,9 +74,9 @@ public class EdgeWeightsGenerator {
         Random rnd = new Random();
         for (int v : graph.vertices()) {
             for (var it = graph.neighborIterator(v); it.hasNext();) {
-                it.next();
+                int u = it.next();
                 double weight = min + (max - min + Double.MIN_NORMAL) * rnd.nextDouble();
-                it.setEdgeWeight(weight);
+                it.setEdgeWeight(weight);                 
             }
         }
     }

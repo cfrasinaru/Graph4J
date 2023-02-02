@@ -69,7 +69,9 @@ public class VertexSet extends VertexCollection {
         if (numVertices == 0) {
             throw new NoSuchElementException("The vertex set is empty");
         }
-        bitset.set(vertices[numVertices - 1], false);
+        if (bitset != null) {
+            bitset.set(vertices[numVertices - 1], false);
+        }
         return vertices[(numVertices--) - 1];
     }
 

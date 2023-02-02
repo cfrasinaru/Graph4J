@@ -16,6 +16,9 @@
  */
 package ro.uaic.info.graph;
 
+import java.util.Arrays;
+import ro.uaic.info.graph.util.IntArrays;
+
 /**
  *
  * @author Cristian Frăsinaru
@@ -24,12 +27,19 @@ package ro.uaic.info.graph;
  */
 class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
 
+    protected int[][] predList; //predecessors
+    protected int[][] predPos; //positions
+    protected int[] indegree;
+
     protected DigraphImpl() {
     }
 
     protected DigraphImpl(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        super(vertices, maxVertices, avgDegree, sorted, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
+        super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
+        indegree = new int[maxVertices];
+        predList = new int[maxVertices][];
+        predPos = new int[maxVertices][];
     }
 
     @Override
@@ -39,8 +49,8 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
 
     @Override
     protected GraphImpl newInstance(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        return new DigraphImpl(vertices, maxVertices, avgDegree, sorted, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
+        return new DigraphImpl(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
     }
 
     @Override
@@ -50,12 +60,144 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
 
     @Override
     public Digraph<V, E> copy() {
-        return (Digraph<V, E>) super.copy();
+        return copy(true, true, true, true, true);
     }
 
     @Override
     public Digraph<V, E> copy(boolean vertexWeights, boolean vertexLabels, boolean edges, boolean edgeWeights, boolean edgeLabels) {
-        return (Digraph<V, E>) super.copy(vertexWeights, vertexLabels, edges, edgeWeights, edgeLabels);
+        var copy = (DigraphImpl<V, E>) super.copy(vertexWeights, vertexLabels, edges, edgeWeights, edgeLabels);
+        //
+        copy.indegree = edges ? Arrays.copyOf(indegree, numVertices) : new int[vertices.length];
+        copy.predList = new int[numVertices][];
+        copy.predPos = new int[numVertices][];
+        if (edges) {
+            for (int i = 0; i < numVertices; i++) {
+                if (predList[i] != null) {
+                    copy.predList[i] = Arrays.copyOf(predList[i], predList[i].length);
+                    copy.predPos[i] = Arrays.copyOf(predPos[i], predPos[i].length);
+                }
+            }
+        }
+        return copy;
+    }
+
+    @Override
+    protected void addEdge(int v, int u, Double weight, E label) {
+        super.addEdge(v, u, weight, label);
+        int ui = indexOf(u);
+        //v -> u: add v to predList of u
+        addToPredList(u, v);
+        //increase indegree of u
+        indegree[ui]++;
+    }
+
+    //adds u to the predList of v (v <- u0, u1, ...)
+    protected int addToPredList(int v, int u) {
+        int vi = indexOf(v);
+        if (vi < 0) {
+            throw new InvalidVertexException(v);
+        }
+        if (predList[vi] == null || indegree[vi] == predList[vi].length) {
+            growPredList(v);
+        }
+        int pos = indegree[vi];
+        predList[vi][pos] = u;
+        return pos;
+    }
+
+    @Override
+    protected void removeEdgeAt(int vi, int pos) {
+        int v = vertices[vi];
+        int u = adjList[vi][pos];
+        int ui = indexOf(u);
+        super.removeEdgeAt(vi, pos);
+        //removing the edge v -> u
+        //remove v from the predecessors of u
+        int posvu = predListPosOf(u, v);
+        if (posvu < indegree[ui] - 1) {
+            swapPredWithLast(ui, posvu);
+        }
+        //decrease indegree of u
+        indegree[ui]--;
+    }
+
+    protected void swapPredWithLast(int vi, int pos) {
+        int lastPos = indegree[vi] - 1;
+        predList[vi][pos] = predList[vi][lastPos];
+        //predPos[vi][pos] = predPos[vi][lastPos];
+        //inform the vertex which was swapped of its current pos
+        /*
+        int w = predList[vi][pos];
+        int wi = indexOf(w);
+        if (wi != vi) {
+            if (!directed) {
+                adjPos[wi][adjPos[vi][pos]] = pos;
+            }
+        } else {
+            adjPos[wi][pos] = pos;
+        }*/
+    }
+
+    //Returns the first position of u in the predecessor list of v.
+    protected int predListPosOf(int v, int u) {
+        int vi = indexOf(v);
+        if (predList[vi] == null) {
+            return -1;
+        }
+        for (int i = 0; i < indegree[vi]; i++) {
+            if (predList[vi][i] == u) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int indegree(int v) {
+        int vi = indexOf(v);
+        if (vi < 0) {
+            throw new InvalidVertexException(v);
+        }
+        return indegree[vi];
+    }
+
+    @Override
+    public int[] indegrees() {
+        return IntArrays.copyOf(indegree);
+    }
+
+    @Override
+    public int[] predecessors(int v) {
+        int vi = indexOf(v);
+        if (vi < 0) {
+            throw new InvalidVertexException(v);
+        }
+        int[] pred = new int[indegree[vi]];
+        for (int pos = 0, indeg = indegree[vi]; pos < indeg; pos++) {
+            pred[pos] = predList[vi][pos];
+        }
+        return pred;
+    }
+
+    @Override
+    protected void growVertices() {
+        super.growVertices();
+        indegree = Arrays.copyOf(indegree, vertices.length);
+        predList = Arrays.copyOf(predList, vertices.length);
+        predPos = Arrays.copyOf(predPos, vertices.length);
+    }
+
+    protected void growPredList(int v) {
+        int vi = indexOf(v);
+        int oldLen = indegree[vi];
+        int newLen = Math.max(avgDegree, oldLen + (oldLen >> 1) + 1);
+        if (predList[vi] != null) {
+            predList[vi] = Arrays.copyOf(predList[vi], newLen);
+            predPos[vi] = Arrays.copyOf(predPos[vi], newLen);
+        } else {
+            predList[vi] = new int[newLen];
+            predPos[vi] = new int[newLen];
+        }
     }
 
     @Override

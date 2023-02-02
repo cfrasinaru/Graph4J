@@ -34,7 +34,7 @@ public class SimpleTest {
 
     @Test
     public void labels() {
-        Graph<String, String> g = new GraphBuilder().numVertices(3).buildGraph();
+        Graph<String, String> g = GraphBuilder.numVertices(3).buildGraph();
         g.setVertexLabel(0, "a");
         g.setVertexLabel(1, "b");
         g.setVertexLabel(2, "c");
@@ -52,7 +52,7 @@ public class SimpleTest {
 
     @Test
     public void matrix4Graph() {
-        var g = new GraphBuilder().numVertices(5).addPath(0, 1, 2, 3, 4).buildGraph();
+        var g = GraphBuilder.numVertices(5).addPath(0, 1, 2, 3, 4).buildGraph();
         EdgeWeightsGenerator.fill(g, 99);
 
         int[][] a = g.adjacencyMatrix();
@@ -79,7 +79,7 @@ public class SimpleTest {
 
     @Test
     public void matrix4Digraph() {
-        var g = new GraphBuilder().numVertices(5).addCycle(0, 1, 2, 3, 4).buildDigraph();
+        var g = GraphBuilder.numVertices(5).addCycle(0, 1, 2, 3, 4).buildDigraph();
         EdgeWeightsGenerator.fill(g, 99);
         int[][] a = g.adjacencyMatrix();
         assertEquals(0, a[0][2]);

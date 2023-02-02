@@ -50,7 +50,7 @@ class VertexIndexArray implements VertexIndex {
     }
 
     @Override
-    public void add(int v, int idx) {
+    public void set(int v, int idx) {
         if (v >= index.length) {
             grow(v);
         }
@@ -64,6 +64,9 @@ class VertexIndexArray implements VertexIndex {
 
     @Override
     public int indexOf(int v) {
+        if (v < 0 || v >= index.length) {
+            return -1;
+        }
         return index[v];
     }
 

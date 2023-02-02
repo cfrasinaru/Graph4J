@@ -29,7 +29,7 @@ public class StrongConnectivityTest {
 
     @Test
     public void digraphStronglyConnected1() {
-        var g = new GraphBuilder().numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-0").buildDigraph();
+        var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-0").buildDigraph();
         var alg = new TarjanStrongConnectivity(g);
         assertTrue(alg.isStronglyConnected());
         assertEquals(1, alg.getStronglyConnectedSets().size());
@@ -37,7 +37,7 @@ public class StrongConnectivityTest {
 
     @Test
     public void digraphStronglyConnected2() {
-        var g = new GraphBuilder().numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5").buildDigraph();
+        var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5").buildDigraph();
         var alg = new TarjanStrongConnectivity(g);
         assertFalse(alg.isStronglyConnected());
         assertEquals(6, alg.getStronglyConnectedSets().size()); //each vertex
@@ -46,25 +46,25 @@ public class StrongConnectivityTest {
     @Test
     public void digraphStronglyConnected3() {
         //https://en.wikipedia.org/wiki/Strongly_connected_component#/media/File:Scc-1.svg
-        var g = new GraphBuilder().numVertices(8).addEdges("0-1,1-2,2-3,3-2,3-4,4-3,4-5,2-5,5-6,6-5,1-6,1-7,7-0,7-6").buildDigraph();
+        var g = GraphBuilder.numVertices(8).addEdges("0-1,1-2,2-3,3-2,3-4,4-3,4-5,2-5,5-6,6-5,1-6,1-7,7-0,7-6").buildDigraph();
         var alg = new TarjanStrongConnectivity(g);
         assertFalse(alg.isStronglyConnected());
         assertEquals(3, alg.getStronglyConnectedSets().size());
     }
 
     private void testSCC() {
-        //var g = new GraphBuilder().numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-0").buildDigraph();
-        //var g = new GraphBuilder().numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-3,2-0").buildDigraph();
-        //var g = new GraphBuilder().numVertices(6).addEdges("0-1,1-2,2-0,0-3,3-4,4-0,0-5").buildDigraph();
-        //var g = new GraphBuilder().numVertices(3).addEdges("1-2").buildGraph();
-        //var g = new GraphBuilder().numVertices(2).addEdges("0-1").buildGraph();
-        //var g = new GraphBuilder().numVertices(10).addEdges("0-1,1-2,2-3,3-0,3-4,4-1,2-5,5-6,6-7,7-5,5-8,8-9,9-5").buildGraph();
-        //var g = new GraphBuilder().numVertices(11).addEdges("0-1,1-2,2-0,1-3,3-4,4-5,5-6,6-3,6-4,7-8,9-10").buildGraph();
-        //var g = new GraphBuilder().numVertices(4).addEdges("0-1,1-2,2-0,1-3").buildGraph();
+        //var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-0").buildDigraph();
+        //var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-3,2-0").buildDigraph();
+        //var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-0,0-3,3-4,4-0,0-5").buildDigraph();
+        //var g = GraphBuilder.numVertices(3).addEdges("1-2").buildGraph();
+        //var g = GraphBuilder.numVertices(2).addEdges("0-1").buildGraph();
+        //var g = GraphBuilder.numVertices(10).addEdges("0-1,1-2,2-3,3-0,3-4,4-1,2-5,5-6,6-7,7-5,5-8,8-9,9-5").buildGraph();
+        //var g = GraphBuilder.numVertices(11).addEdges("0-1,1-2,2-0,1-3,3-4,4-5,5-6,6-3,6-4,7-8,9-10").buildGraph();
+        //var g = GraphBuilder.numVertices(4).addEdges("0-1,1-2,2-0,1-3").buildGraph();
         //https://en.wikipedia.org/wiki/Strongly_connected_component#/media/File:Scc-1.svg
-        //var g = new GraphBuilder().numVertices(8).addEdges("0-1,1-2,2-3,3-2,3-4,4-3,4-5,2-5,5-6,6-5,1-6,1-7,7-0,7-6").buildDigraph();
-        var g = new GraphBuilder().numVertices(6).addEdges("0-1,1-2,2-3,2-0,1-3,3-4,4-5,5-3").buildDigraph();
-        //var g = new GraphBuilder().labeledVertices("a", "b", "c").buildDigraph();
+        //var g = GraphBuilder.numVertices(8).addEdges("0-1,1-2,2-3,3-2,3-4,4-3,4-5,2-5,5-6,6-5,1-6,1-7,7-0,7-6").buildDigraph();
+        var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-3,2-0,1-3,3-4,4-5,5-3").buildDigraph();
+        //var g = GraphBuilder.labeledVertices("a", "b", "c").buildDigraph();
         System.out.println(g);
         var alg = new TarjanStrongConnectivity(g);
         //System.out.println(alg.isBiconnected());

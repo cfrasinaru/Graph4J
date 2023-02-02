@@ -16,12 +16,10 @@
  */
 package ro.uaic.info.graph.demo;
 
+import edu.princeton.cs.algs4.CC;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
-import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.alg.connectivity.GraphConnectivity;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
-import ro.uaic.info.graph.util.Tools;
+import ro.uaic.info.graph.alg.connectivity.ConnectivityAlgorithm;
+import ro.uaic.info.graph.gen.GnmRandomGenerator;
 
 /**
  *
@@ -29,31 +27,45 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class ConnectivityDemo extends PerformanceDemo {
 
+    public ConnectivityDemo() {
+        runJGraphT = true;
+        runAlgs4 = true;
+    }
+
     @Override
-    protected void prepare() {
-        //graph = new GnpRandomGenerator(50_000, 0.0002).createGraph();
+    protected void createGraph() {
+        int n = 1_000_000;
+        graph = new GnmRandomGenerator(n, 3 * n).createGraph();
+        /*
         int n = 1000;
         var g1 = GraphGenerator.complete(1000);
         var g2 = g1.copy();
         g2.renumberAdding(n);
         var g3 = g1.copy();
-        g3.renumberAdding(2*n);
+        g3.renumberAdding(2 * n);
         graph = Graphs.disjointUnion(g1, g2, g3);
-        jgraph = Tools.createJGraph(graph);
+         */
     }
 
     @Override
     protected void testGraph4J() {
-        var result = new GraphConnectivity(graph).getComponents();
-        //System.out.println(new GraphConnectivity(graph).isConnected());
-        System.out.println(result.size());
+        //var result = new GraphConnectivity(graph).getConnectedSets();
+        //System.out.println(result.size());
+        System.out.println(new ConnectivityAlgorithm(graph).isConnected());
     }
 
     @Override
     protected void testJGraphT() {
-        var result = new ConnectivityInspector(jgraph).connectedSets();
-        //System.out.println(new ConnectivityInspector(jgraph).isConnected());
-        System.out.println(result.size());
+        //var result = new ConnectivityInspector(jgraph).connectedSets();
+        //System.out.println(result.size());
+        System.out.println(new ConnectivityInspector(jgraph).isConnected());
+    }
+
+    @Override
+    protected void testAlgs4() {
+        //var result = new CC(algs4Graph);
+        //System.out.println(result.count());
+        System.out.println(new CC(algs4Graph).count() == 1);
     }
 
     public static void main(String args[]) {

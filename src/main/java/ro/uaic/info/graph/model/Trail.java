@@ -43,7 +43,11 @@ public class Trail extends Walk {
         super(graph);
     }
 
-    public Trail(Graph graph, int... vertices) {
+    public Trail(Graph graph, int initialCapacity) {
+        super(graph, initialCapacity);
+    }
+
+    public Trail(Graph graph, int[] vertices) {
         super(graph, vertices);
     }
 
@@ -63,8 +67,8 @@ public class Trail extends Walk {
 
     protected final void checkDuplicateEdges() {
         var edges = new HashMap<Edge, Integer>();
-        for (int i = 0, n = vertices.length; i < n - 1; i++) {
-            Edge e = new Edge(vertices[i], vertices[i + 1], directed);
+        for (int i = 0; i < numVertices - 1; i++) {
+            Edge e = new Edge(vertices[i], vertices[i + 1], isDirected());
             int max = 1;
             if (graph.isAllowingMultipleEdges()) {
                 max = ((Multigraph) graph).multiplicity(e);

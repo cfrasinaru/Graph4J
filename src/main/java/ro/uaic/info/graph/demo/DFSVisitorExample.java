@@ -17,9 +17,9 @@
 package ro.uaic.info.graph.demo;
 
 import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.search.DFSVisitor;
-import ro.uaic.info.graph.search.DepthFirstSearch;
-import ro.uaic.info.graph.search.SearchNode;
+import ro.uaic.info.graph.traverse.DFSVisitor;
+import ro.uaic.info.graph.traverse.DFSTraverser;
+import ro.uaic.info.graph.traverse.SearchNode;
 
 /**
  *
@@ -28,14 +28,12 @@ import ro.uaic.info.graph.search.SearchNode;
 public class DFSVisitorExample {
 
     private void demoDFS() {
-        var g = new GraphBuilder()
-                .vertexRange(1, 8)
+        var g = GraphBuilder.vertexRange(1, 8)
                 .addPath(1, 2, 4, 6).addEdge(6, 2)
                 .addPath(1, 3, 5, 7).addEdge(5, 4).addEdge(5, 8).addEdge(1, 8)
-                .sorted()
                 .buildDigraph();
         System.out.println(g);
-        new DepthFirstSearch(g).traverse(new DFSVisitor() {
+        new DFSTraverser(g).traverse(new DFSVisitor() {
             @Override
             public void startVertex(SearchNode node) {
                 System.out.println((node.order() == 0 ? "Root: " : "Start vertex: ") + node);
@@ -67,7 +65,6 @@ public class DFSVisitorExample {
                 System.out.println("Finish vertex: " + node);
             }
 
-            
             @Override
             public void upward(SearchNode from, SearchNode to) {
                 System.out.println("Return to parent: " + from + "->" + to);

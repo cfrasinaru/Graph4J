@@ -16,6 +16,8 @@
  */
 package ro.uaic.info.graph.demo;
 
+import com.google.common.graph.MutableNetwork;
+import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.GraphBuilder;
 
 /**
@@ -24,12 +26,18 @@ import ro.uaic.info.graph.GraphBuilder;
  */
 public class LabeledGraphDemo extends PerformanceDemo {
 
-    int n = 2000;
+    int n = 3000;
     private City[] cities;
     private Road[][] roads;
 
+    public LabeledGraphDemo() {
+        runJGraphT = true;
+        runGuava = true;
+        runJung = true;
+    }
+
     @Override
-    protected void prepare() {
+    protected void prepareGraphs() {
         cities = new City[n];
         for (int i = 0; i < n; i++) {
             cities[i] = new City("City" + i);
@@ -44,7 +52,7 @@ public class LabeledGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testGraph4J() {
-        var g = new GraphBuilder<City, Road>().labeledVertices(cities).buildGraph();
+        Graph<City, Road> g = GraphBuilder.labeledVertices(cities).buildGraph();
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
                 g.addLabeledEdge(cities[i], cities[j], roads[i][j]);
@@ -53,7 +61,7 @@ public class LabeledGraphDemo extends PerformanceDemo {
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
                 //g.edge(cities[v],cities[u]);
-                g.findSingleEdge(roads[i][j]);
+                g.findEdge(roads[i][j]);
             }
         }
     }
@@ -72,8 +80,49 @@ public class LabeledGraphDemo extends PerformanceDemo {
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
                 //g.getEdge(cities[v],cities[u]);
-                g.getEdgeSource(roads[i][j]);
-                g.getEdgeTarget(roads[i][j]);
+                var v = g.getEdgeSource(roads[i][j]);
+                var u = g.getEdgeTarget(roads[i][j]);
+                g.getEdge(v, u);
+            }
+        }
+    }
+
+    @Override
+    protected void testGuava() {
+        MutableNetwork<City, Road> g = com.google.common.graph.NetworkBuilder
+                .undirected()
+                .expectedNodeCount(n).build();
+        for (int i = 0; i < n; i++) {
+            g.addNode(cities[i]);
+        }
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                g.addEdge(cities[i], cities[j], roads[i][j]);
+            }
+        }
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                var pair = g.incidentNodes(roads[i][j]);
+                g.edgeConnecting(pair).orElse(null);
+            }
+        }
+    }
+
+    @Override
+    protected void testJung() {
+        var g = new edu.uci.ics.jung.graph.SparseGraph<City, Road>();
+        for (int i = 0; i < n; i++) {
+            g.addVertex(cities[i]);
+        }
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                g.addEdge(roads[i][j], cities[i], cities[j]);
+            }
+        }
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                var pair = g.getEndpoints(roads[i][j]);
+                g.findEdge(pair.getFirst(), pair.getSecond());
             }
         }
     }

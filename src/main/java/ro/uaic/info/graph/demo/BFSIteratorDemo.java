@@ -19,7 +19,7 @@ package ro.uaic.info.graph.demo;
 import com.google.common.graph.Traverser;
 import org.jgrapht.traverse.BreadthFirstIterator;
 import ro.uaic.info.graph.gen.GnpRandomGenerator;
-import ro.uaic.info.graph.search.BFSIterator;
+import ro.uaic.info.graph.traverse.BFSIterator;
 
 /**
  *
@@ -27,14 +27,17 @@ import ro.uaic.info.graph.search.BFSIterator;
  */
 public class BFSIteratorDemo extends PerformanceDemo {
 
+    private final double edgeProbability = 0.2;
+
     public BFSIteratorDemo() {
+        numVertices = 1000;
         runGuava = true;
-        //runJGraphT = true;
+        runJGraphT = true;
     }
 
     @Override
     protected void createGraph() {
-        graph = new GnpRandomGenerator(1000, 0.2).createGraph();
+        graph = new GnpRandomGenerator(numVertices, edgeProbability).createGraph();
     }
 
     @Override
@@ -63,10 +66,11 @@ public class BFSIteratorDemo extends PerformanceDemo {
         System.out.println(k);
     }
 
-    private int gk = 0;
+    private int gk;
 
     @Override
     protected void testGuava() {
+        gk = 0;
         for (var v : guavaGraph.nodes()) {
             Traverser.forGraph(guavaGraph).depthFirstPostOrder(v)
                     .forEach(x -> gk++);
@@ -74,8 +78,12 @@ public class BFSIteratorDemo extends PerformanceDemo {
         System.out.println(gk);
     }
 
-    public static void main(String args[]) {
-        var app = new BFSIteratorDemo();
-        app.demo();
+    @Override
+    protected void prepareArgs() {
+        int steps = 10;
+        args = new int[steps];
+        for (int i = 0; i < steps; i++) {
+            args[i] = 100 * (i + 1);
+        }
     }
 }

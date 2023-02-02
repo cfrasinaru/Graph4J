@@ -34,12 +34,15 @@ import ro.uaic.info.graph.util.CheckArguments;
  */
 public class Path extends Trail {
 
-    /**
-     *
-     * @param graph the graph this path belongs to
-     * @param vertices the vertices of the path
-     */
-    public Path(Graph graph, int... vertices) {
+    public Path(Graph graph) {
+        super(graph);
+    }
+
+    public Path(Graph graph, int initialCapacity) {
+        super(graph, initialCapacity);
+    }
+
+    public Path(Graph graph, int[] vertices) {
         super(graph, vertices);
     }
 

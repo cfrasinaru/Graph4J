@@ -39,8 +39,9 @@ public class BellmanFordShortestPath extends GraphAlgorithm
         implements SingleSourceShortestPath {
 
     private final int source;
-    private double cost[];
+    private double[] cost;
     private int[] before;
+    private int[] size;
 
     /**
      * Creates an algorithm to find all shortest paths starting in the source.
@@ -59,16 +60,8 @@ public class BellmanFordShortestPath extends GraphAlgorithm
         return source;
     }
 
-    /**
-     * Returns the shortest path between source and target. If the path is not
-     * availabe from a previous computation, it computes all the shortest paths
-     * starting in source and then it returns the requested one.
-     *
-     * @param target
-     * @return
-     */
     @Override
-    public Path getPath(int target) {
+    public Path findPath(int target) {
         if (before == null) {
             compute();
         }
@@ -92,6 +85,7 @@ public class BellmanFordShortestPath extends GraphAlgorithm
         int n = graph.numVertices();
         this.cost = new double[n];
         this.before = new int[n];
+        this.size = new int[n];
         var changed = new IntArrayList(n);
 
         Arrays.fill(before, -1);
@@ -100,11 +94,14 @@ public class BellmanFordShortestPath extends GraphAlgorithm
         cost[si] = 0;
         changed.add(si);
 
+        var tempChanged = new IntArrayList(n);
+        double[] tempCost = new double[n];
+        System.arraycopy(cost, 0, tempCost, 0, n);
+
         //one more step than necessary, in order to detect negative cycles
         for (int k = 0; k < n; k++) {
             //only paths of lenght k + 1 are allowed (starting in source)
-            double[] tempCost = Arrays.copyOf(cost, cost.length);
-            var tempChanged = new IntArrayList(n);
+            tempChanged.clear();
             for (int vi : changed.values()) {
                 int v = graph.vertexAt(vi);
                 for (var it = graph.neighborIterator(v); it.hasNext();) {
@@ -114,12 +111,14 @@ public class BellmanFordShortestPath extends GraphAlgorithm
                     if (tempCost[ui] > cost[vi] + weight) {
                         tempCost[ui] = cost[vi] + weight;
                         before[ui] = vi;
+                        size[ui] = size[vi] + 1;
                         tempChanged.add(ui);
                     }
                 }
             }
-            cost = tempCost;
-            changed = tempChanged;
+            System.arraycopy(tempCost, 0, cost, 0, n);
+            changed.clear();
+            changed.addAll(tempChanged.values());
         }
         if (!changed.isEmpty()) {
             int vi = changed.get(0);
@@ -128,7 +127,7 @@ public class BellmanFordShortestPath extends GraphAlgorithm
     }
 
     private Path createPathEndingIn(int vi) {
-        var path = new Path(graph);
+        var path = new Path(graph, size[vi] + 1);
         while (vi >= 0) {
             path.add(graph.vertexAt(vi));
             vi = before[vi];

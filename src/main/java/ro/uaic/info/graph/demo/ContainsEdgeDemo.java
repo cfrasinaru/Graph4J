@@ -25,19 +25,16 @@ import ro.uaic.info.graph.gen.GraphGenerator;
 public class ContainsEdgeDemo extends PerformanceDemo {
 
     public ContainsEdgeDemo() {
+        numVertices = 1000;
         runGuava = true;
         runJung = false;
         runJGraphT = false;
-        runAlgs4 = false;
     }
 
-    
     @Override
     protected void createGraph() {
-        int n = 10_000;
-        //graph = new GnmRandomGenerator(n, n).createGraph();
-        graph = GraphGenerator.complete(n);
-        
+        graph = GraphGenerator.complete(numVertices);
+
     }
 
     @Override
@@ -76,7 +73,7 @@ public class ContainsEdgeDemo extends PerformanceDemo {
                 }
             }
         }
-        System.out.println(k + " = " + graph.numEdges());
+        System.out.println(k + " = " + guavaGraph.edges().size());
     }
 
     @Override
@@ -89,11 +86,15 @@ public class ContainsEdgeDemo extends PerformanceDemo {
                 }
             }
         }
-        System.out.println(k + " = " + jgraph.edgeSet().size());
+        System.out.println(k + " = " + jungGraph.getEdgeCount());
     }
 
-    public static void main(String args[]) {
-        var app = new ContainsEdgeDemo();
-        app.demo();
+    @Override
+    protected void prepareArgs() {
+        int steps = 10;
+        args = new int[steps];
+        for (int i = 0; i < steps; i++) {
+            args[i] = 1000 * (i + 1);
+        }
     }
 }

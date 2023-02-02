@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import ro.uaic.info.graph.model.Path;
 import ro.uaic.info.graph.alg.sp.BellmanFordShortestPath;
-import ro.uaic.info.graph.alg.sp.DijkstraShortestPathDefault;
 import ro.uaic.info.graph.GraphBuilder;
 
 /**
@@ -34,7 +33,7 @@ public class BellmanFordTest {
 
     @Test
     public void simple() {
-        var g = new GraphBuilder().vertexRange(1, 5)
+        var g = GraphBuilder.vertexRange(1, 5)
                 .addEdges("1-2,1-3,2-3,2-4,2-5,3-5,4-5").buildGraph();
         g.setEdgeWeight(1, 2, 3);
         g.setEdgeWeight(1, 3, 1);
@@ -44,8 +43,8 @@ public class BellmanFordTest {
         g.setEdgeWeight(3, 5, 9);
         g.setEdgeWeight(4, 5, 1);
         var alg = new BellmanFordShortestPath(g, 1);
-        assertEquals(0, alg.getPath(1).length());//source
-        assertEquals(new Path(g, 1, 3, 2, 4, 5), alg.getPath(5));//vertex 5
+        assertEquals(0, alg.findPath(1).length());//source
+        assertEquals(new Path(g, new int[]{1, 3, 2, 4, 5}), alg.findPath(5));//vertex 5
     }
 
 }

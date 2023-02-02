@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.alg.connectivity.GraphBiconnectivity;
-import ro.uaic.info.graph.alg.connectivity.GraphConnectivity;
+import ro.uaic.info.graph.alg.connectivity.TarjanBiconnectivity;
+import ro.uaic.info.graph.alg.connectivity.ConnectivityAlgorithm;
 import ro.uaic.info.graph.gen.CycleGenerator;
 import ro.uaic.info.graph.gen.GraphGenerator;
 import ro.uaic.info.graph.gen.PathGenerator;
@@ -35,10 +35,10 @@ public class ConnectivityTest {
 
     @Test
     public void graphConnected1() {
-        var g = new GraphBuilder().numVertices(7).addEdges("0-1,1-2,3-4,3-5").buildGraph();
-        var cc = new GraphConnectivity(g);
+        var g = GraphBuilder.numVertices(7).addEdges("0-1,1-2,3-4,3-5").buildGraph();
+        var cc = new ConnectivityAlgorithm(g);
         assertFalse(cc.isConnected());
-        assertEquals(3, cc.getComponents().size()); //6 is isolated
+        assertEquals(3, cc.getConnectedSets().size()); //6 is isolated
     }
 
     @Test
@@ -54,8 +54,8 @@ public class ConnectivityTest {
 
     @Test
     public void graphBiconnected1() {
-        var g = new GraphBuilder().numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-0").buildGraph();
-        var alg = new GraphBiconnectivity(g);
+        var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-0").buildGraph();
+        var alg = new TarjanBiconnectivity(g);
         assertTrue(alg.isBiconnected());
         assertEquals(1, alg.getBlocks().size());
         assertEquals(0, alg.getCutVertices().numVertices());
@@ -63,8 +63,8 @@ public class ConnectivityTest {
 
     @Test
     public void graphBiconnected2() {
-        var g = new GraphBuilder().numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5").buildGraph();
-        var alg = new GraphBiconnectivity(g);
+        var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5").buildGraph();
+        var alg = new TarjanBiconnectivity(g);
         assertFalse(alg.isBiconnected());
         assertEquals(5, alg.getBlocks().size());//each edge
     }
@@ -72,8 +72,8 @@ public class ConnectivityTest {
     @Test
     public void graphBiconnected3() {
         //https://mathworld.wolfram.com/Block.html        
-        var g = new GraphBuilder().numVertices(10).addEdges("0-1,1-2,2-3,3-0,3-4,4-1,2-5,5-6,6-7,7-5,5-8,8-9,9-5").buildGraph();
-        var alg = new GraphBiconnectivity(g);
+        var g = GraphBuilder.numVertices(10).addEdges("0-1,1-2,2-3,3-0,3-4,4-1,2-5,5-6,6-7,7-5,5-8,8-9,9-5").buildGraph();
+        var alg = new TarjanBiconnectivity(g);
         assertFalse(alg.isBiconnected());
         assertEquals(4, alg.getBlocks().size());
         assertEquals(new VertexSet(g, new int[]{2, 5}), alg.getCutVertices());
@@ -82,8 +82,8 @@ public class ConnectivityTest {
     @Test
     public void graphBiconnected4() {
         //https://mathworld.wolfram.com/Block.html        
-        var g = new GraphBuilder().numVertices(11).addEdges("0-1,1-2,2-0,1-3,3-4,4-5,5-6,6-3,6-4,7-8,9-10").buildGraph();
-        var alg = new GraphBiconnectivity(g);
+        var g = GraphBuilder.numVertices(11).addEdges("0-1,1-2,2-0,1-3,3-4,4-5,5-6,6-3,6-4,7-8,9-10").buildGraph();
+        var alg = new TarjanBiconnectivity(g);
         assertFalse(alg.isBiconnected());
         assertEquals(5, alg.getBlocks().size());
         assertEquals(new VertexSet(g, new int[]{1, 3}), alg.getCutVertices());
@@ -91,15 +91,15 @@ public class ConnectivityTest {
 
     //https://mathworld.wolfram.com/Block.html        
     public void graphBiconnectedx() {
-        //var g = new GraphBuilder().numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-0").buildGraph();
-        //var g = new GraphBuilder().numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-3,2-0").buildGraph();
-        //var g = new GraphBuilder().numVertices(6).addEdges("0-1,1-2,2-0,0-3,3-4,4-0,0-5").buildGraph();
-        //var g = new GraphBuilder().numVertices(3).addEdges("1-2").buildGraph();
-        //var g = new GraphBuilder().numVertices(2).addEdges("0-1").buildGraph();
-        //var g = new GraphBuilder().numVertices(4).addEdges("0-1,1-2,2-0,1-3").buildGraph();
+        //var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-0").buildGraph();
+        //var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-3,3-4,4-5,5-3,2-0").buildGraph();
+        //var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-0,0-3,3-4,4-0,0-5").buildGraph();
+        //var g = GraphBuilder.numVertices(3).addEdges("1-2").buildGraph();
+        //var g = GraphBuilder.numVertices(2).addEdges("0-1").buildGraph();
+        //var g = GraphBuilder.numVertices(4).addEdges("0-1,1-2,2-0,1-3").buildGraph();
         var g = GraphGenerator.complete(5);
         System.out.println(g);
-        var alg = new GraphBiconnectivity(g);
+        var alg = new TarjanBiconnectivity(g);
         System.out.println(alg.getBlocks());
 
     }

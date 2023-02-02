@@ -43,7 +43,7 @@ public class CompleteGenerator extends AbstractGenerator {
      */
     public Graph createGraph() {
         int n = vertices.length;
-        var g = new GraphBuilder().vertices(vertices).estimatedAvgDegree(n - 1)
+        var g = GraphBuilder.vertices(vertices).estimatedAvgDegree(n - 1)
                 .named("K" + n).buildGraph();
         addEdges(g, false);
         return g;
@@ -54,7 +54,7 @@ public class CompleteGenerator extends AbstractGenerator {
      * @return a complete digraph
      */
     public Digraph createDigraph() {
-        var g = new GraphBuilder().vertices(vertices)
+        var g = GraphBuilder.vertices(vertices)
                 .estimatedAvgDegree(vertices.length - 1).buildDigraph();
         addEdges(g, true);
         return g;

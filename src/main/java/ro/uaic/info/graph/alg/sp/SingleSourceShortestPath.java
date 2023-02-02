@@ -16,6 +16,7 @@
  */
 package ro.uaic.info.graph.alg.sp;
 
+import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.model.Path;
 
 /**
@@ -43,7 +44,7 @@ public interface SingleSourceShortestPath {
      * @return the shortest path from the source to the target
      */
     default Path computePath(int target) {
-        return getPath(target);
+        return findPath(target);
     }
 
     /**
@@ -57,7 +58,7 @@ public interface SingleSourceShortestPath {
      * @return the shortest path from the source to the target, or null if no
      * path exists.
      */
-    Path getPath(int target);
+    Path findPath(int target);
 
     /**
      * Returns the weight of the shortest path from the source to the target.
@@ -67,7 +68,35 @@ public interface SingleSourceShortestPath {
      * <code>Double.POSTIVE_INFINITY</code> if no path exist.
      */
     default double getPathWeight(int target) {
-        return getPath(target).computeEdgesWeight();
+        //this implementation is not efficient and it usually overridden
+        Path path = findPath(target);
+        return path != null ? path.computeEdgesWeight() : Double.POSITIVE_INFINITY;
+    }
+
+    /**
+     *
+     * @param graph the input graph.
+     * @param source the source vertex.
+     * @return the default implementation of this interface.
+     */
+    static SingleSourceShortestPath getInstance(Graph graph, int source) {
+        //if it has negative cost edges, should use Bellman-Ford-Moore
+        boolean negativeCostEdge = false;
+        for (var it = graph.edgeIterator(); it.hasNext();) {
+            it.next();
+            if (it.getWeight() < 0) {
+                negativeCostEdge = true;
+                break;
+            }
+        }
+        if (negativeCostEdge) {
+            return new BellmanFordShortestPath(graph, source);
+        }
+        //otherwise Dijkstra
+        //if it is dense, the default impl should perform better (not really)
+        //if it is sparse, the heap-based one should perform better (YES!)
+        //both implementations perform virtually the same for dense graphs          
+        return new DijkstraShortestPathHeap(graph, source);
     }
 
 }

@@ -108,7 +108,7 @@ public class GraphGeneratorTest {
         var g = new RandomTreeGenerator(n).create();
         assertEquals(n - 1, g.numEdges());
         assertTrue(Graphs.isConnected(g));
-        assertTrue(Graphs.isAcyclic(g));
+        assertFalse(Graphs.containsCycle(g));
     }
 
     @Test
@@ -119,7 +119,7 @@ public class GraphGeneratorTest {
         assertEquals(n, g.numVertices());
         assertEquals(n - 1, g.numEdges());
         assertTrue(Graphs.isConnected(g));
-        assertTrue(Graphs.isAcyclic(g));
+        assertFalse(Graphs.containsCycle(g));
     }
 
 }

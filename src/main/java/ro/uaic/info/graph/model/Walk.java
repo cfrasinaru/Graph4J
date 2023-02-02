@@ -40,23 +40,19 @@ import ro.uaic.info.graph.Graph;
  */
 public class Walk extends VertexList {
 
-    protected final boolean directed;
     protected int numEdges;
 
     public Walk(Graph graph) {
         super(graph);
-        this.directed = graph.isDirected();
     }
 
-    /**
-     *
-     * @param graph the graph this walk belongs to
-     * @param vertices the vertices of the walk
-     */
-    public Walk(Graph graph, int... vertices) {
+    public Walk(Graph graph, int initialCapacity) {
+        super(graph, initialCapacity);
+    }
+
+    public Walk(Graph graph, int[] vertices) {
         super(graph, vertices);
         this.numEdges = numVertices - 1;
-        this.directed = graph.isDirected();
     }
 
     //type of vertex collection: walk, trail, path, cycle, etc.
@@ -97,6 +93,7 @@ public class Walk extends VertexList {
      * Adds the vertex at the end of the walk, trail or path.
      *
      * @param v a vertex number
+     * @return
      */
     @Override
     public boolean add(int v) {
@@ -108,7 +105,7 @@ public class Walk extends VertexList {
      * @return true, if it belongs to a directed graph
      */
     public boolean isDirected() {
-        return directed;
+        return graph.isDirected();
     }
 
     /**
@@ -158,7 +155,7 @@ public class Walk extends VertexList {
         sb.append("[");
         for (int i = 0; i < numVertices; i++) {
             if (i > 0) {
-                sb.append(directed ? " -> " : " - ");
+                sb.append(isDirected() ? " -> " : " - ");
             }
             sb.append(vertices[i]);
         }
@@ -184,7 +181,7 @@ public class Walk extends VertexList {
         if (super.equals(obj)) {
             return true;
         }
-        if (!directed) {
+        if (!isDirected()) {
             final Walk other = (Walk) obj;
             for (int i = 0; i < numVertices; i++) {
                 if (this.vertices[i] != other.vertices[numVertices - i - 1]) {

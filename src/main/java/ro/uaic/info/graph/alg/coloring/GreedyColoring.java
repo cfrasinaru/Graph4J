@@ -16,19 +16,16 @@
  */
 package ro.uaic.info.graph.alg.coloring;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.BitSet;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.alg.GraphAlgorithm;
-import ro.uaic.info.graph.model.VertexSet;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
 public class GreedyColoring extends GraphAlgorithm implements VertexColoringAlgorithm {
-
-    protected List<VertexSet> colorClasses;
 
     public GreedyColoring(Graph graph) {
         super(graph);
@@ -41,7 +38,36 @@ public class GreedyColoring extends GraphAlgorithm implements VertexColoringAlgo
 
     @Override
     public VertexColoring findColoring(int numColors) {
-        colorClasses = new ArrayList<>();
+        int colors[] = new int[numColors];
+        Arrays.fill(colors, -1);
+        var used = new BitSet();
+        for (int v : graph.vertices()) {
+            //finding the colors used by the neighbors of v
+            for (var it = graph.neighborIterator(v); it.hasNext();) {
+                int u = it.next();
+                int ui = graph.indexOf(u);
+                if (colors[ui] >= 0) {
+                    used.set(colors[ui]);
+                }
+            }
+            //finding a color for v, not used by its neighbors
+            int color = 0;
+            while (used.get(color) && color < numColors - 1) {
+                color++;
+            }
+            if (color == numColors) {
+                return null;
+            }
+            colors[graph.indexOf(v)] = color;
+            used.clear();
+        }
+        return new VertexColoring(graph, colors);
+    }
+
+    /*
+    @Override
+    public VertexColoring findColoring(int numColors) {
+        List<VertexSet> colorClasses = new ArrayList<>();
         for (int v : graph.vertices()) {
             boolean foundColorClass = false;
             nextSet:
@@ -66,6 +92,5 @@ public class GreedyColoring extends GraphAlgorithm implements VertexColoringAlgo
             }
         }
         return new VertexColoring(graph, colorClasses);
-    }
-
+    }*/
 }

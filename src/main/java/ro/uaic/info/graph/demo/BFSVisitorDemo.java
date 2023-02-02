@@ -18,11 +18,11 @@ package ro.uaic.info.graph.demo;
 
 import com.google.common.graph.Traverser;
 import ro.uaic.info.graph.gen.GnpRandomGenerator;
-import ro.uaic.info.graph.search.BFSVisitor;
-import ro.uaic.info.graph.search.BreadthFirstSearch;
-import ro.uaic.info.graph.search.DFSVisitor;
-import ro.uaic.info.graph.search.DepthFirstSearch;
-import ro.uaic.info.graph.search.SearchNode;
+import ro.uaic.info.graph.traverse.BFSVisitor;
+import ro.uaic.info.graph.traverse.BFSTraverser;
+import ro.uaic.info.graph.traverse.DFSVisitor;
+import ro.uaic.info.graph.traverse.DFSTraverser;
+import ro.uaic.info.graph.traverse.SearchNode;
 
 /**
  *
@@ -43,12 +43,12 @@ public class BFSVisitorDemo extends PerformanceDemo {
     @Override
     protected void testGraph4J() {
         for (int v : graph.vertices()) {
-            new BreadthFirstSearch(graph).traverse(new BFSVisitor(){
+            new BFSTraverser(graph).traverse(v, new BFSVisitor(){
                 @Override
                 public void startVertex(SearchNode node) {
                     k1++;
                 }
-            },v);
+            });
         }
         System.out.println(k1);
     }

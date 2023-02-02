@@ -26,30 +26,29 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class CompleteGraphDemo extends PerformanceDemo {
 
-    private int n = 5_000;
-
     public CompleteGraphDemo() {
+        numVertices = 5_000;
         runGuava = true;
-        runJung = true;
-        runJGraphT = true;
-        runAlgs4 = true;
+        runJung = false;
+        runJGraphT = false;
+        runAlgs4 = false;
     }
 
     @Override
     protected void testGraph4J() {
-        new CompleteGenerator(n).createGraph();
+        new CompleteGenerator(numVertices).createGraph();
     }
 
     @Override
     protected void testJGraphT() {
-        new CompleteGraphGenerator(n).generateGraph(Tools.createJGraph(null));
+        new CompleteGraphGenerator(numVertices).generateGraph(Tools.createJGraph(null));
     }
 
     @Override
     protected void testAlgs4() {
-        var g = new edu.princeton.cs.algs4.Graph(n);
-        for (int v = 0; v < n - 1; v++) {
-            for (int u = v + 1; u < n; u++) {
+        var g = new edu.princeton.cs.algs4.Graph(numVertices);
+        for (int v = 0; v < numVertices - 1; v++) {
+            for (int u = v + 1; u < numVertices; u++) {
                 g.addEdge(v, u);
             }
         }
@@ -57,12 +56,12 @@ public class CompleteGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testGuava() {
-        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(n).build();
-        for (int v = 0; v < n; v++) {
+        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(numVertices).build();
+        for (int v = 0; v < numVertices; v++) {
             g.addNode(v);
         }
-        for (int v = 0; v < n - 1; v++) {
-            for (int u = v + 1; u < n; u++) {
+        for (int v = 0; v < numVertices - 1; v++) {
+            for (int u = v + 1; u < numVertices; u++) {
                 g.putEdge(v, u);
             }
         }
@@ -71,19 +70,23 @@ public class CompleteGraphDemo extends PerformanceDemo {
     @Override
     protected void testJung() {
         var g = new edu.uci.ics.jung.graph.SparseGraph<Integer, Object>();
-        for (int v = 0; v < n; v++) {
+        for (int v = 0; v < numVertices; v++) {
             g.addVertex(v);
         }
-        for (int v = 0; v < n - 1; v++) {
-            for (int u = v + 1; u < n; u++) {
+        for (int v = 0; v < numVertices - 1; v++) {
+            for (int u = v + 1; u < numVertices; u++) {
                 g.addEdge(v + "-" + u, v, u);
             }
         }
     }
 
-    public static void main(String args[]) {
-        var app = new CompleteGraphDemo();
-        app.demo();
+    @Override
+    protected void prepareArgs() {
+        int steps = 10;
+        args = new int[steps];
+        for (int i = 0; i < steps; i++) {
+            args[i] = 1000 * (i + 1);
+        }
     }
 
 }

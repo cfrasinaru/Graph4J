@@ -19,12 +19,13 @@ package ro.uaic.info.graph.util;
 import edu.princeton.cs.algs4.AdjMatrixEdgeWeightedDigraph;
 import edu.princeton.cs.algs4.DirectedEdge;
 import edu.princeton.cs.algs4.EdgeWeightedDigraph;
+import edu.princeton.cs.algs4.EdgeWeightedGraph;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.function.Supplier;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.util.SupplierUtil;
-import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.Edge;
 import ro.uaic.info.graph.Graph;
 
@@ -34,15 +35,41 @@ import ro.uaic.info.graph.Graph;
  */
 public class Tools {
 
+    private static final SimpleDateFormat dateTimeFormat
+            = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+
+    public static String formatTimestamp(Date date) {
+        if (date == null) {
+            return "";
+        }
+        return dateTimeFormat.format(date);
+    }
+
     public static org.jgrapht.Graph createJGraph(Graph g) {
         org.jgrapht.Graph jg;
         if (g != null) {
-            jg = new org.jgrapht.graph.SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class);
+            if (g.isDirected()) {
+                if (g.isEdgeWeighted()) {
+                    jg = new org.jgrapht.graph.SimpleDirectedWeightedGraph<Integer, DefaultEdge>(DefaultEdge.class);
+                } else {
+                    jg = new org.jgrapht.graph.SimpleDirectedGraph<Integer, DefaultEdge>(DefaultEdge.class);
+                }
+            } else {
+                if (g.isEdgeWeighted()) {
+                    jg = new org.jgrapht.graph.SimpleWeightedGraph<Integer, DefaultEdge>(DefaultEdge.class);
+                } else {
+                    jg = new org.jgrapht.graph.SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class);
+                }
+            }
             for (int v : g.vertices()) {
                 jg.addVertex(v);
             }
-            for (Edge e : g.edges()) {
+            for (var it = g.edgeIterator(); it.hasNext();) {
+                Edge e = it.next();
                 var je = jg.addEdge(e.source(), e.target());
+                if (g.isEdgeWeighted()) {
+                    jg.setEdgeWeight(je, it.getWeight());
+                }
             }
         } else {
             jg = new org.jgrapht.graph.SimpleGraph<>(
@@ -51,44 +78,30 @@ public class Tools {
         return jg;
     }
 
-    @Deprecated
-    private  static org.jgrapht.Graph createJGraphOld(Graph g) {
-        Supplier<Integer> vSupplier = new Supplier<Integer>() {
-            private int id = 0;
-
-            @Override
-            public Integer get() {
-                return id++;
-            }
-        };
-        org.jgrapht.Graph jg;
-        if (g != null) {
-            if (g instanceof Digraph) {
-                jg = new org.jgrapht.graph.DefaultDirectedWeightedGraph<Integer, DefaultEdge>(DefaultEdge.class);
-            } else {
-                jg = new org.jgrapht.graph.SimpleWeightedGraph<Integer, DefaultEdge>(DefaultEdge.class);
-            }
-            for (int v : g.vertices()) {
-                jg.addVertex(v);
-            }
-            for (Edge e : g.edges()) {
-                var je = jg.addEdge(e.source(), e.target());
-                jg.setEdgeWeight(je, g.getEdgeWeight(e.source(), e.target()));
-            }
-        } else {
-            jg = new org.jgrapht.graph.SimpleGraph<>(vSupplier, SupplierUtil.createDefaultEdgeSupplier(), false);
-        }
-        return jg;
-    }
-
-    public static com.google.common.graph.Graph createGuavaGraph(Graph graph) {
-        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(graph.numVertices()).build();
+    public static com.google.common.graph.MutableGraph createGuavaGraph(Graph graph) {
+        var g = com.google.common.graph.GraphBuilder
+                .undirected()
+                .expectedNodeCount(graph.numVertices()).build();
         for (int i = 0; i < graph.numVertices(); i++) {
             g.addNode(i);
         }
         for (var it = graph.edgeIterator(); it.hasNext();) {
             Edge e = it.next();
             g.putEdge(e.source(), e.target());
+        }
+        return g;
+    }
+
+    public static com.google.common.graph.MutableValueGraph createGuavaValueGraph(Graph graph) {
+        var g = com.google.common.graph.ValueGraphBuilder
+                .undirected()
+                .expectedNodeCount(graph.numVertices()).build();
+        for (int i = 0; i < graph.numVertices(); i++) {
+            g.addNode(i);
+        }
+        for (var it = graph.edgeIterator(); it.hasNext();) {
+            Edge e = it.next();
+            g.putEdgeValue(e.source(), e.target(), e.weight());
         }
         return g;
     }
@@ -101,8 +114,18 @@ public class Tools {
         for (var it = graph.edgeIterator(); it.hasNext();) {
             Edge e = it.next();
             g.addEdge(e, e.source(), e.target());
+
         }
         return g;
+    }
+
+    public static EdgeWeightedGraph createAlgs4EdgeWeightedGraph(Graph graph) {
+        EdgeWeightedGraph ewg = new EdgeWeightedGraph(graph.numVertices());
+        for (var it = graph.edgeIterator(); it.hasNext();) {
+            Edge e = it.next();
+            ewg.addEdge(new edu.princeton.cs.algs4.Edge(e.source(), e.target(), e.weight()));
+        }
+        return ewg;
     }
 
     public static EdgeWeightedDigraph createAlgs4EdgeWeightedDigraph(Graph graph) {
@@ -110,7 +133,7 @@ public class Tools {
         for (var it = graph.edgeIterator(); it.hasNext();) {
             Edge e = it.next();
             ewd.addEdge(new DirectedEdge(e.source(), e.target(), e.weight()));
-            if (!(graph instanceof Digraph)) {
+            if (!graph.isDirected()) {
                 ewd.addEdge(new DirectedEdge(e.target(), e.source(), e.weight()));
             }
         }
@@ -122,7 +145,7 @@ public class Tools {
         for (var it = graph.edgeIterator(); it.hasNext();) {
             Edge e = it.next();
             adjMatrixEwd.addEdge(new DirectedEdge(e.source(), e.target(), e.weight()));
-            if (!(graph instanceof Digraph)) {
+            if (!graph.isDirected()) {
                 adjMatrixEwd.addEdge(new DirectedEdge(e.target(), e.source(), e.weight()));
             }
         }
@@ -131,6 +154,15 @@ public class Tools {
 
     public static edu.princeton.cs.algs4.Graph createAlgs4Graph(Graph graph) {
         var g = new edu.princeton.cs.algs4.Graph(graph.numVertices());
+        for (var it = graph.edgeIterator(); it.hasNext();) {
+            Edge e = it.next();
+            g.addEdge(e.source(), e.target());
+        }
+        return g;
+    }
+
+    public static edu.princeton.cs.algs4.Digraph createAlgs4Digraph(Graph graph) {
+        var g = new edu.princeton.cs.algs4.Digraph(graph.numVertices());
         for (var it = graph.edgeIterator(); it.hasNext();) {
             Edge e = it.next();
             g.addEdge(e.source(), e.target());
@@ -263,4 +295,63 @@ public class Tools {
         }
     }
 
+    /**
+     *
+     * @param x
+     * @return
+     */
+    public static double log2(double x) {
+        return Math.log(x) / Math.log(2);
+    }
+
+    /**
+     *
+     * @param str
+     * @param length
+     * @return
+     */
+    public static String padLeft(String str, int length) {
+        if (str.length() >= length) {
+            return str;
+        }
+        StringBuilder sb = new StringBuilder();
+        while (sb.length() < length - str.length()) {
+            sb.append(' ');
+        }
+        sb.append(str);
+        return sb.toString();
+    }
+
+    /**
+     *
+     * @param str
+     * @param length
+     * @return
+     */
+    public static String padRight(String str, int length) {
+        if (str.length() >= length) {
+            return str;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(str);
+        while (sb.length() < length) {
+            sb.append(' ');
+        }
+        return sb.toString();
+    }
+
+    /**
+     *
+     * @param <T>
+     * @param values
+     * @return
+     */
+    public static <T> T coalesce(T... values) {
+        for (T value : values) {
+            if (value != null) {
+                return value;
+            }
+        }
+        return null;
+    }
 }

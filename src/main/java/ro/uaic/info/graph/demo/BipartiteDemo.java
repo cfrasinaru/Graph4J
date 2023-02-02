@@ -18,10 +18,8 @@ package ro.uaic.info.graph.demo;
 
 import ro.uaic.info.graph.alg.bipartite.DFSBipartitionAlgorithm;
 import edu.princeton.cs.algs4.Bipartite;
-import java.util.Collections;
 import org.jgrapht.alg.partition.BipartitePartitioning;
 import ro.uaic.info.graph.gen.RandomTreeGenerator;
-import ro.uaic.info.graph.util.Tools;
 
 /**
  *
@@ -29,14 +27,17 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class BipartiteDemo extends PerformanceDemo {
 
+    public BipartiteDemo() {
+        runJGraphT = true;
+        runAlgs4 = true;
+    }
+
+    
     @Override
-    protected void prepare() {
+    protected void createGraph() {
         //graph = new GnmRandomGenerator(10_000_000, 1_000_000).createGraph();
         //graph = GraphGenerator.completeBipartite(1500, 1500);
         graph = new RandomTreeGenerator(1_000_000).create();
-        jgraph = Tools.createJGraph(graph);
-        algs4Graph = Tools.createAlgs4Graph(graph);
-
     }
 
     @Override

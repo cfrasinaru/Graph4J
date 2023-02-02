@@ -20,7 +20,6 @@ import edu.princeton.cs.algs4.BellmanFordSP;
 import ro.uaic.info.graph.alg.sp.BellmanFordShortestPath;
 import ro.uaic.info.graph.gen.CompleteGenerator;
 import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.util.Tools;
 
 /**
  *
@@ -28,34 +27,41 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class BellmanFordDemo extends PerformanceDemo {
 
+    public BellmanFordDemo() {
+        //runJGraphT = true;
+        runAlgs4 = true;
+    }
+
+    
     @Override
-    protected void prepare() {
+    protected void createGraph() {
         //graph = new GnpRandomGenerator(500, 0.5).createGraph();
         //EdgeWeightsGenerator.randomIntegers(graph, 1, 1000);
-        graph = new CompleteGenerator(1500).createDigraph();
+        graph = new CompleteGenerator(10_000).createDigraph();
         EdgeWeightsGenerator.consecutiveIntegers(graph);
-        jgraph = Tools.createJGraph(graph);
-        algs4Ewd = Tools.createAlgs4EdgeWeightedDigraph(graph);
     }
 
     @Override
     protected void testGraph4J() {
+        var alg = new BellmanFordShortestPath(graph, 0);
         for (int i = 1; i < graph.numVertices(); i++) {
-            new BellmanFordShortestPath(graph, 0).getPath(i);
+            alg.findPath(i);
         }
     }
 
     @Override
     protected void testJGraphT() {
+        var alg = new org.jgrapht.alg.shortestpath.BellmanFordShortestPath<>(jgraph);
         for (int i = 1; i < graph.numVertices(); i++) {
-            //new org.jgrapht.alg.shortestpath.BellmanFordShortestPath<>(jgraph).getPath(0, i);
+            alg.getPath(0, i);
         }
     }
 
     @Override
     protected void testAlgs4() {
+        var alg = new BellmanFordSP(algs4Ewd, 0);
         for (int i = 1; i < graph.numVertices(); i++) {
-            new BellmanFordSP(algs4Ewd, 0).pathTo(i);
+            alg.pathTo(i);
         }
     }
     

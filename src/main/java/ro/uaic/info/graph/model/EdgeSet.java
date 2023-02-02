@@ -16,28 +16,26 @@
  */
 package ro.uaic.info.graph.model;
 
-import java.util.HashSet;
-import ro.uaic.info.graph.Edge;
 import ro.uaic.info.graph.Graph;
 
 /**
- * * A set of edges of a graph. No duplicates are allowed.
+ * * A set of edges of a graph.
  *
  * @author Cristian Frăsinaru
  */
-public class EdgeSet extends HashSet<Edge> {
-
-    private final Graph graph;
+public class EdgeSet extends EdgeCollection { //WORK IN PROGRESS
 
     public EdgeSet(Graph graph) {
-        this.graph = graph;
+        super(graph);
     }
 
-    @Override
-    public boolean add(Edge e) {
-        //CheckArguments.graphContainsEdge(graph, e);
-        return super.add(e);
+    public EdgeSet(Graph graph, int initialCapacity) {
+        super(graph, initialCapacity);
     }
+
+    public EdgeSet(Graph graph, int[][] edges) {
+        super(graph, edges);
+    }
+   
     
-
 }

@@ -26,6 +26,7 @@ import ro.uaic.info.graph.Graph;
  * the optimal vertex at each step, having a complexity of O(n^2), where n is
  * the number of vertices.
  *
+ * Suitable for dense graphs.
  *
  * @author Cristian Frăsinaru
  */

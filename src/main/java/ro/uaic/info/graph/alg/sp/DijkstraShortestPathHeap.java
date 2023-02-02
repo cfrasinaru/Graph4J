@@ -27,6 +27,7 @@ import ro.uaic.info.graph.model.VertexHeap;
  * step, having a complexity of O(m log n), where m is the number of edges and n
  * the number of vertices.
  *
+ * Suitable for sparse graphs.
  *
  * @author Cristian Frăsinaru
  */
@@ -40,7 +41,7 @@ public class DijkstraShortestPathHeap extends DijkstraShortestPathBase {
 
     @Override
     protected void preCompute() {
-        this.heap = new VertexHeap(graph, (i, j) -> (int) (cost[i] - cost[j]));
+        this.heap = new VertexHeap(graph, (i, j) -> (int) Math.signum(cost[i] - cost[j]));
     }
 
     @Override

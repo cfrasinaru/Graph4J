@@ -31,22 +31,22 @@ public interface AllPairsShortestPath {
      * shortest paths are stored for later retrieval, so subsequent invocations
      * will return the already computed paths.
      *
-     * @param source the number of the source vertex
-     * @param target the number of the target vertex
+     * @param source the number of the source vertex.
+     * @param target the number of the target vertex.
      * @return the shortest path from the source to the target, or null if no
-     * path exists
+     * path exists.
      */
-    Path getPath(int source, int target);
+    Path findPath(int source, int target);
 
     /**
      *
-     * @param source the number of the source vertex
-     * @param target the number of the target vertex
+     * @param source the number of the source vertex.
+     * @param target the number of the target vertex.
      * @return the weight of the shortest path from the source to the target, or
-     * <code>Double.POSTIVE_INFINITY</code> if no path exist.
+     * <code>Double.POSTIVE_INFINITY</code> if no path exists.
      */
     default double getPathWeight(int source, int target) {
-        return getPath(source, target).computeEdgesWeight();
+        return findPath(source, target).computeEdgesWeight();
     }
 
 }

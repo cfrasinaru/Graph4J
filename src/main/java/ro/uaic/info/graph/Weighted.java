@@ -76,7 +76,7 @@ interface Weighted {
      * <code>Graph.NO_EDGE_WEIGHT</code> if vu is not an edge of the graph.
      */
     double getEdgeWeight(int v, int u);
-
+    
     /**
      *
      * @return {@code true}, if weights have been set on edges.

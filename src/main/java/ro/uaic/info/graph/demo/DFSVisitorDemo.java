@@ -17,12 +17,10 @@
 package ro.uaic.info.graph.demo;
 
 import com.google.common.graph.Traverser;
-import org.jgrapht.traverse.DepthFirstIterator;
 import ro.uaic.info.graph.gen.GnpRandomGenerator;
-import ro.uaic.info.graph.search.DFSIterator;
-import ro.uaic.info.graph.search.DFSVisitor;
-import ro.uaic.info.graph.search.DepthFirstSearch;
-import ro.uaic.info.graph.search.SearchNode;
+import ro.uaic.info.graph.traverse.DFSVisitor;
+import ro.uaic.info.graph.traverse.DFSTraverser;
+import ro.uaic.info.graph.traverse.SearchNode;
 
 /**
  *
@@ -39,21 +37,21 @@ public class DFSVisitorDemo extends PerformanceDemo {
         graph = new GnpRandomGenerator(1000, 0.2).createGraph();
     }
 
-    private int k1=0;
+    private int k1 = 0;
+
     @Override
     protected void testGraph4J() {
         for (int v : graph.vertices()) {
-            new DepthFirstSearch(graph).traverse(new DFSVisitor(){
+            new DFSTraverser(graph).traverse(v, new DFSVisitor() {
                 @Override
                 public void startVertex(SearchNode node) {
                     k1++;
                 }
-            },v);
+            });
         }
         System.out.println(k1);
     }
 
-    
     private int k2 = 0;
 
     @Override

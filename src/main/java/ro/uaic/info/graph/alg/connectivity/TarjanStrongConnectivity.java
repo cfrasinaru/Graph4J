@@ -25,16 +25,16 @@ import ro.uaic.info.graph.alg.DirectedGraphAlgorithm;
 import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.model.VertexSet;
 import ro.uaic.info.graph.model.VertexStack;
-import ro.uaic.info.graph.search.DFSVisitor;
-import ro.uaic.info.graph.search.DepthFirstSearch;
-import ro.uaic.info.graph.search.SearchNode;
+import ro.uaic.info.graph.traverse.DFSVisitor;
+import ro.uaic.info.graph.traverse.DFSTraverser;
+import ro.uaic.info.graph.traverse.SearchNode;
 
 /**
  * Tarjan's strongly connected components algorithm is an algorithm in graph
  * theory for finding the strongly connected components (SCCs) of a directed
  * graph. It runs in linear time, matching the time bound for alternative
  * methods including Kosaraju's algorithm and the path-based strong component
- * algorithm
+ * algorithm.
  *
  * @author Cristian Frăsinaru
  */
@@ -80,7 +80,7 @@ public class TarjanStrongConnectivity
     protected void compute(boolean checkOnly) {
         this.compSets = new ArrayList<>();
         this.vertexComp = new int[digraph.numVertices()];
-        var dfs = new DepthFirstSearch(digraph);
+        var dfs = new DFSTraverser(digraph);
         dfs.traverse(new Visitor(checkOnly));
         if (stronglyConnected == null) {
             stronglyConnected = true;
@@ -95,8 +95,9 @@ public class TarjanStrongConnectivity
         if (compSets == null) {
             compute(false);
         }
-        Digraph<Digraph, Integer> condensation = new GraphBuilder<Digraph, Integer>()
-                .labeledVertices(getStronglyConnectedComponents()).buildDigraph();
+        Digraph<Digraph, Integer> condensation
+                = GraphBuilder.labeledVertices(getStronglyConnectedComponents())
+                        .buildDigraph();
         for (Iterator<Edge> it = digraph.edgeIterator(); it.hasNext();) {
             Edge e = it.next();
             int v = e.source();
@@ -152,7 +153,7 @@ public class TarjanStrongConnectivity
             int vi = digraph.indexOf(from.vertex());
             int ui = digraph.indexOf(to.vertex());
             if (stack.contains(ui)) {
-                low[vi] = 0; //can reach the root
+                low[vi] = low[ui]; //can actually reach the root of the cc
             }
         }
 

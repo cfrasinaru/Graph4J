@@ -76,8 +76,16 @@ public class Edge<E> implements Comparable<Edge> {
         return weight;
     }
 
+    void setWeight(Double weight) {
+        this.weight = weight;
+    }
+
     public E label() {
         return label;
+    }
+
+    void setLabel(E label) {
+        this.label = label;
     }
 
     /**
@@ -103,17 +111,11 @@ public class Edge<E> implements Comparable<Edge> {
     public String toString() {
         var sb = new StringBuilder();
         sb.append(source).append(directed ? "->" : "-").append(target);
-        if (weight != null || label != null) {
-            sb.append("(");
-            if (label != null) {
-                sb.append(label);
-                if (weight != null) {
-                    sb.append(":").append(weight);
-                }
-            } else {
-                sb.append(weight);
-            }
-            sb.append(")");
+        if (label != null) {
+            sb.append(":").append(label);
+        }
+        if (weight != null) {
+            sb.append("=").append(weight);
         }
         return sb.toString();
     }

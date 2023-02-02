@@ -39,6 +39,7 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
     protected final int[] vertices;
     protected double cost[];
     protected int[] before;
+    protected int[] size;
     protected boolean solved[];
     protected int numSolved;
 
@@ -80,13 +81,13 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
     }
 
     @Override
-    public Path getPath(int target) {
+    public Path findPath(int target) {
         if (before == null) {
             compute(-1);
         }
         int ti = graph.indexOf(target);
         if (cost[ti] == Double.POSITIVE_INFINITY) {
-            return new Path(graph, new int[]{});
+            return null;
         }
         return createPathEndingIn(ti);
     }
@@ -113,6 +114,7 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
         int n = vertices.length;
         this.cost = new double[n];
         this.before = new int[n];
+        this.size = new int[n];
         this.solved = new boolean[n];
         this.numSolved = 0;
         Arrays.fill(cost, Double.POSITIVE_INFINITY);
@@ -142,6 +144,7 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
                 if (cost[ui] > cost[vi] + weight) {
                     cost[ui] = cost[vi] + weight;
                     before[ui] = vi;
+                    size[ui] = size[vi] + 1;
                     postUpdate(ui);
                 }
             }
@@ -149,7 +152,7 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
     }
 
     protected Path createPathEndingIn(int vi) {
-        Path path = new Path(graph);
+        Path path = new Path(graph, size[vi] + 1);
         while (vi >= 0) {
             path.add(vertices[vi]);
             vi = before[vi];

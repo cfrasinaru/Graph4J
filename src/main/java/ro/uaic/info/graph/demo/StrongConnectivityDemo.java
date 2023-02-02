@@ -16,11 +16,11 @@
  */
 package ro.uaic.info.graph.demo;
 
+import edu.princeton.cs.algs4.TarjanSCC;
 import org.jgrapht.alg.connectivity.KosarajuStrongConnectivityInspector;
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.alg.connectivity.TarjanStrongConnectivity;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
-import ro.uaic.info.graph.util.Tools;
+import ro.uaic.info.graph.gen.GnmRandomGenerator;
 
 /**
  *
@@ -28,14 +28,16 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class StrongConnectivityDemo extends PerformanceDemo {
 
+    public StrongConnectivityDemo() {
+        runJGraphT = true;
+        //runAlgs4 = true;
+    }
+
     @Override
-    protected void prepare() {
-        //graph = GraphGenerator.complete(2000);
-        graph = new GnpRandomGenerator(10_000, 0.0001).createDigraph();
-        //graph = new CycleGenerator(50_000).createDigraph(true);
-        //graph = new RandomTreeGenerator(10_000).create();
-        //graph = new GraphBuilder().numVertices(11).addEdges("0-1,1-2,2-0,1-3,3-4,4-5,5-6,6-3,6-4,7-8,9-10").buildGraph();
-        jgraph = Tools.createJGraph(graph);
+    protected void createGraph() {
+        int n = 100_000;
+        graph = new GnmRandomGenerator(n, 5*n).createDigraph();
+        //graph = new CycleGenerator(500_000).createDigraph(true);
     }
 
     @Override
@@ -44,16 +46,27 @@ public class StrongConnectivityDemo extends PerformanceDemo {
         //var result = new GraphBiconnectivity(graph).getCutVertices();
         //System.out.println(new GraphBiconnectivity(graph).isBiconnected());
         System.out.println(result.size());
-        //new DepthFirstSearch(graph).traverse(new DFSVisitor() {});
+        //new DFSTraverser(graph).traverse(new DFSVisitor() {});
     }
 
     @Override
-    protected void testJGraphT() {      
-        var result = new KosarajuStrongConnectivityInspector(jgraph).stronglyConnectedSets();
+    protected void testJGraphT() {
+       var result = new KosarajuStrongConnectivityInspector(jgraph).stronglyConnectedSets();
+        //var result = new GabowStrongConnectivityInspector(jgraph).stronglyConnectedSets();
         //var result = new BiconnectivityInspector(jgraph).getCutpoints();
         //System.out.println(new BiconnectivityInspector(jgraph).isBiconnected());
         System.out.println(result.size());
     }
+
+    @Override
+    protected void testAlgs4() {
+        var alg = new TarjanSCC(algs4Digraph);
+        //var alg = new KosarajuSharirSCC(algs4Digraph);
+        //var alg = new GabowSCC(algs4Digraph);
+        
+    }
+    
+    
 
     public static void main(String args[]) {
         var app = new StrongConnectivityDemo();

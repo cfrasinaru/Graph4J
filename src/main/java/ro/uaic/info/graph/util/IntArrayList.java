@@ -26,13 +26,13 @@ public class IntArrayList {
 
     protected int[] values;
     protected int size;
-    protected final static int DEFAULT_INITIAL_CAPACITY = 10;
+    protected final static int DEFAULT_CAPACITY = 10;
 
     /**
      *
      */
     public IntArrayList() {
-        this(DEFAULT_INITIAL_CAPACITY);
+        this(DEFAULT_CAPACITY);
     }
 
     /**
@@ -74,10 +74,16 @@ public class IntArrayList {
      * @param value
      */
     public void add(int value) {
-        if (values.length == size) {
+        if (values.length <= size) {
             grow();
         }
         values[size++] = value;
+    }
+
+    public void addAll(int[] values) {
+        for (int value : values) {
+            add(value);
+        }
     }
 
     /**
@@ -136,8 +142,12 @@ public class IntArrayList {
 
     private void grow() {
         int oldLen = values.length;
-        int newLen = oldLen + (oldLen >> 1);
+        int newLen = Math.max(DEFAULT_CAPACITY, oldLen + (oldLen >> 1));
         values = Arrays.copyOf(values, newLen);
+    }
+
+    public void clear() {
+        size = 0;
     }
 
     @Override

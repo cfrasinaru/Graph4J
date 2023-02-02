@@ -54,7 +54,7 @@ public class CompleteTreeGenerator extends AbstractGenerator {
      */
     public Graph create() {
         int n = (int) (Math.pow(degree, numLevels) - 1) / (degree - 1);
-        var g = new GraphBuilder().numVertices(n).estimatedAvgDegree(degree).buildGraph();
+        var g = GraphBuilder.numVertices(n).estimatedAvgDegree(degree).buildGraph();
         //each level k has d^k vertices (root is on 0)
         //level k>0 has vertices from d^(k-1)+1 to d^(k)
         //vertex at position i on level k has childrens on the k+1 level,

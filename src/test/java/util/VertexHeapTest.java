@@ -33,7 +33,7 @@ public class VertexHeapTest {
     @Test
     public void testHeap() {
         int[] u = {10, 20, 30, 40, 50, 60, 70, 80};
-        var g = new GraphBuilder().numVertices(8).buildGraph();
+        var g = GraphBuilder.numVertices(8).buildGraph();
         VertexHeap heap = new VertexHeap(g, (i, j) -> u[i] - u[j]);
         assertEquals(0, heap.peek());
         

@@ -18,9 +18,10 @@ package graph;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+import ro.uaic.info.graph.Edge;
 import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.search.BFSIterator;
-import ro.uaic.info.graph.search.DFSIterator;
+import ro.uaic.info.graph.traverse.BFSIterator;
+import ro.uaic.info.graph.traverse.DFSIterator;
 
 /**
  *
@@ -29,9 +30,30 @@ import ro.uaic.info.graph.search.DFSIterator;
 public class IteratorTest {
 
     @Test
+    public void vertexIterator() {
+        var g = GraphBuilder.vertexRange(1, 4).addEdges("1-2,2-3,3-4").buildGraph();
+        for (var it = g.vertexIterator(); it.hasNext();) {
+            assertEquals(g.vertexAt(0), it.next());
+            it.remove();
+        }
+        assertEquals(0, g.numEdges());
+    }
+
+    @Test
+    public void edgeIterator() {
+        var g = GraphBuilder.vertexRange(1, 4).addEdges("1-2,2-3,3-4").buildGraph();
+        int i = 1;
+        for (var it = g.edgeIterator(); it.hasNext();) {
+            assertEquals(new Edge(i, i + 1), it.next());
+            i++;
+            it.remove();
+        }
+        assertEquals(0, g.numEdges());
+    }
+
+    @Test
     public void testDFS() {
-        var g = new GraphBuilder()
-                .numVertices(8)
+        var g = GraphBuilder.numVertices(8)
                 .addEdges("0-1,1-2,0-3,3-4,0-5,5-6")
                 .buildGraph();
         var sb = new StringBuilder();
@@ -44,8 +66,7 @@ public class IteratorTest {
 
     @Test
     public void testBFS() {
-        var g = new GraphBuilder()
-                .numVertices(8)
+        var g = GraphBuilder.numVertices(8)
                 .addEdges("0-1,1-2,0-3,3-4,0-5,5-6")
                 .buildGraph();
         var sb = new StringBuilder();

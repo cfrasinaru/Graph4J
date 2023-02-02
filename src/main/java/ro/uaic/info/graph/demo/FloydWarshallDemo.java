@@ -20,7 +20,6 @@ import edu.princeton.cs.algs4.FloydWarshall;
 import ro.uaic.info.graph.alg.sp.FloydWarshallShortestPath;
 import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
 import ro.uaic.info.graph.gen.GraphGenerator;
-import ro.uaic.info.graph.util.Tools;
 
 /**
  *
@@ -28,14 +27,17 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class FloydWarshallDemo extends PerformanceDemo {
 
+    public FloydWarshallDemo() {
+        runJGraphT = true;
+        runAlgs4 = true;
+    }
+
     @Override
-    protected void prepare() {
+    protected void createGraph() {
         //graph = new GnpRandomGenerator(1000, 0.3).createGraph();
         //EdgeWeightsGenerator.randomIntegers(graph, 1, 1000);
         graph = GraphGenerator.complete(1000);
         EdgeWeightsGenerator.consecutiveIntegers(graph);
-        jgraph = Tools.createJGraph(graph);
-        adjMatrixEwd = Tools.createAlgs4AdjMatrixEwd(graph);
 
     }
 
@@ -43,7 +45,7 @@ public class FloydWarshallDemo extends PerformanceDemo {
     protected void testGraph4J() {
         var alg = new FloydWarshallShortestPath(graph);
         for (int i = 1; i < graph.numVertices(); i++) {
-            alg.getPath(0, i);
+            alg.findPath(0, i);
             //alg.getPathWeight(0, i);
         }
     }

@@ -65,7 +65,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public Graph createGraph() {
-        var g = new GraphBuilder().vertices(vertices).estimatedMaxEdges(numEdges).buildGraph();
+        var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildGraph();
         createEdges(g, false);
         return g;
     }
@@ -103,7 +103,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public Digraph createDigraph() {
-        var g = new GraphBuilder().vertices(vertices).estimatedMaxEdges(numEdges).buildDigraph();
+        var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildDigraph();
         createEdges(g, true);
         return g;
     }
@@ -113,7 +113,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public Multigraph createMultiGraph() {
-        var g = new GraphBuilder().vertices(vertices).estimatedMaxEdges(numEdges).buildMultigraph();
+        var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildMultigraph();
         createEdgesProbabilistic(g, true, false);
         return g;
     }
@@ -123,7 +123,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public DirectedMultigraph createDirectedMultigraph() {
-        var g = new GraphBuilder().vertices(vertices).estimatedMaxEdges(numEdges).buildDirectedMultigraph();
+        var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildDirectedMultigraph();
         createEdgesProbabilistic(g, true, false);
         return g;
     }
@@ -133,7 +133,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public Pseudograph createPseudograph() {
-        var g = new GraphBuilder().vertices(vertices).estimatedMaxEdges(numEdges).buildPseudograph();
+        var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildPseudograph();
         createEdgesProbabilistic(g, true, true);
         return g;
     }
@@ -143,7 +143,7 @@ public class GnmRandomGenerator extends AbstractGenerator {
      * @return
      */
     public DirectedPseudograph createDirectedPseudograph() {
-        var g = new GraphBuilder().vertices(vertices).estimatedMaxEdges(numEdges).buildDirectedPseudograph();
+        var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildDirectedPseudograph();
         createEdgesProbabilistic(g, true, true);
         return g;
     }

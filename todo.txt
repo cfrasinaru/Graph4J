@@ -17,6 +17,12 @@ https://github.com/YaccConstructor/QuickGraph/tree/master/src/QuickGraph/Algorit
 NetworkX or the BGL. or Igraph
 JGraphT—A Java Library for Graph Data Structures and Algorithms
 
+R Plots
+https://sites.harding.edu/fmccown/r/
+
+
+Linear regression
+https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearRegression.java.html
 
 Comparatii legate de modul de rulare / performanta:
 - crearea de grafuri (empty,random,complete)
@@ -36,6 +42,11 @@ Finding the k-shortest path between two nodes
 	https://cs.stackexchange.com/questions/18849/finding-the-k-shortest-path-between-two-nodes
 	https://en.wikipedia.org/wiki/K_shortest_path_routing
 
+MST
+Boruvka Algorithm
+	https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm
+Randomized minimum spanning tree algorithm ?
+
 Metrici si masuri specifice relatiilor sociale
 
 
@@ -49,3 +60,21 @@ Generaratoare de grafuri
 
 Planarity
 
+
+	Breadth First Search
+	Depth First Search
+Uniform Cost Search
+
+	Dijkstra's Shortest Paths
+	Bellman-Ford Shortest Paths
+Johnson's All-Pairs Shortest Paths
+	Kruskal's Minimum Spanning Tree
+	Prim's Minimum Spanning Tree
+	Connected Components
+	Strongly Connected Components
+Dynamic Connected Components (using Disjoint Sets)
+	Topological Sort
+	Transpose
+Reverse Cuthill Mckee Ordering
+Smallest Last Vertex Ordering
+Sequential Vertex Coloring

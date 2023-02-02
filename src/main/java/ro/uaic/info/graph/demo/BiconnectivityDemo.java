@@ -17,9 +17,8 @@
 package ro.uaic.info.graph.demo;
 
 import org.jgrapht.alg.connectivity.BiconnectivityInspector;
-import ro.uaic.info.graph.alg.connectivity.GraphBiconnectivity;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
-import ro.uaic.info.graph.util.Tools;
+import ro.uaic.info.graph.alg.connectivity.*;
+import ro.uaic.info.graph.gen.GnmRandomGenerator;
 
 /**
  *
@@ -27,33 +26,35 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class BiconnectivityDemo extends PerformanceDemo {
 
+    public BiconnectivityDemo() {
+        runJGraphT = true;
+    }
+
     @Override
-    protected void prepare() {
+    protected void createGraph() {
+        int n = 50_000;
+        graph = new GnmRandomGenerator(n, n).createGraph();
         //graph = GraphGenerator.complete(2000);
-        graph = new GnpRandomGenerator(30_000, 0.0001).createGraph();
         //graph = GraphGenerator.cycle(50_000);
         //graph = new RandomTreeGenerator(10_000).create();
-        //graph = new GraphBuilder().numVertices(11).addEdges("0-1,1-2,2-0,1-3,3-4,4-5,5-6,6-3,6-4,7-8,9-10").buildGraph();
-        jgraph = Tools.createJGraph(graph);
     }
 
     @Override
     protected void testGraph4J() {
-        var result = new GraphBiconnectivity(graph).getBlocks();
+        //var result = new TarjanBiconnectivity(graph).getBlocks();
+        //System.out.println(result.size());
         //var result = new GraphBiconnectivity(graph).getCutVertices();
-        //System.out.println(new GraphBiconnectivity(graph).isBiconnected());
-        System.out.println(result.size());
-        //new DepthFirstSearch(graph).traverse(new DFSVisitor() {});
+        System.out.println(new TarjanBiconnectivity(graph).isBiconnected());
     }
 
     @Override
     protected void testJGraphT() {
-        var result = new BiconnectivityInspector(jgraph).getBlocks();
+        //var result = new BiconnectivityInspector(jgraph).getBlocks();
+        //System.out.println(result.size());
         //var result = new BiconnectivityInspector(jgraph).getCutpoints();
-        //System.out.println(new BiconnectivityInspector(jgraph).isBiconnected());
-        System.out.println(result.size());
+        System.out.println(new BiconnectivityInspector(jgraph).isBiconnected());
     }
-
+    
     public static void main(String args[]) {
         var app = new BiconnectivityDemo();
         app.demo();

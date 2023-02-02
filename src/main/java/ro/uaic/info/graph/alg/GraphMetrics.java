@@ -22,7 +22,7 @@ import ro.uaic.info.graph.model.Cycle;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.model.VertexSet;
 import ro.uaic.info.graph.alg.sp.FloydWarshallShortestPath;
-import ro.uaic.info.graph.search.BFSIterator;
+import ro.uaic.info.graph.traverse.BFSIterator;
 import ro.uaic.info.graph.util.CheckArguments;
 
 /**

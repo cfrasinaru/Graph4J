@@ -21,12 +21,12 @@ import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.Multigraph;
 import ro.uaic.info.graph.Pseudograph;
 import ro.uaic.info.graph.alg.GraphAlgorithm;
-import ro.uaic.info.graph.search.BreadthFirstSearch;
-import ro.uaic.info.graph.search.DFSVisitor;
-import ro.uaic.info.graph.search.DepthFirstSearch;
-import ro.uaic.info.graph.search.SearchNode;
+import ro.uaic.info.graph.traverse.BFSTraverser;
+import ro.uaic.info.graph.traverse.DFSVisitor;
+import ro.uaic.info.graph.traverse.DFSTraverser;
+import ro.uaic.info.graph.traverse.SearchNode;
 import ro.uaic.info.graph.util.CheckArguments;
-import ro.uaic.info.graph.search.BFSVisitor;
+import ro.uaic.info.graph.traverse.BFSVisitor;
 
 /**
  *
@@ -59,7 +59,7 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
         if (graph instanceof Pseudograph && (parity != 2)) {
             for (int v : vertices) {
                 if (graph.containsEdge(v, v)) {
-                    return new Cycle(graph, v);
+                    return new Cycle(graph, new int[]{v});
                 }
             }
         }
@@ -67,7 +67,7 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
             for (int v : vertices) {
                 for (int u : graph.neighbors(v)) {
                     if (graph.containsEdge(u, v)) {
-                        return new Cycle(graph, v, u);
+                        return new Cycle(graph, new int[]{v, u});
                     }
                 }
             }
@@ -76,7 +76,7 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
                 for (int v : vertices) {
                     for (int u : graph.neighbors(v)) {
                         if (((Multigraph) graph).multiplicity(v, u) > 1) {
-                            return new Cycle(graph, u, v);
+                            return new Cycle(graph, new int[]{u, v});
                         }
                     }
                 }
@@ -106,7 +106,15 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
      * @return
      */
     public boolean containsCycle() {
-        return findAnyCycle() != null;
+        //return findAnyCycle() != null; //slower, the Cycle may not be required
+        var dfs = new DFSTraverser(graph);
+        dfs.traverse(new DFSVisitor() {
+            @Override
+            public void backEdge(SearchNode from, SearchNode to) {
+                interrupt();
+            }
+        });
+        return dfs.isInterrupted();        
     }
 
     /**
@@ -177,15 +185,15 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
 
     private Cycle dfs() {
         var visitor = new DFSCycleVisitor();
-        new DepthFirstSearch(graph).traverse(visitor,
-                target < 0 ? graph.vertexAt(0) : target);
+        new DFSTraverser(graph).traverse(
+                target < 0 ? graph.vertexAt(0) : target, visitor);
         return visitor.cycle;
     }
 
     private Cycle bfs() {
         var visitor = new BFSCycleVisitor();
-        new BreadthFirstSearch(graph).traverse(visitor,
-                target < 0 ? graph.vertexAt(0) : target);
+        new BFSTraverser(graph).traverse(
+                target < 0 ? graph.vertexAt(0) : target, visitor);
         return visitor.cycle;
     }
 

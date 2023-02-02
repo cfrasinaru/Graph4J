@@ -22,7 +22,7 @@ package ro.uaic.info.graph;
  * corresponding edge.
  *
  * @author Cristian Frăsinaru
- * @param <E> the type of edge labels
+ * @param <E> the type of edge labels.
  */
 public interface NeighborIterator<E> {
 
@@ -71,15 +71,15 @@ public interface NeighborIterator<E> {
     Edge edge();
     
     /**
-     * Returns the weight for the current edge.
+     * Returns the weight of the current edge.
      *
      * @return the weight of the edge from the source vertex to the current
-     * vertex vertex
+     * vertex.
      */
     double getEdgeWeight();
 
     /**
-     * Sets the label for the current edge.
+     * Sets the label of the current edge.
      *
      * @param weight the weight to be set for the edge connecting the source
      * vertex to the current vertex
@@ -87,7 +87,7 @@ public interface NeighborIterator<E> {
     void setEdgeWeight(double weight);
 
     /**
-     * Sets the label for the current edge.
+     * Sets the label of the current edge.
      *
      * @return the label of the edge from the source vertex to the current
      * vertex vertex
@@ -95,7 +95,7 @@ public interface NeighborIterator<E> {
     E getEdgeLabel();
 
     /**
-     * Sets the label for the current edge.
+     * Sets the label of the current edge.
      *
      * @param label the label to be set for the edge connecting the source
      * vertex to the current vertex

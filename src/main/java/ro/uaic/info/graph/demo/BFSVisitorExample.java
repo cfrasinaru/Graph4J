@@ -17,9 +17,9 @@
 package ro.uaic.info.graph.demo;
 
 import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.search.BreadthFirstSearch;
-import ro.uaic.info.graph.search.SearchNode;
-import ro.uaic.info.graph.search.BFSVisitor;
+import ro.uaic.info.graph.traverse.BFSTraverser;
+import ro.uaic.info.graph.traverse.SearchNode;
+import ro.uaic.info.graph.traverse.BFSVisitor;
 
 /**
  *
@@ -36,13 +36,13 @@ public class BFSVisitorExample {
                 .sorted()
                 .buildDigraph();
          */
-        //var g = new GraphBuilder().numVertices(3).addEdges("0-0,1-1,0-1,1-0").buildPseudograph();
-        //var g = new GraphBuilder().vertexRange(1, 5).addEdges("1-2,2-3,3-4,4-5").addEdge(2,4).buildGraph();
-        var g = new GraphBuilder().vertexRange(1, 5).addEdges("1-2,1-3,1-4,1-5").buildGraph();
+        //var g = GraphBuilder.numVertices(3).addEdges("0-0,1-1,0-1,1-0").buildPseudograph();
+        //var g = GraphBuilder.vertexRange(1, 5).addEdges("1-2,2-3,3-4,4-5").addEdge(2,4).buildGraph();
+        var g = GraphBuilder.vertexRange(1, 5).addEdges("1-2,1-3,1-4,1-5").buildGraph();
 
         //g.setName("K4");
         System.out.println(g);
-        new BreadthFirstSearch(g).traverse(new BFSVisitor() {
+        new BFSTraverser(g).traverse(new BFSVisitor() {
             @Override
             public void startVertex(SearchNode node) {
                 System.out.println("Start vertex: " + node);

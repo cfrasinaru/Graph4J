@@ -82,10 +82,7 @@ class EdgeIteratorImpl<E> implements EdgeIterator<E> {
             while (neighbors.hasNext()) {
                 int u = neighbors.next();
                 if (v <= u || graph.isDirected()) {
-                    nextEdge = new Edge(v, u,
-                            graph.isDirected(),
-                            graph.isEdgeWeighted() ? neighbors.getEdgeWeight() : null,
-                            graph.isEdgeLabeled() ? neighbors.getEdgeLabel() : null);
+                    nextEdge = neighbors.edge();
                     break over;
                 }
             }

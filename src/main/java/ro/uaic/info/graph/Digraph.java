@@ -16,6 +16,8 @@
  */
 package ro.uaic.info.graph;
 
+import ro.uaic.info.graph.model.VertexSet;
+
 /**
  * A directed graph.
  *
@@ -57,7 +59,7 @@ public interface Digraph<V, E> extends Graph<V, E> {
      * The <i>complement</i> of a digraph G has the same vertex set as G, but
      * its edge set consists of the edges not present in G.
      *
-     * @return the complement of the digraph
+     * @return the complement of the digraph.
      */
     @Override
     Digraph<V, E> complement();
@@ -65,10 +67,15 @@ public interface Digraph<V, E> extends Graph<V, E> {
     /**
      *
      * @param vertices
-     * @return the subgraph induced by the given vertices
+     * @return the subgraph induced by some vertices.
      */
     @Override
     Digraph<V, E> subgraph(int... vertices);
+
+    @Override
+    default Digraph<V, E> subgraph(VertexSet set) {
+        return subgraph(set.vertices());
+    }
 
     /**
      *

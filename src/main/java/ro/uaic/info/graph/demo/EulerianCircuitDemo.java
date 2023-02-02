@@ -16,9 +16,9 @@
  */
 package ro.uaic.info.graph.demo;
 
+import edu.princeton.cs.algs4.EulerianCycle;
 import ro.uaic.info.graph.alg.eulerian.HierholzerEulerianCircuit;
 import ro.uaic.info.graph.gen.GraphGenerator;
-import ro.uaic.info.graph.util.Tools;
 
 /**
  *
@@ -26,11 +26,14 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class EulerianCircuitDemo extends PerformanceDemo {
 
+    public EulerianCircuitDemo() {
+        runJGraphT = true;
+        runAlgs4 = true;
+    }
+
     @Override
-    protected void prepare() {
-        //graph = new GnpRandomGenerator(10, 0.5).createGraph();
+    protected void createGraph() {
         graph = GraphGenerator.complete(3003);
-        jgraph = Tools.createJGraph(graph);
     }
 
     @Override
@@ -41,6 +44,11 @@ public class EulerianCircuitDemo extends PerformanceDemo {
     @Override
     protected void testJGraphT() {
         new org.jgrapht.alg.cycle.HierholzerEulerianCycle().getEulerianCycle(jgraph);
+    }
+
+    @Override
+    protected void testAlgs4() {
+        new EulerianCycle(algs4Graph).cycle();
     }
 
     public static void main(String args[]) {

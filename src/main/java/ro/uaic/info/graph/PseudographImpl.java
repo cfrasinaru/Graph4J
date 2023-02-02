@@ -16,18 +16,24 @@
  */
 package ro.uaic.info.graph;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author Cristian Frăsinaru
  */
 class PseudographImpl<V, E> extends MultigraphImpl<V, E> implements Pseudograph<V, E> {
 
+    protected Map<Integer, Integer> selfLoops;
+
     protected PseudographImpl() {
     }
 
     protected PseudographImpl(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        super(vertices, maxVertices, avgDegree, sorted, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
+        super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
+        selfLoops = new HashMap<>();
     }
 
     @Override
@@ -37,8 +43,8 @@ class PseudographImpl<V, E> extends MultigraphImpl<V, E> implements Pseudograph<
 
     @Override
     protected PseudographImpl newInstance(int[] vertices, int maxVertices, int avgDegree,
-            boolean sorted, boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        return new PseudographImpl(vertices, maxVertices, avgDegree, sorted, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
+        return new PseudographImpl(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
     }
 
     @Override
@@ -53,12 +59,32 @@ class PseudographImpl<V, E> extends MultigraphImpl<V, E> implements Pseudograph<
 
     @Override
     public Pseudograph<V, E> copy() {
-        return (PseudographImpl) super.copy();
+        return copy(true, true, true, true, true);
     }
 
     @Override
     public Pseudograph<V, E> copy(boolean vertexWeights, boolean vertexLabels, boolean edges, boolean edgeWeights, boolean edgeLabels) {
-        return (Pseudograph<V, E>) super.copy(vertexWeights, vertexLabels, edges, edgeWeights, edgeLabels);
+        var copy = (PseudographImpl<V, E>) super.copy(vertexWeights, vertexLabels, edges, edgeWeights, edgeLabels);
+        copy.selfLoops = edges ? new HashMap<>(selfLoops) : new HashMap<>();
+        return copy;
+    }
+
+    @Override
+    protected void addEdge(int v, int u, Double weight, E label) {
+        super.addEdge(v, u, weight, label);
+        if (v == u) {
+            selfLoops.put(v, selfLoops.getOrDefault(v, 0) + 1);
+        }
+    }
+
+    @Override
+    protected void removeEdgeAt(int vi, int pos) {
+        super.removeEdgeAt(vi, pos);
+        int v = vertices[vi];
+        int u = adjList[vi][pos];
+        if (v == u) {
+            selfLoops.put(v, selfLoops.get(v) - 1);
+        }
     }
 
     @Override

@@ -18,65 +18,64 @@ package ro.uaic.info.graph.model;
 
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.StringJoiner;
-import java.util.stream.IntStream;
 import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.util.CheckArguments;
-import ro.uaic.info.graph.util.IntIterator;
 
 /**
- * A set of vertices of a graph. No duplicates are allowed.
+ * A set of vertices of a graph.
  *
  * @see VertexList
  * @see VertexSet
  * @see VertexStack
  * @author Cristian Frăsinaru
  */
-abstract class VertexCollection {
+abstract class VertexCollection implements Iterable<Integer> {
 
     protected final Graph graph;
     protected int[] vertices;
     protected int numVertices;
     protected BitSet bitset; //which vertices of the graph are in this collection
+    protected final static int DEFAULT_CAPACITY = 10;
 
     /**
-     * The initial capacity of the collection equals the number of vertices in
-     * the graph.
      *
-     * @param graph the graph the vertices belong to
+     * @param graph the graph the vertices belong to.
      */
     public VertexCollection(Graph graph) {
-        //this(graph, Math.max(2, graph.numVertices() / 4));
-        this(graph, Math.max(2, 10));
+        this(graph, DEFAULT_CAPACITY);
     }
 
     /**
      *
-     * @param graph the graph the vertices belong to
-     * @param initialCapacity the initial capacity of this collection
+     * @param graph the graph the vertices belong to.
+     * @param initialCapacity the initial capacity of this collection.
      */
     public VertexCollection(Graph graph, int initialCapacity) {
         this.graph = graph;
         this.vertices = new int[initialCapacity];
         this.numVertices = 0;
-        initBitSet();
     }
 
     /**
      *
-     * @param graph the graph the vertices belong to
-     * @param vertices the initial set of vertices
+     * @param graph the graph the vertices belong to.
+     * @param vertices the initial set of vertices.
      */
     public VertexCollection(Graph graph, int[] vertices) {
         //CheckArguments.graphContainsVertices(graph, vertices);
         this.graph = graph;
         this.vertices = vertices;
         this.numVertices = vertices.length;
-        initBitSet();
     }
 
-    private void initBitSet() {
-        this.bitset = new BitSet(1 + IntStream.of(graph.vertices()).max().orElse(0));
+    //lazy creation
+    private void createBitSet() {
+        this.bitset = new BitSet();
+        for (int v : vertices()) {
+            bitset.set(v, true);
+        }
     }
 
     /**
@@ -109,7 +108,7 @@ abstract class VertexCollection {
      *
      * @return an iterator for the vertices in the collection
      */
-    public IntIterator iterator() {
+    public Iterator<Integer> iterator() {
         return new VertexCollectionIterator();
     }
 
@@ -151,7 +150,9 @@ abstract class VertexCollection {
             grow();
         }
         vertices[numVertices++] = v;
-        bitset.set(v, true);
+        if (bitset != null) {
+            bitset.set(v, true);
+        }
         return true;
     }
 
@@ -186,7 +187,9 @@ abstract class VertexCollection {
             vertices[i] = vertices[i + 1];
         }
         numVertices--;
-        bitset.set(vertices[pos], false);
+        if (bitset != null) {
+            bitset.set(vertices[pos], false);
+        }
     }
 
     /**
@@ -195,6 +198,14 @@ abstract class VertexCollection {
      * @return true, if this collection contains the vertex v
      */
     public boolean contains(int v) {
+        //for smaller sets, just iterate
+        if (numVertices <= DEFAULT_CAPACITY) {
+            return indexOf(v) >= 0;
+        }
+        //for larger sets, create the bitset and use it
+        if (bitset == null) {
+            createBitSet();
+        }
         return bitset.get(v);
     }
 
@@ -213,7 +224,7 @@ abstract class VertexCollection {
 
     protected void grow() {
         int oldLen = vertices.length;
-        int newLen = Math.max(2, oldLen + (oldLen >> 1));
+        int newLen = Math.max(DEFAULT_CAPACITY, oldLen + (oldLen >> 1));
         vertices = Arrays.copyOf(vertices, newLen);
     }
 
@@ -253,27 +264,30 @@ abstract class VertexCollection {
         return sb.toString();
     }
 
-    private class VertexCollectionIterator implements IntIterator {
+    private class VertexCollectionIterator implements Iterator<Integer> {
 
         private int pos = -1;
 
         @Override
-        public int next() {
-            if (pos < 0 || pos >= numVertices) {
-                throw new IllegalStateException(
-                        "There are no more values to return.");
+        public Integer next() {
+            if (pos >= numVertices) {
+                throw new NoSuchElementException();
             }
             return vertices[++pos];
         }
 
         @Override
         public boolean hasNext() {
-            return pos < numVertices;
+            return pos < numVertices - 1;
         }
 
         @Override
         public void remove() {
+            if (pos < 0) {
+                throw new NoSuchElementException();
+            }
             removeFromPos(pos);
+            pos--;
         }
     }
 }

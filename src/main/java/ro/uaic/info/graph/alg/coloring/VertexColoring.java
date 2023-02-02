@@ -47,6 +47,18 @@ public class VertexColoring<T> {
     }
 
     /**
+     * 
+     * @param graph
+     * @param colors 
+     */
+    public VertexColoring(Graph graph, int colors[]) {
+        this(graph);
+        for (int i = 0; i < colors.length; i++) {
+            vertexColor[i] = colors[i];
+        }
+    }
+
+    /**
      *
      * @param graph
      * @param colorClasses

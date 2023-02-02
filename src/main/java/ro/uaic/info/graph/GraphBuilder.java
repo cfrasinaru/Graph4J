@@ -29,20 +29,17 @@ import ro.uaic.info.graph.util.IntArrays;
  * data or not.
  *
  * @author Cristian Frăsinaru
- * @param <V> the type of vertex labels in this graph
- * @param <E> the type of edge labels in this graph
  */
-public class GraphBuilder<V, E> {
+public class GraphBuilder {
 
     private int[] vertices;
     private final List<Integer> dynamicVertices = new ArrayList<>();
-    private final Map<V, Integer> labelMap = new HashMap<>();
+    private final Map<Object, Integer> labelMap = new HashMap<>();
     private final Map<Integer, Double> weightMap = new HashMap<>();
     private Integer maxVertices;
-    private Integer maxEdges;
+    private Integer numEdges;
     private Integer avgDegree;
     private Double density;
-    private boolean sorted;
     private boolean directed;
     private boolean allowingSelfLoops;
     private boolean allowingMultiEdges;
@@ -53,41 +50,51 @@ public class GraphBuilder<V, E> {
     private final List<int[]> cycles = new ArrayList();
     private final List<int[]> cliques = new ArrayList();
 
-    public GraphBuilder() {
-        vertices = new int[0];
+    private GraphBuilder() {
     }
 
-    private GraphImpl<V, E> newInstance() {
-        GraphImpl<V, E> graph;
+    private GraphImpl newInstance() {
+        GraphImpl graph;
         if (allowingMultiEdges) {
             if (allowingSelfLoops) {
                 if (directed) {
                     graph = new DirectedPseudographImpl<>(vertices, maxVertices, avgDegree(),
-                            sorted, directed, allowingMultiEdges, allowingSelfLoops);
+                            directed, allowingMultiEdges, allowingSelfLoops);
                 } else {
                     graph = new PseudographImpl<>(vertices, maxVertices, avgDegree(),
-                            sorted, directed, allowingMultiEdges, allowingSelfLoops);
+                            directed, allowingMultiEdges, allowingSelfLoops);
                 }
             } else {
                 if (directed) {
                     graph = new DirectedMultigraphImpl<>(vertices, maxVertices, avgDegree(),
-                            sorted, directed, allowingMultiEdges, allowingSelfLoops);
+                            directed, allowingMultiEdges, allowingSelfLoops);
 
                 } else {
                     graph = new MultigraphImpl<>(vertices, maxVertices, avgDegree(),
-                            sorted, directed, allowingMultiEdges, allowingSelfLoops);
+                            directed, allowingMultiEdges, allowingSelfLoops);
                 }
             }
         } else {
             if (directed) {
                 graph = new DigraphImpl<>(vertices, maxVertices, avgDegree(),
-                        sorted, directed, allowingMultiEdges, allowingSelfLoops);
+                        directed, allowingMultiEdges, allowingSelfLoops);
             } else {
                 graph = new GraphImpl<>(vertices, maxVertices, avgDegree(),
-                        sorted, directed, allowingMultiEdges, allowingSelfLoops);
+                        directed, allowingMultiEdges, allowingSelfLoops);
             }
         }
         return graph;
+    }
+
+    /**
+     * The created graph will be empty (no vertices).
+     *
+     * @return a new a {@link GraphBuilder}.
+     */
+    public static GraphBuilder empty() {
+        var builder = new GraphBuilder();
+        builder.vertices = new int[0];
+        return builder;
     }
 
     /**
@@ -95,81 +102,87 @@ public class GraphBuilder<V, E> {
      * <code>0</code> to <code>numVertices - 1</code>.
      *
      * @param numVertices the actual number of vertices in the graph.
-     * @return a reference to this object.
+     * @return a new a {@link GraphBuilder}.
      */
-    public GraphBuilder<V, E> numVertices(int numVertices) {
+    public static GraphBuilder numVertices(int numVertices) {
         if (numVertices < 0) {
             throw new IllegalArgumentException("Number of vertices must not be negative.");
         }
-        vertices = IntStream.range(0, numVertices).toArray();
-        return this;
+        var builder = new GraphBuilder();
+        builder.vertices = IntStream.range(0, numVertices).toArray();
+        return builder;
     }
 
     /**
      *
      * @param firstVertex The number of the first vertex.
      * @param lastVertex The number of the last vertex.
-     * @return a reference to this object.
+     * @return a new a {@link GraphBuilder}.
      */
-    public GraphBuilder<V, E> vertexRange(int firstVertex, int lastVertex) {
-        this.vertices = IntStream.rangeClosed(firstVertex, lastVertex).toArray();
-        return this;
+    public static GraphBuilder vertexRange(int firstVertex, int lastVertex) {
+        var builder = new GraphBuilder();
+        builder.vertices = IntStream.rangeClosed(firstVertex, lastVertex).toArray();
+        return builder;
     }
 
     /**
      *
      * @param vertices the vertices of the graph.
-     * @return a reference to this object.
+     * @return a new a {@link GraphBuilder}.
      */
-    public GraphBuilder<V, E> vertices(int... vertices) {
-        this.vertices = vertices;
-        return this;
+    public static GraphBuilder vertices(int... vertices) {
+        var builder = new GraphBuilder();
+        builder.vertices = vertices;
+        return builder;
     }
 
     /**
      *
+     * @param <V> the type of vertex labels.
      * @param vertexObjects an array of objects, representing the labeled
      * vertices of the graph.
-     * @return a reference to this object.
+     * @return a new a {@link GraphBuilder}.
      */
-    public GraphBuilder<V, E> labeledVertices(Collection<V> vertexObjects) {
+    public static <V> GraphBuilder labeledVertices(Collection vertexObjects) {
+        var builder = new GraphBuilder();
         int n = vertexObjects.size();
-        this.vertices = IntStream.range(0, n).toArray();
+        builder.vertices = IntStream.range(0, n).toArray();
         int v = 0;
-        for (V label : vertexObjects) {
-            labelMap.put(label, v++);
+        for (var label : vertexObjects) {
+            builder.labelMap.put(label, v++);
         }
-        return this;
+        return builder;
     }
 
     /**
      *
      * @param vertexObjects a list of objects, representing the labeled vertices
      * of the graph.
-     * @return a reference to this object.
+     * @return a new a {@link GraphBuilder}.
      */
-    public GraphBuilder<V, E> labeledVertices(V... vertexObjects) {
+    public static <V> GraphBuilder labeledVertices(V... vertexObjects) {
         return labeledVertices(List.of(vertexObjects));
     }
 
     /**
      *
      * @param graph a graph of any type.
-     * @return a reference to this object.
+     * @return a new a {@link GraphBuilder}.
      */
-    public GraphBuilder<V, E> verticesFrom(Graph<V, E> graph) {
-        this.vertices = IntArrays.copyOf(graph.vertices());
+    public static GraphBuilder verticesFrom(Graph graph) {
+        var builder = new GraphBuilder();
+        builder.vertices = IntArrays.copyOf(graph.vertices());
         if (graph.isVertexWeighted()) {
-            for (int v : vertices) {
-                weightMap.put(v, graph.getVertexWeight(v));
+            for (int v : builder.vertices) {
+                builder.weightMap.put(v, graph.getVertexWeight(v));
             }
         }
         if (graph.isVertexLabeled()) {
-            for (int v : vertices) {
-                labelMap.put(graph.getVertexLabel(v), v);
+            for (int v : builder.vertices) {
+                builder.labelMap.put(graph.getVertexLabel(v), v);
             }
         }
-        return this;
+        return builder;
     }
 
     /**
@@ -177,14 +190,14 @@ public class GraphBuilder<V, E> {
      * allocation. No vertex will be added to the graph as a result of this
      * invocation.
      *
-     * @param maxVertices the estimated maximum number of vertices.
+     * @param numVertices the estimated maximum number of vertices.
      * @return a reference to this object.
      */
-    public GraphBuilder<V, E> estimatedMaxVertices(int maxVertices) {
-        if (maxVertices <= 0) {
+    public GraphBuilder estimatedNumVertices(int numVertices) {
+        if (numVertices <= 0) {
             throw new IllegalArgumentException("Maximum number of vertices must be positive.");
         }
-        this.maxVertices = maxVertices;
+        this.maxVertices = numVertices;
         return this;
     }
 
@@ -193,14 +206,14 @@ public class GraphBuilder<V, E> {
      * of the vertices or the density of the graph, optimizing memory
      * allocation.
      *
-     * @param maxEdges the estimated maximum number of edges.
+     * @param numEdges the estimated maximum number of edges.
      * @return a reference to this object.
      */
-    public GraphBuilder<V, E> estimatedMaxEdges(int maxEdges) {
-        if (maxEdges <= 0) {
+    public GraphBuilder estimatedNumEdges(int numEdges) {
+        if (numEdges <= 0) {
             throw new IllegalArgumentException("Number of edges must be positive.");
         }
-        this.maxEdges = maxEdges;
+        this.numEdges = numEdges;
         return this;
     }
 
@@ -210,7 +223,7 @@ public class GraphBuilder<V, E> {
      * @param avgDegree the estimated average degree of the vertices.
      * @return a reference to this object.
      */
-    public GraphBuilder<V, E> estimatedAvgDegree(int avgDegree) {
+    public GraphBuilder estimatedAvgDegree(int avgDegree) {
         if (avgDegree <= 0) {
             throw new IllegalArgumentException("Average degree must be positive.");
         }
@@ -224,24 +237,11 @@ public class GraphBuilder<V, E> {
      * @param density the estimated density of the graph.
      * @return a reference to this object.
      */
-    public GraphBuilder<V, E> estimatedDensity(double density) {
+    public GraphBuilder estimatedDensity(double density) {
         if (density < 0 || density > 1) {
             throw new IllegalArgumentException("Density must be in the range [0,1]");
         }
         this.density = density;
-        return this;
-    }
-
-    /**
-     * Specifies if the graph should maintain its vertices and adjacency lists
-     * sorted. The graph creation will take longer. There are no algorithmic
-     * benefits for keeping the graph sorted.
-     *
-     *
-     * @return a reference to this object.
-     */
-    public GraphBuilder<V, E> sorted() {
-        this.sorted = true;
         return this;
     }
 
@@ -251,20 +251,21 @@ public class GraphBuilder<V, E> {
      * @param u a vertex number.
      * @return a reference to this object.
      */
-    public GraphBuilder<V, E> addEdge(int v, int u) {
-        createIfNotExists(v);
-        createIfNotExists(u);
+    public GraphBuilder addEdge(int v, int u) {
+        getVertex(v);
+        getVertex(u);
         edges.add(new Edge(v, u));
         return this;
     }
 
     /**
      *
+     * @param <V> the type of vertex labels.
      * @param vLabel a labeled vertex.
      * @param uLabel a labeled vertex.
      * @return a reference to this object.
      */
-    public GraphBuilder<V, E> addEdge(V vLabel, V uLabel) {
+    public <V> GraphBuilder addEdge(V vLabel, V uLabel) {
         int v = labelMap.getOrDefault(vLabel, -1);
         int u = labelMap.getOrDefault(uLabel, -1);
         edges.add(new Edge(v, u));
@@ -277,9 +278,9 @@ public class GraphBuilder<V, E> {
      * weight and label.
      * @return a reference to this object.
      */
-    public GraphBuilder<V, E> addEdge(Edge e) {
-        createIfNotExists(e.source());
-        createIfNotExists(e.target());
+    public GraphBuilder addEdge(Edge e) {
+        getVertex(e.source());
+        getVertex(e.target());
         edges.add(e);
         return this;
     }
@@ -292,8 +293,7 @@ public class GraphBuilder<V, E> {
      * @param edges a text encoding the edges to be added.
      * @return a reference to this object.
      */
-    public GraphBuilder<V, E> addEdges(String edges) {
-        StringBuilder s;
+    public GraphBuilder addEdges(String edges) {
         String[] edgeTokens = edges.split(",");
         for (String edgeToken : edgeTokens) {
             String[] edgeVertices = edgeToken.trim().split("-");
@@ -302,11 +302,11 @@ public class GraphBuilder<V, E> {
                 String ustr = edgeVertices[1].trim();
                 int v, u;
                 try {
-                    v = createIfNotExists(Integer.parseInt(vstr));
-                    u = createIfNotExists(Integer.parseInt(ustr));
+                    v = getVertex(Integer.parseInt(vstr));
+                    u = getVertex(Integer.parseInt(ustr));
                 } catch (NumberFormatException e) {
-                    v = createIfNotExists(vstr);
-                    u = createIfNotExists(ustr);
+                    v = getVertex(vstr);
+                    u = getVertex(ustr);
                 }
                 addEdge(v, u);
             } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
@@ -317,25 +317,36 @@ public class GraphBuilder<V, E> {
         return this;
     }
 
-    private int createIfNotExists(int v) {
-        if (!IntArrays.contains(vertices, v) && !dynamicVertices.contains(v)) {
+    private int getVertex(int v) {
+        if (vertices.length > 0) {
+            if (!IntArrays.contains(vertices, v)) {
+                throw new IllegalArgumentException("Invalid vertex: " + v);
+            }
+            return v;
+        }
+        if (!dynamicVertices.contains(v)) {
             dynamicVertices.add(v);
         }
         return v;
     }
 
-    private int createIfNotExists(String vstr) {
+    private int getVertex(String vstr) {
         int v = findVertexWithLabel(vstr);
-        if (v == -1) {
-            v = nextVertexNumber();
-            dynamicVertices.add(v);
-            labelMap.put((V) vstr, v);
+        if (v >= 0) {
+            return v;
         }
+        if (vertices.length > 0) {
+            throw new IllegalArgumentException("Invalid vertex: " + v);
+        }
+        v = nextVertexNumber();
+        dynamicVertices.add(v);
+        labelMap.put(vstr, v);
+
         return v;
     }
 
     private int findVertexWithLabel(String strLabel) {
-        for (V label : labelMap.keySet()) {
+        for (Object label : labelMap.keySet()) {
             if (String.valueOf(label).equals(strLabel)) {
                 return labelMap.get(label);
             }
@@ -353,9 +364,9 @@ public class GraphBuilder<V, E> {
      * @param path
      * @return
      */
-    public GraphBuilder<V, E> addPath(int... path) {
+    public GraphBuilder addPath(int... path) {
         for (int v : path) {
-            createIfNotExists(v);
+            getVertex(v);
         }
         paths.add(path);
         return this;
@@ -366,9 +377,9 @@ public class GraphBuilder<V, E> {
      * @param cycle
      * @return
      */
-    public GraphBuilder<V, E> addCycle(int... cycle) {
+    public GraphBuilder addCycle(int... cycle) {
         for (int v : cycle) {
-            createIfNotExists(v);
+            getVertex(v);
         }
         cycles.add(cycle);
         return this;
@@ -379,9 +390,9 @@ public class GraphBuilder<V, E> {
      * @param clique
      * @return
      */
-    public GraphBuilder<V, E> addClique(int... clique) {
+    public GraphBuilder addClique(int... clique) {
         for (int v : clique) {
-            createIfNotExists(v);
+            getVertex(v);
         }
         cliques.add(clique);
         return this;
@@ -392,7 +403,7 @@ public class GraphBuilder<V, E> {
      * @param name
      * @return
      */
-    public GraphBuilder<V, E> named(String name) {
+    public GraphBuilder named(String name) {
         this.name = name;
         return this;
     }
@@ -407,8 +418,8 @@ public class GraphBuilder<V, E> {
             maxVertices = max + 1;
         }
         if (!edges.isEmpty()) {
-            if (maxEdges == null || maxEdges < edges.size()) {
-                maxEdges = edges.size();
+            if (numEdges == null || numEdges < edges.size()) {
+                numEdges = edges.size();
             }
         }
         //number of edges
@@ -421,10 +432,10 @@ public class GraphBuilder<V, E> {
             throw new IllegalArgumentException("Invalid average degree, "
                     + "it must be in the range: [0," + (numVertices - 1) + "]");
         }
-        if (numVertices > 0 && maxEdges != null && density != null) {
+        if (numVertices > 0 && numEdges != null && density != null) {
             throw new IllegalArgumentException("Illegal combination of parameters: numEdges and density");
         }
-        if (numVertices > 0 && maxEdges != null && avgDegree != null) {
+        if (numVertices > 0 && numEdges != null && avgDegree != null) {
             throw new IllegalArgumentException("Illegal combination of parameters: numEdges and avgDegree");
         }
         if (avgDegree != null && density != null) {
@@ -440,8 +451,8 @@ public class GraphBuilder<V, E> {
         if (n == 0) {
             return 0;
         }
-        if (maxEdges != null) {
-            return (int) ((directed ? 1 : 2) * maxEdges / n);
+        if (numEdges != null) {
+            return (int) ((directed ? 1 : 2) * numEdges / n);
         }
         if (density != null) {
             return (int) (density * (n - 1));
@@ -449,7 +460,7 @@ public class GraphBuilder<V, E> {
         return 0;
     }
 
-    private GraphImpl<V, E> build() {
+    private GraphImpl build() {
         validate();
         var g = newInstance();
         g.setName(name);
@@ -459,13 +470,9 @@ public class GraphBuilder<V, E> {
             g.setVertexWeight(v, weightMap.get(v));
         }
         //labels
-        for (V label : labelMap.keySet()) {
+        for (var label : labelMap.keySet()) {
             int v = labelMap.get(label);
             g.setVertexLabel(v, label);
-        }
-        //edges
-        for (Edge e : edges) {
-            g.addEdge(e);
         }
         //paths
         for (int[] path : paths) {
@@ -500,34 +507,18 @@ public class GraphBuilder<V, E> {
                 }
             }
         }
-        return g;
-    }
-
-    @Deprecated
-    private <T> T buildAs(Class<T> clazz) {
-        if (clazz.equals(Digraph.class)) {
-            directed = true;
-        } else if (clazz.equals(Multigraph.class)) {
-            allowingMultiEdges = true;
-        } else if (clazz.equals(DirectedMultigraph.class)) {
-            directed = true;
-            allowingMultiEdges = true;
-        } else if (clazz.equals(Pseudograph.class)) {
-            allowingMultiEdges = true;
-            allowingSelfLoops = true;
-        } else if (clazz.equals(DirectedPseudograph.class)) {
-            directed = true;
-            allowingMultiEdges = true;
-            allowingSelfLoops = true;
+        //edges
+        for (Edge e : edges) {
+            g.addEdge(e);
         }
-        return (T) build();
+        return g;
     }
 
     /**
      *
      * @return an undirected simple graph
      */
-    public Graph<V, E> buildGraph() {
+    public Graph buildGraph() {
         return build();
     }
 
@@ -535,49 +526,49 @@ public class GraphBuilder<V, E> {
      *
      * @return a directed graph
      */
-    public Digraph<V, E> buildDigraph() {
+    public Digraph buildDigraph() {
         directed = true;
-        return (Digraph<V, E>) build();
+        return (Digraph) build();
     }
 
     /**
      *
      * @return an undirected multigraph
      */
-    public Multigraph<V, E> buildMultigraph() {
+    public Multigraph buildMultigraph() {
         allowingMultiEdges = true;
-        return (Multigraph<V, E>) build();
+        return (Multigraph) build();
     }
 
     /**
      *
      * @return a directed multigraph
      */
-    public DirectedMultigraph<V, E> buildDirectedMultigraph() {
+    public DirectedMultigraph buildDirectedMultigraph() {
         directed = true;
         allowingMultiEdges = true;
-        return (DirectedMultigraph<V, E>) build();
+        return (DirectedMultigraph) build();
     }
 
     /**
      *
      * @return an undirected pseudograph
      */
-    public Pseudograph<V, E> buildPseudograph() {
+    public Pseudograph buildPseudograph() {
         allowingMultiEdges = true;
         allowingSelfLoops = true;
-        return (Pseudograph<V, E>) build();
+        return (Pseudograph) build();
     }
 
     /**
      *
      * @return a directed pseudograph
      */
-    public DirectedPseudograph<V, E> buildDirectedPseudograph() {
+    public DirectedPseudograph buildDirectedPseudograph() {
         directed = true;
         allowingMultiEdges = true;
         allowingSelfLoops = true;
-        return (DirectedPseudograph<V, E>) build();
+        return (DirectedPseudograph) build();
     }
 
 }

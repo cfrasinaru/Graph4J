@@ -37,12 +37,15 @@ import ro.uaic.info.graph.Graph;
  */
 public class Cycle extends Path {
 
-    /**
-     *
-     * @param graph the graph this cycle belongs to
-     * @param vertices the vertices of the cycle
-     */
-    public Cycle(Graph graph, int... vertices) {
+    public Cycle(Graph graph) {
+        super(graph);
+    }
+
+    public Cycle(Graph graph, int initialCapacity) {
+        super(graph, initialCapacity);
+    }
+
+    public Cycle(Graph graph, int[] vertices) {
         super(graph, vertices);
     }
 
@@ -72,7 +75,7 @@ public class Cycle extends Path {
     @Override
     public double computeEdgesWeight() {
         return super.computeEdgesWeight()
-                + graph.getEdgeWeight(vertices[vertices.length - 1], vertices[0]);
+                + graph.getEdgeWeight(vertices[numVertices - 1], vertices[0]);
     }
 
     @Override
@@ -106,7 +109,7 @@ public class Cycle extends Path {
                 return true;
             }
         }
-        if (!directed) {
+        if (!isDirected()) {
             for (int k = 0; k < numVertices - 1; k++) {
                 boolean equals = true;
                 for (int i = 0; i < numVertices; i++) {
@@ -132,7 +135,7 @@ public class Cycle extends Path {
         sb.append("[");
         for (int i = 0; i <= numVertices; i++) {
             if (i > 0) {
-                sb.append(directed ? " -> " : " - ");
+                sb.append(isDirected() ? " -> " : " - ");
             }
             sb.append(vertices[i % numVertices]);
         }

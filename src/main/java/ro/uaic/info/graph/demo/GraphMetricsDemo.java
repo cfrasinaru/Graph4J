@@ -19,7 +19,7 @@ package ro.uaic.info.graph.demo;
 import ro.uaic.info.graph.alg.GraphMetrics;
 import ro.uaic.info.graph.gen.GnmRandomGenerator;
 import ro.uaic.info.graph.gen.GraphGenerator;
-import ro.uaic.info.graph.search.BFSIterator;
+import ro.uaic.info.graph.traverse.BFSIterator;
 import ro.uaic.info.graph.util.Tools;
 
 /**

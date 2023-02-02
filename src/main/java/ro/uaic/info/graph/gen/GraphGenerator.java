@@ -38,7 +38,7 @@ public class GraphGenerator {
      */
     public static Graph empty(int n) {
         CheckArguments.numberOfVertices(n);
-        return new GraphBuilder().numVertices(n).named("N" + n).buildGraph();
+        return GraphBuilder.numVertices(n).named("N" + n).buildGraph();
     }
 
     /**

@@ -24,7 +24,7 @@ interface VertexIndex {
 
     VertexIndex copy();
 
-    void add(int v, int idx);
+    void set(int v, int idx);
 
     void remove(int v);
 

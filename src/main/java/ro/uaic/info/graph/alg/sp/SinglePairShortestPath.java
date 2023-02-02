@@ -34,7 +34,7 @@ public interface SinglePairShortestPath {
      * @return the shortest path from the source to the target, or null if no
      * path exists
      */
-    Path getPath();
+    Path findPath();
 
     /**
      *
@@ -42,7 +42,7 @@ public interface SinglePairShortestPath {
      * <code>Double.POSTIVE_INFINITY</code> if no path exist.
      */
     default double getPathWeight() {
-        return getPath().computeEdgesWeight();
+        return findPath().computeEdgesWeight();
     }
 
 }

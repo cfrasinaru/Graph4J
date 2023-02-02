@@ -48,8 +48,8 @@ interface Labeled<V, E> {
     void addLabeledEdge(int v, int u, E label);
 
     default void addLabeledEdge(V firstVertexLabel, V secondVertexLabel, E edgeLabel) {
-        int v = findSingleVertex(firstVertexLabel);
-        int u = findSingleVertex(secondVertexLabel);
+        int v = findVertex(firstVertexLabel);
+        int u = findVertex(secondVertexLabel);
         addLabeledEdge(v, u, edgeLabel);
     }
 
@@ -101,7 +101,7 @@ interface Labeled<V, E> {
      * @return the number of the (first) vertex which has the specified label,
      * or {@code -1} if no such vertex exists.
      */
-    int findSingleVertex(V label);
+    int findVertex(V label);
 
     /**
      *
@@ -112,16 +112,18 @@ interface Labeled<V, E> {
     VertexSet findAllVertices(V label);
 
     /**
+     * If there are more edges with the given label, it returns the last one
+     * added in the graph.
      *
-     * @param label
-     * @return
+     * @param label an edge label.
+     * @return the edge with the given label.
      */
-    Edge findSingleEdge(E label);
+    Edge findEdge(E label);
 
     /**
      *
-     * @param label
-     * @return all the edges woth the specific label.
+     * @param label an edge label.
+     * @return all the edges with the given label.
      */
     EdgeSet findAllEdges(E label);
 }

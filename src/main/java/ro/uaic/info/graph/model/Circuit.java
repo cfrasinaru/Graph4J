@@ -40,12 +40,11 @@ public class Circuit extends Trail {
         super(graph);
     }
 
-    /**
-     *
-     * @param graph the graph this circuit belongs to
-     * @param vertices the vertices of the circuit
-     */
-    public Circuit(Graph graph, int... vertices) {
+    public Circuit(Graph graph, int initialCapacity) {
+        super(graph, initialCapacity);
+    }
+
+    public Circuit(Graph graph, int[] vertices) {
         super(graph, vertices);
     }
 
@@ -75,7 +74,7 @@ public class Circuit extends Trail {
     @Override
     public double computeEdgesWeight() {
         return super.computeEdgesWeight()
-                + graph.getEdgeWeight(vertices[vertices.length - 1], vertices[0]);
+                + graph.getEdgeWeight(vertices[numVertices - 1], vertices[0]);
     }
 
     /**
@@ -151,7 +150,7 @@ public class Circuit extends Trail {
                 return true;
             }
         }
-        if (!directed) {
+        if (!isDirected()) {
             for (int k = 0; k < numVertices - 1; k++) {
                 boolean equals = true;
                 for (int i = 0; i < numVertices; i++) {
@@ -177,7 +176,7 @@ public class Circuit extends Trail {
         sb.append("[");
         for (int i = 0; i <= numVertices; i++) {
             if (i > 0) {
-                sb.append(directed ? " -> " : " - ");
+                sb.append(isDirected() ? " -> " : " - ");
             }
             sb.append(vertices[i % numVertices]);
         }

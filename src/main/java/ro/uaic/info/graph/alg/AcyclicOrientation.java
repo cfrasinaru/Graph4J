@@ -63,7 +63,7 @@ public class AcyclicOrientation extends SimpleGraphAlgorithm {
      */
     public Digraph create() {
         var vertices = new VertexList(graph, vertexOrdering);
-        var digraph = new GraphBuilder().verticesFrom(graph).buildDigraph();
+        var digraph = GraphBuilder.verticesFrom(graph).buildDigraph();
         for (int v : vertexOrdering) {
             for (var it = graph.neighborIterator(v); it.hasNext();) {
                 int u = it.next();

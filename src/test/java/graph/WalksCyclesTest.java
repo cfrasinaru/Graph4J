@@ -36,34 +36,34 @@ public class WalksCyclesTest {
 
     @Test
     public void walkTrailPathCycle() {
-        var g = new GraphBuilder().vertexRange(1, 6)
+        var g = GraphBuilder.vertexRange(1, 6)
                 .addClique(1, 2, 3)
                 .addEdge(1, 4).addEdge(3, 4).addEdge(4, 5)
                 .buildGraph();
-        assertFalse(new Walk(g, 1, 2, 1, 6).isValid());
-        assertFalse(new Trail(g, 1, 2, 3, 1, 2).isValid());
-        assertFalse(new Path(g, 1, 2, 3, 1).isValid());
-        assertFalse(new Cycle(g, 1, 3, 4, 5).isValid());
+        assertFalse(new Walk(g, new int[]{1, 2, 1, 6}).isValid());
+        assertFalse(new Trail(g, new int[]{1, 2, 3, 1, 2}).isValid());
+        assertFalse(new Path(g, new int[]{1, 2, 3, 1}).isValid());
+        assertFalse(new Cycle(g, new int[]{1, 3, 4, 5}).isValid());
         //
-        assertEquals(5, new Walk(g, 1, 2, 1, 2, 3, 4).length());
-        assertEquals(4, new Trail(g, 1, 2, 3, 1, 4).length());
-        assertEquals(4, new Path(g, 1, 2, 3, 4, 5).length());
-        assertEquals(3, new Cycle(g, 1, 2, 3).length());
+        assertEquals(5, new Walk(g, new int[]{1, 2, 1, 2, 3, 4}).length());
+        assertEquals(4, new Trail(g, new int[]{1, 2, 3, 1, 4}).length());
+        assertEquals(4, new Path(g, new int[]{1, 2, 3, 4, 5}).length());
+        assertEquals(3, new Cycle(g, new int[]{1, 2, 3}).length());
     }
 
     @Test
     public void equalsCycleWalkUndirected() {
         var g = new CompleteGenerator(5).createGraph();
-        Cycle c1 = new Cycle(g, 0, 1, 2, 3, 4);
-        Cycle c2 = new Cycle(g, 2, 3, 4, 0, 1);
-        Cycle c3 = new Cycle(g, 0, 4, 3, 2, 1);
+        Cycle c1 = new Cycle(g, new int[]{0, 1, 2, 3, 4});
+        Cycle c2 = new Cycle(g, new int[]{2, 3, 4, 0, 1});
+        Cycle c3 = new Cycle(g, new int[]{0, 4, 3, 2, 1});
         assertEquals(c1, c2);
         assertEquals(c1, c3);
         assertEquals(c2, c3);
 
-        Path p1 = new Path(g, 0, 1, 2, 3, 4);
-        Path p2 = new Path(g, 4, 3, 2, 1, 0);
-        Path p3 = new Path(g, 1, 2, 3, 4, 0);
+        Path p1 = new Path(g, new int[]{0, 1, 2, 3, 4});
+        Path p2 = new Path(g, new int[]{4, 3, 2, 1, 0});
+        Path p3 = new Path(g, new int[]{1, 2, 3, 4, 0});
         assertEquals(p1, p2);
         assertNotEquals(p1, p3);
     }
@@ -71,16 +71,16 @@ public class WalksCyclesTest {
     @Test
     public void equalsCycleWalkDirected() {
         var g = new CompleteGenerator(5).createDigraph();
-        Cycle c1 = new Cycle(g, 0, 1, 2, 3, 4);
-        Cycle c2 = new Cycle(g, 2, 3, 4, 0, 1);
-        Cycle c3 = new Cycle(g, 0, 4, 3, 2, 1);
+        Cycle c1 = new Cycle(g, new int[]{0, 1, 2, 3, 4});
+        Cycle c2 = new Cycle(g, new int[]{2, 3, 4, 0, 1});
+        Cycle c3 = new Cycle(g, new int[]{0, 4, 3, 2, 1});
         assertEquals(c1, c2);
         assertNotEquals(c1, c3);
         assertNotEquals(c2, c3);
 
-        Path p1 = new Path(g, 0, 1, 2, 3, 4);
-        Path p2 = new Path(g, 4, 3, 2, 1, 0);
-        Path p3 = new Path(g, 1, 2, 3, 4, 0);
+        Path p1 = new Path(g, new int[]{0, 1, 2, 3, 4});
+        Path p2 = new Path(g, new int[]{4, 3, 2, 1, 0});
+        Path p3 = new Path(g, new int[]{1, 2, 3, 4, 0});
         assertNotEquals(p1, p2);
         assertNotEquals(p1, p3);
     }

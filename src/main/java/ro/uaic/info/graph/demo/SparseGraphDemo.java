@@ -16,8 +16,8 @@
  */
 package ro.uaic.info.graph.demo;
 
+import org.jgrapht.graph.DefaultEdge;
 import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.util.Tools;
 
 /**
  *
@@ -25,22 +25,30 @@ import ro.uaic.info.graph.util.Tools;
  */
 public class SparseGraphDemo extends PerformanceDemo {
 
-    private int n = 1_000_000;
-    private final int avgDegree = 100;
+    private int avgDegree;
 
     public SparseGraphDemo() {
+        numVertices = 10_000;
+        avgDegree = 100;
+        //
         runGuava = true;
-        runJGraphT = false;
-        runJung = false;
-        runAlgs4 = true;
+        runJGraphT = true;
+        runJung = true;
+        runAlgs4 = false;
+    }
+
+    @Override
+    protected void beforeRun(int step) {
+        numVertices = 10_000;
+        avgDegree = args[step];
     }
 
     @Override
     protected void testGraph4J() {
-        var g = new GraphBuilder().numVertices(n).estimatedAvgDegree(avgDegree).buildGraph();
-        for (int v = 0; v < n; v++) {
+        var g = GraphBuilder.numVertices(numVertices).estimatedAvgDegree(avgDegree).buildGraph();
+        for (int v = 0; v < numVertices; v++) {
             for (int j = 0; j < avgDegree; j++) {
-                int u = (v + j + 1) % n;
+                int u = (v + j + 1) % numVertices;
                 if (u != v) {
                     g.addEdge(v, u);
                 }
@@ -50,13 +58,13 @@ public class SparseGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testJGraphT() {
-        var g = Tools.createJGraph(null);
-        for (int v = 0; v < n; v++) {
+        var g = new org.jgrapht.graph.SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class);
+        for (int v = 0; v < numVertices; v++) {
             g.addVertex(v);
         }
-        for (int v = 0; v < n; v++) {
+        for (int v = 0; v < numVertices; v++) {
             for (int j = 0; j < avgDegree; j++) {
-                int u = (v + j + 1) % n;
+                int u = (v + j + 1) % numVertices;
                 if (u != v) {
                     g.addEdge(v, u);
                 }
@@ -67,12 +75,12 @@ public class SparseGraphDemo extends PerformanceDemo {
     @Override
     protected void testJung() {
         var g = new edu.uci.ics.jung.graph.SparseGraph<Integer, Object>();
-        for (int v = 0; v < n; v++) {
+        for (int v = 0; v < numVertices; v++) {
             g.addVertex(v);
         }
-        for (int v = 0; v < n; v++) {
+        for (int v = 0; v < numVertices; v++) {
             for (int j = 0; j < avgDegree; j++) {
-                int u = (v + j + 1) % n;
+                int u = (v + j + 1) % numVertices;
                 if (u != v) {
                     g.addEdge(v + "-" + u, v, u);
                 }
@@ -82,13 +90,13 @@ public class SparseGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testGuava() {
-        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(n).build();
-        for (int v = 0; v < n; v++) {
+        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(numVertices).build();
+        for (int v = 0; v < numVertices; v++) {
             g.addNode(v);
         }
-        for (int v = 0; v < n; v++) {
+        for (int v = 0; v < numVertices; v++) {
             for (int j = 0; j < avgDegree; j++) {
-                int u = (v + j + 1) % n;
+                int u = (v + j + 1) % numVertices;
                 if (u != v) {
                     g.putEdge(v, u);
                 }
@@ -98,14 +106,23 @@ public class SparseGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testAlgs4() {
-        var g = new edu.princeton.cs.algs4.Graph(n);
-        for (int v = 0; v < n; v++) {
+        var g = new edu.princeton.cs.algs4.Graph(numVertices);
+        for (int v = 0; v < numVertices; v++) {
             for (int j = 0; j < avgDegree; j++) {
-                int u = (v + j + 1) % n;
+                int u = (v + j + 1) % numVertices;
                 if (u != v) {
                     g.addEdge(v, u);
                 }
             }
+        }
+    }
+
+    @Override
+    protected void prepareArgs() {
+        int steps = 10;
+        args = new int[steps];
+        for (int i = 0; i < steps; i++) {
+            args[i] = 100 * (i + 1);
         }
     }
 

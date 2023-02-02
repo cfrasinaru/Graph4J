@@ -18,9 +18,9 @@ package ro.uaic.info.graph.alg.bipartite;
 
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.model.Cycle;
-import ro.uaic.info.graph.search.DFSVisitor;
-import ro.uaic.info.graph.search.DepthFirstSearch;
-import ro.uaic.info.graph.search.SearchNode;
+import ro.uaic.info.graph.traverse.DFSVisitor;
+import ro.uaic.info.graph.traverse.DFSTraverser;
+import ro.uaic.info.graph.traverse.SearchNode;
 
 /**
  *
@@ -38,7 +38,7 @@ public class DFSBipartitionAlgorithm extends BipartitionAlgorithmBase {
         this.color = new boolean[n];
         var visitor = new Visitor();
         color[0] = true;
-        new DepthFirstSearch(graph).traverse(visitor, graph.vertexAt(0));
+        new DFSTraverser(graph).traverse(graph.vertexAt(0), visitor);
         bipartite = oddCycle == null;
     }
 

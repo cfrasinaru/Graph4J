@@ -38,7 +38,7 @@ public class FloydWarshallShortestPath extends GraphAlgorithm
     }
 
     @Override
-    public Path getPath(int source, int target) {
+    public Path findPath(int source, int target) {
         if (before == null) {
             computeAll();
         }

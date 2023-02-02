@@ -8,7 +8,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHAN", "ILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -27,9 +27,8 @@ import ro.uaic.info.graph.gen.GraphGenerator;
  */
 public class EmptyGraphDemo extends PerformanceDemo {
 
-    private int n = 5_000_000;
-
     public EmptyGraphDemo() {
+        numVertices = 10_000_000;
         runGuava = true;
         runJung = true;
         runJGraphT = true;
@@ -38,25 +37,25 @@ public class EmptyGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testGraph4J() {
-        var g = GraphGenerator.empty(n);
+        var g = GraphGenerator.empty(numVertices);
     }
 
     @Override
     protected void testJGraphT() {
         var jg = new org.jgrapht.graph.SimpleGraph<Integer, DefaultEdge>(
                 SupplierUtil.createIntegerSupplier(), SupplierUtil.createDefaultEdgeSupplier(), false);
-        new EmptyGraphGenerator(n).generateGraph(jg);
+        new EmptyGraphGenerator(numVertices).generateGraph(jg);
     }
 
     @Override
     protected void testAlgs4() {
-        var g = new edu.princeton.cs.algs4.Graph(n);
+        var g = new edu.princeton.cs.algs4.Graph(numVertices);
     }
 
     @Override
     protected void testGuava() {
-        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(n).build();
-        for (int v = 0; v < n; v++) {
+        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(numVertices).build();
+        for (int v = 0; v < numVertices; v++) {
             g.addNode(v);
         }
     }
@@ -64,14 +63,18 @@ public class EmptyGraphDemo extends PerformanceDemo {
     @Override
     protected void testJung() {
         var g = new edu.uci.ics.jung.graph.SparseGraph<Integer, Object>();
-        for (int v = 0; v < n; v++) {
+        for (int v = 0; v < numVertices; v++) {
             g.addVertex(v);
         }
     }
 
-    public static void main(String args[]) {
-        var app = new EmptyGraphDemo();
-        app.demo();
+    @Override
+    protected void prepareArgs() {
+        int steps = 10;
+        args = new int[steps];
+        for (int i = 0; i < steps; i++) {
+            args[i] = 5_000_000 * (i + 1);
+        }
     }
 
 }

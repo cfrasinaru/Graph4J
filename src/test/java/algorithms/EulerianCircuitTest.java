@@ -34,7 +34,7 @@ public class EulerianCircuitTest {
 
     @Test
     public void twoIntersectingCycles() {
-        var g = new GraphBuilder().numVertices(8)
+        var g = GraphBuilder.numVertices(8)
                 .addCycle(0, 1, 2, 3, 4, 5)
                 .addCycle(6, 1, 5, 7, 4, 2).buildGraph();
 

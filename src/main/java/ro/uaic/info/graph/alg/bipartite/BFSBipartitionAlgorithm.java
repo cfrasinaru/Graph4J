@@ -18,9 +18,9 @@ package ro.uaic.info.graph.alg.bipartite;
 
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.model.Cycle;
-import ro.uaic.info.graph.search.BFSVisitor;
-import ro.uaic.info.graph.search.BreadthFirstSearch;
-import ro.uaic.info.graph.search.SearchNode;
+import ro.uaic.info.graph.traverse.BFSVisitor;
+import ro.uaic.info.graph.traverse.BFSTraverser;
+import ro.uaic.info.graph.traverse.SearchNode;
 
 /**
  *
@@ -38,7 +38,7 @@ public class BFSBipartitionAlgorithm extends BipartitionAlgorithmBase {
         this.color = new boolean[n];
         var visitor = new Visitor();
         color[0] = true;
-        new BreadthFirstSearch(graph).traverse(visitor, graph.vertexAt(0));
+        new BFSTraverser(graph).traverse(graph.vertexAt(0), visitor);
         bipartite = oddCycle == null;
     }
 

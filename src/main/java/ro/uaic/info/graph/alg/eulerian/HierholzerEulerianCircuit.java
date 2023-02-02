@@ -61,7 +61,7 @@ public class HierholzerEulerianCircuit extends EulerianCircuitAlgorithmBase {
         if (g.numEdges() > 0) {
             return null;
         }
-        //circuit.validate();
+        assert circuit.isValid();
         return circuit;
     }
 }

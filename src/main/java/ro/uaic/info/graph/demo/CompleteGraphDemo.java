@@ -16,9 +16,10 @@
  */
 package ro.uaic.info.graph.demo;
 
-import org.jgrapht.generate.CompleteGraphGenerator;
-import ro.uaic.info.graph.gen.CompleteGenerator;
-import ro.uaic.info.graph.util.Tools;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultGraphType;
+import org.jgrapht.util.SupplierUtil;
+import ro.uaic.info.graph.GraphBuilder;
 
 /**
  *
@@ -27,21 +28,52 @@ import ro.uaic.info.graph.util.Tools;
 public class CompleteGraphDemo extends PerformanceDemo {
 
     public CompleteGraphDemo() {
-        numVertices = 5_000;
+        numVertices = 1_000;
         runGuava = true;
-        runJung = false;
-        runJGraphT = false;
-        runAlgs4 = false;
+        runJung = true;
+        runJGraphT = true;
+        //runJGraphF = true;
+        //runAlgs4 = true;
     }
 
     @Override
     protected void testGraph4J() {
-        new CompleteGenerator(numVertices).createGraph();
+        var g = GraphBuilder.numVertices(numVertices)
+                .estimatedAvgDegree(numVertices - 1)
+                .buildGraph();
+        for (int v = 0; v < numVertices - 1; v++) {
+            for (int u = v + 1; u < numVertices; u++) {
+                g.addEdge(v, u);
+            }
+        }
     }
 
     @Override
     protected void testJGraphT() {
-        new CompleteGraphGenerator(numVertices).generateGraph(Tools.createJGraph(null));
+        var g = new org.jgrapht.graph.SimpleGraph<Integer, DefaultEdge>(DefaultEdge.class);
+        for (int v = 0; v < numVertices; v++) {
+            g.addVertex(v);
+        }
+        for (int v = 0; v < numVertices - 1; v++) {
+            for (int u = v + 1; u < numVertices; u++) {
+                g.addEdge(v, u);
+            }
+        }
+    }
+
+    @Override
+    protected void testJGraphF() {
+        var g = new org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph(SupplierUtil.createIntegerSupplier(),
+                SupplierUtil.createDefaultEdgeSupplier(), DefaultGraphType.simple(), false);
+        //var jg = new org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph(null, null, DefaultGraphType.simple(), false);
+        for (int v = 0; v < numVertices; v++) {
+            g.addVertex(v);
+        }
+        for (int v = 0; v < numVertices - 1; v++) {
+            for (int u = v + 1; u < numVertices; u++) {
+                g.addEdge(v, u);
+            }
+        }
     }
 
     @Override
@@ -56,7 +88,9 @@ public class CompleteGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testGuava() {
-        var g = com.google.common.graph.GraphBuilder.undirected().expectedNodeCount(numVertices).build();
+        var g = com.google.common.graph.GraphBuilder.undirected()
+                .expectedNodeCount(numVertices)
+                .build();
         for (int v = 0; v < numVertices; v++) {
             g.addNode(v);
         }
@@ -69,7 +103,7 @@ public class CompleteGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testJung() {
-        var g = new edu.uci.ics.jung.graph.SparseGraph<Integer, Object>();
+        var g = new edu.uci.ics.jung.graph.UndirectedSparseGraph<Integer, Object>();
         for (int v = 0; v < numVertices; v++) {
             g.addVertex(v);
         }
@@ -85,7 +119,7 @@ public class CompleteGraphDemo extends PerformanceDemo {
         int steps = 10;
         args = new int[steps];
         for (int i = 0; i < steps; i++) {
-            args[i] = 1000 * (i + 1);
+            args[i] = 500 * (i + 1);
         }
     }
 

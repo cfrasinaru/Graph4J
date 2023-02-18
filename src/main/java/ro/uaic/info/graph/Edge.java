@@ -21,12 +21,12 @@ package ro.uaic.info.graph;
  * @author Cristian Frăsinaru
  */
 public class Edge<E> implements Comparable<Edge> {
-
-    private boolean directed;
-    private int source;
-    private int target;
-    private Double weight;
-    private E label;
+    
+    boolean directed;
+    int source;
+    int target;
+    Double weight;
+    E label;
 
     public Edge(int first, int second) {
         this(first, second, false, null, null);
@@ -72,7 +72,11 @@ public class Edge<E> implements Comparable<Edge> {
         return source == target;
     }
 
-    public Double weight() {
+    public double weight() {
+        //tricy, don't invoke this method if you expect null
+        if (weight == null) {
+            return Graph.DEFAULT_EDGE_WEIGHT;
+        }
         return weight;
     }
 

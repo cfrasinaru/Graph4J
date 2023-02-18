@@ -18,7 +18,7 @@ package ro.uaic.info.graph.demo;
 
 import org.jgrapht.alg.connectivity.BiconnectivityInspector;
 import ro.uaic.info.graph.alg.connectivity.*;
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
+import ro.uaic.info.graph.generate.GnmGraphGenerator;
 
 /**
  *
@@ -33,7 +33,7 @@ public class BiconnectivityDemo extends PerformanceDemo {
     @Override
     protected void createGraph() {
         int n = 50_000;
-        graph = new GnmRandomGenerator(n, n).createGraph();
+        graph = new GnmGraphGenerator(n, n).createGraph();
         //graph = GraphGenerator.complete(2000);
         //graph = GraphGenerator.cycle(50_000);
         //graph = new RandomTreeGenerator(10_000).create();
@@ -52,7 +52,7 @@ public class BiconnectivityDemo extends PerformanceDemo {
         //var result = new BiconnectivityInspector(jgraph).getBlocks();
         //System.out.println(result.size());
         //var result = new BiconnectivityInspector(jgraph).getCutpoints();
-        System.out.println(new BiconnectivityInspector(jgraph).isBiconnected());
+        System.out.println(new BiconnectivityInspector(jgrapht).isBiconnected());
     }
     
     public static void main(String args[]) {

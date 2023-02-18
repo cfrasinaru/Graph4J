@@ -16,25 +16,14 @@
  */
 package ro.uaic.info.graph.demo;
 
-import com.google.common.graph.Graphs;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import ro.uaic.info.graph.Edge;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.alg.eulerian.HierholzerEulerianCircuit;
 
 import ro.uaic.info.graph.alg.mst.KruskalMinimumSpanningTree;
-import ro.uaic.info.graph.alg.mst.PrimMinimumSpanningTreeDefault;
-import ro.uaic.info.graph.alg.mst.PrimMinimumSpanningTreeHeap;
-import ro.uaic.info.graph.gen.CompleteGenerator;
-import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
-import ro.uaic.info.graph.model.EdgeSet;
-import ro.uaic.info.graph.util.Tools;
+import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
+import ro.uaic.info.graph.generate.GnpGraphGenerator;
 
 /**
  * TODO: Move this to tests.
@@ -44,7 +33,8 @@ import ro.uaic.info.graph.util.Tools;
 public class Main {
 
     public static void main(String[] args) {
-        var app = new Main();
+        var app = new HopcroftKarpDemo();
+        //var app = new EdmondsKarpDemo();
         //var app = new CycleDetectionDemo();
         //var app = new KruskalMSTDemo();
         //var app = new PrimMSTDemo();
@@ -57,7 +47,7 @@ public class Main {
         //var app = new EulerianCircuitDemo();
         //var app = new BellmanFordDemo();
         //var app = new FloydWarshallDemo();
-        //var app = new DijkstraDemo();
+        //var app = new DijkstraDemo1();
 
         //var app = new DFSVisitorDemo();
         //var app = new BFSVisitorDemo();
@@ -66,38 +56,71 @@ public class Main {
         //var app = new RemoveNodesDemo();
         //var app = new RemoveEdgesDemo();
         //var app = new ContainsEdgeDemo();
-        //var app = new IterateEdgesDemo();
-        //var app = new WeightedGraphDemo2();
+        //var app = new IterateSuccessorsDemo();
+        //var app = new IteratePredecessorsDemo();
+        //var app = new WeightedGraphDemo();
         //var app = new LabeledGraphDemo();
         //var app = new CopyGraphDemo();
         //var app = new RandomGraphDemo();
         //var app = new SparseGraphDemo();
         //var app = new CompleteGraphDemo();
         //var app = new EmptyGraphDemo();
+        //var app = new Main();
         //app.benchmark();
         app.demo();
     }
 
     private void demo() {
         run(this::test);
-        //run(this::prepare);
     }
 
     private void test() {
-        Graph g = new GnpRandomGenerator(20, 0.5).createGraph();
-            EdgeWeightsGenerator.randomDoubles(g, 0, 1);
-            double p1 = new PrimMinimumSpanningTreeHeap(g).getWeight();
-            double p2 = new PrimMinimumSpanningTreeDefault(g).getWeight();
-            double k1 = new KruskalMinimumSpanningTree(g).getWeight();
-            System.out.println(p1-p2);
-            System.out.println(p1-k1);
+        /*
+        var g = GraphBuilder.vertices(0, 1, 2, 3, 4, 5)
+                .addEdges("0-3,0-4,0-5,1-5,2-4").buildGraph();
+        System.out.println(g);
+        var left = new StableSet(g, new int[]{0, 1, 2});
+        var right = new StableSet(g, new int[]{3, 4, 5});
+        var alg = new HopkroftKarpBipartiteMatching(g, left, right);
+        alg.getMatching();
+         */
+        //{[0, 1, 2, 3, 4, 5, 6, 7], [0-5, 0-6, 0-7, 1-4, 1-6, 1-7, 2-4, 2-7, 3-7]}
+        
+        /*
+        var g = GraphBuilder.numVertices(8)
+                .addEdges("0-5, 0-6, 0-7, 1-4, 1-6, 1-7, 2-4, 2-7, 3-7").buildGraph();
+        System.out.println(g);
+        var left = new StableSet(g, new int[]{0, 1, 2, 3});
+        var right = new StableSet(g, new int[]{4, 5, 6, 7});
+        var alg = new HopkroftKarpBipartiteMatching(g, left, right);
+        System.out.println(alg.getMatching());
+        */
+
+        /*
+        for (int i = 0; i < 100; i++) {
+            var g = GraphGenerator.randomBipartite(10, 10, 0.1);
+            var jg = Tools.createJGraphT(g);
+            var gg = Tools.createAlgs4Graph(g);
+            var bip = BipartitionAlgorithm.getInstance(g);
+            var left = bip.getLeftSide();
+            var right = bip.getRightSide();
+            var alg1 = new HopkroftKarpBipartiteMatching(g);
+            var alg2 = new HopcroftKarp(gg);
+            var alg3 = new HopcroftKarpMaximumCardinalityBipartiteMatching(jg,IntArrays.asSet(left.vertices()), IntArrays.asSet(right.vertices()));
+            int m1 = alg1.getMatching().size();            
+            int m2 = alg2.size();
+            int m3 = alg3.getMatching().getEdges().size();
+            if (m1 != m2 || m1 != m3) {
+                System.out.println("is bipartite??? " + GraphTests.isBipartite(jg));
+                System.out.println("Nooooooooooooooo! " + m1 + ", " + m2 + ", " + m3);
+                System.out.println(g);
+                break;
+            }
+        }*/
     }
 
-    private void testEdgeSet0() {
-        Graph g = GraphGenerator.complete(10_000);
-        Edge[] edges = g.edges();
-    }
 
+    /*
     private void testEdgeSet1() {
         Graph g = GraphGenerator.complete(10_000);
         EdgeSet set = new EdgeSet(g, g.numEdges());
@@ -126,8 +149,7 @@ public class Main {
         for (var it = g.edgeIterator(); it.hasNext();) {
             set[i++] = it.next();
         }
-    }
-
+    }*/
     private void testKruskal() {
         /*
         Graph g = GraphBuilder.vertexRange(0, 3).addEdges("0-1,1-2,2-3,3-0,3-1").buildGraph();
@@ -141,10 +163,10 @@ public class Main {
          */
 
         for (int i = 0; i < 1000; i++) {
-            Graph g = new GnpRandomGenerator(10, 0.5).createGraph();
+            Graph g = new GnpGraphGenerator(10, 0.5).createGraph();
             EdgeWeightsGenerator.consecutiveIntegers(g);
             var alg1 = new KruskalMinimumSpanningTree(g);
-            var alg2 = new org.jgrapht.alg.spanning.PrimMinimumSpanningTree(Tools.createJGraph(g));
+            var alg2 = new org.jgrapht.alg.spanning.PrimMinimumSpanningTree(Converter.createJGraphT(g));
             //System.out.println(alg1.getTree());
             //System.out.println(alg2.getSpanningTree());
             double x = alg1.getWeight();

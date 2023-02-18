@@ -17,6 +17,7 @@
 package ro.uaic.info.graph.model;
 
 import java.util.EmptyStackException;
+import java.util.NoSuchElementException;
 import ro.uaic.info.graph.Graph;
 
 /**
@@ -48,7 +49,7 @@ public class VertexStack extends VertexCollection {
      */
     public int peek() {
         if (numVertices == 0) {
-            throw new EmptyStackException();
+            throw new NoSuchElementException();
         }
         return vertices[numVertices - 1];
     }
@@ -59,7 +60,7 @@ public class VertexStack extends VertexCollection {
      */
     public int pop() {
         if (numVertices == 0) {
-            throw new EmptyStackException();
+            throw new NoSuchElementException();
         }
         if (bitset != null) {
             bitset.set(vertices[numVertices - 1], false);

@@ -48,7 +48,7 @@ public class HierholzerEulerianCircuit extends EulerianCircuitAlgorithmBase {
             int v = start;
             do {
                 loop.add(v);
-                var it = g.neighborIterator(v);
+                var it = g.neighborIterator(v);                
                 int u = it.next();
                 it.removeEdge();
                 if (u != start && g.degree(u) > 1) {

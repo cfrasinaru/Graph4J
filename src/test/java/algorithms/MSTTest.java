@@ -24,8 +24,8 @@ import ro.uaic.info.graph.Graphs;
 import ro.uaic.info.graph.alg.mst.KruskalMinimumSpanningTree;
 import ro.uaic.info.graph.alg.mst.PrimMinimumSpanningTreeDefault;
 import ro.uaic.info.graph.alg.mst.PrimMinimumSpanningTreeHeap;
-import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
+import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
+import ro.uaic.info.graph.generate.GnpGraphGenerator;
 
 /**
  *
@@ -50,8 +50,8 @@ public class MSTTest {
     @Test
     public void primForrest() {
         Graph g = GraphBuilder.vertexRange(1, 4).buildGraph();
-        g.addWeightedEdge(1, 2, 3);
-        g.addWeightedEdge(3, 4, 4);
+        g.addEdge(1, 2, 3);
+        g.addEdge(3, 4, 4);
         var alg = new PrimMinimumSpanningTreeHeap(g);
         assertEquals(7, alg.getWeight());
         assertEquals(2, alg.getTree().numEdges());
@@ -62,7 +62,7 @@ public class MSTTest {
     public void crossTest() {
         double epsilon = 1.0E-12;
         for (int i = 0; i < 10; i++) {
-            Graph g = new GnpRandomGenerator(20, 0.5).createGraph();
+            Graph g = new GnpGraphGenerator(20, 0.5).createGraph();
             EdgeWeightsGenerator.randomDoubles(g, 0, 1);
             double p1 = new PrimMinimumSpanningTreeHeap(g).getWeight();
             double p2 = new PrimMinimumSpanningTreeDefault(g).getWeight();

@@ -17,10 +17,9 @@
 package ro.uaic.info.graph.demo;
 
 import ro.uaic.info.graph.alg.GraphMetrics;
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.generate.GnmGraphGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
 import ro.uaic.info.graph.traverse.BFSIterator;
-import ro.uaic.info.graph.util.Tools;
 
 /**
  *
@@ -30,7 +29,7 @@ public class GraphMetricsDemo {
 
     private void test1() {
         int n = 100_000;
-        var graph = new GnmRandomGenerator(n, n * 10).createGraph();
+        var graph = new GnmGraphGenerator(n, n * 10).createGraph();
         System.out.println("-------------------------------------------------");
         System.out.println("Iterator");
         int maxLevel = -1;
@@ -61,7 +60,7 @@ public class GraphMetricsDemo {
         long t1 = System.currentTimeMillis();
         System.out.println((t1 - t0) + "ms");
 
-        var jg = Tools.createJGraph(g);
+        var jg = Converter.createJGraphT(g);
         t0 = System.currentTimeMillis();
         //var gnp = new GnpRandomGraphGenerator<Integer, DefaultEdge>(n, p);
         //var gnp = new GnmRandomGraphGenerator<Integer, DefaultEdge>(n, m);

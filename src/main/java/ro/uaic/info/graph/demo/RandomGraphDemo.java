@@ -18,13 +18,14 @@ package ro.uaic.info.graph.demo;
 
 import org.jgrapht.generate.GnpRandomGraphGenerator;
 import org.jgrapht.graph.DefaultEdge;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
+import ro.uaic.info.graph.generate.GnpGraphGenerator;
 import ro.uaic.info.graph.util.Tools;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
+@Deprecated
 public class RandomGraphDemo extends PerformanceDemo {
 
     private int n = 10_000;
@@ -36,13 +37,13 @@ public class RandomGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testGraph4J() {
-        var g = new GnpRandomGenerator(n, p).createGraph();
+        var g = new GnpGraphGenerator(n, p).createGraph();
     }
 
     @Override
     protected void testJGraphT() {
         var gnp = new GnpRandomGraphGenerator<Integer, DefaultEdge>(n, p);
-        gnp.generateGraph(Tools.createJGraph(null));
+        gnp.generateGraph(Converter.createJGraphT(null));
     }
     
     public static void main(String args[]) {

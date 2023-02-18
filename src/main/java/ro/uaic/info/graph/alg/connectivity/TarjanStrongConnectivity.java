@@ -71,7 +71,7 @@ public class TarjanStrongConnectivity
     public List<Digraph> getStronglyConnectedComponents() {
         List<Digraph> subgraphs = new ArrayList<>();
         for (var set : compSets) {
-            subgraphs.add(digraph.subgraph(set.vertices()));
+            subgraphs.add(graph.subgraph(set.vertices()));
         }
         return subgraphs;
     }
@@ -79,8 +79,8 @@ public class TarjanStrongConnectivity
     //the main method which does the work
     protected void compute(boolean checkOnly) {
         this.compSets = new ArrayList<>();
-        this.vertexComp = new int[digraph.numVertices()];
-        var dfs = new DFSTraverser(digraph);
+        this.vertexComp = new int[graph.numVertices()];
+        var dfs = new DFSTraverser(graph);
         dfs.traverse(new Visitor(checkOnly));
         if (stronglyConnected == null) {
             stronglyConnected = true;
@@ -98,15 +98,15 @@ public class TarjanStrongConnectivity
         Digraph<Digraph, Integer> condensation
                 = GraphBuilder.labeledVertices(getStronglyConnectedComponents())
                         .buildDigraph();
-        for (Iterator<Edge> it = digraph.edgeIterator(); it.hasNext();) {
+        for (Iterator<Edge> it = graph.edgeIterator(); it.hasNext();) {
             Edge e = it.next();
             int v = e.source();
             int u = e.target();
-            int scv = vertexComp[digraph.indexOf(v)];
-            int scu = vertexComp[digraph.indexOf(u)];
+            int scv = vertexComp[graph.indexOf(v)];
+            int scu = vertexComp[graph.indexOf(u)];
             if (scu != scv) {
                 if (!condensation.containsEdge(scv, scu)) {
-                    condensation.addLabeledEdge(scv, scu, 1);
+                    condensation.addEdge(scv, scu, 1);
                 } else {
                     condensation.setEdgeLabel(scv, scu, 1 + condensation.getEdgeLabel(scv, scu));
                 }
@@ -123,14 +123,14 @@ public class TarjanStrongConnectivity
 
         public Visitor(boolean checkOnly) {
             this.checkOnly = checkOnly;
-            this.low = new int[digraph.numVertices()];
-            this.stack = new VertexStack(digraph);
+            this.low = new int[graph.numVertices()];
+            this.stack = new VertexStack(graph);
         }
 
         @Override
         public void startVertex(SearchNode node) {
             int v = node.vertex();
-            low[digraph.indexOf(v)] = node.order();
+            low[graph.indexOf(v)] = node.order();
             stack.push(v);
         }
 
@@ -144,14 +144,14 @@ public class TarjanStrongConnectivity
 
         @Override
         public void backEdge(SearchNode from, SearchNode to) {
-            int vi = digraph.indexOf(from.vertex());
+            int vi = graph.indexOf(from.vertex());
             low[vi] = Math.min(low[vi], to.order());
         }
 
         @Override
         public void crossEdge(SearchNode from, SearchNode to) {
-            int vi = digraph.indexOf(from.vertex());
-            int ui = digraph.indexOf(to.vertex());
+            int vi = graph.indexOf(from.vertex());
+            int ui = graph.indexOf(to.vertex());
             if (stack.contains(ui)) {
                 low[vi] = low[ui]; //can actually reach the root of the cc
             }
@@ -160,7 +160,7 @@ public class TarjanStrongConnectivity
         @Override
         public void finishVertex(SearchNode node) {
             int v = node.vertex();
-            int vi = digraph.indexOf(v);
+            int vi = graph.indexOf(v);
             if (low[vi] == node.order()) {
                 createComponent(v);
             }
@@ -168,8 +168,8 @@ public class TarjanStrongConnectivity
 
         @Override
         public void upward(SearchNode from, SearchNode to) {
-            int vi = digraph.indexOf(from.vertex());
-            int ui = digraph.indexOf(to.vertex());
+            int vi = graph.indexOf(from.vertex());
+            int ui = graph.indexOf(to.vertex());
             low[ui] = Math.min(low[ui], low[vi]);
         }
 
@@ -181,13 +181,13 @@ public class TarjanStrongConnectivity
                     interrupt();
                 }
             }
-            var component = new VertexSet(digraph);
+            var component = new VertexSet(graph);
             int compIndex = compSets.size();
             int w;
             do {
                 w = stack.pop();
                 component.add(w);
-                vertexComp[digraph.indexOf(w)] = compIndex;
+                vertexComp[graph.indexOf(w)] = compIndex;
             } while (w != u);
             compSets.add(component);
         }

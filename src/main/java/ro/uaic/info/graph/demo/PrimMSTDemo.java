@@ -16,9 +16,10 @@
  */
 package ro.uaic.info.graph.demo;
 
+import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
+import ro.uaic.info.graph.generate.GnpGraphGenerator;
 import edu.princeton.cs.algs4.PrimMST;
 import ro.uaic.info.graph.alg.mst.*;
-import ro.uaic.info.graph.gen.*;
 
 /**
  *
@@ -29,7 +30,7 @@ public class PrimMSTDemo extends PerformanceDemo {
     private final double probability = 0.5;
 
     public PrimMSTDemo() {
-        numVertices = 20;
+        numVertices = 8000;
         runJGraphT = true;
         runAlgs4 = true;
         //runJung = true;
@@ -38,7 +39,7 @@ public class PrimMSTDemo extends PerformanceDemo {
     @Override
     protected void createGraph() {
         //graph = new CompleteGenerator(numVertices).createGraph();
-        graph = new GnpRandomGenerator(numVertices, probability).createGraph();
+        graph = new GnpGraphGenerator(numVertices, probability).createGraph();
         EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
     }
 
@@ -52,7 +53,7 @@ public class PrimMSTDemo extends PerformanceDemo {
 
     @Override
     protected void testJGraphT() {
-        var alg = new org.jgrapht.alg.spanning.PrimMinimumSpanningTree(jgraph);
+        var alg = new org.jgrapht.alg.spanning.PrimMinimumSpanningTree(jgrapht);
         System.out.println(alg.getSpanningTree().getWeight());
     }
 

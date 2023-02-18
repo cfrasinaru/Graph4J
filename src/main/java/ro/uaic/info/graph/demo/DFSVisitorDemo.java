@@ -17,7 +17,7 @@
 package ro.uaic.info.graph.demo;
 
 import com.google.common.graph.Traverser;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
+import ro.uaic.info.graph.generate.GnpGraphGenerator;
 import ro.uaic.info.graph.traverse.DFSVisitor;
 import ro.uaic.info.graph.traverse.DFSTraverser;
 import ro.uaic.info.graph.traverse.SearchNode;
@@ -34,7 +34,7 @@ public class DFSVisitorDemo extends PerformanceDemo {
 
     @Override
     protected void createGraph() {
-        graph = new GnpRandomGenerator(1000, 0.2).createGraph();
+        graph = new GnpGraphGenerator(1000, 0.2).createGraph();
     }
 
     private int k1 = 0;

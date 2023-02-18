@@ -20,7 +20,7 @@ import edu.princeton.cs.algs4.TarjanSCC;
 import org.jgrapht.alg.connectivity.KosarajuStrongConnectivityInspector;
 import ro.uaic.info.graph.Digraph;
 import ro.uaic.info.graph.alg.connectivity.TarjanStrongConnectivity;
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
+import ro.uaic.info.graph.generate.GnmGraphGenerator;
 
 /**
  *
@@ -29,14 +29,14 @@ import ro.uaic.info.graph.gen.GnmRandomGenerator;
 public class StrongConnectivityDemo extends PerformanceDemo {
 
     public StrongConnectivityDemo() {
+        numVertices = 100_000;
         runJGraphT = true;
         //runAlgs4 = true;
     }
 
     @Override
     protected void createGraph() {
-        int n = 100_000;
-        graph = new GnmRandomGenerator(n, 5*n).createDigraph();
+        graph = new GnmGraphGenerator(numVertices, 5 * numVertices).createDigraph();
         //graph = new CycleGenerator(500_000).createDigraph(true);
     }
 
@@ -51,7 +51,7 @@ public class StrongConnectivityDemo extends PerformanceDemo {
 
     @Override
     protected void testJGraphT() {
-       var result = new KosarajuStrongConnectivityInspector(jgraph).stronglyConnectedSets();
+        var result = new KosarajuStrongConnectivityInspector(jgrapht).stronglyConnectedSets();
         //var result = new GabowStrongConnectivityInspector(jgraph).stronglyConnectedSets();
         //var result = new BiconnectivityInspector(jgraph).getCutpoints();
         //System.out.println(new BiconnectivityInspector(jgraph).isBiconnected());
@@ -63,13 +63,15 @@ public class StrongConnectivityDemo extends PerformanceDemo {
         var alg = new TarjanSCC(algs4Digraph);
         //var alg = new KosarajuSharirSCC(algs4Digraph);
         //var alg = new GabowSCC(algs4Digraph);
-        
-    }
-    
-    
 
-    public static void main(String args[]) {
-        var app = new StrongConnectivityDemo();
-        app.demo();
+    }
+
+    @Override
+    protected void prepareArgs() {
+        int steps = 10;
+        args = new int[steps];
+        for (int i = 0; i < steps; i++) {
+            args[i] = 100 * (i + 1);
+        }
     }
 }

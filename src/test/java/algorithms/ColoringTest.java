@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import ro.uaic.info.graph.alg.coloring.GreedyColoring;
 import ro.uaic.info.graph.alg.coloring.VertexColoring;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
 
 /**
  *

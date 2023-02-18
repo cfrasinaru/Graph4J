@@ -25,14 +25,14 @@ import ro.uaic.info.graph.Digraph;
  */
 public abstract class DirectedGraphAlgorithm {
 
-    protected final Digraph digraph;
+    protected final Digraph graph;
 
     /**
      *
-     * @param digraph the input digraph
+     * @param graph the input digraph
      */
-    public DirectedGraphAlgorithm(Digraph digraph) {
-        this.digraph = digraph;
+    public DirectedGraphAlgorithm(Digraph graph) {
+        this.graph = graph;
     }
 
 }

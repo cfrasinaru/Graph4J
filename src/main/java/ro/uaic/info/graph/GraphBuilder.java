@@ -37,7 +37,7 @@ public class GraphBuilder {
     private final Map<Object, Integer> labelMap = new HashMap<>();
     private final Map<Integer, Double> weightMap = new HashMap<>();
     private Integer maxVertices;
-    private Integer numEdges;
+    private Long numEdges;
     private Integer avgDegree;
     private Double density;
     private boolean directed;
@@ -109,7 +109,10 @@ public class GraphBuilder {
             throw new IllegalArgumentException("Number of vertices must not be negative.");
         }
         var builder = new GraphBuilder();
-        builder.vertices = IntStream.range(0, numVertices).toArray();
+        builder.vertices = new int[numVertices];
+        for (int i = 0; i < numVertices; i++) {
+            builder.vertices[i] = i;
+        }
         return builder;
     }
 
@@ -209,7 +212,7 @@ public class GraphBuilder {
      * @param numEdges the estimated maximum number of edges.
      * @return a reference to this object.
      */
-    public GraphBuilder estimatedNumEdges(int numEdges) {
+    public GraphBuilder estimatedNumEdges(long numEdges) {
         if (numEdges <= 0) {
             throw new IllegalArgumentException("Number of edges must be positive.");
         }
@@ -419,19 +422,15 @@ public class GraphBuilder {
         }
         if (!edges.isEmpty()) {
             if (numEdges == null || numEdges < edges.size()) {
-                numEdges = edges.size();
+                numEdges = (long) edges.size();
             }
         }
         //number of edges
         /*
-        int maxEdges = maxEdges();
-        if (numEdges != null && numEdges > maxEdges) {
-            throw new IllegalArgumentException("The number of edges exceeds the maximum possible: " + maxEdges);
-        }*/
         if (avgDegree != null && avgDegree > numVertices - 1) {
             throw new IllegalArgumentException("Invalid average degree, "
                     + "it must be in the range: [0," + (numVertices - 1) + "]");
-        }
+        }*/
         if (numVertices > 0 && numEdges != null && density != null) {
             throw new IllegalArgumentException("Illegal combination of parameters: numEdges and density");
         }

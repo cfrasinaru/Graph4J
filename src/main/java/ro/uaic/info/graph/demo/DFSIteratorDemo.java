@@ -18,7 +18,7 @@ package ro.uaic.info.graph.demo;
 
 import com.google.common.graph.Traverser;
 import org.jgrapht.traverse.DepthFirstIterator;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
+import ro.uaic.info.graph.generate.GnpGraphGenerator;
 import ro.uaic.info.graph.traverse.DFSIterator;
 
 /**
@@ -37,7 +37,7 @@ public class DFSIteratorDemo extends PerformanceDemo {
 
     @Override
     protected void createGraph() {
-        graph = new GnpRandomGenerator(numVertices, edgeProbability).createGraph();
+        graph = new GnpGraphGenerator(numVertices, edgeProbability).createGraph();
     }
 
     @Override
@@ -56,8 +56,8 @@ public class DFSIteratorDemo extends PerformanceDemo {
     @Override
     protected void testJGraphT() {
         int k = 0;
-        for (var v : jgraph.vertexSet()) {
-            var it = new DepthFirstIterator<>(jgraph, v);
+        for (var v : jgrapht.vertexSet()) {
+            var it = new DepthFirstIterator<>(jgrapht, v);
             while (it.hasNext()) {
                 it.next();
                 k++;

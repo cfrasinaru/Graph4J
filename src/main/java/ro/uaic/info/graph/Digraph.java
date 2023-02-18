@@ -134,6 +134,27 @@ public interface Digraph<V, E> extends Graph<V, E> {
     /**
      *
      * @param v a vertex number.
+     * @return an iterator over the successors of v.
+     */
+    default SuccessorIterator succesorIterator(int v) {
+        return succesorIterator(v, -1);
+    }
+
+    /**
+     * Iterates over the edges incident from v, returning the successors of v,
+     * starting from a specified position in the successors adjacency list of v,
+     * along with information regarding their edges.
+     *
+     * @param v a vertex number.
+     * @param pos a position in the successors adjacency list of v.
+     * @return an iterator over the successors of v, starting from a specified
+     * position in the adjacency list of v.
+     */
+    SuccessorIterator succesorIterator(int v, int pos);
+
+    /**
+     *
+     * @param v a vertex number.
      * @return the predecessors of v.
      */
     default int[] predecessors(int v) {
@@ -147,6 +168,27 @@ public interface Digraph<V, E> extends Graph<V, E> {
         }
         return pred;
     }
+
+    /**
+     *
+     * @param v a vertex number.
+     * @return an iterator over the predecessors of v.
+     */
+    default PredecessorIterator predecessorIterator(int v) {
+        return predecesorIterator(v, -1);
+    }
+
+    /**
+     * Iterates over the edges incident to v, returning the predecessors of v,
+     * starting from a specified position in the predecessors adjacency list of
+     * v, along with information regarding their edges.
+     *
+     * @param v a vertex number.
+     * @param pos a position in the predecessors adjacency list of v.
+     * @return an iterator over the successors of v, starting from a specified
+     * position in the predecessors adjacency list of v.
+     */
+    PredecessorIterator predecesorIterator(int v, int pos);
 
     /**
      *

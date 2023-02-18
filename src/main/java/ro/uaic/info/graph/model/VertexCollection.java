@@ -36,6 +36,7 @@ abstract class VertexCollection implements Iterable<Integer> {
     protected final Graph graph;
     protected int[] vertices;
     protected int numVertices;
+    protected int first = 0;
     protected BitSet bitset; //which vertices of the graph are in this collection
     protected final static int DEFAULT_CAPACITY = 10;
 
@@ -108,6 +109,7 @@ abstract class VertexCollection implements Iterable<Integer> {
      *
      * @return an iterator for the vertices in the collection
      */
+    @Override
     public Iterator<Integer> iterator() {
         return new VertexCollectionIterator();
     }
@@ -120,8 +122,9 @@ abstract class VertexCollection implements Iterable<Integer> {
      * @return the vertices in the collection
      */
     public int[] vertices() {
-        if (numVertices != vertices.length) {
-            vertices = Arrays.copyOf(vertices, numVertices);
+        if (first + numVertices != vertices.length) {
+            vertices = Arrays.copyOfRange(vertices, first, numVertices);
+            first = 0;
         }
         return vertices;
     }
@@ -132,7 +135,7 @@ abstract class VertexCollection implements Iterable<Integer> {
 
     protected int indexOf(int v, int startPos) {
         for (int i = 0; i < numVertices; i++) {
-            if (vertices[i] == v) {
+            if (vertices[first + i] == v) {
                 return i;
             }
         }
@@ -146,10 +149,10 @@ abstract class VertexCollection implements Iterable<Integer> {
      * @return true, if the collection changed as a result of this call
      */
     protected boolean add(int v) {
-        if (numVertices == vertices.length) {
+        if (first + numVertices == vertices.length) {
             grow();
         }
-        vertices[numVertices++] = v;
+        vertices[first + numVertices++] = v;
         if (bitset != null) {
             bitset.set(v, true);
         }
@@ -184,7 +187,7 @@ abstract class VertexCollection implements Iterable<Integer> {
     //the order is maintained by default
     protected void removeFromPos(int pos) {
         for (int i = pos; i < numVertices - 1; i++) {
-            vertices[i] = vertices[i + 1];
+            vertices[first + i] = vertices[first + i + 1];
         }
         numVertices--;
         if (bitset != null) {
@@ -193,9 +196,21 @@ abstract class VertexCollection implements Iterable<Integer> {
     }
 
     /**
+     * Removes all of the elements from this collection. The collection will be
+     * empty after this method returns.
+     */
+    public void clear() {
+        first = 0;
+        numVertices = 0;
+        if (bitset != null) {
+            bitset.clear();
+        }
+    }
+
+    /**
      *
-     * @param v
-     * @return true, if this collection contains the vertex v
+     * @param v a vertex number.
+     * @return {@code true}, if this collection contains the vertex v.
      */
     public boolean contains(int v) {
         //for smaller sets, just iterate
@@ -217,7 +232,7 @@ abstract class VertexCollection implements Iterable<Integer> {
     public double computeVerticesWeight() {
         double weight = 0;
         for (int i = 0; i < numVertices; i++) {
-            weight += graph.getVertexWeight(vertices[i]);
+            weight += graph.getVertexWeight(vertices[first + i]);
         }
         return weight;
     }
@@ -225,7 +240,8 @@ abstract class VertexCollection implements Iterable<Integer> {
     protected void grow() {
         int oldLen = vertices.length;
         int newLen = Math.max(DEFAULT_CAPACITY, oldLen + (oldLen >> 1));
-        vertices = Arrays.copyOf(vertices, newLen);
+        vertices = Arrays.copyOfRange(vertices, first, newLen);
+        first = 0;
     }
 
     @Override
@@ -248,7 +264,7 @@ abstract class VertexCollection implements Iterable<Integer> {
         }
         final VertexCollection other = (VertexCollection) obj;
         for (int i = 0; i < numVertices; i++) {
-            if (this.vertices[i] != other.vertices[i]) {
+            if (this.vertices[first + i] != other.vertices[first + i]) {
                 return false;
             }
         }
@@ -257,9 +273,9 @@ abstract class VertexCollection implements Iterable<Integer> {
 
     @Override
     public String toString() {
-        var sb = new StringJoiner(",", "[", "]");
+        var sb = new StringJoiner(", ", "[", "]");
         for (int i = 0; i < numVertices; i++) {
-            sb.add(String.valueOf(vertices[i]));
+            sb.add(String.valueOf(vertices[first + i]));
         }
         return sb.toString();
     }

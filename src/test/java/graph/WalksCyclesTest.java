@@ -23,7 +23,7 @@ import ro.uaic.info.graph.model.Path;
 import ro.uaic.info.graph.model.Trail;
 import ro.uaic.info.graph.model.Walk;
 import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.gen.CompleteGenerator;
+import ro.uaic.info.graph.generate.CompleteGraphGenerator;
 
 /**
  *
@@ -53,7 +53,7 @@ public class WalksCyclesTest {
 
     @Test
     public void equalsCycleWalkUndirected() {
-        var g = new CompleteGenerator(5).createGraph();
+        var g = new CompleteGraphGenerator(5).createGraph();
         Cycle c1 = new Cycle(g, new int[]{0, 1, 2, 3, 4});
         Cycle c2 = new Cycle(g, new int[]{2, 3, 4, 0, 1});
         Cycle c3 = new Cycle(g, new int[]{0, 4, 3, 2, 1});
@@ -70,7 +70,7 @@ public class WalksCyclesTest {
 
     @Test
     public void equalsCycleWalkDirected() {
-        var g = new CompleteGenerator(5).createDigraph();
+        var g = new CompleteGraphGenerator(5).createDigraph();
         Cycle c1 = new Cycle(g, new int[]{0, 1, 2, 3, 4});
         Cycle c2 = new Cycle(g, new int[]{2, 3, 4, 0, 1});
         Cycle c3 = new Cycle(g, new int[]{0, 4, 3, 2, 1});

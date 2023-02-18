@@ -18,8 +18,8 @@ package ro.uaic.info.graph.demo;
 
 import edu.princeton.cs.algs4.FloydWarshall;
 import ro.uaic.info.graph.alg.sp.FloydWarshallShortestPath;
-import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
+import ro.uaic.info.graph.generate.GnpGraphGenerator;
 
 /**
  *
@@ -28,16 +28,16 @@ import ro.uaic.info.graph.gen.GraphGenerator;
 public class FloydWarshallDemo extends PerformanceDemo {
 
     public FloydWarshallDemo() {
+        numVertices = 2000;
         runJGraphT = true;
         runAlgs4 = true;
     }
 
     @Override
     protected void createGraph() {
-        //graph = new GnpRandomGenerator(1000, 0.3).createGraph();
-        //EdgeWeightsGenerator.randomIntegers(graph, 1, 1000);
-        graph = GraphGenerator.complete(1000);
-        EdgeWeightsGenerator.consecutiveIntegers(graph);
+        graph = new GnpGraphGenerator(numVertices, 0.1).createGraph();
+        //graph = GraphGenerator.complete(numVertices);
+        EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
 
     }
 
@@ -48,15 +48,17 @@ public class FloydWarshallDemo extends PerformanceDemo {
             alg.findPath(0, i);
             //alg.getPathWeight(0, i);
         }
+        System.out.println(alg.getPathWeight(0, numVertices - 1));
     }
 
     @Override
     protected void testJGraphT() {
-        var alg = new org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths(jgraph);
+        var alg = new org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths(jgrapht);
         for (int i = 1; i < graph.numVertices(); i++) {
             alg.getPath(0, i);
             //alg.getPathWeight(0, i);
         }
+        System.out.println(alg.getPathWeight(0, numVertices - 1));
     }
 
     @Override
@@ -66,11 +68,16 @@ public class FloydWarshallDemo extends PerformanceDemo {
             alg.path(0, i);
             //alg.dist(0, i);
         }
+        System.out.println(alg.dist(0, numVertices - 1));
     }
 
-    public static void main(String args[]) {
-        var app = new FloydWarshallDemo();
-        app.demo();
+    @Override
+    protected void prepareArgs() {
+        int steps = 10;
+        args = new int[steps];
+        for (int i = 0; i < steps; i++) {
+            args[i] = 500 * (i + 1);
+        }
     }
 
 }

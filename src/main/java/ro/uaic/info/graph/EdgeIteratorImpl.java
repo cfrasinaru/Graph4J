@@ -55,7 +55,7 @@ class EdgeIteratorImpl<E> implements EdgeIterator<E> {
             return false;
         }
         int ix = index;
-        var it = graph.neighborIterator(graph.vertexAt(ix), neighbors.position());
+        var it = graph.neighborIterator(graph.vertexAt(ix), neighbors.adjListPos());
         while (true) {
             int v = graph.vertexAt(ix);
             while (it.hasNext()) {

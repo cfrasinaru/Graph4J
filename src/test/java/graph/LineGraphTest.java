@@ -22,8 +22,8 @@ import ro.uaic.info.graph.Edge;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
 
 /**
  *

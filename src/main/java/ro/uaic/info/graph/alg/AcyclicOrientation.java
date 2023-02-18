@@ -62,12 +62,15 @@ public class AcyclicOrientation extends SimpleGraphAlgorithm {
      * @return A directed acyclic graph, corresponding to the input graph
      */
     public Digraph create() {
-        var vertices = new VertexList(graph, vertexOrdering);
+        int[] vertexIndex = new int[graph.maxVertexNumber() + 1];
+        for (int i = 0; i < vertexOrdering.length; i++) {
+            vertexIndex[vertexOrdering[i]] = i;
+        }
         var digraph = GraphBuilder.verticesFrom(graph).buildDigraph();
         for (int v : vertexOrdering) {
             for (var it = graph.neighborIterator(v); it.hasNext();) {
                 int u = it.next();
-                if (vertices.indexOf(v) < vertices.indexOf(u)) {
+                if (vertexIndex[v] < vertexIndex[u]) {
                     digraph.addEdge(it.edge());
                 }
             }

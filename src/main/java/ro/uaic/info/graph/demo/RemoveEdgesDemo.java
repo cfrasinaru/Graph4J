@@ -18,70 +18,94 @@ package ro.uaic.info.graph.demo;
 
 import com.google.common.graph.EndpointPair;
 import java.util.HashSet;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import java.util.Set;
+import ro.uaic.info.graph.generate.GraphGenerator;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
 public class RemoveEdgesDemo extends PerformanceDemo {
-
+    
+    private Set jgraphEdges, guavaEdges, jungEdges;
+    
     public RemoveEdgesDemo() {
-        numVertices = 1000;
-        runGuava = true;
-        runJung = true;
-        runJGraphT = true;
+        numVertices = 2000;
+        //runGuava = true;
+        //runJung = true;
+        //runJGraphT = true;
     }
-
+    
     @Override
     protected void createGraph() {
         graph = GraphGenerator.complete(numVertices);
-
     }
-
+    
+    @Override
+    protected void prepareGraphs() {
+        super.prepareGraphs();
+        if (runJGraphT) {
+            jgraphEdges = new HashSet<>(jgrapht.edgeSet());
+        }
+        if (runGuava) {
+            guavaEdges = new HashSet<>(guavaGraph.edges());
+        }
+        if (runJung) {
+            jungEdges = new HashSet<>(jungGraph.getEdges());
+        }
+    }
+    
     @Override
     protected void testGraph4J() {
-        for (var it = graph.edgeIterator(); it.hasNext();) {
-            it.next();
-            it.remove();
+        /*
+        for (int v : graph.vertices()) {
+            for (var it = graph.neighborIterator(v); it.hasNext();) {
+                it.next();                
+                it.removeEdge();
+            }
+        }*/
+        
+        for (int v = 0; v < numVertices - 1; v++) {
+            for (int u = v + 1; u < numVertices; u++) {
+                graph.removeEdge(v, u);
+            }
         }
         System.out.println(graph.numEdges());
     }
-
+    
     @Override
     protected void testJGraphT() {
-        var set = new HashSet<>(jgraph.edgeSet());
-        for (var e : set) {
-            jgraph.removeEdge(e);
+        //jgraphEdges = new HashSet<>(jgrapht.edgeSet());
+        for (var e : jgraphEdges) {
+            jgrapht.removeEdge(e);
         }
-        System.out.println(jgraph.edgeSet().size());
+        System.out.println(jgrapht.edgeSet().size());
     }
-
+    
     @Override
     protected void testGuava() {
-        var set = new HashSet(guavaGraph.edges());
-        for (var e : set) {
+        //guavaEdges = new HashSet<>(guavaGraph.edges());
+        for (var e : guavaEdges) {
             guavaGraph.removeEdge((EndpointPair) e);
         }
         System.out.println(guavaGraph.edges().size());
     }
-
+    
     @Override
     protected void testJung() {
-        for (var v : jungGraph.getVertices()) {
-            for (var e : jungGraph.getIncidentEdges(v)) {
-                jungGraph.removeEdge(e);
-            }
+        //jungEdges = new HashSet<>(jungGraph.getEdges());
+        for (var e : jungEdges) {
+            jungGraph.removeEdge(e);
         }
         System.out.println(jungGraph.getEdgeCount());
     }
-
+    
     @Override
     protected void prepareArgs() {
         int steps = 10;
         args = new int[steps];
         for (int i = 0; i < steps; i++) {
-            args[i] = 100 * (i + 1);
+            args[i] = 200 * (i + 1);
         }
     }
 }

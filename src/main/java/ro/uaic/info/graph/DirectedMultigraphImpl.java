@@ -20,7 +20,7 @@ package ro.uaic.info.graph;
  *
  * @author Cristian Frăsinaru
  */
-class DirectedMultigraphImpl<V, E> extends MultigraphImpl<V, E> implements DirectedMultigraph<V, E> {
+class DirectedMultigraphImpl<V, E> extends DigraphImpl<V, E> implements DirectedMultigraph<V, E> {
 
     protected DirectedMultigraphImpl() {
     }
@@ -60,5 +60,6 @@ class DirectedMultigraphImpl<V, E> extends MultigraphImpl<V, E> implements Direc
     public DirectedMultigraph<V, E> complement() {
         return (DirectedMultigraph<V, E>) super.complement();
     }
+   
 
 }

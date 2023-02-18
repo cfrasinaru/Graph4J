@@ -16,8 +16,8 @@
  */
 package ro.uaic.info.graph.demo;
 
-import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
 
 /**
  *
@@ -28,6 +28,7 @@ public class WeightedGraphDemo1 extends PerformanceDemo {
     int n = 3000;
 
     public WeightedGraphDemo1() {
+        numVertices = 1000;
         //runJGraphT = true;
         runGuava = true;
         //runJung = false;
@@ -61,8 +62,8 @@ public class WeightedGraphDemo1 extends PerformanceDemo {
                 if (i == j) {
                     continue;
                 }
-                var e = jgraph.getEdge(i, j);
-                d += jgraph.getEdgeWeight(e);
+                var e = jgrapht.getEdge(i, j);
+                d += jgrapht.getEdgeWeight(e);
             }
         }
         System.out.println(d);
@@ -82,9 +83,5 @@ public class WeightedGraphDemo1 extends PerformanceDemo {
         System.out.println(d);
     }
 
-    public static void main(String args[]) {
-        var app = new WeightedGraphDemo1();
-        app.demo();
-    }
 
 }

@@ -31,8 +31,8 @@ public abstract class BipartitionAlgorithmBase
     protected boolean[] color;
     protected Boolean bipartite;
     protected Cycle oddCycle;
-    protected StableSet firstPart;
-    protected StableSet secondPart;
+    protected StableSet leftSide;
+    protected StableSet rightSide;
 
     public BipartitionAlgorithmBase(Graph graph) {
         super(graph);
@@ -53,45 +53,45 @@ public abstract class BipartitionAlgorithmBase
     }
 
     @Override
-    public StableSet getFirstPart() {
-        if (firstPart != null) {
-            return firstPart;
+    public StableSet getLeftSide() {
+        if (leftSide != null) {
+            return leftSide;
         }
         if (bipartite == null) {
             compute();
         }
         checkBipartite();
-        firstPart = new StableSet(graph);
+        leftSide = new StableSet(graph);
         for (int i = 0, n = graph.numVertices(); i < n; i++) {
             if (color[i]) {
-                firstPart.add(graph.vertexAt(i));
+                leftSide.add(graph.vertexAt(i));
             }
         }
-        return firstPart;
+        return leftSide;
     }
 
     @Override
-    public StableSet getSecondPart() {
+    public StableSet getRightSide() {
         if (bipartite == null) {
             compute();
         }
         checkBipartite();
-        secondPart = new StableSet(graph);
+        rightSide = new StableSet(graph);
         for (int i = 0, n = graph.numVertices(); i < n; i++) {
             if (!color[i]) {
-                secondPart.add(graph.vertexAt(i));
+                rightSide.add(graph.vertexAt(i));
             }
         }
-        return secondPart;
+        return rightSide;
     }
 
     @Override
-    public StableSet getPart(int v) {
+    public StableSet getSide(int v) {
         if (bipartite == null) {
             compute();
         }
         checkBipartite();
-        return color[graph.indexOf(v)] ? firstPart : secondPart;
+        return color[graph.indexOf(v)] ? leftSide : rightSide;
     }
 
     @Override

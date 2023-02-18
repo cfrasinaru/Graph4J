@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 import ro.uaic.info.graph.alg.sp.BellmanFordShortestPath;
 import ro.uaic.info.graph.alg.sp.DijkstraShortestPathDefault;
 import ro.uaic.info.graph.alg.sp.FloydWarshallShortestPath;
-import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
+import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
+import ro.uaic.info.graph.generate.GnpGraphGenerator;
 
 /**
  *
@@ -33,7 +33,7 @@ public class CrossTest {
     @Test
     public void random() {
         int n = 20;
-        var g = new GnpRandomGenerator(n, 0.5).createGraph();
+        var g = new GnpGraphGenerator(n, 0.5).createGraph();
         EdgeWeightsGenerator.randomDoubles(g, 0, 1);
 
         var dij = new DijkstraShortestPathDefault(g, 0);

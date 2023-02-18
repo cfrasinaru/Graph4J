@@ -49,12 +49,7 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
     @Override
     public void setEdgeWeight(int v, int u, double weight) {
         throw new UnsupportedOperationException("Cannot set weights on individual edges in a multigraph or pseudograph.");
-    }
-
-    @Override
-    public long maxEdges() {
-        return Long.MAX_VALUE;
-    }
+    }    
 
     @Override
     public Multigraph<V, E> copy() {

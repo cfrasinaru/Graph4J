@@ -97,7 +97,7 @@ public class VertexSet extends VertexCollection {
 
     @Override
     public String toString() {
-        var sb = new StringJoiner(",", "{", "}");
+        var sb = new StringJoiner(", ", "{", "}");
         for (int i = 0; i < numVertices; i++) {
             sb.add(String.valueOf(vertices[i]));
         }

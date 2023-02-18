@@ -82,7 +82,7 @@ public class CheckArguments {
      *
      * @param m
      */
-    public static void numberOfEdges(int m) {
+    public static void numberOfEdges(long m) {
         if (m < 0) {
             throw new IllegalArgumentException("Number of edges must be non-negative: " + m);
         }

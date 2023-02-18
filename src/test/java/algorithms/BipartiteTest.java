@@ -19,8 +19,8 @@ package algorithms;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import ro.uaic.info.graph.alg.bipartite.BipartitionAlgorithm;
-import ro.uaic.info.graph.gen.GraphGenerator;
-import ro.uaic.info.graph.gen.RandomTreeGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
+import ro.uaic.info.graph.generate.RandomTreeGenerator;
 
 /**
  *
@@ -37,10 +37,10 @@ public class BipartiteTest {
         //[0,1,2,3,4],[5,6,7,8,9,10]
         var alg = BipartitionAlgorithm.getInstance(g);
         assertTrue(alg.isBipartite());
-        assertEquals(5, alg.getFirstPart().size());
-        assertEquals(6, alg.getSecondPart().size());
-        assertEquals(alg.getFirstPart(), alg.getPart(0));
-        assertEquals(alg.getSecondPart(), alg.getPart(5));
+        assertEquals(5, alg.getLeftSide().size());
+        assertEquals(6, alg.getRightSide().size());
+        assertEquals(alg.getLeftSide(), alg.getSide(0));
+        assertEquals(alg.getRightSide(), alg.getSide(5));
         assertNull(alg.findOddCycle());
     }
 

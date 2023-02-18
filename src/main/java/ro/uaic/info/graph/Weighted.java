@@ -27,22 +27,23 @@ interface Weighted {
      * @param v a vertex number
      * @param weight
      */
-    int addWeightedVertex(int v, double weight);
+    int addVertex(int v, double weight);
 
     /**
      *
      * @param weight
      * @return
      */
-    int addWeightedVertex(double weight);
+    int addVertex(double weight);
 
     /**
      *
      * @param v a vertex number
      * @param u a vertex number
      * @param weight the weigth to be set for the edge vu
+     * @return
      */
-    void addWeightedEdge(int v, int u, double weight);
+    int addEdge(int v, int u, double weight);
 
     /**
      *

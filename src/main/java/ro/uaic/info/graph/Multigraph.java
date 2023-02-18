@@ -77,4 +77,9 @@ public interface Multigraph<V, E> extends Graph<V, E> {
         }
         return set.size() == numVertices() - 1;
     }
+
+    @Override
+    default long maxEdges() {
+        return Long.MAX_VALUE;
+    }
 }

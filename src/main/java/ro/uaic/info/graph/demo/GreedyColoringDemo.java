@@ -17,7 +17,7 @@
 package ro.uaic.info.graph.demo;
 
 import ro.uaic.info.graph.alg.coloring.GreedyColoring;
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
+import ro.uaic.info.graph.generate.GnmGraphGenerator;
 
 /**
  *
@@ -25,14 +25,15 @@ import ro.uaic.info.graph.gen.GnmRandomGenerator;
  */
 public class GreedyColoringDemo extends PerformanceDemo {
 
-    public GreedyColoringDemo() {
+    public GreedyColoringDemo() {        
         runJGraphT = true;
     }
 
     @Override
     protected void createGraph() {
         //graph = GraphGenerator.complete(3_000);
-        graph = new GnmRandomGenerator(1_000_000, 1_000_000).createGraph();
+        numVertices = 3_000_000;
+        graph = new GnmGraphGenerator(numVertices, 5*numVertices).createGraph();
         //graph = GraphGenerator.completeBipartite(1000, 1000);
         //graph = new RandomTreeGenerator(1_000_000).create();
     }
@@ -47,14 +48,10 @@ public class GreedyColoringDemo extends PerformanceDemo {
 
     @Override
     protected void testJGraphT() {
-        var alg = new org.jgrapht.alg.color.GreedyColoring(jgraph);
+        var alg = new org.jgrapht.alg.color.GreedyColoring(jgrapht);
         var col = alg.getColoring();
         System.out.println(col.getNumberColors());
     }
-
-    public static void main(String args[]) {
-        var app = new GreedyColoringDemo();
-        app.demo();
-    }
+   
 
 }

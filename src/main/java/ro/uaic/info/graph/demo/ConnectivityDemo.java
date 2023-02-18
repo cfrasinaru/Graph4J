@@ -19,7 +19,7 @@ package ro.uaic.info.graph.demo;
 import edu.princeton.cs.algs4.CC;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import ro.uaic.info.graph.alg.connectivity.ConnectivityAlgorithm;
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
+import ro.uaic.info.graph.generate.GnmGraphGenerator;
 
 /**
  *
@@ -35,7 +35,7 @@ public class ConnectivityDemo extends PerformanceDemo {
     @Override
     protected void createGraph() {
         int n = 1_000_000;
-        graph = new GnmRandomGenerator(n, 3 * n).createGraph();
+        graph = new GnmGraphGenerator(n, 3 * n).createGraph();
         /*
         int n = 1000;
         var g1 = GraphGenerator.complete(1000);
@@ -58,7 +58,7 @@ public class ConnectivityDemo extends PerformanceDemo {
     protected void testJGraphT() {
         //var result = new ConnectivityInspector(jgraph).connectedSets();
         //System.out.println(result.size());
-        System.out.println(new ConnectivityInspector(jgraph).isConnected());
+        System.out.println(new ConnectivityInspector(jgrapht).isConnected());
     }
 
     @Override

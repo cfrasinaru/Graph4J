@@ -17,6 +17,7 @@
 package ro.uaic.info.graph;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import ro.uaic.info.graph.util.IntArrays;
 
 /**
@@ -28,7 +29,7 @@ import ro.uaic.info.graph.util.IntArrays;
 class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
 
     protected int[][] predList; //predecessors
-    protected int[][] predPos; //positions
+    protected int[][] predPos; //positions of a predecessor in the adjList
     protected int[] indegree;
 
     protected DigraphImpl() {
@@ -82,16 +83,17 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     }
 
     @Override
-    protected void addEdge(int v, int u, Double weight, E label) {
-        super.addEdge(v, u, weight, label);
+    public int addEdge(int v, int u) {
+        int pos = super.addEdge(v, u);
         int ui = indexOf(u);
         //v -> u: add v to predList of u
         addToPredList(u, v);
         //increase indegree of u
         indegree[ui]++;
+        return pos;
     }
 
-    //adds u to the predList of v (v <- u0, u1, ...)
+    //adds u to the predList of v (v <- ..., u, ...)
     protected int addToPredList(int v, int u) {
         int vi = indexOf(v);
         if (vi < 0) {
@@ -102,6 +104,7 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
         }
         int pos = indegree[vi];
         predList[vi][pos] = u;
+        predPos[vi][pos] = degree[indexOf(u)] - 1; //v was added at the end of adjList[u]
         return pos;
     }
 
@@ -110,8 +113,7 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
         int v = vertices[vi];
         int u = adjList[vi][pos];
         int ui = indexOf(u);
-        super.removeEdgeAt(vi, pos);
-        //removing the edge v -> u
+        super.removeEdgeAt(vi, pos); //removing the edge v -> u
         //remove v from the predecessors of u
         int posvu = predListPosOf(u, v);
         if (posvu < indegree[ui] - 1) {
@@ -124,7 +126,7 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     protected void swapPredWithLast(int vi, int pos) {
         int lastPos = indegree[vi] - 1;
         predList[vi][pos] = predList[vi][lastPos];
-        //predPos[vi][pos] = predPos[vi][lastPos];
+        predPos[vi][pos] = predPos[vi][lastPos];
         //inform the vertex which was swapped of its current pos
         /*
         int w = predList[vi][pos];
@@ -180,6 +182,17 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     }
 
     @Override
+    public SuccessorIterator succesorIterator(int v, int pos) {
+        return new SuccessorIteratorImpl(v, pos);
+
+    }
+
+    @Override
+    public PredecessorIterator predecesorIterator(int v, int pos) {
+        return new PredecessorIteratorImpl(v, pos);
+    }
+
+    @Override
     protected void growVertices() {
         super.growVertices();
         indegree = Arrays.copyOf(indegree, vertices.length);
@@ -208,6 +221,135 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     @Override
     public Digraph<V, E> complement() {
         return (Digraph<V, E>) super.complement();
+    }
+
+    //just for name
+    protected class SuccessorIteratorImpl extends NeighborIteratorImpl
+            implements SuccessorIterator<E> {
+
+        public SuccessorIteratorImpl(int v) {
+            super(v);
+        }
+
+        public SuccessorIteratorImpl(int v, int pos) {
+            super(v, pos);
+        }
+
+    }
+
+    protected class PredecessorIteratorImpl implements PredecessorIterator<E> {
+
+        private final int v;
+        private final int vi;
+        private int pos;
+
+        public PredecessorIteratorImpl(int v) {
+            this(v, -1);
+        }
+
+        public PredecessorIteratorImpl(int v, int pos) {
+            this.v = v;
+            this.vi = indexOf(v);
+            this.pos = pos;
+        }
+
+        @Override
+        public int adjListPos() {
+            return predPos[vi][pos];
+        }
+
+        @Override
+        public boolean hasNext() {
+            return pos < indegree[vi] - 1;
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            return pos > 0;
+        }
+
+        @Override
+        public int next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            return predList[vi][++pos];
+        }
+
+        @Override
+        public int previous() {
+            if (!hasPrevious()) {
+                throw new NoSuchElementException();
+            }
+            return predList[vi][--pos];
+        }
+
+        @Override
+        public void setEdgeWeight(double weight) {
+            checkPos();
+            if (edgeWeight == null) {
+                initEdgeWeights();
+            }
+            int u = predList[vi][pos]; //u -> v
+            int ui = indexOf(u);
+            edgeWeight[ui][predPos[vi][pos]] = weight;
+        }
+
+        @Override
+        public double getEdgeWeight() {
+            checkPos();
+            if (edgeWeight == null) {
+                return DEFAULT_EDGE_WEIGHT;
+            }
+            int u = predList[vi][pos]; //u -> v
+            int ui = indexOf(u);
+            return edgeWeight[ui][predPos[vi][pos]];
+        }
+
+        @Override
+        public void setEdgeLabel(E label) {
+            checkPos();
+            if (edgeLabel == null) {
+                initEdgeLabels();
+            }
+            int u = predList[vi][pos]; //u -> v
+            int ui = indexOf(u);
+            edgeLabel[ui][predPos[vi][pos]] = label;
+        }
+
+        @Override
+        public E getEdgeLabel() {
+            checkPos();
+            if (edgeLabel == null) {
+                return null;
+            }
+            int u = predList[vi][pos]; //u -> v
+            int ui = indexOf(u);
+            return edgeLabel[ui][predPos[vi][pos]];
+        }
+
+        @Override
+        public void removeEdge() {
+            checkPos();
+            int u = predList[vi][pos]; //u -> v
+            int ui = indexOf(u);
+            removeEdgeAt(ui, predPos[vi][pos]);
+            pos--;
+        }
+
+        @Override
+        public Edge edge() {
+            checkPos();
+            int u = predList[vi][pos]; //u -> v
+            int ui = indexOf(u);
+            return edgeAt(ui, predPos[vi][pos]);
+        }
+
+        private void checkPos() {
+            if (pos < 0) {
+                throw new NoSuchElementException();
+            }
+        }
     }
 
 }

@@ -56,8 +56,6 @@ public interface MinimumSpanningTreeAlgorithm {
      * @return the default implementation of this interface.
      */
     static MinimumSpanningTreeAlgorithm getInstance(Graph graph) {
-        int n = graph.numVertices();
-        int m = graph.numEdges();
         return new PrimMinimumSpanningTreeHeap(graph);
         //return new PrimMinimumSpanningTreeDefault(graph);
         //return new KruskalMinimumSpanningTree(graph);

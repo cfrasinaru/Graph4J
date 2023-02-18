@@ -58,11 +58,11 @@ public interface NeighborIterator<E> {
     int previous();
 
     /**
-     * Returns the current position in the adjacency list.
+     * Returns the position of the current vertex in the adjacency list of the source.
      *
-     * @return current position in the adjacency list
+     * @return the position of the current vertex in the adjacency list of the source.
      */
-    int position();
+    int adjListPos();
 
     /**
      * 

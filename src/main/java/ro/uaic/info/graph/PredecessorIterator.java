@@ -60,11 +60,13 @@ public interface PredecessorIterator<E> {
     int previous();
 
     /**
-     * Returns the current position in the predecessor list.
+     * Returns the position of the target in the adjacency list of the current
+     * vertex.
      *
-     * @return current position in the predecessor list.
+     * @return the position of the target in the adjacency list of the current
+     * vertex.
      */
-    int position();
+    int adjListPos();
 
     /**
      *

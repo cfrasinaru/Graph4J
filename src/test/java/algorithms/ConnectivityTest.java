@@ -22,9 +22,9 @@ import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.Graphs;
 import ro.uaic.info.graph.alg.connectivity.TarjanBiconnectivity;
 import ro.uaic.info.graph.alg.connectivity.ConnectivityAlgorithm;
-import ro.uaic.info.graph.gen.CycleGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
-import ro.uaic.info.graph.gen.PathGenerator;
+import ro.uaic.info.graph.generate.CycleGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
+import ro.uaic.info.graph.generate.PathGenerator;
 import ro.uaic.info.graph.model.VertexSet;
 
 /**

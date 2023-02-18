@@ -2,7 +2,10 @@ https://github.com/jgrapht/jgrapht
 https://github.com/kevin-wayne/algs4
 https://github.com/jrtom/jung
 https://github.com/google/guava/tree/master/guava/src/com/google/common/graph
-https://github.com/earlygrey/simple-graphsâ
+https://github.com/google/guava/wiki/GraphsExplained
+
+
+https://gephi.org/users/supported-graph-formats/
 
 Python
 https://networkx.org/
@@ -20,6 +23,8 @@ JGraphT—A Java Library for Graph Data Structures and Algorithms
 R Plots
 https://sites.harding.edu/fmccown/r/
 
+FastUtils
+https://github.com/vigna/fastutil
 
 Linear regression
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearRegression.java.html
@@ -42,13 +47,18 @@ Finding the k-shortest path between two nodes
 	https://cs.stackexchange.com/questions/18849/finding-the-k-shortest-path-between-two-nodes
 	https://en.wikipedia.org/wiki/K_shortest_path_routing
 
+
+PageRank
+https://en.wikipedia.org/wiki/PageRank
+http://infolab.stanford.edu/~backrub/google.html
+https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/scoring/PageRank.html
+
 MST
 Boruvka Algorithm
 	https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm
 Randomized minimum spanning tree algorithm ?
 
 Metrici si masuri specifice relatiilor sociale
-
 
 Generaratoare de grafuri
 - k-regulate

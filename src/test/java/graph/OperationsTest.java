@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.gen.CompleteGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.generate.CompleteGraphGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
 
 /**
  *
@@ -41,7 +41,7 @@ public class OperationsTest {
         assertEquals(g.numVertices(), g1.numVertices());
         assertEquals(g.numEdges(), g1.numEdges());
 
-        var dg = new CompleteGenerator(n).createDigraph();
+        var dg = new CompleteGraphGenerator(n).createDigraph();
         var dg1 = dg.copy();
         assertEquals(dg.numVertices(), dg1.numVertices());
         assertEquals(dg.numEdges(), dg1.numEdges());
@@ -50,7 +50,7 @@ public class OperationsTest {
     @Test
     public void subgraph() {
         int n = 10;
-        var g = new CompleteGenerator(n).createDigraph();
+        var g = new CompleteGraphGenerator(n).createDigraph();
 
         int k = n / 2;
         var array = new int[k];

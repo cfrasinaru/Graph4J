@@ -19,7 +19,7 @@ package ro.uaic.info.graph.demo;
 import ro.uaic.info.graph.alg.bipartite.DFSBipartitionAlgorithm;
 import edu.princeton.cs.algs4.Bipartite;
 import org.jgrapht.alg.partition.BipartitePartitioning;
-import ro.uaic.info.graph.gen.RandomTreeGenerator;
+import ro.uaic.info.graph.generate.RandomTreeGenerator;
 
 /**
  *
@@ -49,7 +49,7 @@ public class BipartiteDemo extends PerformanceDemo {
 
     @Override
     protected void testJGraphT() {
-        var alg = new BipartitePartitioning(jgraph);
+        var alg = new BipartitePartitioning(jgrapht);
         System.out.println(alg.isBipartite());
     }
 

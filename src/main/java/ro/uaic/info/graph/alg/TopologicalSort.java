@@ -35,12 +35,12 @@ public class TopologicalSort extends DirectedGraphAlgorithm {
      * @return the topological order, or null if the digraph is not acyclic
      */
     public int[] sort() {
-        int n = digraph.numVertices();
-        int[] inDegrees = digraph.indegrees();
+        int n = graph.numVertices();
+        int[] inDegrees = graph.indegrees();
         Queue<Integer> queue = new ArrayDeque<>(n);
         for (int i = 0; i < n; i++) {
             if (inDegrees[i] == 0) {
-                queue.offer(digraph.vertexAt(i));
+                queue.offer(graph.vertexAt(i));
             }
         }
         int[] ordering = new int[n];
@@ -48,11 +48,11 @@ public class TopologicalSort extends DirectedGraphAlgorithm {
         while (!queue.isEmpty()) {
             int v = queue.poll();
             ordering[k++] = v;
-            for (int u : digraph.succesors(v)) {
-                int ui = digraph.indexOf(u);
+            for (int u : graph.succesors(v)) {
+                int ui = graph.indexOf(u);
                 inDegrees[ui]--;
                 if (inDegrees[ui] == 0) {
-                    queue.offer(digraph.vertexAt(u));
+                    queue.offer(graph.vertexAt(u));
                 }
             }
         }

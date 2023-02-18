@@ -17,7 +17,7 @@
 package ro.uaic.info.graph.demo;
 
 import java.util.HashSet;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
 import ro.uaic.info.graph.util.Tools;
 
 /**
@@ -51,8 +51,8 @@ public class CopyGraphDemo extends PerformanceDemo {
     @Override
     protected void testJGraphT() {
         for (int i = 0; i < count; i++) {
-            var jg = Tools.createJGraph(null);
-            org.jgrapht.Graphs.addGraph(jg, jgraph);
+            var jg = Converter.createJGraphT(null);
+            org.jgrapht.Graphs.addGraph(jg, jgrapht);
             //System.out.println(jg.edgeSet().size());
         }
     }

@@ -20,11 +20,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.gen.CompleteTreeGenerator;
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
-import ro.uaic.info.graph.gen.RandomTreeGenerator;
+import ro.uaic.info.graph.generate.CompleteTreeGenerator;
+import ro.uaic.info.graph.generate.GnmGraphGenerator;
+import ro.uaic.info.graph.generate.GnpGraphGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
+import ro.uaic.info.graph.generate.RandomTreeGenerator;
+import ro.uaic.info.graph.generate.RegularGraphGenerator;
 
 /**
  *
@@ -89,15 +90,15 @@ public class GraphGeneratorTest {
     public void randomGnm() {
         int n = 10;
         int m = 20;
-        Graph g = new GnmRandomGenerator(n, m).createGraph();
+        Graph g = new GnmGraphGenerator(n, m).createGraph();
         assertEquals(m, g.numEdges());
     }
 
     @Test
     public void randomGnp() {
         int n = 100;
-        var g1 = new GnpRandomGenerator(n, 0).createGraph();
-        var g2 = new GnpRandomGenerator(n, 1).createGraph();
+        var g1 = new GnpGraphGenerator(n, 0).createGraph();
+        var g2 = new GnpGraphGenerator(n, 1).createGraph();
         assertEquals(0, g1.numEdges());
         assertEquals(n * (n - 1) / 2, g2.numEdges());
     }
@@ -120,6 +121,24 @@ public class GraphGeneratorTest {
         assertEquals(n - 1, g.numEdges());
         assertTrue(Graphs.isConnected(g));
         assertFalse(Graphs.containsCycle(g));
+    }
+
+    @Test
+    public void regularEven() {
+        int n = 10, degree = 4;
+        var g = new RegularGraphGenerator(n, degree).createGraph();
+        for (int v : g.vertices()) {
+            assertEquals(degree, g.degree(v));
+        }
+    }
+
+    @Test
+    public void regularOdd() {
+        int n = 10, degree = 3;
+        var g = new RegularGraphGenerator(n, degree).createGraph();
+        for (int v : g.vertices()) {
+            assertEquals(degree, g.degree(v));
+        }
     }
 
 }

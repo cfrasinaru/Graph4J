@@ -18,8 +18,8 @@ package ro.uaic.info.graph.demo;
 
 import edu.princeton.cs.algs4.KruskalMST;
 import ro.uaic.info.graph.alg.mst.KruskalMinimumSpanningTree;
-import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
+import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
+import ro.uaic.info.graph.generate.GnpGraphGenerator;
 
 /**
  *
@@ -27,19 +27,17 @@ import ro.uaic.info.graph.gen.GnpRandomGenerator;
  */
 public class KruskalMSTDemo extends PerformanceDemo {
 
-    private final double probability = 0.5;
+    private final double probability = 0.1;
 
     public KruskalMSTDemo() {
-        numVertices = 20;
+        numVertices = 5000;
         runJGraphT = true;
         runAlgs4 = true;
     }
 
     @Override
     protected void createGraph() {
-        graph = new GnpRandomGenerator(numVertices, probability).createGraph();
-        //graph = new GnmRandomGenerator(numVertices, 5 * numVertices).createGraph();
-        //graph = new CompleteGenerator(numVertices).createGraph();
+        graph = new GnpGraphGenerator(numVertices, probability).createGraph();
         EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
     }
 
@@ -52,7 +50,7 @@ public class KruskalMSTDemo extends PerformanceDemo {
 
     @Override
     protected void testJGraphT() {
-        var alg = new org.jgrapht.alg.spanning.KruskalMinimumSpanningTree(jgraph);
+        var alg = new org.jgrapht.alg.spanning.KruskalMinimumSpanningTree(jgrapht);
         System.out.println(alg.getSpanningTree().getWeight());
     }
 

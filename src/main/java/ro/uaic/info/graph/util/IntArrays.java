@@ -18,6 +18,7 @@ package ro.uaic.info.graph.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -136,6 +137,19 @@ public class IntArrays {
     }
 
     /**
+     * 
+     * @param array
+     * @return 
+     */
+    public static Set<Integer> asSet(int[] array) {
+        Set<Integer> set = new HashSet<>();
+        for (int a : array) {
+            set.add(a);
+        }
+        return set;
+    }
+    
+    /**
      *
      * @param list
      * @return
@@ -169,7 +183,7 @@ public class IntArrays {
      * @param arrays
      * @return
      */
-    public static int[] concat(int[]... arrays) {
+    public static int[] union(int[]... arrays) {
         int n = Stream.of(arrays).mapToInt(a -> a.length).sum();
         int[] result = new int[n];
         int i = 0;

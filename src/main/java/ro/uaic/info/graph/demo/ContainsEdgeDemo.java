@@ -16,7 +16,7 @@
  */
 package ro.uaic.info.graph.demo;
 
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
 
 /**
  *
@@ -27,8 +27,9 @@ public class ContainsEdgeDemo extends PerformanceDemo {
     public ContainsEdgeDemo() {
         numVertices = 1000;
         runGuava = true;
-        runJung = false;
-        runJGraphT = false;
+        runJung = true;
+        //runJGraphT = true;
+        //runJGraphF= true;
     }
 
     @Override
@@ -53,16 +54,29 @@ public class ContainsEdgeDemo extends PerformanceDemo {
     @Override
     protected void testJGraphT() {
         int k = 0;
-        for (int i = 0, n = jgraph.vertexSet().size(); i < n - 1; i++) {
+        for (int i = 0, n = jgrapht.vertexSet().size(); i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
-                if (jgraph.containsEdge(i, j)) {
+                if (jgrapht.containsEdge(i, j)) {
                     k++;
                 }
             }
         }
-        System.out.println(k + " = " + jgraph.edgeSet().size());
+        System.out.println(k + " = " + jgrapht.edgeSet().size());
     }
 
+    @Override
+    protected void testJGraphF() {
+        int k = 0;
+        for (int i = 0, n = jgraphf.vertexSet().size(); i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (jgraphf.containsEdge(i, j)) {
+                    k++;
+                }
+            }
+        }
+        System.out.println(k + " = " + jgraphf.edgeSet().size());
+    }
+    
     @Override
     protected void testGuava() {
         int k = 0;
@@ -81,7 +95,7 @@ public class ContainsEdgeDemo extends PerformanceDemo {
         int k = 0;
         for (int i = 0, n = jungGraph.getVertexCount(); i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {
-                if (jungGraph.isNeighbor(j, j)) {
+                if (jungGraph.isNeighbor(i, j)) {
                     k++;
                 }
             }

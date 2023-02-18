@@ -16,36 +16,73 @@
  */
 package ro.uaic.info.graph.alg.flow;
 
-import ro.uaic.info.graph.alg.mst.*;
-import ro.uaic.info.graph.Graph;
+import ro.uaic.info.graph.Digraph;
+import ro.uaic.info.graph.Edge;
 import ro.uaic.info.graph.model.EdgeSet;
+import ro.uaic.info.graph.model.VertexSet;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
 public interface MaximumFlowAlgorithm {
-    
+
     /**
      *
      * @param v a vertex number.
      * @param u a vertex number.
      * @return the maximum flow on the vu edge.
      */
-    double getEdgeValue(int v, int u);
+    double getValue(int v, int u);
+
+    /**
+     *
+     * @param e an edge of the network.
+     * @return the maximum flow on the given edge.
+     */
+    default double getValue(Edge e) {
+        return getValue(e.source(), e.target());
+    }
 
     /**
      *
      * @return the maximum value of the flow.
      */
-    double getTotalValue();
+    double getValue();
 
     /**
      *
-     * @param graph the input graph.
+     * @return the maximum flow for all the edges.
+     */
+    NetworkFlow getFlow();
+
+    /**
+     *
+     * @return the partition set of a minimum cut containing the source
+     * vertex.
+     */
+    VertexSet getSourcePartition();
+
+    /**
+     *
+     * @return the partition set of a minimum cut containing the sink vertex.
+     */
+    VertexSet getSinkPartition();
+
+    /**
+     *
+     * @return the edges of a minimum cut set.
+     */
+    EdgeSet getCutEdges();
+
+    /**
+     *
+     * @param graph the input network.
+     * @param source the source vertex number.
+     * @param sink the sink vertex number.
      * @return the default implementation of this interface.
      */
-    static MaximumFlowAlgorithm getInstance(Graph graph) {
-        throw new UnsupportedOperationException();
+    static MaximumFlowAlgorithm getInstance(Digraph graph, int source, int sink) {
+        return new EdmondsKarpMaximumFlow(graph, source, sink);
     }
 }

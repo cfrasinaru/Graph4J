@@ -52,6 +52,21 @@ public class IteratorTest {
     }
 
     @Test
+    public void predecessorIterator() {
+        var g = GraphBuilder.numVertices(5).buildDigraph();
+        g.addEdge(0, 4, 0);
+        g.addEdge(1, 4, 10);
+        g.addEdge(2, 4, 20);
+        g.addEdge(3, 4, 30);
+        int w = 0;
+        for (var it = g.predecessorIterator(4); it.hasNext();) {
+            it.next();
+            assertEquals(w * 10, it.edge().weight());
+            w++;
+        }        
+    }
+
+    @Test
     public void testDFS() {
         var g = GraphBuilder.numVertices(8)
                 .addEdges("0-1,1-2,0-3,3-4,0-5,5-6")

@@ -18,7 +18,7 @@ package ro.uaic.info.graph.demo;
 
 import org.jgrapht.alg.transform.LineGraphConverter;
 import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.gen.GnpRandomGenerator;
+import ro.uaic.info.graph.generate.GnpGraphGenerator;
 import ro.uaic.info.graph.util.Tools;
 
 /**
@@ -34,7 +34,7 @@ public class LineGraphDemo extends PerformanceDemo {
     
     @Override
     protected void createGraph() {
-        graph = new GnpRandomGenerator(1_000, 0.1).createGraph();
+        graph = new GnpGraphGenerator(1_000, 0.1).createGraph();
         //graph = GraphGenerator.complete(300);
     }
 
@@ -47,8 +47,8 @@ public class LineGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testJGraphT() {
-        var target = Tools.createJGraph(null);
-        new LineGraphConverter(jgraph).convertToLineGraph(target);
+        var target = Converter.createJGraphT(null);
+        new LineGraphConverter(jgrapht).convertToLineGraph(target);
         System.out.println(target.edgeSet().size());
     }
 

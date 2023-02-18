@@ -29,28 +29,38 @@ interface Labeled<V, E> {
      *
      * @param v a vertex number
      * @param label
+     * @return
      */
-    int addLabeledVertex(int v, V label);
+    int addVertex(int v, V label);
 
     /**
      *
      * @param v a vertex number
      * @param label
+     * @return
      */
-    int addLabeledVertex(V label);
+    int addVertex(V label);
 
     /**
      *
      * @param v a vertex number
      * @param u a vertex number
      * @param label
+     * @return
      */
-    void addLabeledEdge(int v, int u, E label);
+    int addEdge(int v, int u, E label);
 
-    default void addLabeledEdge(V firstVertexLabel, V secondVertexLabel, E edgeLabel) {
-        int v = findVertex(firstVertexLabel);
-        int u = findVertex(secondVertexLabel);
-        addLabeledEdge(v, u, edgeLabel);
+    /**
+     *
+     * @param vLael
+     * @param uLabel
+     * @param edgeLabel
+     * @return
+     */
+    default int addEdge(V vLael, V uLabel, E edgeLabel) {
+        int v = findVertex(vLael);
+        int u = findVertex(uLabel);
+        return Labeled.this.addEdge(v, u, edgeLabel);
     }
 
     /**

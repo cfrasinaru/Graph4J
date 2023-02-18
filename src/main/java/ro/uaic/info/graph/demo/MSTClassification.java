@@ -18,8 +18,8 @@ package ro.uaic.info.graph.demo;
 
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.alg.mst.*;
-import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
+import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
+import ro.uaic.info.graph.generate.GnmGraphGenerator;
 
 /**
  * PrimHeap wins almost always.
@@ -37,7 +37,7 @@ public class MSTClassification {
         int m = 5 * n;
         long max = n * (n - 1) / 2;
         double density = (double) m / max;
-        Graph g = new GnmRandomGenerator(n, m).createGraph();
+        Graph g = new GnmGraphGenerator(n, m).createGraph();
         EdgeWeightsGenerator.randomDoubles(g, 0, 1);
         long t0 = System.nanoTime();
         new PrimMinimumSpanningTreeDefault(g).getWeight();
@@ -65,7 +65,7 @@ public class MSTClassification {
         int max = n * (n - 1) / 2;
         for (int m = n; m <= max; m += n) {
             double density = (double) m / max;
-            Graph g = new GnmRandomGenerator(n, m).createGraph();
+            Graph g = new GnmGraphGenerator(n, m).createGraph();
             EdgeWeightsGenerator.randomDoubles(g, 0, 1);
             long t0 = System.nanoTime();
             new PrimMinimumSpanningTreeDefault(g).getWeight();

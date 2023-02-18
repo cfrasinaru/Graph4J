@@ -30,6 +30,15 @@ public class StableSet extends VertexSet {
         super(graph);
     }
 
+    public StableSet(Graph graph, int initialCapacity) {
+        super(graph, initialCapacity);
+    }
+
+    public StableSet(Graph graph, int[] vertices) {
+        super(graph, vertices);
+    }
+        
+
     protected void checkEdge(int v, int u) {
         if (v == u) {
             return;
@@ -70,5 +79,4 @@ public class StableSet extends VertexSet {
         }
         return super.add(v);
     }*/
-
 }

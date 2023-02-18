@@ -34,14 +34,20 @@ public abstract class PerformanceDemo {
 
     protected static final String GRAPH4J = "Graph4J";
     protected static final String JGRAPHT = "JGraphT";
+    protected static final String JGRAPHT_F = "JGraphT-F";
     protected static final String GUAVA = "Guava";
     protected static final String JUNG = "JUNG";
     protected static final String ALGS4 = "ALGS4";
 
     protected Graph graph;
-    protected org.jgrapht.Graph jgraph;
+
+    protected org.jgrapht.Graph jgrapht;
+    protected org.jgrapht.Graph jgraphf; //FastUtil
+
     protected com.google.common.graph.MutableGraph guavaGraph;
     protected com.google.common.graph.MutableValueGraph guavaValueGraph;
+    protected com.google.common.graph.MutableNetwork guavaNetwork;
+    
     protected edu.uci.ics.jung.graph.Graph jungGraph;
     //
     protected edu.princeton.cs.algs4.Graph algs4Graph;
@@ -49,9 +55,11 @@ public abstract class PerformanceDemo {
     protected edu.princeton.cs.algs4.EdgeWeightedDigraph algs4Ewd;
     protected edu.princeton.cs.algs4.EdgeWeightedGraph algs4Ewg;
     protected edu.princeton.cs.algs4.AdjMatrixEdgeWeightedDigraph adjMatrixEwd;
+    protected edu.princeton.cs.algs4.FlowNetwork algs4Net;
     //
     protected boolean runGraph4J = true;
     protected boolean runJGraphT = false;
+    protected boolean runJGraphF = false;
     protected boolean runGuava = false;
     protected boolean runJung = false;
     protected boolean runAlgs4 = false;
@@ -129,31 +137,36 @@ public abstract class PerformanceDemo {
             return;
         }
         if (runJGraphT) {
-            jgraph = Tools.createJGraph(graph);
+            jgrapht = Converter.createJGraphT(graph);
+        }
+        if (runJGraphF) {
+            jgraphf = Converter.createJGraphF(graph);
         }
         if (runJung) {
-            jungGraph = Tools.createJungGraph(graph);
+            jungGraph = Converter.createJungGraph(graph);
         }
         if (runGuava) {
             if (graph.isEdgeWeighted()) {
-                guavaValueGraph = Tools.createGuavaValueGraph(graph);
+                guavaValueGraph = Converter.createGuavaValueGraph(graph);
             } else {
-                guavaGraph = Tools.createGuavaGraph(graph);
+                guavaGraph = Converter.createGuavaGraph(graph);
+                //guavaNetwork = Converter.createGuavaNetwork(graph);
             }
         }
         if (runAlgs4) {
             if (graph.isEdgeWeighted()) {
                 if (graph.isDirected()) {
-                    algs4Ewd = Tools.createAlgs4EdgeWeightedDigraph(graph);
+                    algs4Ewd = Converter.createAlgs4EdgeWeightedDigraph(graph);
+                    algs4Net = Converter.createAlgs4Network(graph);
                 } else {
-                    algs4Ewg = Tools.createAlgs4EdgeWeightedGraph(graph);
+                    algs4Ewg = Converter.createAlgs4EdgeWeightedGraph(graph);
                 }
-                //adjMatrixEwd = Tools.createAlgs4AdjMatrixEwd(graph);
+                adjMatrixEwd = Converter.createAlgs4AdjMatrixEwd(graph);
             } else {
                 if (graph.isDirected()) {
-                    algs4Digraph = Tools.createAlgs4Digraph(graph);
+                    algs4Digraph = Converter.createAlgs4Digraph(graph);
                 } else {
-                    algs4Graph = Tools.createAlgs4Graph(graph);
+                    algs4Graph = Converter.createAlgs4Graph(graph);
                 }
             }
         }
@@ -163,6 +176,9 @@ public abstract class PerformanceDemo {
     }
 
     protected void testJGraphT() {
+    }
+
+    protected void testJGraphF() {
     }
 
     protected void testAlgs4() {
@@ -183,24 +199,24 @@ public abstract class PerformanceDemo {
     protected void prepareArgs() {
         throw new UnsupportedOperationException();
     }
-    
+
     protected void beforeRun(int step) {
         numVertices = args[step];
     }
-    
+
     public void benchmark() {
         prepareArgs();
-        boolean warmingUp = true;
-        for (int k = 1; k <= 2; k++) {
-            for (int i = 0; i < args.length; i++) {
-                System.out.println((warmingUp ? "warmup " : "") + i);
-                beforeRun(i);
-                runAll(false);
-            }
-            if (warmingUp) {
-                clear();
-                warmingUp = false;
-            }
+        System.out.println("Warming up");
+        for (int k = 1; k < 10; k++) {
+            beforeRun(0);
+            runAll(false);
+        }
+        System.out.println();
+        clear();
+        for (int i = 0; i < args.length; i++) {
+            System.out.println(i);
+            beforeRun(i);
+            runAll(false);
         }
         writeToFile(timeMap, "time");
         writeToFile(memoryMap, "memory");
@@ -208,7 +224,7 @@ public abstract class PerformanceDemo {
 
     protected void runAll(boolean singleRun) {
         singleRun(this::createGraph, "Create graph");
-        singleRun(this::prepareGraphs, "Prepare other");        
+        singleRun(this::prepareGraphs, "Prepare other");
         if (runGraph4J) {
             run(this::testGraph4J, singleRun, GRAPH4J);
         }
@@ -221,10 +237,13 @@ public abstract class PerformanceDemo {
         if (runJGraphT) {
             run(this::testJGraphT, singleRun, JGRAPHT);
         }
+        if (runJGraphF) {
+            run(this::testJGraphF, singleRun, JGRAPHT_F);
+        }
         if (runAlgs4) {
             run(this::testAlgs4, singleRun, ALGS4);
         }
-    }    
+    }
 
     protected void writeToFile(Map<String, List<Long>> map, String type) {
         try (java.io.PrintWriter br = new PrintWriter("results/" + this.getClass().getSimpleName() + "-" + type + ".csv")) {

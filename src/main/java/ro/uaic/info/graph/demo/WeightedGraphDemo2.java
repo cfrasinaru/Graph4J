@@ -17,10 +17,8 @@
 package ro.uaic.info.graph.demo;
 
 import ro.uaic.info.graph.Edge;
-import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
-import ro.uaic.info.graph.util.Tools;
+import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
+import ro.uaic.info.graph.generate.GnmGraphGenerator;
 
 /**
  *
@@ -44,7 +42,7 @@ public class WeightedGraphDemo2 extends PerformanceDemo {
     protected void testGraph4J() {
         //graph = GraphGenerator.complete(n);
         n = 20_000;
-        graph = new GnmRandomGenerator(n, 10 * n).createGraph();
+        graph = new GnmGraphGenerator(n, 10 * n).createGraph();
         
         EdgeWeightsGenerator.fill(graph, 1);
         //double cost[][] = graph.costMatrix();
@@ -64,15 +62,15 @@ public class WeightedGraphDemo2 extends PerformanceDemo {
 
     @Override
     protected void testJGraphT() {
-        jgraph = Tools.createJGraph(graph);
+        jgrapht = Converter.createJGraphT(graph);
         double d = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (i == j) {
                     continue;
                 }
-                var e = jgraph.getEdge(i, j);
-                d += e==null ? 0 : jgraph.getEdgeWeight(e);
+                var e = jgrapht.getEdge(i, j);
+                d += e==null ? 0 : jgrapht.getEdgeWeight(e);
             }
         }
         System.out.println(d);
@@ -80,7 +78,7 @@ public class WeightedGraphDemo2 extends PerformanceDemo {
 
     @Override
     protected void testGuava() {
-        guavaValueGraph = Tools.createGuavaValueGraph(graph);
+        guavaValueGraph = Converter.createGuavaValueGraph(graph);
         double d = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {

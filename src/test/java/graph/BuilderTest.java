@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import ro.uaic.info.graph.Graph;
 import ro.uaic.info.graph.GraphBuilder;
 import ro.uaic.info.graph.demo.City;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
 
 /**
  *
@@ -103,8 +103,8 @@ public class BuilderTest {
         assertEquals(3.0, g.getVertexWeight(3));
         assertEquals(5.0, g.getEdgeWeight(2, 3));
 
-        g.addWeightedVertex(999, 999.0);
-        g.addWeightedEdge(999, 0, 999.0);
+        g.addVertex(999, 999.0);
+        g.addEdge(999, 0, 999.0);
         assertEquals(999, g.getVertexWeight(999));
         assertEquals(999, g.getEdgeWeight(0, 999));
     }
@@ -128,12 +128,12 @@ public class BuilderTest {
     @Test
     public void buildLabeledGraph1() {
         Graph<String, String> g = GraphBuilder.labeledVertices("a", "b", "c").buildDigraph();
-        g.addLabeledVertex("d");
+        g.addVertex("d");
         int v = g.findVertex("a");
         int u = g.findVertex("b");
         g.addEdge(v, u);
         g.addEdge("b", "c");
-        g.addLabeledEdge("c", "d", "Hello");
+        g.addEdge("c", "d", "Hello");
 
         assertEquals(4, g.numVertices());
         assertEquals(3, g.numEdges());

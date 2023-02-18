@@ -103,9 +103,13 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
 
     /**
      *
-     * @return
+     * @return {@code true} if the graph contains a cycle.
      */
     public boolean containsCycle() {
+        if (!graph.isDirected() && graph.numEdges() >= graph.numVertices()) {
+            //it contains a connected component that is not a tree
+            return true;
+        }
         //return findAnyCycle() != null; //slower, the Cycle may not be required
         var dfs = new DFSTraverser(graph);
         dfs.traverse(new DFSVisitor() {
@@ -114,7 +118,7 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
                 interrupt();
             }
         });
-        return dfs.isInterrupted();        
+        return dfs.isInterrupted();
     }
 
     /**

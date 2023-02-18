@@ -229,7 +229,12 @@ abstract class EdgeCollection { //WORK IN PROGRESS
     protected void grow() {
         int oldLen = edges.length;
         int newLen = Math.max(DEFAULT_CAPACITY, oldLen + (oldLen >> 1));
-        edges = Arrays.copyOf(edges, newLen);
+        int[][] newEdges = new int[newLen][2];
+        for (int i = 0; i < oldLen; i++) {
+            newEdges[i][0] = edges[i][0];
+            newEdges[i][1] = edges[i][1];
+        }
+        edges = newEdges;
     }
 
     public VertexSet vertexSet() {
@@ -276,7 +281,7 @@ abstract class EdgeCollection { //WORK IN PROGRESS
 
     @Override
     public String toString() {
-        var sb = new StringJoiner(",", "[", "]");
+        var sb = new StringJoiner(", ", "[", "]");
         for (int i = 0; i < numEdges; i++) {
             sb.add(edges[i][0] + "-" + edges[i][1]);
         }

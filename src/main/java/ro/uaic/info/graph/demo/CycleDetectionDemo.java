@@ -18,7 +18,7 @@ package ro.uaic.info.graph.demo;
 
 import org.jgrapht.alg.cycle.CycleDetector;
 import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
+import ro.uaic.info.graph.generate.GnmGraphGenerator;
 
 /**
  *
@@ -35,7 +35,7 @@ public class CycleDetectionDemo extends PerformanceDemo {
     @Override
     protected void createGraph() {
         //graph = new CycleGenerator(numVertices).createDigraph(true);
-        graph = new GnmRandomGenerator(numVertices, numVertices).createGraph();
+        graph = new GnmGraphGenerator(numVertices, numVertices).createGraph();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class CycleDetectionDemo extends PerformanceDemo {
 
     @Override
     protected void testJGraphT() {
-        var alg = new CycleDetector(jgraph);
+        var alg = new CycleDetector(jgrapht);
         System.out.println(alg.detectCycles());
 
     }

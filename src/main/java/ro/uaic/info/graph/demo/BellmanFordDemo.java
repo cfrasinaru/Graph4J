@@ -18,8 +18,8 @@ package ro.uaic.info.graph.demo;
 
 import edu.princeton.cs.algs4.BellmanFordSP;
 import ro.uaic.info.graph.alg.sp.BellmanFordShortestPath;
-import ro.uaic.info.graph.gen.CompleteGenerator;
-import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
+import ro.uaic.info.graph.generate.CompleteGraphGenerator;
+import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
 
 /**
  *
@@ -28,17 +28,17 @@ import ro.uaic.info.graph.gen.EdgeWeightsGenerator;
 public class BellmanFordDemo extends PerformanceDemo {
 
     public BellmanFordDemo() {
-        //runJGraphT = true;
+        numVertices = 1000;
+        runJGraphT = true;
         runAlgs4 = true;
     }
 
-    
     @Override
     protected void createGraph() {
         //graph = new GnpRandomGenerator(500, 0.5).createGraph();
         //EdgeWeightsGenerator.randomIntegers(graph, 1, 1000);
-        graph = new CompleteGenerator(10_000).createDigraph();
-        EdgeWeightsGenerator.consecutiveIntegers(graph);
+        graph = new CompleteGraphGenerator(numVertices).createDigraph();
+        EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
     }
 
     @Override
@@ -47,14 +47,16 @@ public class BellmanFordDemo extends PerformanceDemo {
         for (int i = 1; i < graph.numVertices(); i++) {
             alg.findPath(i);
         }
+        System.out.println(alg.getPathWeight(numVertices - 1));
     }
 
     @Override
     protected void testJGraphT() {
-        var alg = new org.jgrapht.alg.shortestpath.BellmanFordShortestPath<>(jgraph);
+        var alg = new org.jgrapht.alg.shortestpath.BellmanFordShortestPath(jgrapht);
         for (int i = 1; i < graph.numVertices(); i++) {
             alg.getPath(0, i);
         }
+        System.out.println(alg.getPathWeight(0, numVertices - 1));
     }
 
     @Override
@@ -63,10 +65,15 @@ public class BellmanFordDemo extends PerformanceDemo {
         for (int i = 1; i < graph.numVertices(); i++) {
             alg.pathTo(i);
         }
+        System.out.println(alg.distTo(numVertices - 1));
     }
-    
-    public static void main(String args[]) {
-        var app = new BellmanFordDemo();
-        app.demo();
+
+    @Override
+    protected void prepareArgs() {
+        int steps = 10;
+        args = new int[steps];
+        for (int i = 0; i < steps; i++) {
+            args[i] = 500 * (i + 1);
+        }
     }
 }

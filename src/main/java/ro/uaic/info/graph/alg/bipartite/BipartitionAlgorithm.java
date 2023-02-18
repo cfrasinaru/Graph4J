@@ -44,17 +44,17 @@ public interface BipartitionAlgorithm {
 
     /**
      *
-     * @return the first part of the graph, if the graph is bipartite, otherwise
+     * @return the left side of the graph, if the graph is bipartite, otherwise
      * it throws an exception.
      */
-    StableSet getFirstPart();
+    StableSet getLeftSide();
 
     /**
      *
-     * @return the first partition of the graph, if the graph is bipartite,
+     * @return the right side of the graph, if the graph is bipartite,
      * otherwise it throws an exception.
      */
-    StableSet getSecondPart();
+    StableSet getRightSide();
 
     /**
      *
@@ -62,7 +62,7 @@ public interface BipartitionAlgorithm {
      * @return the partition set v belongs to, if the graph is bipartite,
      * otherwise it throws an exception.
      */
-    StableSet getPart(int v);
+    StableSet getSide(int v);
 
     /**
      *

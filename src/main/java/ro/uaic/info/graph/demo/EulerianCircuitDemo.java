@@ -18,7 +18,7 @@ package ro.uaic.info.graph.demo;
 
 import edu.princeton.cs.algs4.EulerianCycle;
 import ro.uaic.info.graph.alg.eulerian.HierholzerEulerianCircuit;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
 
 /**
  *
@@ -43,7 +43,7 @@ public class EulerianCircuitDemo extends PerformanceDemo {
 
     @Override
     protected void testJGraphT() {
-        new org.jgrapht.alg.cycle.HierholzerEulerianCycle().getEulerianCycle(jgraph);
+        new org.jgrapht.alg.cycle.HierholzerEulerianCycle().getEulerianCycle(jgrapht);
     }
 
     @Override

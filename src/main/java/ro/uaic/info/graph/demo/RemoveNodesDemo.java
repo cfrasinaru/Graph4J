@@ -16,8 +16,10 @@
  */
 package ro.uaic.info.graph.demo;
 
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import java.util.HashSet;
-import ro.uaic.info.graph.gen.GnmRandomGenerator;
+import java.util.Set;
+import ro.uaic.info.graph.generate.GnmGraphGenerator;
 
 /**
  *
@@ -25,41 +27,64 @@ import ro.uaic.info.graph.gen.GnmRandomGenerator;
  */
 public class RemoveNodesDemo extends PerformanceDemo {
 
+    private int[] vertices;
+    private Set jgraphNodes, guavaNodes, jungNodes;
+
     public RemoveNodesDemo() {
-        numVertices = 5_000_000;
+        numVertices = 10_000;
         runGuava = true;
         runJung = true;
         runJGraphT = true;
-        runAlgs4 = false;
+        //runAlgs4 = false;
     }
 
     @Override
-    protected void createGraph() {
-        graph = new GnmRandomGenerator(numVertices, numVertices).createGraph();
+    protected void createGraph() {        
+        //avg deg = 2m / n = 100
+        graph = new GnmGraphGenerator(numVertices, 50*numVertices).createGraph();
+    }
+
+    @Override
+    protected void prepareGraphs() {
+        super.prepareGraphs();
+        vertices = IntArrays.copy(graph.vertices());
+        if (runJGraphT) {
+            jgraphNodes = new HashSet<>(jgrapht.vertexSet());
+        }
+        if (runGuava) {
+            guavaNodes = new HashSet<>(guavaGraph.nodes());
+        }
+        if (runJung) {
+            jungNodes = new HashSet<>(jungGraph.getVertices());
+        }
     }
 
     @Override
     protected void testGraph4J() {
+        for(int v : vertices) {
+            graph.removeVertex(v);
+        }
+        /*
         for (var it = graph.vertexIterator(); it.hasNext();) {
             it.next();
             it.remove();
-        }
+        }*/
         System.out.println(graph.numEdges());
     }
 
     @Override
     protected void testJGraphT() {
-        var set = new HashSet<>(jgraph.vertexSet());
-        for (var v : set) {
-            jgraph.removeVertex(v);
+        //var set = new HashSet<>(jgrapht.vertexSet());
+        for (var v : jgraphNodes) {
+            jgrapht.removeVertex(v);
         }
-        System.out.println(jgraph.vertexSet().size());
+        System.out.println(jgrapht.vertexSet().size());
     }
 
     @Override
     protected void testGuava() {
-        var set = new HashSet(guavaGraph.nodes());
-        for (var v : set) {
+        //var set = new HashSet(guavaGraph.nodes());
+        for (var v : guavaNodes) {
             guavaGraph.removeNode(v);
         }
         System.out.println(guavaGraph.nodes().size());
@@ -67,8 +92,8 @@ public class RemoveNodesDemo extends PerformanceDemo {
 
     @Override
     protected void testJung() {
-        var set = new HashSet<>(jungGraph.getVertices());
-        for (var v : set) {
+        //var set = new HashSet<>(jungGraph.getVertices());
+        for (var v : jungNodes) {
             jungGraph.removeVertex(v);
         }
         System.out.println(jungGraph.getVertexCount());
@@ -79,8 +104,8 @@ public class RemoveNodesDemo extends PerformanceDemo {
         int steps = 10;
         args = new int[steps];
         for (int i = 0; i < steps; i++) {
-            args[i] = 1_000_000 * (i + 1);
+            args[i] = 10_000 * (i + 1);
         }
     }
-    
+
 }

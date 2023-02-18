@@ -70,11 +70,12 @@ class PseudographImpl<V, E> extends MultigraphImpl<V, E> implements Pseudograph<
     }
 
     @Override
-    protected void addEdge(int v, int u, Double weight, E label) {
-        super.addEdge(v, u, weight, label);
+    public int addEdge(int v, int u) {
+        int pos = super.addEdge(v, u);
         if (v == u) {
             selfLoops.put(v, selfLoops.getOrDefault(v, 0) + 1);
         }
+        return pos;
     }
 
     @Override

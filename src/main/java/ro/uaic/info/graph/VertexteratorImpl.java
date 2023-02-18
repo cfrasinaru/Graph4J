@@ -83,7 +83,7 @@ class VertexteratorImpl<V> implements VertexIterator<V> {
         checkCurrentVertex();
         graph.removeVertex(vertex);
         index--;
-        vertex = index < 0 ? -1 : graph.vertexAt(index);
+        //vertex = index < 0 ? -1 : graph.vertexAt(index);
     }
 
 }

@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import ro.uaic.info.graph.alg.eulerian.HierholzerEulerianCircuit;
 import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.gen.CompleteGenerator;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.generate.CompleteGraphGenerator;
+import ro.uaic.info.graph.generate.GraphGenerator;
 
 /**
  *
@@ -58,12 +58,12 @@ public class EulerianCircuitTest {
 
     @Test
     public void completeDigraphs() {
-        var g1 = new CompleteGenerator(6).createDigraph();
+        var g1 = new CompleteGraphGenerator(6).createDigraph();
         var alg1 = new HierholzerEulerianCircuit(g1);
         assertTrue(alg1.isEulerian());
         assertNotNull(alg1.findCircuit());
 
-        var g2 = new CompleteGenerator(7).createDigraph();
+        var g2 = new CompleteGraphGenerator(7).createDigraph();
         var alg2 = new HierholzerEulerianCircuit(g2);
         assertTrue(alg2.isEulerian());
         assertNotNull(alg2.findCircuit());

@@ -16,10 +16,10 @@
  */
 package ro.uaic.info.graph.demo;
 
-import org.jgrapht.generate.EmptyGraphGenerator;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultGraphType;
 import org.jgrapht.util.SupplierUtil;
-import ro.uaic.info.graph.gen.GraphGenerator;
+import ro.uaic.info.graph.GraphBuilder;
 
 /**
  *
@@ -30,21 +30,35 @@ public class EmptyGraphDemo extends PerformanceDemo {
     public EmptyGraphDemo() {
         numVertices = 10_000_000;
         runGuava = true;
-        runJung = true;
-        runJGraphT = true;
-        runAlgs4 = true;
+        //runJung = true;
+        //runJGraphT = true;
+        //runJGraphF = true;
+        //runAlgs4 = true;
     }
 
     @Override
     protected void testGraph4J() {
-        var g = GraphGenerator.empty(numVertices);
+        var g = GraphBuilder.numVertices(numVertices).buildGraph();
     }
 
     @Override
     protected void testJGraphT() {
         var jg = new org.jgrapht.graph.SimpleGraph<Integer, DefaultEdge>(
                 SupplierUtil.createIntegerSupplier(), SupplierUtil.createDefaultEdgeSupplier(), false);
-        new EmptyGraphGenerator(numVertices).generateGraph(jg);
+        //var jg = new org.jgrapht.graph.SimpleGraph<Integer, DefaultEdge>(null, null, false);
+        for (int v = 0; v < numVertices; v++) {
+            jg.addVertex(v);
+        }
+    }
+
+    @Override
+    protected void testJGraphF() {
+        var g = new org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph(SupplierUtil.createIntegerSupplier(),
+                SupplierUtil.createDefaultEdgeSupplier(), DefaultGraphType.simple(), false);
+        //var jg = new org.jgrapht.opt.graph.fastutil.FastutilMapIntVertexGraph(null, null, DefaultGraphType.simple(), false);
+        for (int v = 0; v < numVertices; v++) {
+            g.addVertex(v);
+        }
     }
 
     @Override
@@ -62,7 +76,7 @@ public class EmptyGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testJung() {
-        var g = new edu.uci.ics.jung.graph.SparseGraph<Integer, Object>();
+        var g = new edu.uci.ics.jung.graph.UndirectedSparseGraph<Integer, Object>();
         for (int v = 0; v < numVertices; v++) {
             g.addVertex(v);
         }

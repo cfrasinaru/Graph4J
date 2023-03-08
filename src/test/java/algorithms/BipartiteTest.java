@@ -18,9 +18,9 @@ package algorithms;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.alg.bipartite.BipartitionAlgorithm;
-import ro.uaic.info.graph.generate.GraphGenerator;
-import ro.uaic.info.graph.generate.RandomTreeGenerator;
+import org.graph4j.alg.bipartite.BipartitionAlgorithm;
+import org.graph4j.generate.GraphGenerator;
+import org.graph4j.generate.RandomTreeGenerator;
 
 /**
  *

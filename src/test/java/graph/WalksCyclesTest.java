@@ -18,12 +18,12 @@ package graph;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.model.Cycle;
-import ro.uaic.info.graph.model.Path;
-import ro.uaic.info.graph.model.Trail;
-import ro.uaic.info.graph.model.Walk;
-import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.generate.CompleteGraphGenerator;
+import org.graph4j.util.Cycle;
+import org.graph4j.util.Path;
+import org.graph4j.util.Trail;
+import org.graph4j.util.Walk;
+import org.graph4j.GraphBuilder;
+import org.graph4j.generate.CompleteGraphGenerator;
 
 /**
  *

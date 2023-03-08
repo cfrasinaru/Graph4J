@@ -20,10 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.demo.City;
-import ro.uaic.info.graph.generate.GraphGenerator;
+import org.graph4j.Graph;
+import org.graph4j.GraphBuilder;
+import org.graph4j.generate.GraphGenerator;
 
 /**
  *

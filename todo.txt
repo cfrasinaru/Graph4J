@@ -48,6 +48,17 @@ Finding the k-shortest path between two nodes
 	https://en.wikipedia.org/wiki/K_shortest_path_routing
 
 
+
+For the Assignment Problem
+Hungarian algorithm ( Kuhn Munkres Minima lWeight Bipartite Perfect Matching)
+https://en.wikipedia.org/wiki/Hungarian_algorithm
+https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/matching/KuhnMunkresMinimalWeightBipartitePerfectMatching.java
+https://github.com/KevinStern/software-and-algorithms/blob/master/src/main/java/blogspot/software_and_algorithms/stern_library/optimization/HungarianAlgorithm.java
+
+Jonker-Volgenant Algorithm for Linear Assignment Problem
+R. Jonker and A. Volgenant, "A shortest augmenting path algorithm for dense and spare linear assignment problems"
+
+
 PageRank
 https://en.wikipedia.org/wiki/PageRank
 http://infolab.stanford.edu/~backrub/google.html
@@ -61,7 +72,7 @@ Randomized minimum spanning tree algorithm ?
 Metrici si masuri specifice relatiilor sociale
 
 Generaratoare de grafuri
-- k-regulate
+OK k-regulate
 	https://math.stackexchange.com/questions/142112/how-to-construct-a-k-regular-graph
 	https://mediatum.ub.tum.de/doc/1315533/1315533.pdf
 

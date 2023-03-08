@@ -18,14 +18,14 @@ package algorithms;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.alg.mst.KruskalMinimumSpanningTree;
-import ro.uaic.info.graph.alg.mst.PrimMinimumSpanningTreeDefault;
-import ro.uaic.info.graph.alg.mst.PrimMinimumSpanningTreeHeap;
-import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
-import ro.uaic.info.graph.generate.GnpGraphGenerator;
+import org.graph4j.Graph;
+import org.graph4j.GraphBuilder;
+import org.graph4j.Graphs;
+import org.graph4j.alg.mst.KruskalMinimumSpanningTree;
+import org.graph4j.alg.mst.PrimMinimumSpanningTreeDefault;
+import org.graph4j.alg.mst.PrimMinimumSpanningTreeHeap;
+import org.graph4j.generate.EdgeWeightsGenerator;
+import org.graph4j.generate.GnpGraphGenerator;
 
 /**
  *

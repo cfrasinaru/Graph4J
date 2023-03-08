@@ -19,9 +19,9 @@ package algorithms;
 import org.checkerframework.checker.units.qual.g;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.alg.coloring.GreedyColoring;
-import ro.uaic.info.graph.alg.coloring.VertexColoring;
-import ro.uaic.info.graph.generate.GraphGenerator;
+import org.graph4j.alg.coloring.GreedyColoring;
+import org.graph4j.alg.coloring.VertexColoring;
+import org.graph4j.generate.GraphGenerator;
 
 /**
  *

@@ -17,7 +17,7 @@ if (length(ylim)==0) {
 #options(scipen=999)
 #bltr
 #par(oma=c(0,0,0,0))
-par(mar = c(4, 4, 0.5, 0.5))  
+par(mar = c(4, 4, 1, 0.5))  
 
 plot(data$Args, data$Graph4J, type = "o", pch = 0, lty = 1,
   xlab = xlab, ylab = type_label, cex.lab = 0.8, 

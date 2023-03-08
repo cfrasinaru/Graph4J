@@ -18,10 +18,10 @@ package algorithms;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.alg.eulerian.HierholzerEulerianCircuit;
-import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.generate.CompleteGraphGenerator;
-import ro.uaic.info.graph.generate.GraphGenerator;
+import org.graph4j.alg.eulerian.HierholzerEulerianCircuit;
+import org.graph4j.GraphBuilder;
+import org.graph4j.generate.CompleteGraphGenerator;
+import org.graph4j.generate.GraphGenerator;
 
 /**
  *

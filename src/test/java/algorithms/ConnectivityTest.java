@@ -18,14 +18,14 @@ package algorithms;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.alg.connectivity.TarjanBiconnectivity;
-import ro.uaic.info.graph.alg.connectivity.ConnectivityAlgorithm;
-import ro.uaic.info.graph.generate.CycleGenerator;
-import ro.uaic.info.graph.generate.GraphGenerator;
-import ro.uaic.info.graph.generate.PathGenerator;
-import ro.uaic.info.graph.model.VertexSet;
+import org.graph4j.GraphBuilder;
+import org.graph4j.Graphs;
+import org.graph4j.alg.connectivity.TarjanBiconnectivity;
+import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
+import org.graph4j.generate.CycleGenerator;
+import org.graph4j.generate.GraphGenerator;
+import org.graph4j.generate.PathGenerator;
+import org.graph4j.util.VertexSet;
 
 /**
  *

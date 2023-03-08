@@ -1,0 +1,119 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="description" content="Graph4J - A computationally efficient Java library for graph algorithms" />
+<meta name="keywords" content="Graph4J, graph, java, library, algorithm" />
+<title>Graph4J Tutorial </title>
+<link rel='stylesheet' type='text/css' href='style.css'/>
+<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+<link rel="icon" href="../favicon.ico" type="image/x-icon" />
+<script>
+function imagePopUp(img) {
+html = "<html><head><title>Enlarged Image</title>" +
+"</head><body style=margin: 0px 0; text-align:center; >" +
+"<IMG src='../img/" + img + "'    BORDER=0 NAME=image " +
+"onload='window.resizeTo(document.image.width,(document.image.height*1.3))'>;" +
+"</body></html>";
+popup=window.open('','image','toolbar=0,location=0,directories=0,menuBar=0,scrollbars=0,resizable=1');
+popup.document.open();
+popup.document.write(html);
+popup.document.focus();
+popup.document.close();
+}
+</script>
+</head>
+
+<body>
+
+<a name="timetable">
+<h1><a href="../index.html">Graph4J</a> Tutorial</h1>
+<hr/>
+<h3>Graph4J - A computationally efficient Java library for graph algorithms</h3>
+Copyright &#169; 2023 Cristian Frasinaru and contributors.
+<hr/>
+</a>
+
+<ol>
+	<li> <a href="#intro"> Introduction </a> </li>
+	<li> <a href="#install"> Installation </a> </li>
+	<li> <a href="#create"> Creating graphs </a>
+	<ol>
+		<li> <a href="#create-graph"> Simple undirected graphs</a> </li>
+		<li> <a href="#create-digraph"> Simple directed graphs (digraphs)</a> </li>
+	</ol>
+</li>
+	<li> <a href="#inspect"> Inspecting a graph </a>
+	<ol>
+		<li> <a href="#neighbors"> Iterating over the neighbors </a> </li>
+	</ol>
+</li>
+</ol>
+
+<hr/>
+
+<!--------------------------------------------------------------------->
+<a name="intro"> <h2> 1. Introduction </h2> </a>
+<!--------------------------------------------------------------------->
+<p>
+Graph4J uses a different approach compared to the most well-known graph libraries created for Java programming platform: JGraphT, JUNG and Guava Graph.
+Instead of using object-oriented data structures for graph representation, a lower-level model based mainly on arrays of primitive values is utilized, 
+that drastically reduces both the required memory of the graph objects and the running times of the algorithm implementations.
+</p>
+
+<!--------------------------------------------------------------------->
+<a name="install"> <h2> 2. Installation </h2> </a>
+<!--------------------------------------------------------------------->
+<p>
+In order to use Graph4J you have to download the .jar file and add it to the project's classpath. <br/>
+If you are using Maven, you should add the following dependency to the pom.xml, and <b>manually install the downloaded jar</b>, 
+since the library is not yet registered in a publicly available Maven repository.
+<pre>
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.graph4j&lt;/groupId&gt;
+    &lt;artifactId&gt;graph4j&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;                          
+  &lt;/dependency&gt;
+</pre>
+</p>
+
+<!--------------------------------------------------------------------->
+<a name="create">  <h2> 3. Creating graphs </h2>  </a>
+<!--------------------------------------------------------------------->
+<p>
+There is a hierarchy of interfaces that describe the main concepts the users would deal with.
+The root is represented by the interface <code>Graph</code> which defines the methods available to all other types, for handling vertices, edges, iterating, etc. 
+It is also the type used to reference a simple undirected graph. 
+<code>Digraph</code> models the concept of simple directed graph, where the edges have a direction from one vertex to another.
+</p>
+<p>
+All the interfaces that describe graph types have dedicated classes that implement them. These classes are hidden from the user, being declared accessible only at package level. 
+Creating actual graph objects is done in a flexible manner, using a <code>GraphBuilder</code> that allows the user to configure it step by step.
+</p>
+<!--------------------------------------------------------------------->
+<a name="create-graph">  <h3> 3.1 Simple undirected graphs </h3>  </a>
+<!--------------------------------------------------------------------->
+<p>
+Defining a graph using the mathematical model is straightforward.
+The following example creates a complete graph with 3 vertices:
+<pre>
+  Graph g = GraphBuilder.numVertices(3).named("K3")
+                .addEdge(0,1).addEdge(1,2).addEdge(0,2)
+                .buildGraph();
+</pre>
+By default, the vertices of a graph are primitive integers, starting with 0. However, any non-negative integers can be used as vertices. 
+Once a graph is created, it is by default mutable, other vertices and edges can be added or removed as necessary.
+</p>
+
+<!--------------------------------------------------------------------->
+<a name="create-digraph">  <h3> 3.2 Simple directed graphs (digraphs) </h3>  </a>
+<!--------------------------------------------------------------------->
+<p>
+</p>
+
+<p>
+<hr/>
+<!-- Copyright &#169; 2023 Cristian Frasinaru and contributors. -->
+
+</body>
+</html>

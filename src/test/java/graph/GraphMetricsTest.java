@@ -18,9 +18,9 @@ package graph;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.model.VertexSet;
-import ro.uaic.info.graph.alg.GraphMetrics;
-import ro.uaic.info.graph.GraphBuilder;
+import org.graph4j.util.VertexSet;
+import org.graph4j.alg.GraphMetrics;
+import org.graph4j.GraphBuilder;
 
 /**
  *

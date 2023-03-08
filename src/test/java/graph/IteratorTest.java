@@ -18,10 +18,10 @@ package graph;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.Edge;
-import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.traverse.BFSIterator;
-import ro.uaic.info.graph.traverse.DFSIterator;
+import org.graph4j.Edge;
+import org.graph4j.GraphBuilder;
+import org.graph4j.traverse.BFSIterator;
+import org.graph4j.traverse.DFSIterator;
 
 /**
  *

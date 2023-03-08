@@ -18,9 +18,9 @@ package algorithms;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.alg.AcyclicOrientation;
-import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.alg.TopologicalSort;
+import org.graph4j.alg.AcyclicOrientation;
+import org.graph4j.GraphBuilder;
+import org.graph4j.alg.TopologicalSort;
 
 /**
  *

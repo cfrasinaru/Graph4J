@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Xms8G -Xmx28G -Xss1G</exec.vmArgs>
+                <exec.vmArgs>-Xms8G -Xmx28G -Xss1G -ea</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
                 <exec.mainClass>ro.uaic.info.graph.demo.Main</exec.mainClass>
@@ -27,7 +27,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Xms8G -Xmx28G -Xss1G -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
+                <exec.vmArgs>-Xms8G -Xmx28G -Xss1G -ea -agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address}</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.appArgs></exec.appArgs>
                 <exec.mainClass>ro.uaic.info.graph.demo.Main</exec.mainClass>
@@ -45,7 +45,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:3.0.0:exec</goal>
             </goals>
             <properties>
-                <exec.vmArgs>-Xms8G -Xmx28G -Xss1G</exec.vmArgs>
+                <exec.vmArgs>-Xms8G -Xmx28G -Xss1G -ea</exec.vmArgs>
                 <exec.args>${exec.vmArgs} -classpath %classpath ${exec.mainClass} ${exec.appArgs}</exec.args>
                 <exec.mainClass>ro.uaic.info.graph.demo.Main</exec.mainClass>
                 <exec.executable>java</exec.executable>

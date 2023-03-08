@@ -18,12 +18,12 @@ package graph;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ro.uaic.info.graph.Edge;
-import ro.uaic.info.graph.Graph;
-import ro.uaic.info.graph.GraphBuilder;
-import ro.uaic.info.graph.Graphs;
-import ro.uaic.info.graph.generate.EdgeWeightsGenerator;
-import ro.uaic.info.graph.generate.GraphGenerator;
+import org.graph4j.Edge;
+import org.graph4j.Graph;
+import org.graph4j.GraphBuilder;
+import org.graph4j.Graphs;
+import org.graph4j.generate.EdgeWeightsGenerator;
+import org.graph4j.generate.GraphGenerator;
 
 /**
  *

@@ -1,1 +1,0 @@
--Xms8G -Xmx16G -Xss1G -javaagent:InstrumentationAgent.jar

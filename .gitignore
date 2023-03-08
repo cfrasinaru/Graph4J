@@ -1,6 +1,7 @@
 *.class
 nbproject/
 target/
+temp/
 
 *.jar
 *.war

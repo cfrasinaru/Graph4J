@@ -1,1 +1,0 @@
-install:install-file  -Dfile=InstrumentationAgent.jar -DgroupId=instrumentation-agent -DartifactId=instrumentation-agent -Dversion=1.1 -Dpackaging=jar

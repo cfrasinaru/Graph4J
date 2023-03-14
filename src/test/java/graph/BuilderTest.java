@@ -71,7 +71,7 @@ public class BuilderTest {
 
     @Test
     public void buildDigraph() {
-        var g = GraphBuilder.vertexRange(0, 4)
+        var g = GraphBuilder.vertexRange(0, 4)                
                 .addEdges("0-2, 0-3, 1-2, 1-3, 2-3, 3-4")
                 .buildDigraph();
         assertEquals(6, g.numEdges());

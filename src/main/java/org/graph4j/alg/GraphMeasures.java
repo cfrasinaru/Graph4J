@@ -20,19 +20,18 @@ import java.util.stream.IntStream;
 import org.graph4j.Graph;
 
 /**
- * Various <i>sizes</i> related to a graph. 
- * 
- * Rewrite!
+ * Various <i>sizes</i> related to a graph.
+ *
+ * WARNING: To be rewritten.
  *
  * @author Cristian Frăsinaru
  */
-@Deprecated
 public class GraphMeasures {
 
     /**
      *
-     * @param graph
-     * @return
+     * @param graph the input graph.
+     * @return the minimum degree of the vertices.
      */
     public static int minDegree(Graph graph) {
         return graph.degree(minDegreeVertex(graph));
@@ -40,8 +39,8 @@ public class GraphMeasures {
 
     /**
      *
-     * @param graph
-     * @return
+     * @param graph the input graph.
+     * @return a vertex number of minimum degree.
      */
     public static int minDegreeVertex(Graph graph) {
         int minVertex = -1;
@@ -58,8 +57,8 @@ public class GraphMeasures {
 
     /**
      *
-     * @param graph
-     * @return
+     * @param graph the input graph.
+     * @return the maximum degree of the vertices.
      */
     public static int maxDegree(Graph graph) {
         return graph.degree(maxDegreeVertex(graph));
@@ -67,8 +66,8 @@ public class GraphMeasures {
 
     /**
      *
-     * @param graph
-     * @return
+     * @param graph the input graph.
+     * @return a vertex number of maximum degree.
      */
     public static int maxDegreeVertex(Graph graph) {
         int maxVertex = -1;
@@ -85,8 +84,8 @@ public class GraphMeasures {
 
     /**
      *
-     * @param graph
-     * @return
+     * @param graph the input graph.
+     * @return the average degree of the vertices.
      */
     public double avgDegree(Graph graph) {
         return IntStream.of(graph.vertices())

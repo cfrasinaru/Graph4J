@@ -17,7 +17,7 @@
 package org.graph4j.demo;
 
 import org.graph4j.alg.GraphMetrics;
-import org.graph4j.generate.GnmGraphGenerator;
+import org.graph4j.generate.RandomGnmGraphGenerator;
 import org.graph4j.generate.GraphGenerator;
 import org.graph4j.traverse.BFSIterator;
 
@@ -29,7 +29,7 @@ class GraphMetricsDemo {
 
     private void test1() {
         int n = 100_000;
-        var graph = new GnmGraphGenerator(n, n * 10).createGraph();
+        var graph = new RandomGnmGraphGenerator(n, n * 10).createGraph();
         System.out.println("-------------------------------------------------");
         System.out.println("Iterator");
         int maxLevel = -1;

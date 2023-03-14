@@ -101,8 +101,9 @@ public class VertexSet extends VertexCollection {
 
     /**
      *
-     * @param other
-     * @return
+     * @param other another vertex set.
+     * @return a new set containing vertices belonging to both this and the
+     * other set.
      */
     public VertexSet intersection(VertexSet other) {
         VertexSet set1, set2;
@@ -124,8 +125,9 @@ public class VertexSet extends VertexCollection {
 
     /**
      *
-     * @param other
-     * @return
+     * @param other an array of vertex numbers.
+     * @return a new set containing vertices belonging to this set and the other
+     * array.
      */
     public VertexSet intersection(int... other) {
         int min;
@@ -145,8 +147,9 @@ public class VertexSet extends VertexCollection {
 
     /**
      *
-     * @param other
-     * @return
+     * @param other an array of vertex numbers.
+     * @return a new set containing vertices belonging to this set or the other
+     * array.
      */
     public VertexSet union(int... other) {
         VertexSet result = new VertexSet(graph, this.size() + other.length);

@@ -19,7 +19,7 @@ package org.graph4j.demo;
 import edu.princeton.cs.algs4.HopcroftKarp;
 import org.jgrapht.alg.matching.HopcroftKarpMaximumCardinalityBipartiteMatching;
 import org.jgrapht.alg.partition.BipartitePartitioning;
-import org.graph4j.generate.GnpBipartiteGenerator;
+import org.graph4j.generate.RandomGnpBipartiteGenerator;
 import org.graph4j.alg.matching.HopcroftKarpMaximumMatching;
 
 /**
@@ -38,7 +38,7 @@ class HopcroftKarpDemo extends PerformanceDemo {
 
     @Override
     protected void createGraph() {
-        graph = new GnpBipartiteGenerator(numVertices / 2, numVertices / 2, probability).createGraph();
+        graph = new RandomGnpBipartiteGenerator(numVertices / 2, numVertices / 2, probability).createGraph();
         //graph = new GnmBipartiteGenerator(numVertices, numVertices, 10*numVertices).createGraph();
     }
 

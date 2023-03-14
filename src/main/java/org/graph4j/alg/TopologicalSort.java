@@ -26,13 +26,17 @@ import org.graph4j.Digraph;
  */
 public class TopologicalSort extends DirectedGraphAlgorithm {
 
+    /**
+     * 
+     * @param digraph the input directed graph.
+     */
     public TopologicalSort(Digraph digraph) {
         super(digraph);
     }
 
     /**
      *
-     * @return the topological order, or null if the digraph is not acyclic
+     * @return the topological order, or null if the digraph is not acyclic.
      */
     public int[] sort() {
         int n = graph.numVertices();

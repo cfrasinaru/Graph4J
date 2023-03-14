@@ -16,6 +16,8 @@
  */
 package org.graph4j.demo;
 
+import java.io.FileNotFoundException;
+
 /**
  * Driver class for running the comparisons with other libraries.
  *
@@ -23,8 +25,8 @@ package org.graph4j.demo;
  */
 class Main {
 
-    public static void main(String[] args) {
-        var app = new BronKerboschDemo();
+    public static void main(String[] args) throws FileNotFoundException {
+        //var app = new BronKerboschDemo();
         //var app = new HopcroftKarpDemo();
         //var app = new PushRelabelDemo();
         //var app = new EdmondsKarpDemo();
@@ -58,7 +60,7 @@ class Main {
         //var app = new SparseGraphDemo();
         //var app = new CompleteGraphDemo();
         //var app = new EmptyGraphDemo();
-        //var app = new Main();
+        var app = new Main();
         //app.benchmark();
         app.demo();
     }
@@ -67,7 +69,7 @@ class Main {
         run(this::test);
     }
 
-    private void test() {
+    private void test() {              
     }
 
     protected void run(Runnable snippet) {

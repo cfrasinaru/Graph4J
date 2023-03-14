@@ -27,11 +27,15 @@ import org.graph4j.GraphBuilder;
 import org.graph4j.util.CheckArguments;
 
 /**
+ * Erdős–Rényi G(n,m) model. The graph is chosen uniformly at random from the
+ * collection of all graphs which have n nodes and m edges.
  *
+ * The graph is guaranteed to have m edges.
  *
+ * @see RandomGnpGraphGenerator
  * @author Cristian Frăsinaru
  */
-public class GnmGraphGenerator extends AbstractGraphGenerator {
+public class RandomGnmGraphGenerator extends AbstractGraphGenerator {
 
     private final long numEdges;
     private Random random;
@@ -40,20 +44,20 @@ public class GnmGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @param numVertices number of vertices
-     * @param numEdges number of edges
+     * @param numVertices the number of vertices.
+     * @param numEdges the number of edges.
      */
-    public GnmGraphGenerator(int numVertices, long numEdges) {
+    public RandomGnmGraphGenerator(int numVertices, long numEdges) {
         this(0, numVertices - 1, numEdges);
     }
 
     /**
      *
-     * @param firstVertex
-     * @param lastVertex
-     * @param numEdges
+     * @param firstVertex the first vertex number of the graph.
+     * @param lastVertex the last vertex number of the graph.
+     * @param numEdges the number of edges.
      */
-    public GnmGraphGenerator(int firstVertex, int lastVertex, long numEdges) {
+    public RandomGnmGraphGenerator(int firstVertex, int lastVertex, long numEdges) {
         super(firstVertex, lastVertex);
         CheckArguments.numberOfEdges(numEdges);
         this.numEdges = numEdges;
@@ -62,7 +66,7 @@ public class GnmGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random graph.
      */
     public Graph createGraph() {
         var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildGraph();
@@ -72,7 +76,7 @@ public class GnmGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return a randomly generated connected graph
+     * @return a random connected graph.
      */
     public Graph createConnectedGraph() {
         int n = vertices.length;
@@ -87,9 +91,9 @@ public class GnmGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return a randomly generated acyclic graph (a forest)
+     * @return a randomly generated acyclic graph (a forest).
      */
-    public Graph createAcyclicGraph() {
+    Graph createAcyclicGraph() {
         int n = vertices.length;
         if (numEdges > n - 1) {
             throw new IllegalArgumentException(
@@ -100,7 +104,7 @@ public class GnmGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random digraph.
      */
     public Digraph createDigraph() {
         var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildDigraph();
@@ -110,7 +114,7 @@ public class GnmGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random multigraph.
      */
     public Multigraph createMultiGraph() {
         var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildMultigraph();
@@ -120,7 +124,7 @@ public class GnmGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random directed multigraph.
      */
     public DirectedMultigraph createDirectedMultigraph() {
         var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildDirectedMultigraph();
@@ -130,7 +134,7 @@ public class GnmGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random pseudograph.
      */
     public Pseudograph createPseudograph() {
         var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildPseudograph();
@@ -140,7 +144,7 @@ public class GnmGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random directed pseudograph.
      */
     public DirectedPseudograph createDirectedPseudograph() {
         var g = GraphBuilder.vertices(vertices).estimatedNumEdges(numEdges).buildDirectedPseudograph();

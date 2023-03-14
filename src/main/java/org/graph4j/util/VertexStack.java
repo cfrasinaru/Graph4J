@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
 import org.graph4j.Graph;
 
 /**
- * A stack of vertices of a graph.
+ * A stack of vertices in a graph.
  *
  * @author Cristian Frăsinaru
  */
@@ -36,7 +36,7 @@ public class VertexStack extends VertexCollection {
 
     /**
      *
-     * @param v a vertex number
+     * @param v a vertex number.
      */
     public void push(int v) {
         super.add(v);
@@ -44,7 +44,7 @@ public class VertexStack extends VertexCollection {
 
     /**
      *
-     * @return
+     * @return the last element added to the stack.
      */
     public int peek() {
         if (numVertices == 0) {
@@ -54,8 +54,9 @@ public class VertexStack extends VertexCollection {
     }
 
     /**
+     * Returns and removes the last element added to the stack.
      *
-     * @return
+     * @return the last element added to the stack.
      */
     public int pop() {
         if (numVertices == 0) {

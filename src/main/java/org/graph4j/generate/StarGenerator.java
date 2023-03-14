@@ -41,9 +41,9 @@ public class StarGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @param firstVertex
-     * @param lastVertex
-     * @param center the number of the center vertex
+     * @param firstVertex the first vertex number.
+     * @param lastVertex the last vertex number.
+     * @param center the number of the center vertex.
      */
     public StarGenerator(int firstVertex, int lastVertex, int center) {
         super(firstVertex, lastVertex);
@@ -56,7 +56,7 @@ public class StarGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a star graph.
      */
     public Graph createGraph() {
         int n = vertices.length;
@@ -68,8 +68,8 @@ public class StarGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @param outward the orientation of the edges connecting the center
-     * @return
+     * @param outward the orientation of the edges connecting the center.
+     * @return a directed star graph.
      */
     public Digraph createDigraph(boolean outward) {
         var g = GraphBuilder.vertices(vertices).estimatedAvgDegree(1).buildDigraph();

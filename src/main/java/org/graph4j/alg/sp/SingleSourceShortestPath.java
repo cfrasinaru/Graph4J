@@ -40,8 +40,8 @@ public interface SingleSourceShortestPath {
      * the shortest path to the target is found. If a implementation does not
      * have this ability, it simply invokes <code>getPath</code> instead.
      *
-     * @param target
-     * @return the shortest path from the source to the target
+     * @param target the target vertex number.
+     * @return the shortest path from the source to the target.
      */
     default Path computePath(int target) {
         return findPath(target);
@@ -54,7 +54,7 @@ public interface SingleSourceShortestPath {
      * stored for later retrieval, so subsequent invocations will return the
      * already computed paths.
      *
-     * @param target
+     * @param target the target vertex number.
      * @return the shortest path from the source to the target, or null if no
      * path exists.
      */

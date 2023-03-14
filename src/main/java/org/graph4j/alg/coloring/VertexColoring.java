@@ -39,7 +39,7 @@ public class VertexColoring<T> {
 
     /**
      *
-     * @param graph the graph for which this coloring is created.
+     * @param graph the input graph.
      */
     public VertexColoring(Graph graph) {
         this.graph = graph;
@@ -48,8 +48,8 @@ public class VertexColoring<T> {
 
     /**
      * 
-     * @param graph
-     * @param colors 
+     * @param graph the input graph.
+     * @param colors an array of color numbers.
      */
     public VertexColoring(Graph graph, int colors[]) {
         this(graph);
@@ -60,8 +60,8 @@ public class VertexColoring<T> {
 
     /**
      *
-     * @param graph
-     * @param colorClasses
+     * @param graph the input graph.
+     * @param colorClasses the already computed color classes.
      */
     public VertexColoring(Graph graph, List<VertexSet> colorClasses) {
         this(graph);
@@ -161,7 +161,7 @@ public class VertexColoring<T> {
      * A proper coloring is an assignment of colors to the vertices of a graph
      * so that no two adjacent vertices have the same color.
      *
-     * @return @{code true} if the coloring is proper.
+     * @return {@code true} if the coloring is proper.
      */
     public boolean isProper() {
         for (var it = graph.edgeIterator(); it.hasNext();) {

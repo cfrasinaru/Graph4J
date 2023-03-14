@@ -18,7 +18,6 @@ package org.graph4j.util;
 
 import java.util.Arrays;
 import org.graph4j.Graph;
-import org.graph4j.util.IntComparator;
 
 /**
  * Implementation of a binary heap using arrays. The keys stored in the heap
@@ -38,8 +37,8 @@ public class VertexHeap {
 
     /**
      *
-     * @param graph
-     * @param comparator
+     * @param graph the graph the vertices of the heap belong to.
+     * @param comparator a comparator for vertices.
      */
     public VertexHeap(Graph graph, IntComparator comparator) {
         if (comparator == null) {
@@ -59,7 +58,7 @@ public class VertexHeap {
 
     /**
      *
-     * @return
+     * @return the number of vertices in the heap.
      */
     public int size() {
         return size;
@@ -67,7 +66,7 @@ public class VertexHeap {
 
     /**
      *
-     * @return
+     * @return {@code true} if the heap contains no vertices.
      */
     public boolean isEmpty() {
         return size == 0;
@@ -75,7 +74,7 @@ public class VertexHeap {
 
     /**
      *
-     * @param key
+     * @param key a vertex index.
      */
     private void add(int key) {
         if (size + 1 >= keys.length) {
@@ -89,7 +88,7 @@ public class VertexHeap {
 
     /**
      *
-     * @return
+     * @return the key (index) corresponding to the minimum value.
      */
     public int peek() {
         if (isEmpty()) {
@@ -99,8 +98,9 @@ public class VertexHeap {
     }
 
     /**
+     * Returns and removes the minimum.
      *
-     * @return
+     * @return the key (index) corresponding to the minimum value.
      */
     public int poll() {
         if (isEmpty()) {
@@ -115,7 +115,7 @@ public class VertexHeap {
 
     /**
      *
-     * @param key the index of a vertex
+     * @param key the index of a vertex.
      */
     public void update(int key) {
         int pos = positions[key];
@@ -169,7 +169,7 @@ public class VertexHeap {
         siftDown(swapPos);
     }
 
-    private int compareTo(int pos1, int pos2) {        
+    private int compareTo(int pos1, int pos2) {
         if (pos1 > size) {
             return 1; //??
         }

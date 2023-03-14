@@ -21,7 +21,7 @@ import org.graph4j.alg.clique.PivotBronKerboschCliqueIterator;
 import java.util.Iterator;
 import java.util.Set;
 import org.jgrapht.alg.clique.PivotBronKerboschCliqueFinder;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
@@ -39,7 +39,7 @@ class BronKerboschDemo extends PerformanceDemo {
 
     @Override
     protected void createGraph() {
-        graph = new GnpGraphGenerator(numVertices, probability).createGraph();
+        graph = new RandomGnpGraphGenerator(numVertices, probability).createGraph();
         //System.out.println(graph);
     }
 

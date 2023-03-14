@@ -20,6 +20,7 @@ import org.graph4j.Edge;
 import org.graph4j.Graph;
 
 /**
+ * Utility class for performing various checks.
  *
  * @author Cristian Frăsinaru
  */
@@ -27,7 +28,7 @@ public class CheckArguments {
 
     /**
      *
-     * @param graph
+     * @param graph the graph this check is performed on.
      */
     public static void graphNotNull(Graph graph) {
         if (graph == null) {
@@ -37,7 +38,7 @@ public class CheckArguments {
 
     /**
      *
-     * @param graph
+     * @param graph the graph this check is performed on.
      */
     public static void graphNotEmpty(Graph graph) {
         if (graph.isEmpty()) {
@@ -47,7 +48,7 @@ public class CheckArguments {
 
     /**
      *
-     * @param n
+     * @param n a number.
      */
     public static void numberOfVertices(int n) {
         if (n < 0) {
@@ -57,8 +58,8 @@ public class CheckArguments {
 
     /**
      *
-     * @param first
-     * @param last
+     * @param first first number in the range.
+     * @param last last number in the range.
      */
     public static void vertexRange(int first, int last) {
         if (first < 0) {
@@ -72,6 +73,11 @@ public class CheckArguments {
         }
     }
 
+    /**
+     *
+     * @param index an index.
+     * @param numVertices a number of vertices.
+     */
     public static void indexInRange(int index, int numVertices) {
         if (index < 0 || index >= numVertices) {
             throw new IllegalArgumentException("Index must be in the range [0," + (numVertices - 1) + "]: " + index);
@@ -80,7 +86,7 @@ public class CheckArguments {
 
     /**
      *
-     * @param m
+     * @param m a number of edges.
      */
     public static void numberOfEdges(long m) {
         if (m < 0) {
@@ -90,7 +96,7 @@ public class CheckArguments {
 
     /**
      *
-     * @param p
+     * @param p a probability.
      */
     public static void probability(double p) {
         if (p < 0 || p > 1) {
@@ -100,8 +106,8 @@ public class CheckArguments {
 
     /**
      *
-     * @param g1
-     * @param g2
+     * @param g1 a graph.
+     * @param g2 a graph.
      */
     public static void disjointVertices(Graph g1, Graph g2) {
         if (IntArrays.intersects(g1.vertices(), g2.vertices())) {
@@ -111,8 +117,8 @@ public class CheckArguments {
 
     /**
      *
-     * @param graph
-     * @param v
+     * @param graph the graph this check is performed on.
+     * @param v a vertex number.
      */
     public static void graphContainsVertex(Graph graph, int v) {
         if (!graph.containsVertex(v)) {
@@ -122,9 +128,9 @@ public class CheckArguments {
 
     /**
      *
-     * @param graph
-     * @param v
-     * @param u
+     * @param graph the graph this check is performed on.
+     * @param v a vertex number.
+     * @param u a vertex number.
      */
     public static void graphContainsEdge(Graph graph, int v, int u) {
         graphContainsEdge(graph, new Edge(v, u));
@@ -132,8 +138,8 @@ public class CheckArguments {
 
     /**
      *
-     * @param graph
-     * @param e
+     * @param graph the graph this check is performed on.
+     * @param e an edge of the graph.
      */
     public static void graphContainsEdge(Graph graph, Edge e) {
         if (!graph.containsEdge(e)) {
@@ -143,8 +149,8 @@ public class CheckArguments {
 
     /**
      *
-     * @param graph
-     * @param vertices
+     * @param graph the graph this check is performed on.
+     * @param vertices an array of vertex numbers.
      */
     public static void graphContainsVertices(Graph graph, int... vertices) {
         if (vertices == null) {
@@ -157,7 +163,7 @@ public class CheckArguments {
 
     /**
      *
-     * @param values
+     * @param values an array of numbers.
      */
     public static void noDuplicates(int... values) {
         Integer value = IntArrays.findDuplicate(values);

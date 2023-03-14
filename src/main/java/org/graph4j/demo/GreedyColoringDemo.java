@@ -17,7 +17,7 @@
 package org.graph4j.demo;
 
 import org.graph4j.alg.coloring.GreedyColoring;
-import org.graph4j.generate.GnmGraphGenerator;
+import org.graph4j.generate.RandomGnmGraphGenerator;
 
 /**
  *
@@ -33,7 +33,7 @@ class GreedyColoringDemo extends PerformanceDemo {
     protected void createGraph() {
         //graph = GraphGenerator.complete(3_000);
         numVertices = 3_000_000;
-        graph = new GnmGraphGenerator(numVertices, 5*numVertices).createGraph();
+        graph = new RandomGnmGraphGenerator(numVertices, 5*numVertices).createGraph();
         //graph = GraphGenerator.completeBipartite(1000, 1000);
         //graph = new RandomTreeGenerator(1_000_000).create();
     }

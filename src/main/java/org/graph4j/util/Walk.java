@@ -21,14 +21,12 @@ import org.graph4j.Edge;
 import org.graph4j.Graph;
 
 /**
- * A <i>walk</i> is a sequence of graph vertices such that any two consecutive
+ * A <em>walk</em> is a sequence of graph vertices such that any two consecutive
  * vertices form an edge of the graph. Vertices can repeat. Edges can repeat.
  *
  * In order to ensure these properties are respected, call {@code validate}.
  *
  * A walk is closed if the last vertex equals the first one.
- *
- *
  *
  * The length of a walk is its number of edges.
  *
@@ -93,7 +91,8 @@ public class Walk extends VertexList {
      * Adds the vertex at the end of the walk, trail or path.
      *
      * @param v a vertex number
-     * @return
+     * @return {@code true} if the walk was modified as a result of this
+     * invocation.
      */
     @Override
     public boolean add(int v) {
@@ -102,7 +101,7 @@ public class Walk extends VertexList {
 
     /**
      *
-     * @return true, if it belongs to a directed graph
+     * @return {@code true}, if it belongs to a directed graph.
      */
     public boolean isDirected() {
         return graph.isDirected();
@@ -110,16 +109,16 @@ public class Walk extends VertexList {
 
     /**
      *
-     * @return true, if the first vertex equals the last one
+     * @return {@code true}, if the first vertex equals the last one.
      */
     public boolean isClosed() {
         return vertices[0] == vertices[numVertices - 1];
     }
 
     /**
-     * The length of the walk, trail, path or cycle (number of edges)
+     * The length of the walk, trail, path or cycle (number of edges).
      *
-     * @return the number of edges
+     * @return the number of edges.
      */
     public int length() {
         return numVertices - 1;
@@ -127,7 +126,7 @@ public class Walk extends VertexList {
 
     /**
      *
-     * @return the sum of the edge weights
+     * @return the sum of the edge weights.
      */
     public double computeEdgesWeight() {
         double weight = 0;

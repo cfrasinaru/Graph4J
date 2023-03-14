@@ -21,7 +21,7 @@ import org.graph4j.alg.flow.EdmondsKarpMaximumFlow;
 import org.jgrapht.alg.flow.PushRelabelMFImpl;
 import org.graph4j.Digraph;
 import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
@@ -39,7 +39,7 @@ class PushRelabelDemo extends PerformanceDemo {
 
     @Override
     protected void createGraph() {
-        graph = new GnpGraphGenerator(numVertices, probability).createDigraph();
+        graph = new RandomGnpGraphGenerator(numVertices, probability).createDigraph();
         //graph = new GnmRandomGenerator(numVertices, 3*numVertices).createDigraph();
         //graph = new CompleteGenerator(numVertices).createDigraph();
         //EdgeWeightsGenerator.randomIntegers(graph, 0, numVertices - 1);

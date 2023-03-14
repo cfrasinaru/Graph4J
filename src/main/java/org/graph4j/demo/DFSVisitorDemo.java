@@ -17,7 +17,7 @@
 package org.graph4j.demo;
 
 import com.google.common.graph.Traverser;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 import org.graph4j.traverse.DFSVisitor;
 import org.graph4j.traverse.DFSTraverser;
 import org.graph4j.traverse.SearchNode;
@@ -34,7 +34,7 @@ class DFSVisitorDemo extends PerformanceDemo {
 
     @Override
     protected void createGraph() {
-        graph = new GnpGraphGenerator(1000, 0.2).createGraph();
+        graph = new RandomGnpGraphGenerator(1000, 0.2).createGraph();
     }
 
     private int k1 = 0;

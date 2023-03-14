@@ -20,6 +20,7 @@ import java.util.Random;
 import org.graph4j.Graph;
 
 /**
+ * Generates weights for a graph.
  *
  * @author Cristian Frăsinaru
  */
@@ -27,9 +28,9 @@ public class EdgeWeightsGenerator {
 
     /**
      *
-     * @param graph
-     * @param min inclusive
-     * @param max inclusive
+     * @param graph the input graph.
+     * @param min minimum weight (inclusive).
+     * @param max maximum weight (inclusive).
      */
     public static void randomIntegers(Graph graph, int min, int max) {
         if (min >= max) {
@@ -47,8 +48,10 @@ public class EdgeWeightsGenerator {
     }
 
     /**
+     * Each edge will receive a distinct weight, between {@code 0} and
+     * {@code numEdges - 1}.
      *
-     * @param graph
+     * @param graph the input graph.
      */
     public static void consecutiveIntegers(Graph graph) {
         int weight = 0;
@@ -62,9 +65,9 @@ public class EdgeWeightsGenerator {
 
     /**
      *
-     * @param graph
-     * @param min inclusive
-     * @param max inclusive
+     * @param graph the input graph.
+     * @param min minimum weight (inclusive).
+     * @param max maximum weight (inclusive).
      */
     public static void randomDoubles(Graph graph, double min, double max) {
         if (min >= max) {
@@ -76,15 +79,15 @@ public class EdgeWeightsGenerator {
             for (var it = graph.neighborIterator(v); it.hasNext();) {
                 int u = it.next();
                 double weight = min + (max - min + Double.MIN_NORMAL) * rnd.nextDouble();
-                it.setEdgeWeight(weight);                 
+                it.setEdgeWeight(weight);
             }
         }
     }
 
     /**
      *
-     * @param graph
-     * @param value
+     * @param graph the input graph.
+     * @param value the weight of all edges.
      */
     public static void fill(Graph graph, double value) {
         for (int v : graph.vertices()) {

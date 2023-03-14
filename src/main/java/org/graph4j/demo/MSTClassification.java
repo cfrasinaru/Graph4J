@@ -21,7 +21,7 @@ import org.graph4j.alg.mst.PrimMinimumSpanningTreeHeap;
 import org.graph4j.alg.mst.PrimMinimumSpanningTreeDefault;
 import org.graph4j.Graph;
 import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.GnmGraphGenerator;
+import org.graph4j.generate.RandomGnmGraphGenerator;
 
 /**
  * PrimHeap wins almost always.
@@ -39,7 +39,7 @@ class MSTClassification {
         int m = 5 * n;
         long max = n * (n - 1) / 2;
         double density = (double) m / max;
-        Graph g = new GnmGraphGenerator(n, m).createGraph();
+        Graph g = new RandomGnmGraphGenerator(n, m).createGraph();
         EdgeWeightsGenerator.randomDoubles(g, 0, 1);
         long t0 = System.nanoTime();
         new PrimMinimumSpanningTreeDefault(g).getWeight();
@@ -67,7 +67,7 @@ class MSTClassification {
         int max = n * (n - 1) / 2;
         for (int m = n; m <= max; m += n) {
             double density = (double) m / max;
-            Graph g = new GnmGraphGenerator(n, m).createGraph();
+            Graph g = new RandomGnmGraphGenerator(n, m).createGraph();
             EdgeWeightsGenerator.randomDoubles(g, 0, 1);
             long t0 = System.nanoTime();
             new PrimMinimumSpanningTreeDefault(g).getWeight();

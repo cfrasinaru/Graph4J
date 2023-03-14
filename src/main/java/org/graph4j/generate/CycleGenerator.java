@@ -36,7 +36,7 @@ public class CycleGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a cycle with the specified vertices.
      */
     public Graph createGraph() {
         int n = vertices.length;
@@ -50,8 +50,8 @@ public class CycleGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @param clockwise the orientation of the cycle
-     * @return
+     * @param clockwise the orientation of the cycle.
+     * @return a cycle with the specified vertices.
      */
     public Digraph createDigraph(boolean clockwise) {
         var g = GraphBuilder.vertices(vertices)

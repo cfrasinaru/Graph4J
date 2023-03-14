@@ -23,27 +23,31 @@ import org.graph4j.GraphBuilder;
 import org.graph4j.util.CheckArguments;
 
 /**
- * Random bipartite graph generator.
+ * Random bipartite graph generator using Erdős–Rényi G(n,m) model.
  *
  * @author Cristian Frăsinaru
  */
-public class GnmBipartiteGenerator extends AbstractBipartiteGenerator {
+public class RandomGnmBipartiteGenerator extends AbstractBipartiteGenerator {
 
     private final long numEdges;
     private final Random random = new Random();
 
-    public GnmBipartiteGenerator(int n1, int n2, long numEdges) {
+    public RandomGnmBipartiteGenerator(int n1, int n2, long numEdges) {
         super(n1, n2);
         CheckArguments.numberOfEdges(numEdges);
         this.numEdges = numEdges;
     }
 
-    public GnmBipartiteGenerator(int first1, int last1, int first2, int last2, long numEdges) {
+    public RandomGnmBipartiteGenerator(int first1, int last1, int first2, int last2, long numEdges) {
         super(first1, last1, first2, last2);
         CheckArguments.numberOfEdges(numEdges);
         this.numEdges = numEdges;
     }
 
+    /**
+     * 
+     * @return a random bipartite directed graph.
+     */
     public Digraph createDigraph() {
         int n1 = last1 - first1 + 1;
         int n2 = last2 - first2 + 1;

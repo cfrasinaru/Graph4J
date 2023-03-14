@@ -27,9 +27,9 @@ public class VertexWeightsGenerator {
 
     /**
      *
-     * @param graph
-     * @param min inclusive
-     * @param max inclusive
+     * @param graph the input graph.
+     * @param min minimum weight (inclusive).
+     * @param max maximum weight (inclusive).
      */
     public static void randomIntegers(Graph graph, int min, int max) {
         if (min >= max) {
@@ -46,9 +46,9 @@ public class VertexWeightsGenerator {
 
     /**
      *
-     * @param graph
-     * @param min inclusive
-     * @param max inclusive
+     * @param graph the input graph.
+     * @param min minimum weight (inclusive).
+     * @param max maximum weight (inclusive).
      */
     public static void randomDoubles(Graph graph, double min, double max) {
         if (min >= max) {
@@ -64,8 +64,8 @@ public class VertexWeightsGenerator {
 
     /**
      *
-     * @param graph
-     * @param value
+     * @param graph the input graph.
+     * @param value the weight of all vertices.
      */
     public static void fill(Graph graph, double value) {
         for (int v : graph.vertices()) {

@@ -21,7 +21,7 @@ import org.graph4j.Edge;
 import org.graph4j.Graph;
 
 /**
- * A <i>circuit</i> is a trail whose last vertex is connected to the first one.
+ * A <em>circuit</em> is a trail whose last vertex is connected to the first one.
  *
  * Vertices can repeat. Edges can not repeat.
  *

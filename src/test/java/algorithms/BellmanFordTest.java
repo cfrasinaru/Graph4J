@@ -24,7 +24,7 @@ import org.graph4j.GraphBuilder;
 import org.graph4j.alg.sp.DijkstraShortestPathDefault;
 import org.graph4j.alg.sp.FloydWarshallShortestPath;
 import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
@@ -54,7 +54,7 @@ public class BellmanFordTest {
      @Test
     public void cross() {
         int n = 20;
-        var g = new GnpGraphGenerator(n, 0.5).createGraph();
+        var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
         EdgeWeightsGenerator.randomDoubles(g, 0, 1);
 
         var dij = new DijkstraShortestPathDefault(g, 0);

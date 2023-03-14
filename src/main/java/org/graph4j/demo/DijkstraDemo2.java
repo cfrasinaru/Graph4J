@@ -20,7 +20,7 @@ import org.graph4j.alg.sp.DijkstraShortestPathHeap;
 import edu.princeton.cs.algs4.DijkstraSP;
 import org.graph4j.Edge;
 import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
@@ -40,7 +40,7 @@ class DijkstraDemo2 extends PerformanceDemo {
     @Override
     protected void createGraph() {
         //graph = new CompleteGenerator(numVertices).createGraph();
-        graph = new GnpGraphGenerator(numVertices, probability).createDigraph();
+        graph = new RandomGnpGraphGenerator(numVertices, probability).createDigraph();
         EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
     }
 

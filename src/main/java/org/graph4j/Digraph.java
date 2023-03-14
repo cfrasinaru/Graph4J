@@ -29,7 +29,7 @@ public interface Digraph<V, E> extends Graph<V, E> {
 
     /**
      *
-     * @param numVertices
+     * @param numVertices a number of vertices.
      * @return the maximum number of edges (arcs) in a digraph with
      * {@code numVertices}
      */

@@ -26,6 +26,10 @@ public class NegativeCycleException extends RuntimeException {
 
     private final Cycle cycle;
 
+    /**
+     * 
+     * @param cycle the negative cost cycle that was detected.
+     */
     public NegativeCycleException(Cycle cycle) {
         super("A negative cost cycle was detected: "
                 + cycle + " = " + cycle.computeEdgesWeight());
@@ -34,7 +38,7 @@ public class NegativeCycleException extends RuntimeException {
 
     /**
      *
-     * @return the negative cost cycle that was detected
+     * @return the negative cost cycle that was detected.
      */
     public Cycle getCycle() {
         return cycle;

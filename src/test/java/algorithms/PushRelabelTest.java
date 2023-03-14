@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
 import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
@@ -106,7 +106,7 @@ public class PushRelabelTest {
         int n = 10;
         int s = 0;
         int t = n - 1;
-        var g = new GnpGraphGenerator(n, Math.random()).createDigraph();
+        var g = new RandomGnpGraphGenerator(n, Math.random()).createDigraph();
         EdgeWeightsGenerator.randomIntegers(g, 0, n);
         var alg1 = new EdmondsKarpMaximumFlow(g, s, t);
         var alg2 = new PushRelabelMaximumFlow(g, s, t);

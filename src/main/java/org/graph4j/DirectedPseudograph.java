@@ -34,7 +34,7 @@ public interface DirectedPseudograph<V, E> extends Pseudograph<V, E> {
 
     /**
      *
-     * @param vertices
+     * @param vertices an array of vertex numbers.
      * @return the subgraph induced by the given vertices
      */
     @Override

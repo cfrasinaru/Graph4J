@@ -18,7 +18,7 @@ package org.graph4j.demo;
 
 import org.graph4j.Edge;
 import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.GnmGraphGenerator;
+import org.graph4j.generate.RandomGnmGraphGenerator;
 
 /**
  *
@@ -42,7 +42,7 @@ class WeightedGraphDemo2 extends PerformanceDemo {
     protected void testGraph4J() {
         //graph = GraphGenerator.complete(n);
         n = 20_000;
-        graph = new GnmGraphGenerator(n, 10 * n).createGraph();
+        graph = new RandomGnmGraphGenerator(n, 10 * n).createGraph();
         
         EdgeWeightsGenerator.fill(graph, 1);
         //double cost[][] = graph.costMatrix();

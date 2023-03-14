@@ -34,7 +34,7 @@ public class GraphGenerator {
      *
      * @see GraphBuilder
      * @param n the number of vertices
-     * @return
+     * @return a graph with n vertices and no edges.
      */
     public static Graph empty(int n) {
         CheckArguments.numberOfVertices(n);
@@ -44,11 +44,32 @@ public class GraphGenerator {
     /**
      *
      * @see CompleteGraphGenerator
-     * @param n the number of vertices
-     * @return
+     * @param n the number of vertices.
+     * @return a complete graph with n vertices.
      */
     public static Graph complete(int n) {
         return new CompleteGraphGenerator(n).createGraph();
+    }
+
+    /**
+     * @see RandomGnpGraphGenerator
+     * @param n the number of vertices.
+     * @param edgeProbability the probability that a given edge belongs to the
+     * graph.
+     * @return a random graph.
+     */
+    public static Graph randomGnp(int n, double edgeProbability) {
+        return new RandomGnpGraphGenerator(n, edgeProbability).createGraph();
+    }
+
+    /**
+     * @see RandomGnmGraphGenerator
+     * @param n the number of vertices.
+     * @param m the number of edges.
+     * @return a random graph.
+     */
+    public static Graph randomGnm(int n, int m) {
+        return new RandomGnmGraphGenerator(n, m).createGraph();
     }
 
     /**
@@ -56,7 +77,7 @@ public class GraphGenerator {
      * @see CompleteBipartiteGenerator
      * @param n1 the number of vertices in the first partition set.
      * @param n2 the number of vertices in the second partition set.
-     * @return
+     * @return a complete bipartite graph.
      */
     public static Graph completeBipartite(int n1, int n2) {
         return new CompleteBipartiteGenerator(n1, n2).createGraph();
@@ -66,17 +87,38 @@ public class GraphGenerator {
      *
      * @param n1 the number of vertices in the first partition set.
      * @param n2 the number of vertices in the second partition set.
-     * @param edgeProbability
-     * @return
+     * @param edgeProbability the probability that a given edge belongs to the
+     * graph.
+     * @return a random bipartite graph.
      */
-    public static Graph randomBipartite(int n1, int n2, double edgeProbability) {
-        return new GnpBipartiteGenerator(n1, n2, edgeProbability).createGraph();
+    public static Graph randomGnpBipartite(int n1, int n2, double edgeProbability) {
+        return new RandomGnpBipartiteGenerator(n1, n2, edgeProbability).createGraph();
+    }
+
+    /**
+     *
+     * @param n1 the number of vertices in the first partition set.
+     * @param n2 the number of vertices in the second partition set.
+     * @param m the number of edges.
+     * @return a random bipartite graph.
+     */
+    public static Graph randomGnmBipartite(int n1, int n2, int m) {
+        return new RandomGnmBipartiteGenerator(n1, n2, m).createGraph();
+    }
+
+    /**
+     *
+     * @param n the number of vertices.
+     * @return a random tree.
+     */
+    public static Graph randomTree(int n) {
+        return new RandomTreeGenerator(n).create();
     }
 
     /**
      * @see PathGenerator
-     * @param n the number of vertices
-     * @return
+     * @param n the number of vertices.
+     * @return a path graph.
      */
     public static Graph path(int n) {
         return new PathGenerator(n).createGraph();
@@ -85,8 +127,8 @@ public class GraphGenerator {
     /**
      *
      * @see CycleGenerator
-     * @param n the number of vertices
-     * @return
+     * @param n the number of vertices.
+     * @return a cycle graph.
      */
     public static Graph cycle(int n) {
         return new CycleGenerator(n).createGraph();
@@ -94,8 +136,8 @@ public class GraphGenerator {
 
     /**
      * @see WheelGenerator
-     * @param n the number of vertices
-     * @return
+     * @param n the number of vertices.
+     * @return a wheel graph.
      */
     public static Graph wheel(int n) {
         return new WheelGenerator(n).createGraph();
@@ -104,7 +146,7 @@ public class GraphGenerator {
     /**
      * @see StarGenerator
      * @param n the number of vertices
-     * @return
+     * @return a star graph.
      */
     public static Graph star(int n) {
         return new StarGenerator(n).createGraph();
@@ -112,9 +154,9 @@ public class GraphGenerator {
 
     /**
      * @see CompleteTreeGenerator
-     * @param numLevels the number of levels of the tree
-     * @param degree the degree of the internal nodes
-     * @return
+     * @param numLevels the number of levels of the tree.
+     * @param degree the degree of the internal nodes.
+     * @return a complete tree.
      */
     public static Graph completeTree(int numLevels, int degree) {
         return new CompleteTreeGenerator(numLevels, degree).create();

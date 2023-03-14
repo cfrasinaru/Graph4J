@@ -46,8 +46,8 @@ public class BellmanFordShortestPath extends GraphAlgorithm
     /**
      * Creates an algorithm to find all shortest paths starting in the source.
      *
-     * @param graph
-     * @param source
+     * @param graph the input graph.
+     * @param source the source vertex number.
      */
     public BellmanFordShortestPath(Graph graph, int source) {
         super(graph);

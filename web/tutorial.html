@@ -3,7 +3,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="UTF-8">
 <meta name="description" content="Graph4J - A computationally efficient Java library for graph algorithms" />
-<meta name="keywords" content="Graph4J, graph, java, library, algorithm" />
+<meta name="keywords" content="Graph4J, java, graph, graph algorithm, java library, advanced programming, java technologies"/>
 <title>Graph4J Tutorial </title>
 <link rel='stylesheet' type='text/css' href='style.css'/>
 <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
@@ -27,7 +27,7 @@ popup.document.close();
 <body>
 
 <a name="timetable">
-<h1><a href="../index.html">Graph4J</a> Tutorial</h1>
+<h1><a href="index.html">Graph4J</a> Tutorial</h1>
 <hr/>
 <h3>Graph4J - A computationally efficient Java library for graph algorithms</h3>
 Copyright &#169; 2023 Cristian Frasinaru and contributors.
@@ -41,12 +41,17 @@ Copyright &#169; 2023 Cristian Frasinaru and contributors.
 	<ol>
 		<li> <a href="#create-graph"> Simple undirected graphs</a> </li>
 		<li> <a href="#create-digraph"> Simple directed graphs (digraphs)</a> </li>
+		<li> <a href="#create-other"> Multigraphs and pseudographs</a> </li>
+		<li> <a href="#weighted-graph"> Weighted graphs</a> </li>
+		<li> <a href="#labeled-graph"> Labeled graphs</a> </li>
 	</ol>
 </li>
 	<li> <a href="#inspect"> Inspecting a graph </a>
-	<ol>
-		<li> <a href="#neighbors"> Iterating over the neighbors </a> </li>
-	</ol>
+	<li> <a href="#generate"> Graph generators </a>
+	<li> <a href="#operations"> Graph operations</a>
+	<li> <a href="#metrics"> Measures and metrics </a>
+	<li> <a href="#traverse"> Traversing a graph (DFS, BFS) </a>
+	<li> <a href="#algorithms"> Algorithms </a>
 </li>
 </ol>
 
@@ -97,19 +102,275 @@ Creating actual graph objects is done in a flexible manner, using a <code>GraphB
 Defining a graph using the mathematical model is straightforward.
 The following example creates a complete graph with 3 vertices:
 <pre>
-  Graph g = GraphBuilder.numVertices(3).named("K3")
-                .addEdge(0,1).addEdge(1,2).addEdge(0,2)
-                .buildGraph();
+Graph g = GraphBuilder.numVertices(3).named("K3")
+	.addEdge(0,1).addEdge(1,2).addEdge(0,2)
+	.buildGraph();
 </pre>
 By default, the vertices of a graph are primitive integers, starting with 0. However, any non-negative integers can be used as vertices. 
 Once a graph is created, it is by default mutable, other vertices and edges can be added or removed as necessary.
 </p>
+<p>
+Vertices are represented internally using an array and each vertex added to the graph has a <i>number</i> (its identifier) and an <i>index</i> (its position in the array).
+Most of the time, vertex numbers and indices may be the same, but this is not true in general. 
+Once you remove a vertex from the graph, or add vertices with random numbers, they will differ. 
+In order to map them, there are the methods <code>vertexAt(index)</code> and <code>indexOf(vertexNumber)</code>.
+<pre>
+Graph g = GraphBuilder.empty().buildGraph();
+g.addVertex(10);
+g.addVertex(20);
+assert g.vertexAt(0) == 10;
+assert g.vertexAt(1) == 20;
+assert g.indexOf(10) == 0;
+assert g.indexOf(20) == 1;
+</pre>
+
 
 <!--------------------------------------------------------------------->
 <a name="create-digraph">  <h3> 3.2 Simple directed graphs (digraphs) </h3>  </a>
 <!--------------------------------------------------------------------->
 <p>
+The following example creates a directed cycle with n vertices:
+<pre>
+Digraph g = GraphBuilder.numVertices(n)
+	.estimatedNumEdges(n)
+	.buildDigraph();
+for (int i = 0; i < n; i++) {
+  g.addEdge(i, (i + 1) % n);
+}
+</pre>
+Methods like <code>estimatedNumEdges</code> or <code>estimatedAvgDegree</code> are not necessary but may improve the memory allocation process for the graph data structure.
 </p>
+
+
+<!--------------------------------------------------------------------->
+<a name="create-other">  <h3> 3.3 Multigraphs and pseudographs </h3>  </a>
+<!--------------------------------------------------------------------->
+<p>
+By default, simple directed or undirected graphs do not allow adding more than one edge between two vertices (multiple edges) 
+or adding edges between a vertex and itself (self-loops).
+While most theoretical algorithms focus on simple graphs, there are situations when it is necessary to model a problem using multiple edges or self-loops.
+For these cases, one can use <code>Multigraph</code> and <code>Pseudograph</code> data types, 
+or <code>DirectedMultigraph</code> and <code>DirectedPseudograph</code>, respectively.
+<pre>
+Pseudograph g = GraphBuilder.vertexRange(1,3)
+	.addEdge(1,2).addEdge(1,2).addEdge(2,2).addEdge(2,3).addEdge(3,3)
+	.buildPseudograph();
+</pre>
+While working with a generic <code>Graph</code> reference, one can use <code>isAllowingMultipleEdges</code> or <code>isAllowingSelfLoops</code>
+in order to test if it is actually a multigraph or pseudograph as an alternative to checking the type using <code>instanceof</code> operator.
+</p>
+
+
+<!--------------------------------------------------------------------->
+<a name="weighted-graph">  <h3> 3.4 Weighted graphs </h3>  </a>
+<!--------------------------------------------------------------------->
+<p>
+All graph types allow setting <i>weights</i> (numerical values of type <code>double</code>) on both their vertices and edges.
+These weights may represent distances, costs, probabilities, etc. for various models.
+<pre>
+var g = GraphBuilder.vertexRange(0, 3).addClique(0, 1, 2, 3).buildGraph();
+double x = 0.0;
+for (int i = 0, n = g.numVertices(); i < n - 1; i++) {
+	int v = g.vertexAt(i);
+	for (int j = i + 1; j < n; j++) {
+		int u = g.vertexAt(j);
+		g.setEdgeWeight(v, u, x++);
+	}
+}
+</pre>
+If no weights have been set, the graph is considered <i>unweighted</i> 
+and one can use the methods <code>isEdgeWeighted</code> and <code>isVertexWeighted</code> in order to test this property.
+</p>
+
+
+<!--------------------------------------------------------------------->
+<a name="labeled-graph">  <h3> 3.5 Labeled graphs </h3>  </a>
+<!--------------------------------------------------------------------->
+<p>
+User objects can be associated with both vertices and edges and they are called <i>labels</i>.
+The example below creates a complete graph where each vertex is associated with a city and each edge with a road connecting those cities.
+<pre>
+Graph<City, Road> g = GraphBuilder.empty()
+                .estimatedNumVertices(numVertices)
+                .estimatedAvgDegree(numVertices - 1)
+                .buildGraph();
+for (int i = 0; i < numVertices; i++) {
+	g.addVertex(i, cities[i]);
+}
+for (int i = 0; i < numVertices - 1; i++) {
+	for (int j = i + 1; j < numVertices; j++) {
+		g.addEdge(i, j, roads[i][j]);
+	}
+}
+</pre>
+</p>
+
+
+
+
+<!--------------------------------------------------------------------->
+<a name="inspect">  <h3> 4. Inspecting a graph </h3>  </a>
+<!--------------------------------------------------------------------->
+<p>
+Inspecting a graph means basically accessing all the elements that define the graph, such as 
+determining the neighbors of a vertex, testing adjacency, determining weights and labels, etc.
+</p>
+<p>
+Since Graph4J uses a representation based on adjacency lists, the most efficient method to inspect the graph is to use <i>iterators</i>.
+For example, in order to iterate over all the vertices and edges of the graph the following code sequence offers the best performance.
+<pre>
+for (int v : graph.vertices()) {
+	for (var it = graph.neighborIterator(v); it.hasNext();) {
+		int u = it.next(); //u is a neighbor of v
+		double weight = it.getEdgeWeight(); //weight of vu edge
+		Object label = it.getEdgeLabel(); //label of vu edge
+	}
+}
+</pre>
+</p>
+<p>
+A simpler but less efficient method to iterate directly over all the edges (as <code>Edge</code> objects) is to use an <code>edgeIterator</code>.
+In case of digraphs, there are <code>succesorsIterator</code> and <code>predecessorIterator</code> methods.
+All iterators offer the possibility to remove the current element. The example below removes all the edges of the graph, one by one:
+<pre>
+Graph g = GraphBuilder.vertexRange(1, 4).addEdges("1-2,2-3,3-4").buildGraph();
+for (var it = g.edgeIterator(); it.hasNext();) {
+	Edge e = it.next()); //the current edge
+	it.remove();
+}
+assert g.numEdges() == 0;
+</pre>
+</p>
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<a name="generate">  <h3> 5. Graph generators </h3>  </a>
+<!--------------------------------------------------------------------->
+<p>
+You may use the <code>GraphGenerator</code> class in order to generate various type of graphs, such as: 
+complete graphs, cycles, paths, trees, wheels, stars, tournaments, regular and random graphs and digraphs with various constraints.
+The methods in <code>GraphGenerator</code> use specialized classes responsible with creating the graphs. 
+You may use directly the classes in the package <code>generate</code> for more versatility.
+<pre>
+Graph k5 = GraphGenerator.complete(5);
+//same as
+Graph k5 = new CompleteGraphGenerator(5).createGraph();
+</pre>
+
+Random graphs can be created using Erdős–Rényi model, either specifying the number of vertices n and the edge probability p (the G(n,p) model)
+or the the number of vertices n and the number of edges m (the G(n,m) model).
+<pre>
+Graph dense = GraphGenerator.randomGnp(10, 0.9); //10 vertices, edge probability 0.9
+Graph sparse = GraphGenerator.randomGnm(10, 12); //10 vertices, 12 edges
+</pre>
+</p>
+
+
+<!--------------------------------------------------------------------->
+<a name="operations">  <h3> 6. Graph operations </h3>  </a>
+<!--------------------------------------------------------------------->
+<p>
+The basic support for graph operations is offered by the graph object itself and the utility class <code>Graphs</code>:
+computing the adjacency/cost/incidence matrices, complement and transpose of a graph, line graph, operations such contraction, split, join, union and disjoint union.
+The <code>Graphs</code> class offers also methods for accesing basic algorithms: testing connectivity, determining if a graph is acyclic, etc.
+<pre>
+Graph g1 = g.copy(); //creating an identical copy of g
+Graph h = g.complement(); //creating the complement of a graph
+int[][] a = g.adjacencyMatrix(); //creating the adjancency matrix
+Graph sub = g.subgraph(1,2,3); //creating the subgraph induced by the vertices 1,2,3
+Graph d = Graphs.disjointUnion(g1,g2,g3); //disjoint union of three graphs
+boolean connected = Graphs.isConnected(g);
+boolean acyclic = !Graphs.containsCycle(g);
+</pre>
+</p>
+
+
+
+<!--------------------------------------------------------------------->
+<a name="metrics">  <h3> 7. Measures and metrics </h3>  </a>
+<!--------------------------------------------------------------------->
+<p>
+<code>GraphMeasures</code> and <code>GraphMetrics</code> classes offer simple algorithms for:
+determining graph measures (min/max/average degrees), and metrics (distances, eccentricities, 
+girth, radius, diameter, periphery, pseudo-periphery, center).
+<pre>
+var gm = new GraphMetrics(g);
+int diam = gm.diameter(); //the length of the "longest shortest path"
+int[][] dist = gm.distances();
+int v = g.vertexAt(0);
+int u = g.vertexAt(1);
+assert dist[0][1] == gm.distance(v, u); //the number of edges on the shortest path from v to u.
+
+</pre>
+</p>
+
+
+
+<!--------------------------------------------------------------------->
+<a name="traverse">  <h3> 8. Traversing a graph (DFS, BFS) </h3>  </a>
+<!--------------------------------------------------------------------->
+<p>
+Graph4J implements both the <i>iterator</i> and the <i>visitor</i> patterns for traversing a graph. 
+It contains the classes <code>DFSIterator</code> and <code>BFSIterator</code> which returns the graph vertices as objects of type <code>SearchNode</code>
+including additional information related to the corresponding DFS or BFS tree: the level of the node, its parent, visiting time and the connected component it belongs to.
+The following sequence performs a simple depth first search:
+<pre>
+var dfs = new DFSIterator(g);
+while (dfs.hasNext()) {
+	SearchNode node = dfs.next();
+	int v = node.vertex();
+	SearchNode parent = node.parent(); //the parent of v in the DFS tree
+	int level = node.level(); //the level of v in the DFS tree
+	int order - node.order(); //the visiting time of v
+	int comp = node.component(); //the connected component of v	
+}
+</pre>
+
+The visitor pattern is implemented by the classes <code>DFSTraverser</code> and <code>BFSTraverser</code> which receive as argument either a <code>DFSVisitor</code> or <code>BFSVisitor</code>, 
+defining the methods that will be invoked during the search, such as <code>startVertex</code>, <code>finishVertex</code>, <code>treeEdge</code>, <code>backEdge</code>, etc.
+The following code sequence searches for a cycle, using a DFS traverser.
+<pre>
+var dfs = new DFSTraverser(graph);
+dfs.traverse(new DFSVisitor() {
+	@Override
+	public void backEdge(SearchNode from, SearchNode to) {
+		//a back edge vu is such that u is the ancestor of v and vu is not a tree edge
+		interrupt();
+	}
+});
+boolean cycleFound = dfs.isInterrupted();
+</pre>
+</p>
+
+
+<!--------------------------------------------------------------------->
+<a name="algorithms">  <h3> 9. Algorithms </h3>  </a>
+<!--------------------------------------------------------------------->
+<p>
+Cycle detection, testing connectivity, bi-connectivity and strong-connectivity, identifying bipartite and eulerian graphs, 
+topological sorting, acyclic orientation, enumerating maximal cliques, finding single source and all pairs shortest paths, creating minimum spanning trees, greedy coloring, computing maximum flows.
+</p>
+
+<p>
+For algorithms that solve the same type of problem, we define a generic interface that describes them, such as <code>SingleSourceShortestPath</code>. 
+Implementations of that interface could be <code>DijkstraShortesPath</code> with or without a heap, <code>BellmanFordShortestPath</code>, etc.
+At the interface level, there is a default method that selects the most appropriate implementation, based on the input graph.
+In this particular instance, calling <code>SingleSourceShortestPath.getInstance(graph)</code> will produce the implementation which fits best that graph.
+If it has negative cost edges, it will select Bellman-Ford, otherwise it might select Dijkstra's and analyze the nature of the graph and determine if it is better to use a heap or not. 
+Otherwise, each algorithm can be instantiated using its dedicated class.
+<pre>
+int n = 20; double p = 0.5;
+var g = new RandomGnpGraphGenerator(n, p).createGraph();
+EdgeWeightsGenerator.randomDoubles(g, 0, 1);
+var alg = new DijkstraShortestPathDefault(g, 0); //source is vertex 0
+Path path = alg.getPath(n-1); //the shortest path from 0 to n-1
+double weight = alg.getPathWeight(n - 1); //the weight of the shortest path
+</pre>
+</p>
+
 
 <p>
 <hr/>

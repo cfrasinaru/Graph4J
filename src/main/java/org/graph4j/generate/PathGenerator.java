@@ -36,7 +36,7 @@ public class PathGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a path graph.
      */
     public Graph createGraph() {
         int n = vertices.length;
@@ -48,8 +48,8 @@ public class PathGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @param leftToRight the orientation of the path
-     * @return
+     * @param leftToRight the orientation of the path.
+     * @return a directed path graph.
      */
     public Digraph createDigraph(boolean leftToRight) {
         var g = GraphBuilder.vertices(vertices).estimatedAvgDegree(1).buildDigraph();

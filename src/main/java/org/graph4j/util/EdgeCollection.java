@@ -22,7 +22,7 @@ import org.graph4j.Edge;
 import org.graph4j.Graph;
 
 /**
- * A set of edges of a graph.
+ * A collection of edges in a graph.
  *
  * @see EdgeSet
  * @author Cristian Frăsinaru
@@ -45,8 +45,8 @@ abstract class EdgeCollection { //WORK IN PROGRESS
 
     /**
      *
-     * @param graph the graph the edges belong to
-     * @param initialCapacity the initial capacity of this collection
+     * @param graph the graph the edges belong to.
+     * @param initialCapacity the initial capacity of this collection.
      */
     public EdgeCollection(Graph graph, int initialCapacity) {
         this.graph = graph;
@@ -75,7 +75,7 @@ abstract class EdgeCollection { //WORK IN PROGRESS
     }*/
     /**
      *
-     * @return {@code true} if this collection has no edges
+     * @return {@code true} if this collection has no edges.
      */
     public boolean isEmpty() {
         return numEdges == 0;
@@ -84,7 +84,7 @@ abstract class EdgeCollection { //WORK IN PROGRESS
     /**
      * Same as {@code size()}.
      *
-     * @return the number of edges in the collection
+     * @return the number of edges in the collection.
      */
     public int numEdges() {
         return numEdges;
@@ -93,7 +93,7 @@ abstract class EdgeCollection { //WORK IN PROGRESS
     /**
      * Same as {@code numVertices()}.
      *
-     * @return the number of edges in the collection
+     * @return the number of edges in the collection.
      */
     public int size() {
         return numEdges;
@@ -150,8 +150,9 @@ abstract class EdgeCollection { //WORK IN PROGRESS
 
     /**
      *
-     * @param e
-     * @return
+     * @param e an edge.
+     * @return {@code true} if the collection was modified as a result of this
+     * invocation.
      */
     public boolean add(Edge e) {
         return add(e.source(), e.target());
@@ -159,7 +160,7 @@ abstract class EdgeCollection { //WORK IN PROGRESS
 
     /**
      *
-     * @param edges some edges
+     * @param edges an array of edges.
      */
     protected void addAll(int[]... edges) {
         for (int[] e : edges) {
@@ -168,10 +169,12 @@ abstract class EdgeCollection { //WORK IN PROGRESS
     }
 
     /**
-     * Removes a vertex from the collection.
+     * Removes an edge vu from the collection.
      *
-     * @param v a vertex number
-     * @return true, if the collection changed as a result of this call
+     * @param v a vertex number.
+     * @param u a vertex number.
+     * @return {@code true}, if the collection was modified as a result of this
+     * invocation.
      */
     protected boolean remove(int v, int u) {
         int pos = indexOf(v, u);
@@ -196,8 +199,9 @@ abstract class EdgeCollection { //WORK IN PROGRESS
 
     /**
      *
-     * @param v
-     * @return true, if this collection contains the vertex v
+     * @param v a vertex number.
+     * @param u a vertex number.
+     * @return {@code true}, if this collection contains the edge vu.
      */
     public boolean contains(int v, int u) {
         //for smaller sets, just iterate
@@ -237,6 +241,11 @@ abstract class EdgeCollection { //WORK IN PROGRESS
         edges = newEdges;
     }
 
+    /**
+     *
+     * @return the vertices representing endpoints of the edges in this
+     * collection.
+     */
     public VertexSet vertexSet() {
         VertexSet set = new VertexSet(graph, size());
         for (int[] e : edges) {
@@ -247,6 +256,11 @@ abstract class EdgeCollection { //WORK IN PROGRESS
         return set;
     }
 
+    /**
+     *
+     * @return the vertices representing endpoints of the edges in this
+     * collection.
+     */
     public int[] vertices() {
         return vertexSet().vertices();
     }

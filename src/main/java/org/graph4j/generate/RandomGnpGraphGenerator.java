@@ -27,35 +27,35 @@ import org.graph4j.GraphBuilder;
 import org.graph4j.util.CheckArguments;
 
 /**
- * Erdős–Rényi model. Each possible edge is added cosidering a given
+ * Erdős–Rényi G(n,p) model. Each possible edge is added cosidering a given
  * probability. The time complexity of the algorithm is O(n^2), since it
  * iterates through all possible edges, so it is not efficient for large sparse
  * graphs.
  *
- * @see GnmRandomGenerator
+ * @see RandomGnmGraphGenerator
  * @author Cristian Frăsinaru
  */
-public class GnpGraphGenerator extends AbstractGraphGenerator {
+public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
 
     private final double edgeProbability;
     private final Random random;
 
     /**
      *
-     * @param numVertices number of vertices
-     * @param edgeProbability probability that two vertices are connected
+     * @param numVertices number of vertices.
+     * @param edgeProbability probability that two vertices are connected.
      */
-    public GnpGraphGenerator(int numVertices, double edgeProbability) {
+    public RandomGnpGraphGenerator(int numVertices, double edgeProbability) {
         this(0, numVertices - 1, edgeProbability);
     }
 
     /**
      *
-     * @param firstVertex first vertex number of the graph
-     * @param lastVertex last vertex number of the graph
-     * @param edgeProbability probability that two vertices are connected
+     * @param firstVertex first vertex number of the graph.
+     * @param lastVertex last vertex number of the graph.
+     * @param edgeProbability probability that two vertices are connected.
      */
-    public GnpGraphGenerator(int firstVertex, int lastVertex, double edgeProbability) {
+    public RandomGnpGraphGenerator(int firstVertex, int lastVertex, double edgeProbability) {
         super(firstVertex, lastVertex);
         CheckArguments.probability(edgeProbability);
         this.edgeProbability = edgeProbability;
@@ -68,7 +68,7 @@ public class GnpGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random graph.
      */
     public Graph createGraph() {
         var g = builder().buildGraph();
@@ -78,7 +78,7 @@ public class GnpGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random directed graph.
      */
     public Digraph createDigraph() {
         var g = builder().buildDigraph();
@@ -88,7 +88,7 @@ public class GnpGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random multigraph.
      */
     public Multigraph createMultiGraph() {
         var g = builder().buildMultigraph();
@@ -98,7 +98,7 @@ public class GnpGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random directed multigraph.
      */
     public DirectedMultigraph createDirectedMultigraph() {
         var g = builder().buildDirectedMultigraph();
@@ -108,7 +108,7 @@ public class GnpGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random pseudograph.
      */
     public Pseudograph createPseudograph() {
         var g = builder().buildPseudograph();
@@ -118,7 +118,7 @@ public class GnpGraphGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random directed pseudograph.
      */
     public DirectedPseudograph createDirectedPseudograph() {
         var g = builder().buildDirectedPseudograph();

@@ -41,7 +41,7 @@ public class TournamentGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return a complete graph
+     * @return a random tournament.
      */
     public Graph createRandom() {
         var g = GraphBuilder.vertices(vertices).buildDigraph();
@@ -49,6 +49,10 @@ public class TournamentGenerator extends AbstractGraphGenerator {
         return g;
     }
 
+    /**
+     * 
+     * @return an acyclic tournament.
+     */
     public Graph createAcyclic() {
         var g = GraphBuilder.vertices(vertices).buildDigraph();
         addEdges(g, false);

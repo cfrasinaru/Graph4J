@@ -19,7 +19,7 @@ package org.graph4j.demo;
 import edu.princeton.cs.algs4.CC;
 import org.jgrapht.alg.connectivity.ConnectivityInspector;
 import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
-import org.graph4j.generate.GnmGraphGenerator;
+import org.graph4j.generate.RandomGnmGraphGenerator;
 
 /**
  *
@@ -35,7 +35,7 @@ class ConnectivityDemo extends PerformanceDemo {
     @Override
     protected void createGraph() {
         int n = 1_000_000;
-        graph = new GnmGraphGenerator(n, 3 * n).createGraph();
+        graph = new RandomGnmGraphGenerator(n, 3 * n).createGraph();
         /*
         int n = 1000;
         var g1 = GraphGenerator.complete(1000);

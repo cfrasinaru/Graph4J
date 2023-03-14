@@ -33,8 +33,8 @@ public abstract class AbstractBipartiteGenerator extends AbstractGraphGenerator 
 
     /**
      *
-     * @param n1
-     * @param n2
+     * @param n1 the number of vertices in the left side.
+     * @param n2 the number of vertices in the right side.
      */
     public AbstractBipartiteGenerator(int n1, int n2) {
         CheckArguments.numberOfVertices(n1);
@@ -48,10 +48,10 @@ public abstract class AbstractBipartiteGenerator extends AbstractGraphGenerator 
 
     /**
      *
-     * @param first1
-     * @param last1
-     * @param first2
-     * @param last2
+     * @param first1 the number of first vertex in the left side.
+     * @param last1 the number of last vertex in the left side.
+     * @param first2  the number of first vertex in the right side.
+     * @param last2 the number of last vertex in the right side.
      */
     public AbstractBipartiteGenerator(int first1, int last1, int first2, int last2) {
         CheckArguments.vertexRange(first1, last1);

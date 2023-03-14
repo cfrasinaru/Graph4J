@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 /**
+ * Utility class for working with arrays of integers.
  *
  * @author Cristian Frăsinaru
  */
@@ -32,8 +33,8 @@ public class IntArrays {
 
     /**
      *
-     * @param array
-     * @return
+     * @param array an array of integers.
+     * @return a opy of the array.
      */
     public static int[] copyOf(int[] array) {
         return Arrays.copyOf(array, array.length);
@@ -41,9 +42,9 @@ public class IntArrays {
 
     /**
      *
-     * @param array
-     * @param value
-     * @return
+     * @param array an array of integers.
+     * @param value a value.
+     * @return {@code true} if the array contains the value.
      */
     public static boolean contains(int[] array, int value) {
         return contains(array, value, 0);
@@ -51,10 +52,11 @@ public class IntArrays {
 
     /**
      *
-     * @param array
-     * @param value
-     * @param fromPos
-     * @return
+     * @param array an array of integers.
+     * @param value a value.
+     * @param fromPos a position in the array.
+     * @return {@code true} if the array contains the value, starting from the
+     * given position.
      */
     public static boolean contains(int[] array, int value, int fromPos) {
         for (int i = fromPos, n = array.length; i < n; i++) {
@@ -67,9 +69,9 @@ public class IntArrays {
 
     /**
      *
-     * @param array
-     * @param values
-     * @return
+     * @param array an array of integers.
+     * @param values an array of values.
+     * @return {@code true} if the array contains all the values.
      */
     public static boolean contains(int[] array, int... values) {
         for (int value : values) {
@@ -82,8 +84,8 @@ public class IntArrays {
 
     /**
      *
-     * @param array
-     * @return
+     * @param array an array of integers.
+     * @return {@code true} if the array contains duplicate values.
      */
     public static boolean containsDuplicates(int[] array) {
         for (int i = 0, n = array.length; i < n - 1; i++) {
@@ -96,8 +98,8 @@ public class IntArrays {
 
     /**
      *
-     * @param array
-     * @return
+     * @param array an array of integers.
+     * @return a duplicate value, or {@code null} if none exists.
      */
     public static Integer findDuplicate(int[] array) {
         for (int i = 0, n = array.length; i < n - 1; i++) {
@@ -110,9 +112,9 @@ public class IntArrays {
 
     /**
      *
-     * @param array1
-     * @param array2
-     * @return
+     * @param array1 an array of integers.
+     * @param array2 an array of integers.
+     * @return {@code true} if the arrays contain common values.
      */
     public static boolean intersects(int[] array1, int[] array2) {
         for (int a : array1) {
@@ -125,8 +127,8 @@ public class IntArrays {
 
     /**
      *
-     * @param array
-     * @return
+     * @param array an array of integers.
+     * @return a List representation of the array.
      */
     public static List<Integer> asList(int[] array) {
         List<Integer> list = new ArrayList<>(array.length);
@@ -137,9 +139,9 @@ public class IntArrays {
     }
 
     /**
-     * 
-     * @param array
-     * @return 
+     *
+     * @param array an array of integers.
+     * @return a Set representation of the array.
      */
     public static Set<Integer> asSet(int[] array) {
         Set<Integer> set = new HashSet<>();
@@ -148,11 +150,11 @@ public class IntArrays {
         }
         return set;
     }
-    
+
     /**
      *
-     * @param list
-     * @return
+     * @param list a list of integers.
+     * @return an array representation of the list.
      */
     public static int[] fromList(List<Integer> list) {
         int n = list.size();
@@ -164,9 +166,9 @@ public class IntArrays {
     }
 
     /**
-     * 
-     * @param set
-     * @return 
+     *
+     * @param set a set of integers.
+     * @return an array representation of the set.
      */
     public static int[] fromSet(Set<Integer> set) {
         int n = set.size();
@@ -180,8 +182,8 @@ public class IntArrays {
 
     /**
      *
-     * @param arrays
-     * @return
+     * @param arrays an array of array of integers.
+     * @return the union of all arrays.
      */
     public static int[] union(int[]... arrays) {
         int n = Stream.of(arrays).mapToInt(a -> a.length).sum();
@@ -197,9 +199,9 @@ public class IntArrays {
 
     /**
      *
-     * @param array1
-     * @param array2
-     * @return true, if the two arrays have the same values, regardless of
+     * @param array1 an array of integers.
+     * @param array2 an array of integers.
+     * @return {@code true}, if the two arrays have the same values, regardless of
      * order.
      */
     public static boolean sameValues(int[] array1, int[] array2) {
@@ -214,8 +216,8 @@ public class IntArrays {
 
     /**
      *
-     * @param array
-     * @return a new array with the original elements shuffled
+     * @param array an array of integers.
+     * @return a new array with the original elements shuffled.
      */
     public static int[] shuffle(int[] array) {
         return shuffle(array, new Random());
@@ -223,9 +225,9 @@ public class IntArrays {
 
     /**
      *
-     * @param array
-     * @param random
-     * @return
+     * @param array an array of integers.
+     * @param random a generator of random numbers.
+     * @return a new array with the original elements shuffled.
      */
     public static int[] shuffle(int[] array, Random random) {
         int[] other = copyOf(array);
@@ -240,10 +242,10 @@ public class IntArrays {
 
     /**
      *
-     * @param array
-     * @param fromPos
-     * @param toPos
-     * @return
+     * @param array an array of integers.
+     * @param fromPos a position in the array.
+     * @param toPos  a position in the array.
+     * @return a string representation of the specified part of the array.
      */
     public static String toString(int[] array, int fromPos, int toPos) {
         var sb = new StringBuilder();

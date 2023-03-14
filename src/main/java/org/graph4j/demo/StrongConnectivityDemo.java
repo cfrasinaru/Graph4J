@@ -20,7 +20,7 @@ import edu.princeton.cs.algs4.TarjanSCC;
 import org.jgrapht.alg.connectivity.KosarajuStrongConnectivityInspector;
 import org.graph4j.Digraph;
 import org.graph4j.alg.connectivity.TarjanStrongConnectivity;
-import org.graph4j.generate.GnmGraphGenerator;
+import org.graph4j.generate.RandomGnmGraphGenerator;
 
 /**
  *
@@ -36,7 +36,7 @@ class StrongConnectivityDemo extends PerformanceDemo {
 
     @Override
     protected void createGraph() {
-        graph = new GnmGraphGenerator(numVertices, 5 * numVertices).createDigraph();
+        graph = new RandomGnmGraphGenerator(numVertices, 5 * numVertices).createDigraph();
         //graph = new CycleGenerator(500_000).createDigraph(true);
     }
 

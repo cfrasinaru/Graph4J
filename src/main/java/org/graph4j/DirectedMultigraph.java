@@ -34,7 +34,7 @@ public interface DirectedMultigraph<V, E> extends Multigraph<V, E>, Digraph<V, E
 
     /**
      *
-     * @param vertices
+     * @param vertices an array of vertex numbers.
      * @return the subgraph induced by the given vertices
      */
     @Override

@@ -40,6 +40,10 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
     private int parity;
     private boolean shortest;
 
+    /**
+     *
+     * @param graph the input graph.
+     */
     public CycleDetectionAlgorithm(Graph graph) {
         super(graph);
     }
@@ -124,7 +128,7 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
     /**
      * Uses DFS in order to find a cycle.
      *
-     * @return
+     * @return the first cycle found, or {@code null} if the graph is acyclic.
      */
     public Cycle findAnyCycle() {
         reset();
@@ -133,8 +137,9 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
 
     /**
      *
-     * @param target
-     * @return
+     * @param target a vertex number.
+     * @return the first cycle found that passed through target, or {@code null}
+     * if the graph is acyclic.
      */
     public Cycle findAnyCycle(int target) {
         CheckArguments.graphContainsVertex(graph, target);
@@ -146,7 +151,8 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
     /**
      * Uses BFS in order to find a cycle.
      *
-     * @return
+     * @return the shortest cycle in the graph, or {@code null} if the graph is
+     * acyclic.
      */
     public Cycle findShortestCycle() {
         reset();
@@ -156,8 +162,9 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
 
     /**
      *
-     * @param target
-     * @return
+     * @param target a vertex number.
+     * @return the shortest cycle in the graph that passes through the target,
+     * or {@code null} if the graph is acyclic.
      */
     public Cycle findShortestCycle(int target) {
         CheckArguments.graphContainsVertex(graph, target);
@@ -169,7 +176,8 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
 
     /**
      *
-     * @return
+     * @return the first odd cycle found, or {@code null} if the graph contains
+     * no odd cycles.
      */
     public Cycle findOddCycle() {
         reset();
@@ -179,7 +187,8 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
 
     /**
      *
-     * @return
+     * @return the first even cycle found, or {@code null} if the graph contains
+     * no even cycles.
      */
     public Cycle findEvenCycle() {
         reset();

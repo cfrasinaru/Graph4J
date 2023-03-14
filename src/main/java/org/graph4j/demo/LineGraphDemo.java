@@ -18,7 +18,7 @@ package org.graph4j.demo;
 
 import org.jgrapht.alg.transform.LineGraphConverter;
 import org.graph4j.Graphs;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 import org.graph4j.util.Tools;
 
 /**
@@ -34,7 +34,7 @@ class LineGraphDemo extends PerformanceDemo {
     
     @Override
     protected void createGraph() {
-        graph = new GnpGraphGenerator(1_000, 0.1).createGraph();
+        graph = new RandomGnpGraphGenerator(1_000, 0.1).createGraph();
         //graph = GraphGenerator.complete(300);
     }
 

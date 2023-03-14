@@ -30,7 +30,7 @@ import org.graph4j.util.VertexStack;
  * @author Cristian Frăsinaru
  */
 @Deprecated
-public class FordFulkersonMaximumFlow extends DirectedGraphAlgorithm
+class FordFulkersonMaximumFlow extends DirectedGraphAlgorithm
         implements MaximumFlowAlgorithm {
 
     protected int source, sink;

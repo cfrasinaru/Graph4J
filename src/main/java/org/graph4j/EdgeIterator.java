@@ -17,43 +17,61 @@
 package org.graph4j;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
+ * An iterator over all the edges of a graph.
  *
  * @author Cristian Frăsinaru
- * @param <E> the type of edge labels
+ * @param <E> the type of edge labels.
  */
 public interface EdgeIterator<E> extends Iterator<Edge<E>> {
 
+    /**
+     * Returns {@code true} if the iteration has more edges. If it returns
+     * {@code true}, the {@link #next} method would return an edge rather than
+     * throwing an exception.
+     *
+     * @return {@code true} if the iteration has more edges.
+     */
+    @Override
+    public boolean hasNext();
+
+    /**
+     * Returns the next edge in the iteration.
+     *
+     * @return the next edge in the iteration.
+     * @throws NoSuchElementException if the iteration has no more edges.
+     */
     @Override
     public Edge<E> next();
 
     /**
      *
-     * @param weight
+     * @param weight the weight to be set for the current edge.
      */
     public void setWeight(double weight);
 
     /**
      *
-     * @return
+     * @return the weight of the current edge.
      */
     public double getWeight();
 
     /**
      *
-     * @param label
+     * @param label the label to be set for the current edge.
      */
     public void setLabel(E label);
 
     /**
      *
-     * @return
+     * @return the label of the current edge.
      */
     public E getLabel();
 
     /**
-     *
+     * Removes the current edge from the graph.
      */
     @Override
     public void remove();

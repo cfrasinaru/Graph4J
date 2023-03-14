@@ -25,7 +25,7 @@ import org.graph4j.alg.mst.KruskalMinimumSpanningTree;
 import org.graph4j.alg.mst.PrimMinimumSpanningTreeDefault;
 import org.graph4j.alg.mst.PrimMinimumSpanningTreeHeap;
 import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
@@ -62,7 +62,7 @@ public class MSTTest {
     public void crossTest() {
         double epsilon = 1.0E-12;
         for (int i = 0; i < 10; i++) {
-            Graph g = new GnpGraphGenerator(20, 0.5).createGraph();
+            Graph g = new RandomGnpGraphGenerator(20, 0.5).createGraph();
             EdgeWeightsGenerator.randomDoubles(g, 0, 1);
             double p1 = new PrimMinimumSpanningTreeHeap(g).getWeight();
             double p2 = new PrimMinimumSpanningTreeDefault(g).getWeight();

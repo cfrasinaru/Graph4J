@@ -24,7 +24,7 @@ import java.util.StringJoiner;
 import org.graph4j.Graph;
 
 /**
- * A set of vertices of a graph.
+ * A collection of vertices in a graph.
  *
  * @see VertexList
  * @see VertexSet
@@ -81,7 +81,7 @@ abstract class VertexCollection implements Iterable<Integer> {
 
     /**
      *
-     * @return {@code true} if this collection has no vertices
+     * @return {@code true} if this collection has no vertices.
      */
     public boolean isEmpty() {
         return numVertices == 0;
@@ -90,7 +90,7 @@ abstract class VertexCollection implements Iterable<Integer> {
     /**
      * Same as {@code size()}.
      *
-     * @return the number of vertices in the collection
+     * @return the number of vertices in the collection.
      */
     public int numVertices() {
         return numVertices;
@@ -99,7 +99,7 @@ abstract class VertexCollection implements Iterable<Integer> {
     /**
      * Same as {@code numVertices()}.
      *
-     * @return the number of vertices in the collection
+     * @return the number of vertices in the collection.
      */
     public int size() {
         return numVertices;
@@ -107,7 +107,7 @@ abstract class VertexCollection implements Iterable<Integer> {
 
     /**
      *
-     * @return an iterator for the vertices in the collection
+     * @return an iterator over the vertices in the collection.
      */
     @Override
     public Iterator<Integer> iterator() {
@@ -119,7 +119,7 @@ abstract class VertexCollection implements Iterable<Integer> {
      * structure where vertices of the collection are stored, so it must not be
      * modified.
      *
-     * @return the vertices in the collection
+     * @return the vertices in the collection.
      */
     public int[] vertices() {
         if (first + numVertices != vertices.length) {
@@ -164,7 +164,7 @@ abstract class VertexCollection implements Iterable<Integer> {
 
     /**
      *
-     * @param vertices some vertices
+     * @param vertices an array of vertex numbers.
      */
     protected void addAll(int... vertices) {
         for (int v : vertices) {
@@ -200,8 +200,9 @@ abstract class VertexCollection implements Iterable<Integer> {
 
     /**
      *
-     * @param vertices
-     * @return
+     * @param vertices an array of vertex numbers.
+     * @return {@code true} if the collection was modified as a result of this
+     * invocation.
      */
     public boolean removeAll(int... vertices) {
         boolean modified = false;
@@ -215,8 +216,9 @@ abstract class VertexCollection implements Iterable<Integer> {
 
     /**
      *
-     * @param vertices
-     * @return
+     * @param vertices an array of vertex numbers.
+     * @return {@code true} if the collection was modified as a result of this
+     * invocation.
      */
     public boolean retainAll(int... vertices) {
         boolean modified = false;

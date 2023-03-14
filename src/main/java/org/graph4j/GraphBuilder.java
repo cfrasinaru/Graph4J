@@ -25,8 +25,7 @@ import java.util.stream.IntStream;
 import org.graph4j.util.IntArrays;
 
 /**
- * Support class for creating a graph, directed or not, weighted or not, holding
- * data or not.
+ * Support class for creating a graph of any type.
  *
  * @author Cristian Frăsinaru
  */
@@ -159,6 +158,7 @@ public class GraphBuilder {
 
     /**
      *
+     * @param <V> the type of vertex labels.
      * @param vertexObjects a list of objects, representing the labeled vertices
      * of the graph.
      * @return a new a {@link GraphBuilder}.
@@ -364,8 +364,8 @@ public class GraphBuilder {
 
     /**
      *
-     * @param path
-     * @return
+     * @param path an array of vertex numbers.
+     * @return a reference to this object.
      */
     public GraphBuilder addPath(int... path) {
         for (int v : path) {
@@ -377,8 +377,8 @@ public class GraphBuilder {
 
     /**
      *
-     * @param cycle
-     * @return
+     * @param cycle an array of vertex numbers.
+     * @return a reference to this object.
      */
     public GraphBuilder addCycle(int... cycle) {
         for (int v : cycle) {
@@ -390,8 +390,8 @@ public class GraphBuilder {
 
     /**
      *
-     * @param clique
-     * @return
+     * @param clique an array of vertex numbers.
+     * @return a reference to this object.
      */
     public GraphBuilder addClique(int... clique) {
         for (int v : clique) {
@@ -403,8 +403,8 @@ public class GraphBuilder {
 
     /**
      *
-     * @param name
-     * @return
+     * @param name the name to be set for the graph.
+     * @return a reference to this object.
      */
     public GraphBuilder named(String name) {
         this.name = name;
@@ -515,7 +515,7 @@ public class GraphBuilder {
 
     /**
      *
-     * @return an undirected simple graph
+     * @return a simple undirected graph.
      */
     public Graph buildGraph() {
         return build();
@@ -523,7 +523,7 @@ public class GraphBuilder {
 
     /**
      *
-     * @return a directed graph
+     * @return a simple directed graph.
      */
     public Digraph buildDigraph() {
         directed = true;
@@ -532,7 +532,7 @@ public class GraphBuilder {
 
     /**
      *
-     * @return an undirected multigraph
+     * @return an undirected multigraph.
      */
     public Multigraph buildMultigraph() {
         allowingMultiEdges = true;
@@ -541,7 +541,7 @@ public class GraphBuilder {
 
     /**
      *
-     * @return a directed multigraph
+     * @return a directed multigraph.
      */
     public DirectedMultigraph buildDirectedMultigraph() {
         directed = true;
@@ -551,7 +551,7 @@ public class GraphBuilder {
 
     /**
      *
-     * @return an undirected pseudograph
+     * @return an undirected pseudograph.
      */
     public Pseudograph buildPseudograph() {
         allowingMultiEdges = true;
@@ -561,7 +561,7 @@ public class GraphBuilder {
 
     /**
      *
-     * @return a directed pseudograph
+     * @return a directed pseudograph.
      */
     public DirectedPseudograph buildDirectedPseudograph() {
         directed = true;

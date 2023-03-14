@@ -18,7 +18,7 @@ package org.graph4j.demo;
 
 import org.graph4j.alg.connectivity.TarjanBiconnectivity;
 import org.jgrapht.alg.connectivity.BiconnectivityInspector;
-import org.graph4j.generate.GnmGraphGenerator;
+import org.graph4j.generate.RandomGnmGraphGenerator;
 
 /**
  *
@@ -33,7 +33,7 @@ class BiconnectivityDemo extends PerformanceDemo {
     @Override
     protected void createGraph() {
         int n = 50_000;
-        graph = new GnmGraphGenerator(n, n).createGraph();
+        graph = new RandomGnmGraphGenerator(n, n).createGraph();
         //graph = GraphGenerator.complete(2000);
         //graph = GraphGenerator.cycle(50_000);
         //graph = new RandomTreeGenerator(10_000).create();

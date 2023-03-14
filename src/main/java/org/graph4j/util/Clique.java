@@ -19,7 +19,7 @@ package org.graph4j.util;
 import org.graph4j.Graph;
 
 /**
- * A <i>clique</i> is a set of vertices of a graph such that any two of them are
+ * A <em>clique</em> is a set of vertices of a graph such that any two of them are
  * adjacent.
  *
  *
@@ -37,8 +37,8 @@ public class Clique extends VertexSet {
 
     /**
      *
-     * @param graph the graph this clique belongs to
-     * @param vertices the vertices of the clique
+     * @param graph the graph this clique belongs to.
+     * @param vertices the vertices of the clique.
      */
     public Clique(Graph graph, int[] vertices) {
         super(graph, vertices);
@@ -46,7 +46,7 @@ public class Clique extends VertexSet {
 
     /**
      *
-     * @param other
+     * @param other a vertex set.
      */
     public Clique(VertexSet other) {
         super(other);

@@ -18,7 +18,7 @@ package org.graph4j.demo;
 
 import org.jgrapht.alg.cycle.CycleDetector;
 import org.graph4j.Graphs;
-import org.graph4j.generate.GnmGraphGenerator;
+import org.graph4j.generate.RandomGnmGraphGenerator;
 
 /**
  *
@@ -35,7 +35,7 @@ class CycleDetectionDemo extends PerformanceDemo {
     @Override
     protected void createGraph() {
         //graph = new CycleGenerator(numVertices).createDigraph(true);
-        graph = new GnmGraphGenerator(numVertices, numVertices).createGraph();
+        graph = new RandomGnmGraphGenerator(numVertices, numVertices).createGraph();
     }
 
     @Override

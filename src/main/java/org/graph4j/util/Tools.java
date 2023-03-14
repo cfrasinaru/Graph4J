@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * Utility methods.
  *
  * @author Cristian Frăsinaru
  */
@@ -39,9 +40,9 @@ public class Tools {
 
     /**
      *
-     * @param d
-     * @param decimalPlace
-     * @return
+     * @param d a value.
+     * @param decimalPlace the decimal position to round the number.
+     * @return the rounded value.
      */
     public static double round(double d, int decimalPlace) {
         BigDecimal bd = new BigDecimal(Double.toString(d));
@@ -51,8 +52,8 @@ public class Tools {
 
     /**
      *
-     * @param matrix
-     * @return
+     * @param matrix a matrix of integers.
+     * @return the maximum value in the matrix.
      */
     public static int maxValue(int[][] matrix) {
         int max = Integer.MIN_VALUE;
@@ -68,8 +69,8 @@ public class Tools {
 
     /**
      *
-     * @param matrix
-     * @return
+     * @param matrix a matrix of doubles.
+     * @return the maximum value in the matrix.
      */
     public static double maxValue(double[][] matrix) {
         double max = Double.MIN_VALUE;
@@ -83,7 +84,7 @@ public class Tools {
         return max;
     }
 
-    public static int maxLength(int[][] matrix) {
+    private static int maxLength(int[][] matrix) {
         int max = Integer.MIN_VALUE;
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
@@ -96,7 +97,7 @@ public class Tools {
         return max;
     }
 
-    public static int maxLength(double[][] matrix, int decimals) {
+    private static int maxLength(double[][] matrix, int decimals) {
         int max = Integer.MIN_VALUE;
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
@@ -122,7 +123,7 @@ public class Tools {
 
     /**
      *
-     * @param matrix
+     * @param matrix a matrix of integers.
      */
     public static void printMatrix(int[][] matrix) {
         int cellWidth = maxLength(matrix);
@@ -136,8 +137,8 @@ public class Tools {
 
     /**
      *
-     * @param matrix
-     * @param decimals
+     * @param matrix a matrix of doubles.
+     * @param decimals how many decimals to use for rounding.
      */
     public static void printMatrix(double[][] matrix, int decimals) {
         int cellWidth = maxLength(matrix, decimals);
@@ -164,8 +165,8 @@ public class Tools {
 
     /**
      *
-     * @param x
-     * @return
+     * @param x a value.
+     * @return the base 2 logarithm of the value.
      */
     public static double log2(double x) {
         return Math.log(x) / Math.log(2);
@@ -173,9 +174,10 @@ public class Tools {
 
     /**
      *
-     * @param str
-     * @param length
-     * @return
+     * @param str a string.
+     * @param length a length.
+     * @return the string padded with spaces to the left such that it has the
+     * specified length.
      */
     public static String padLeft(String str, int length) {
         if (str.length() >= length) {
@@ -191,9 +193,10 @@ public class Tools {
 
     /**
      *
-     * @param str
-     * @param length
-     * @return
+     * @param str a string.
+     * @param length a length.
+     * @return the string padded with spaces to the right such that it has the
+     * specified length.
      */
     public static String padRight(String str, int length) {
         if (str.length() >= length) {
@@ -209,9 +212,9 @@ public class Tools {
 
     /**
      *
-     * @param <T>
-     * @param values
-     * @return
+     * @param <T> a generic type.
+     * @param values an array of values.
+     * @return the first value that is not {@code null}.
      */
     public static <T> T coalesce(T... values) {
         for (T value : values) {

@@ -23,15 +23,11 @@ import org.graph4j.alg.AcyclicOrientation;
 import org.graph4j.alg.cycle.CycleDetectionAlgorithm;
 import org.graph4j.alg.connectivity.TarjanBiconnectivity;
 import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
-import org.graph4j.traverse.DFSTraverser;
-import org.graph4j.traverse.DFSVisitor;
-import org.graph4j.traverse.SearchNode;
 import org.graph4j.util.CheckArguments;
 
 /**
  * This class consists of static methods that operate on or return graphs.
  *
- * @see Graph
  * @author Cristian Frăsinaru
  */
 public class Graphs {
@@ -111,8 +107,10 @@ public class Graphs {
      *
      * @param g1 the first graph
      * @param g2 the second graph
-     * @return a new graph, representing the join of the given graphs
-     * https://mathworld.wolfram.com/GraphJoin.html</a>
+     * @return a new graph, representing the
+     * <a href="https://mathworld.wolfram.com/GraphJoin.html">join</a> of the
+     * given graphs.
+     *
      */
     public static Graph join(Graph g1, Graph g2) {
         CheckArguments.disjointVertices(g1, g2);
@@ -128,7 +126,7 @@ public class Graphs {
     /**
      * @see ConnectivityAlgorithm
      * @param graph the input graph
-     * @return {@code true} if the graph is connected
+     * @return {@code true} if the graph is connected.
      */
     public static boolean isConnected(Graph graph) {
         return new ConnectivityAlgorithm(graph).isConnected();
@@ -137,7 +135,7 @@ public class Graphs {
     /**
      * @see TarjanBiconnectivity
      * @param graph the input graph
-     * @return {@code true} if the graph is biconnected (2-connected)
+     * @return {@code true} if the graph is biconnected (2-connected).
      */
     public static boolean isBiconnected(Graph graph) {
         return new TarjanBiconnectivity(graph).isBiconnected();

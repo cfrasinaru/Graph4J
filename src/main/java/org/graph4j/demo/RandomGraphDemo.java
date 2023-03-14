@@ -18,7 +18,7 @@ package org.graph4j.demo;
 
 import org.jgrapht.generate.GnpRandomGraphGenerator;
 import org.jgrapht.graph.DefaultEdge;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 import org.graph4j.util.Tools;
 
 /**
@@ -37,7 +37,7 @@ class RandomGraphDemo extends PerformanceDemo {
 
     @Override
     protected void testGraph4J() {
-        var g = new GnpGraphGenerator(n, p).createGraph();
+        var g = new RandomGnpGraphGenerator(n, p).createGraph();
     }
 
     @Override

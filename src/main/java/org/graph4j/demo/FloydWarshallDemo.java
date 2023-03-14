@@ -19,7 +19,7 @@ package org.graph4j.demo;
 import edu.princeton.cs.algs4.FloydWarshall;
 import org.graph4j.alg.sp.FloydWarshallShortestPath;
 import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
@@ -35,7 +35,7 @@ class FloydWarshallDemo extends PerformanceDemo {
 
     @Override
     protected void createGraph() {
-        graph = new GnpGraphGenerator(numVertices, 0.1).createGraph();
+        graph = new RandomGnpGraphGenerator(numVertices, 0.1).createGraph();
         //graph = GraphGenerator.complete(numVertices);
         EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
 

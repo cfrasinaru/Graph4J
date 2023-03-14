@@ -24,6 +24,7 @@ import org.graph4j.Graph;
 import org.graph4j.util.CheckArguments;
 
 /**
+ * A breadth first search (BFS) iterator over the vertices of the graph.
  *
  * @author Cristian Frăsinaru
  */
@@ -42,7 +43,7 @@ public class BFSIterator implements Iterator<SearchNode> {
 
     /**
      *
-     * @param graph
+     * @param graph the input graph.
      */
     public BFSIterator(Graph graph) {
         this.graph = graph;
@@ -52,8 +53,8 @@ public class BFSIterator implements Iterator<SearchNode> {
 
     /**
      *
-     * @param graph
-     * @param start
+     * @param graph the input graph.
+     * @param start the start vertex number.
      */
     public BFSIterator(Graph graph, int start) {
         CheckArguments.graphContainsVertex(graph, start);

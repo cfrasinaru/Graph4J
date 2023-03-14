@@ -24,7 +24,10 @@ import org.graph4j.Multigraph;
 import org.graph4j.util.CheckArguments;
 
 /**
+ * A depth first search (DFS) traverser of the graph. As the graph is traversed,
+ * a visitor methods are invoked corresponding with the current operation.
  *
+ * @see DFSVisitor
  * @author Cristian Frăsinaru
  */
 public class DFSTraverser {
@@ -44,7 +47,7 @@ public class DFSTraverser {
 
     /**
      *
-     * @param graph
+     * @param graph the graph to be traversed.
      */
     public DFSTraverser(Graph graph) {
         if (graph instanceof Multigraph) {
@@ -67,7 +70,7 @@ public class DFSTraverser {
 
     /**
      *
-     * @param visitor
+     * @param visitor a visitor of the traversal.
      */
     public void traverse(DFSVisitor visitor) {
         if (graph.isEmpty()) {
@@ -78,8 +81,8 @@ public class DFSTraverser {
 
     /**
      *
-     * @param visitor
-     * @param start
+     * @param visitor a visitor of the traversal.
+     * @param start the start vertex number.
      */
     public void traverse(int start, DFSVisitor visitor) {
         CheckArguments.graphContainsVertex(graph, start);
@@ -178,7 +181,7 @@ public class DFSTraverser {
 
     /**
      *
-     * @return the number of connected components identified by the traversal
+     * @return the number of connected components identified by the traversal.
      */
     public int numComponents() {
         return compIndex;
@@ -186,7 +189,8 @@ public class DFSTraverser {
 
     /**
      *
-     * @return
+     * @return {@code true} if the traversal was interrupted before all vertices
+     * have been visited.     
      */
     public boolean isInterrupted() {
         return interrupted;

@@ -18,7 +18,6 @@ package org.graph4j.alg;
 
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
-import org.graph4j.util.VertexList;
 import org.graph4j.GraphBuilder;
 import org.graph4j.util.IntArrays;
 
@@ -36,7 +35,7 @@ public class AcyclicOrientation extends SimpleGraphAlgorithm {
 
     /**
      *
-     * @param graph
+     * @param graph the input undirected graph.
      */
     public AcyclicOrientation(Graph graph) {
         this(graph, graph.vertices());
@@ -44,8 +43,8 @@ public class AcyclicOrientation extends SimpleGraphAlgorithm {
 
     /**
      *
-     * @param graph
-     * @param vertexOrdering an ordering of the graph vertices
+     * @param graph the input undirected graph.
+     * @param vertexOrdering an ordering of the graph vertices.
      */
     public AcyclicOrientation(Graph graph, int[] vertexOrdering) {
         super(graph);
@@ -59,7 +58,7 @@ public class AcyclicOrientation extends SimpleGraphAlgorithm {
 
     /**
      *
-     * @return A directed acyclic graph, corresponding to the input graph
+     * @return A directed acyclic graph, corresponding to the input graph.
      */
     public Digraph create() {
         int[] vertexIndex = new int[graph.maxVertexNumber() + 1];

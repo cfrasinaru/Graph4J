@@ -26,6 +26,7 @@ interface Weighted {
      *
      * @param v a vertex number.
      * @param weight the weight to be set for vertex v.
+     * @return the index of the added vertex.
      */
     int addVertex(int v, double weight);
 

@@ -18,7 +18,7 @@ package org.graph4j.demo;
 
 import org.graph4j.alg.mst.PrimMinimumSpanningTreeHeap;
 import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 import edu.princeton.cs.algs4.PrimMST;
 
 /**
@@ -39,7 +39,7 @@ class PrimMSTDemo extends PerformanceDemo {
     @Override
     protected void createGraph() {
         //graph = new CompleteGenerator(numVertices).createGraph();
-        graph = new GnpGraphGenerator(numVertices, probability).createGraph();
+        graph = new RandomGnpGraphGenerator(numVertices, probability).createGraph();
         EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
     }
 

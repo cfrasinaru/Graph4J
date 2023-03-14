@@ -20,9 +20,7 @@ import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
 
 /**
- * Generates complete graphs or digraphs. A complete graph contains edges
- * between all pairs of vertices. A complete digraph contains symmetrical arcs
- * (oriented edges) between all pairs of vertices.
+ * Generates complete trees.
  *
  * @author Cristian Frăsinaru
  */
@@ -34,8 +32,8 @@ public class CompleteTreeGenerator extends AbstractGraphGenerator {
     /**
      * The root is the vertex with the number 0.
      *
-     * @param numLevels number of levels, each level will be complete
-     * @param degree the degree of the internal nodes
+     * @param numLevels number of levels, each level will be complete.
+     * @param degree the degree of the internal nodes.
      */
     public CompleteTreeGenerator(int numLevels, int degree) {
         if (numLevels < 2) {
@@ -50,7 +48,7 @@ public class CompleteTreeGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return a complete graph
+     * @return a complete tree.
      */
     public Graph create() {
         int n = (int) (Math.pow(degree, numLevels) - 1) / (degree - 1);

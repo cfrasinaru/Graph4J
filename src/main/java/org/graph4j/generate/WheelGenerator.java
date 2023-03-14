@@ -38,9 +38,9 @@ public class WheelGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @param firstVertex
-     * @param lastVertex
-     * @param center the number of the center vertex
+     * @param firstVertex the first vertex number.
+     * @param lastVertex the last vertex number.
+     * @param center the number of the center vertex.
      */
     public WheelGenerator(int firstVertex, int lastVertex, int center) {
         super(firstVertex, lastVertex);
@@ -53,7 +53,7 @@ public class WheelGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a wheel graph.
      */
     public Graph createGraph() {
         int n = vertices.length;
@@ -67,7 +67,7 @@ public class WheelGenerator extends AbstractGraphGenerator {
      *
      * @param clockwise the orientation of the cycle
      * @param outward the orientation of the edges connecting the center
-     * @return
+     * @return a directed wheel graph.
      */
     public Digraph createDigraph(boolean clockwise, boolean outward) {
         var g = GraphBuilder.vertices(vertices).estimatedAvgDegree(2).buildDigraph();

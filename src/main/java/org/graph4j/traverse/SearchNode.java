@@ -17,6 +17,9 @@
 package org.graph4j.traverse;
 
 /**
+ * A node of the DFS or BFS tree created while traversing a graph. It contains a
+ * vertex of the graph and additional information about its location in the
+ * exploration tree.
  *
  * @author Cristian Frăsinaru
  */
@@ -28,11 +31,23 @@ public class SearchNode {
     private final int order;
     private final SearchNode parent;
 
+    /**
+     *
+     * @param vertex the vertex number.
+     */
     public SearchNode(int vertex) {
         this(0, vertex, 0, 0, null);
     }
 
-    public SearchNode(int component, int vertex, int level, int order, SearchNode parent) {
+    /*
+     * 
+     * @param component 
+     * @param vertex
+     * @param level
+     * @param order
+     * @param parent 
+     */
+    SearchNode(int component, int vertex, int level, int order, SearchNode parent) {
         this.component = component;
         this.vertex = vertex;
         this.level = level;
@@ -42,7 +57,7 @@ public class SearchNode {
 
     /**
      *
-     * @return the connected component number of this node, starting with 0
+     * @return the connected component number of this node, starting with 0.
      */
     public int component() {
         return component;
@@ -50,7 +65,7 @@ public class SearchNode {
 
     /**
      *
-     * @return the vertex corresponding to this node
+     * @return the vertex corresponding to this node.
      */
     public int vertex() {
         return vertex;
@@ -58,7 +73,7 @@ public class SearchNode {
 
     /**
      *
-     * @return the level of this nod in the DFS tree
+     * @return the level of this node in the tree.
      */
     public int level() {
         return level;
@@ -66,7 +81,7 @@ public class SearchNode {
 
     /**
      *
-     * @return the visiting time, starting with 0
+     * @return the visiting time, starting with 0.
      */
     public int order() {
         return order;
@@ -74,7 +89,7 @@ public class SearchNode {
 
     /**
      *
-     * @return
+     * @return the parent of this node, or {@code null} if it is root.
      */
     public SearchNode parent() {
         return parent;
@@ -82,8 +97,8 @@ public class SearchNode {
 
     /**
      *
-     * @param other
-     * @return true, if this node is an ancestor of other
+     * @param other another node of the tree.
+     * @return {@code true}, if this node is an ancestor of other.
      */
     public boolean isAncestorOf(SearchNode other) {
         while (other != null) {
@@ -96,10 +111,10 @@ public class SearchNode {
     }
 
     /**
-     * 
-     * @param a
-     * @param b
-     * @return 
+     *
+     * @param a a node of the tree.
+     * @param b a node of the tree
+     * @return the neareast ancestor of a and b.
      */
     public static SearchNode nearestAncestor(SearchNode a, SearchNode b) {
         while (!b.isAncestorOf(a)) {

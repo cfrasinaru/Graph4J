@@ -40,7 +40,7 @@ public class RandomTreeGenerator extends AbstractGraphGenerator {
 
     /**
      *
-     * @return
+     * @return a random tree.
      */
     public Graph create() {
         int n = vertices.length;

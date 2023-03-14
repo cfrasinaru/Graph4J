@@ -37,6 +37,10 @@ public class GraphMetrics extends GraphAlgorithm {
     private int diameter;
     private int radius;
 
+    /**
+     *
+     * @param graph the input graph.
+     */
     public GraphMetrics(Graph graph) {
         super(graph);
     }
@@ -55,8 +59,6 @@ public class GraphMetrics extends GraphAlgorithm {
 
     /**
      * Computes the eccentricity of a vertex.
-     *
-     * See {@link #eccentricity(int, boolean}}.
      *
      * @param vertex a vertex number
      * @return the eccentricity of the vertex

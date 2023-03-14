@@ -30,7 +30,7 @@ import org.graph4j.util.Tools;
  *
  * @author Cristian Frăsinaru
  */
-public abstract class PerformanceDemo {
+abstract class PerformanceDemo {
 
     protected static final String GRAPH4J = "Graph4J";
     protected static final String JGRAPHT = "JGraphT";

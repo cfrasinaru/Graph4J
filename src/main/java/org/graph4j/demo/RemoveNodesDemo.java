@@ -19,7 +19,7 @@ package org.graph4j.demo;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.graph4j.generate.GnmGraphGenerator;
+import org.graph4j.generate.RandomGnmGraphGenerator;
 
 /**
  *
@@ -41,7 +41,7 @@ class RemoveNodesDemo extends PerformanceDemo {
     @Override
     protected void createGraph() {        
         //avg deg = 2m / n = 100
-        graph = new GnmGraphGenerator(numVertices, 50*numVertices).createGraph();
+        graph = new RandomGnmGraphGenerator(numVertices, 50*numVertices).createGraph();
     }
 
     @Override

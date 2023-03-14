@@ -16,7 +16,10 @@
  */
 package org.graph4j;
 
+import java.util.NoSuchElementException;
+
 /**
+ * An iterator over all the vertices of a graph.
  *
  * @author Cristian Frăsinaru
  * @param <V> the type of vertex labels.
@@ -24,43 +27,48 @@ package org.graph4j;
 public interface VertexIterator<V> {
 
     /**
+     * Returns {@code true} if the iteration has more vertices. If it returns
+     * {@code true}, the {@link #next} method would return a vertex rather than
+     * throwing an exception.
      *
-     * @return
+     * @return {@code true} if the iteration has more vertices.
      */
     boolean hasNext();
 
     /**
+     * Returns the next vertex in the iteration.
      *
-     * @return
+     * @return the next vertex in the iteration.
+     * @throws NoSuchElementException if the iteration has no more vertices.
      */
     int next();
 
     /**
      *
-     * @param weight
+     * @param weight the weight to be set for the current vertex.
      */
     void setWeight(double weight);
 
     /**
      *
-     * @return
+     * @return the weight of the current vertex.
      */
     double getWeight();
 
     /**
      *
-     * @param label
+     * @param label the label to be set for the current vertex.
      */
     void setLabel(V label);
 
     /**
      *
-     * @return
+     * @return the label of the current vertex.
      */
     V getLabel();
 
     /**
-     *
+     * Removes the current vertex from the graph.
      */
     void remove();
 }

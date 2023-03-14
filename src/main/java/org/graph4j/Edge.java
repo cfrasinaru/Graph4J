@@ -17,11 +17,12 @@
 package org.graph4j;
 
 /**
- * An edge is a pair of vertices. It may or may not be part of the graph. Edges
+ * An edge is a pair of vertices.It may or may not be part of the graph. Edges
  * are not stored as objects in the graph structure, instead they are created on
  * demand.
  *
  * @author Cristian Frăsinaru
+ * @param <E> the type of edge labels in this graph.
  */
 public class Edge<E> implements Comparable<Edge> {
 
@@ -34,60 +35,60 @@ public class Edge<E> implements Comparable<Edge> {
     /**
      *
      * @param source the source endpoint of the edge.
-     * @param target
+     * @param target the target endpoint of the edge.
      */
     public Edge(int source, int target) {
         this(source, target, false, null, null);
     }
 
     /**
-     * 
+     *
      * @param source the source endpoint of the edge.
-     * @param target
-     * @param weight
-     * @param label 
+     * @param target the target endpoint of the edge.
+     * @param weight the weight of the edge.
+     * @param label the label of the edge.
      */
     public Edge(int source, int target, Double weight, E label) {
         this(source, target, false, weight, label);
     }
 
     /**
-     * 
+     *
      * @param source the source endpoint of the edge.
-     * @param target
-     * @param weight 
+     * @param target the target endpoint of the edge.
+     * @param weight the weight of the edge.
      */
     public Edge(int source, int target, Double weight) {
         this(source, target, false, weight, null);
     }
 
     /**
-     * 
+     *
      * @param source the source endpoint of the edge.
-     * @param target
-     * @param label 
+     * @param target the target endpoint of the edge.
+     * @param label the label of the edge.
      */
     public Edge(int source, int target, E label) {
         this(source, target, false, null, label);
     }
 
     /**
-     * 
+     *
      * @param source the source endpoint of the edge.
-     * @param target
-     * @param directed 
+     * @param target target the target endpoint of the edge.
+     * @param directed {@code true} if the edge has a direction (in case of digraphs).
      */
     public Edge(int source, int target, boolean directed) {
         this(source, target, directed, null, null);
     }
 
     /**
-     * 
+     *
      * @param source the source endpoint of the edge.
-     * @param target
-     * @param directed
-     * @param weight
-     * @param label 
+     * @param target target the target endpoint of the edge.
+     * @param directed {@code true} if the edge has a direction (in case of digraphs).
+     * @param weight the weight of the edge.
+     * @param label the label of the edge.
      */
     public Edge(int source, int target, boolean directed, Double weight, E label) {
         this.source = source;
@@ -98,7 +99,7 @@ public class Edge<E> implements Comparable<Edge> {
     }
 
     /**
-     * 
+     *
      * @return the source endpoint of the edge.
      */
     public int source() {
@@ -106,7 +107,7 @@ public class Edge<E> implements Comparable<Edge> {
     }
 
     /**
-     * 
+     *
      * @return the target (sink) endpoint of the edge.
      */
     public int target() {
@@ -114,7 +115,7 @@ public class Edge<E> implements Comparable<Edge> {
     }
 
     /**
-     * 
+     *
      * @return {@code true} if the edge is directed (is case of digraphs).
      */
     public boolean isDirected() {
@@ -122,7 +123,7 @@ public class Edge<E> implements Comparable<Edge> {
     }
 
     /**
-     * 
+     *
      * @return {@code true} if the source and the target are the same.
      */
     public boolean isSelfLoop() {

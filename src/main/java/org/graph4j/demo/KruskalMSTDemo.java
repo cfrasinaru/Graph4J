@@ -19,7 +19,7 @@ package org.graph4j.demo;
 import edu.princeton.cs.algs4.KruskalMST;
 import org.graph4j.alg.mst.KruskalMinimumSpanningTree;
 import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
@@ -37,7 +37,7 @@ class KruskalMSTDemo extends PerformanceDemo {
 
     @Override
     protected void createGraph() {
-        graph = new GnpGraphGenerator(numVertices, probability).createGraph();
+        graph = new RandomGnpGraphGenerator(numVertices, probability).createGraph();
         EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
     }
 

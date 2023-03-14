@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.graph4j.Graph;
 import org.graph4j.Graphs;
 import org.graph4j.generate.CompleteTreeGenerator;
-import org.graph4j.generate.GnmGraphGenerator;
-import org.graph4j.generate.GnpGraphGenerator;
+import org.graph4j.generate.RandomGnmGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 import org.graph4j.generate.GraphGenerator;
 import org.graph4j.generate.RandomTreeGenerator;
 import org.graph4j.generate.RegularGraphGenerator;
@@ -90,15 +90,15 @@ public class GraphGeneratorTest {
     public void randomGnm() {
         int n = 10;
         int m = 20;
-        Graph g = new GnmGraphGenerator(n, m).createGraph();
+        Graph g = new RandomGnmGraphGenerator(n, m).createGraph();
         assertEquals(m, g.numEdges());
     }
 
     @Test
     public void randomGnp() {
         int n = 100;
-        var g1 = new GnpGraphGenerator(n, 0).createGraph();
-        var g2 = new GnpGraphGenerator(n, 1).createGraph();
+        var g1 = new RandomGnpGraphGenerator(n, 0).createGraph();
+        var g2 = new RandomGnpGraphGenerator(n, 1).createGraph();
         assertEquals(0, g1.numEdges());
         assertEquals(n * (n - 1) / 2, g2.numEdges());
     }

@@ -150,4 +150,16 @@ public class OperationsTest {
         assertEquals(2, g2.supportGraph().numEdges());
     }
 
+    @Test
+    public void transpose() {
+        var g = GraphBuilder.numVertices(4)
+                .addEdges("0-1, 0-2, 0-3, 1-3")
+                .buildDigraph();
+        var t = Graphs.transpose(g);
+        assertEquals(g.numEdges(), t.numEdges());
+        assertTrue(t.containsEdge(1, 0));
+        assertTrue(t.containsEdge(2, 0));
+        assertTrue(t.containsEdge(3, 0));
+        assertTrue(t.containsEdge(3, 1));
+    }
 }

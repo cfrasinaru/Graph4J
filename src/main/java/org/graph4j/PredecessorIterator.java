@@ -17,7 +17,7 @@
 package org.graph4j;
 
 /**
- * Enables iteration through the edges incident to a target vertex, returning
+ * Enables iteration over the edges incident to a target vertex, returning
  * one by one the predecessors of the target along with information regarding
  * the corresponding edge.
  *

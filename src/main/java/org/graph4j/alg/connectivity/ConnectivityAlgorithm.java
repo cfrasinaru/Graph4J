@@ -27,6 +27,9 @@ import org.graph4j.traverse.DFSIterator;
 import org.graph4j.util.CheckArguments;
 
 /**
+ * Determines the connected components of a graph. In case of directed graph,
+ * the algorithm is executed on its support graph, analyzing the
+ * weak-connectivity of the digraph.
  *
  * @author Cristian Frăsinaru
  */
@@ -44,7 +47,7 @@ public class ConnectivityAlgorithm extends SimpleGraphAlgorithm {
      * A graph is connected if there is a path from any vertex to any other
      * vertex in the graph.
      *
-     * @return {@code true} if the graph is connected
+     * @return {@code true} if the graph is connected.
      */
     public boolean isConnected() {
         if (connected != null) {
@@ -62,9 +65,36 @@ public class ConnectivityAlgorithm extends SimpleGraphAlgorithm {
     }
 
     /**
+     * Determines if there is a path from v to u in the graph.
+     *
+     * @param v a vertex number.
+     * @param u a vertex number.
+     * @return {@code true} if v and u are connected.
+     */
+    public boolean hasPath(int v, int u) {
+        if (connected) {
+            return true;
+        }
+        if (connectedSets != null) {
+            return getConnectedSet(v).contains(u);
+        }
+        var dfs = new DFSIterator(graph, v);
+        while (dfs.hasNext()) {
+            var node = dfs.next();
+            if (node.component() > 0) {
+                break;
+            }
+            if (node.vertex() == u) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Each connected component is represented by its vertices. In order to
      * obtain the subgraph induced by a connected component vertices, you may
-     * use {@link Graph#subgraph(VertexSet)  }.
+     * use {@link Graph#subgraph(VertexSet) }.
      * <pre>
      *   Graph cc = graph.subgraph(set.vertices());
      * </pre>
@@ -111,18 +141,6 @@ public class ConnectivityAlgorithm extends SimpleGraphAlgorithm {
         }
         vertexSetMap.put(v, vset);
         return vset;
-    }
-
-    @Deprecated
-    private List<Graph> getConnectedComponents() {
-        if (connectedSets == null) {
-            createConnectedSets();
-        }
-        List<Graph> components = new ArrayList<>(connectedSets.size());
-        for (var set : connectedSets) {
-            components.add(graph.subgraph(set));
-        }
-        return components;
     }
 
     //all of them

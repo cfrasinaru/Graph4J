@@ -23,6 +23,7 @@ package org.graph4j;
 interface Weighted {
 
     /**
+     * Adds a new vertex to the graph having the specified number and weight.
      *
      * @param v a vertex number.
      * @param weight the weight to be set for vertex v.
@@ -31,6 +32,8 @@ interface Weighted {
     int addVertex(int v, double weight);
 
     /**
+     * Adds a new vertex to the graph having the number equal to the maximum
+     * vertex number plus one and the specified weight.
      *
      * @param weight the weight to be set for the added vertex.
      * @return the number of the added vertex.
@@ -38,6 +41,8 @@ interface Weighted {
     int addVertex(double weight);
 
     /**
+     * Adds a new weighted edge to the graph. The endpoints of the edge are
+     * identified using their vertex numbers.
      *
      * @param v a vertex number
      * @param u a vertex number
@@ -47,6 +52,7 @@ interface Weighted {
     int addEdge(int v, int u, double weight);
 
     /**
+     * Sets the weight of a vertex.
      *
      * @param v a vertex number.
      * @param weight the weight to be set for vertex v.
@@ -54,14 +60,17 @@ interface Weighted {
     void setVertexWeight(int v, double weight);
 
     /**
-     * The default weight of a vertex is 0.
+     * Returns the weight of a vertex. If no weights have been set (the graph is
+     * vertex unweighted) it returns {@link Graph#DEFAULT_VERTEX_WEIGHT}, which
+     * is 1.
      *
-     * @param v a vertex number
-     * @return the weight of the vertex, 0 if the graph is unweighted
+     * @param v a vertex number.
+     * @return the weight of the vertex, 1 if the graph is unweighted.
      */
     double getVertexWeight(int v);
 
     /**
+     * Sets the weight of an edge.
      *
      * @param v a vertex number.
      * @param u a vertex number.
@@ -70,22 +79,28 @@ interface Weighted {
     void setEdgeWeight(int v, int u, double weight);
 
     /**
-     * The default weight of an edge is 1.
+     * Returns the weight of an edge. If no weights have been set on edges (the
+     * graph is edge unweighted) it returns {@link Graph#DEFAULT_EDGE_WEIGHT},
+     * which is 1. If the endpoints v and u do not represent an edge, it returns
+     * {@link Double#POSITIVE_INFINITY}.
      *
      * @param v a vertex number.
      * @param u a vertex number.
-     * @return the weight of the edge vu, 1 if the graph is unweighted, and
-     * <code>Graph.NO_EDGE_WEIGHT</code> if vu is not an edge of the graph.
+     * @return the weight of the edge vu.
      */
     double getEdgeWeight(int v, int u);
-    
+
     /**
+     * Returns {@code true} if the graph is edge weighted, that is there is at
+     * least one edge that has been assigned a weight.
      *
      * @return {@code true}, if weights have been set on edges.
      */
     boolean isEdgeWeighted();
 
     /**
+     * Returns {@code true} if the graph is vertex weighted, that is there is at
+     * least one vertex that has been assigned a weight.
      *
      * @return {@code true}, if weights have been set on vertices.
      */

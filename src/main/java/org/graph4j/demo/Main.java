@@ -17,6 +17,12 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
+import org.graph4j.Digraph;
+import org.graph4j.GraphBuilder;
+import org.graph4j.Graphs;
+import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;
+import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.jgrapht.alg.connectivity.BiconnectivityInspector;
 
 /**
  * Driver class for running the comparisons with other libraries.
@@ -42,6 +48,7 @@ class Main {
         //var app = new EulerianCircuitDemo();
         //var app = new BellmanFordDemo();
         //var app = new FloydWarshallDemo();
+        //var app = new BidirectionalDijkstraDemo();
         //var app = new DijkstraDemo1();
 
         //var app = new DFSVisitorDemo();
@@ -69,7 +76,42 @@ class Main {
         run(this::test);
     }
 
-    private void test() {              
+    private void test() {
+        var g = GraphBuilder.empty().buildGraph();
+        int v = g.addVertex();
+        System.out.println(v);
+        v = g.addVertex();
+        System.out.println(v);
+        
+        //var g = GraphBuilder.numVertices(6).addEdges("0-1,1-2,2-0,1-3,3-4,4-5,5-3").buildGraph();
+        //var g = GraphGenerator.complete(6);
+        //var g = GraphGenerator.path(6);
+        /*
+        var g = GraphGenerator.cycle(6);
+        var alg = new BridgeDetectionAlgorithm(g);
+        System.out.println(alg.getBridges());
+         */
+
+ /*
+        int n = 10;
+        for (int i = 0; i < 100; i++) {
+            Digraph g = new RandomGnpGraphGenerator(n, 0.5).createDigraph();
+            EdgeWeightsGenerator.randomIntegers(g, 0, 9);
+            //System.out.println(g);
+            //Graph g = GraphGenerator.path(n);           
+            //EdgeWeightsGenerator.fill(g, 1);
+            var alg1 = new DijkstraShortestPathHeap(g, 0);
+            var alg2 = new BidirectionalDijkstra(g, 0, n - 1);
+            double x1 = alg1.getPathWeight(n - 1);
+            double x2 = alg2.getPathWeight();
+            if (x1 != x2) {
+                System.out.println(g);
+                System.out.println(Graphs.transpose(g));
+                System.out.println(x1);
+                System.out.println(x2);
+                break;
+            }
+        }*/
     }
 
     protected void run(Runnable snippet) {

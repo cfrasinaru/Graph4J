@@ -16,75 +16,71 @@
  */
 package org.graph4j.alg.connectivity;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.graph4j.Graph;
 import org.graph4j.alg.SimpleGraphAlgorithm;
-import org.graph4j.util.VertexSet;
 import org.graph4j.util.VertexStack;
 import org.graph4j.traverse.DFSVisitor;
 import org.graph4j.traverse.DFSTraverser;
 import org.graph4j.traverse.SearchNode;
+import org.graph4j.util.EdgeSet;
 
 /**
- * The algorithm for computing biconnected components in a connected undirected
- * graph is due to John Hopcroft and Robert Tarjan (1973). It runs in linear
- * time, and is based on depth-first search.
+ * A bridge in an undirected graph is defined as an edge which, when removed,
+ * increases the number of connected components in the graph).
  *
- * A <em>block</em> is a maximal 2-connected subgraph.
+ * The algorithm runs in linea time, and is based on depth-first search.
+ *
  *
  * @author Cristian Frăsinaru
  */
-public class TarjanBiconnectivity extends SimpleGraphAlgorithm
-        implements BiconnectivityAlgorithm {
+public class BridgeDetectionAlgorithm extends SimpleGraphAlgorithm {
 
-    private Boolean biconnected;
-    private List<VertexSet> blocks;
-    private VertexSet cutVertices;
+    private Boolean bridgeless;
+    private EdgeSet bridges;
 
-    public TarjanBiconnectivity(Graph graph) {
+    /**
+     *
+     * @param graph the input graph.
+     */
+    public BridgeDetectionAlgorithm(Graph graph) {
         super(graph);
     }
 
-    @Override
-    public boolean isBiconnected() {
-        if (biconnected != null) {
-            return biconnected;
+    /**
+     *
+     * @return {@code true} if the graph contains no bridge.
+     */
+    public boolean isBridgeless() {
+        if (bridgeless != null) {
+            return bridgeless;
         }
         if (graph.numVertices() < 2) {
             return false;
         }
         compute(true);
-        return biconnected;
+        return bridgeless;
     }
 
-    @Override
-    public VertexSet getCutVertices() {
-        if (blocks == null) {
-            getBlocks();
+    /**
+     *
+     * @return the bridges of the graph.
+     */
+    public EdgeSet getBridges() {
+        if (bridges == null) {
+            compute(false);
         }
-        return cutVertices;
-    }
-
-    @Override
-    public List<VertexSet> getBlocks() {
-        if (blocks != null) {
-            return blocks;
-        }
-        compute(false);
-        return blocks;
+        return bridges;
     }
 
     private void compute(boolean checkOnly) {
-        this.blocks = new ArrayList<>();
-        this.cutVertices = new VertexSet(graph);
+        this.bridges = new EdgeSet(graph);
         var dfs = new DFSTraverser(graph);
         dfs.traverse(new Visitor(checkOnly));
-        if (biconnected == null) {
-            biconnected = true;
+        if (bridgeless == null) {
+            bridgeless = true;
         }
         if (dfs.isInterrupted()) {
-            blocks = null;
+            bridges = null;
         }
     }
 
@@ -109,15 +105,6 @@ public class TarjanBiconnectivity extends SimpleGraphAlgorithm
         }
 
         @Override
-        public void treeEdge(SearchNode from, SearchNode to) {
-            int v = from.vertex();
-            if (isRoot(from) && !stack.contains(v)) {
-                cutVertices.add(v);
-                stack.push(v);
-            }
-        }
-
-        @Override
         public void backEdge(SearchNode from, SearchNode to) {
             //change the lowpoint of v=from.vertex
             int vi = graph.indexOf(from.vertex());
@@ -133,36 +120,14 @@ public class TarjanBiconnectivity extends SimpleGraphAlgorithm
             //going up v -> u
             //the lowpoint of u is atleast the lowpoint of v 
             low[ui] = Math.min(low[ui], low[vi]);
-            //
-            if (low[vi] >= to.order()) {
-                //u is an articulation point (cut vertex)
-                //u and the vertices on the stack up to u form a block
-                if (biconnected == null && blocks.size() > 0) {
-                    biconnected = false;
-                    if (checkOnly) {
-                        interrupt();
-                    }
+            if (low[vi] > to.order()) {
+                bridgeless = false;
+                if (checkOnly) {
+                    interrupt();
                 }
-                createBlock(to);
-            }
-            if (!isRoot(to)) {
-                stack.push(u);
+                bridges.add(u, v);
             }
         }
 
-        private void createBlock(SearchNode node) {
-            int u = node.vertex();
-            //u is an articulation point
-            var block = new VertexSet(graph);
-            int w;
-            do {
-                w = stack.pop();
-                block.add(w);
-            } while (w != u);
-            blocks.add(block);
-            if (!isRoot(node)) {
-                cutVertices.add(u);
-            }
-        }
     }
 }

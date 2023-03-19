@@ -435,8 +435,12 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     int contractVertices(int... vertices);
 
     /**
+     * Returns the maximum vertex number in the graph. If the default vertex
+     * numbering is used, the maximum vertex number is
+     * {@code numVertices() - 1}.
      *
-     * @return the maximum vertex number in the graph.
+     * @return the maximum vertex number in the graph, or {@code -1} if the
+     * graph is empty (it contains no vertices).
      */
     int maxVertexNumber();
 
@@ -606,5 +610,5 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * @return {@code true} if the graph is in safe mode.
      */
     boolean isSafeMode();
-    
+
 }

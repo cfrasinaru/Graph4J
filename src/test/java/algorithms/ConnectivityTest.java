@@ -101,7 +101,7 @@ public class ConnectivityTest {
         System.out.println(g);
         var alg = new TarjanBiconnectivity(g);
         System.out.println(alg.getBlocks());
-
     }
+            
    
 }

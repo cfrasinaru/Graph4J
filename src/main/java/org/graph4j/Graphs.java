@@ -20,9 +20,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 import org.graph4j.alg.AcyclicOrientation;
+import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;
 import org.graph4j.alg.cycle.CycleDetectionAlgorithm;
 import org.graph4j.alg.connectivity.TarjanBiconnectivity;
 import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
+import org.graph4j.traverse.DFSIterator;
 import org.graph4j.util.CheckArguments;
 
 /**
@@ -124,12 +126,38 @@ public class Graphs {
     }
 
     /**
+     * Determines if a graph is connected. If the input graph is directed, the
+     * algorithm is performed on its support graph (it tests weak connectivity).
+     *
      * @see ConnectivityAlgorithm
-     * @param graph the input graph
+     * @param graph the input graph.
      * @return {@code true} if the graph is connected.
      */
     public static boolean isConnected(Graph graph) {
         return new ConnectivityAlgorithm(graph).isConnected();
+    }
+
+    /**
+     * Determines if there is a path connecting two vertices. If the input graph
+     * is directed, the path takes into account the edge orientations.
+     *
+     * @param graph the input graph.
+     * @param v a vertex number.
+     * @param u a vertex number.
+     * @return {@code true} if there is a path connecting v and u.
+     */
+    public static boolean hasPath(Graph graph, int v, int u) {
+        var dfs = new DFSIterator(graph, v);
+        while (dfs.hasNext()) {
+            var node = dfs.next();
+            if (node.component() > 0) {
+                break;
+            }
+            if (node.vertex() == u) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -142,12 +170,63 @@ public class Graphs {
     }
 
     /**
+     * @see BridgeDetectionAlgorithm
+     * @param graph the input graph
+     * @return {@code true} if the graph does not contain any bridge.
+     */
+    public static boolean isBridgeless(Graph graph) {
+        return new BridgeDetectionAlgorithm(graph).isBridgeless();
+    }
+
+    /**
      * @see CycleDetectionAlgorithm
      * @param graph the input graph
      * @return {@code true} if the graph contains at least one cycle.
      */
     public static boolean containsCycle(Graph graph) {
         return new CycleDetectionAlgorithm(graph).containsCycle();
+    }
+
+    /**
+     * A <em>regular</em> graph is a graph where each vertex has the same number
+     * of neighbors (degree). For a regular directed graph, the indegree and
+     * outdegree of each vertex must also be equal.
+     *
+     * @param graph an input graph.
+     * @return {@code true} if all vertices have the same degree.
+     */
+    public static boolean isRegular(Graph graph) {
+        if (graph.isEmpty()) {
+            return true;
+        }
+        int deg = graph.degree(graph.vertexAt(0));
+        return isRegular(graph, deg);
+    }
+
+    /**
+     * A <em>k-regular</em> graph is a graph where each vertex has k neighbors.
+     * For a k-regular directed graph, the indegree and outdegree of each vertex
+     * must both be equal to k.
+     *
+     * @param graph the input graph.
+     * @param k a degree.
+     * @return {@code true} if the graph is k-regular.
+     */
+    public static boolean isRegular(Graph graph, int k) {
+        for (int v : graph.vertices()) {
+            if (graph.degree(v) != k) {
+                return false;
+            }
+        }
+        if (graph.isDirected()) {
+            var digraph = (Digraph) graph;
+            for (int v : graph.vertices()) {
+                if (digraph.indegree(v) != digraph.outdegree(v)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**

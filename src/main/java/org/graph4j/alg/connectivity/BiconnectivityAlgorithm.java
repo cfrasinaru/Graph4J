@@ -47,6 +47,7 @@ public interface BiconnectivityAlgorithm {
     VertexSet getCutVertices();
 
     /**
+     * Returns the default implementation of this interface.
      *
      * @param graph the input graph.
      * @return the default implementation of this interface.

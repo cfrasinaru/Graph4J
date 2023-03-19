@@ -38,29 +38,7 @@ import org.graph4j.util.VertexSet;
  * @param <E> the type of edge labels in this graph
  */
 class GraphImpl<V, E> implements Graph<V, E> {
-    //graph
-    //vertices=4n, degree=4n, adjList=4n+2*4m, adjPos=4n+2*4m 
-    //vertexWeight=8n, edgeWeight=4n+2*8m
-    //vertexLabel=4n, edgeLabel=4n+2*4m
-    //
-    //vertexIndex=4n
-    //adjSet=n^2/64 ~ m
-    //labelVertexMap=4n + 16n
-    //labelEdgeMap=16m + 16m
-    //
-    //simple graph: 16n + 16m (adjPos true, adjSet false) OK    
-    //simple with fast adjacency test: 16n + 17m OK
-    //edge weighted graph: 20n + 32/33m  OK
-    //edge labeled graph: 20n + 24/25m OK
-    //vertex labeled graph:24n + 16m OK
 
-    //
-    //digraph
-    //vertices=4n, degree=4n, indegree=4n, adjList = 4n+4m, predList=4n+4m, predPos=4n + 4m
-    //vertexWeight=8n, edgeWeight=4n+8m
-    //vertexLabel=4n, edgeLabel=4n+4m
-    //simple digraph=24n + 12/13m OK
-    //simple weighted digraph=28n + 20/21m OK
     protected String name;
     protected int maxVertices; //maximum number of vertices
     protected int numVertices; //number of vertices
@@ -175,7 +153,6 @@ class GraphImpl<V, E> implements Graph<V, E> {
         return new GraphImpl(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
     }
 
-   
     @Override
     public Graph<V, E> copy() {
         return copy(true, true, true, true, true);
@@ -196,7 +173,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
         copy.directed = directed;
         copy.allowingMultipleEdges = allowingMultipleEdges;
         copy.allowingSelfLoops = allowingSelfLoops;
-        
+
         copy.vertices = Arrays.copyOf(vertices, numVertices);
         copy.degree = edges ? Arrays.copyOf(degree, numVertices) : new int[vertices.length];
 
@@ -321,7 +298,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
 
     @Override
     public int addVertex() {
-        int v = maxVertexNumber();
+        int v = 1 + maxVertexNumber();
         addVertex(v);
         return v;
     }
@@ -426,25 +403,24 @@ class GraphImpl<V, E> implements Graph<V, E> {
             vertexIndex.shiftLeft(vertices[i]);
         }         
     }*/
-    
     @Override
     public int maxVertexNumber() {
         if (maxVertexNumber == null) {
-            maxVertexNumber = 1 + IntStream.of(vertices()).max().orElse(-1);
+            maxVertexNumber = IntStream.of(vertices()).max().orElse(-1);
         }
         return maxVertexNumber;
     }
 
     @Override
     public int addEdge(Edge<E> e) {
-        if (edgeWeight != null) {
-            if (edgeLabel != null) {
+        if (edgeWeight != null || e.weight != null) {
+            if (edgeLabel != null || e.label != null) {
                 return addEdge(e.source, e.target, e.weight, e.label);
             } else {
                 return addEdge(e.source, e.target, e.weight);
             }
         } else {
-            if (edgeLabel != null) {
+            if (edgeLabel != null || e.label != null) {
                 return addEdge(e.source, e.target, e.label);
             } else {
                 return addEdge(e.source, e.target);

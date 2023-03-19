@@ -1,0 +1,5 @@
+1.0.1
+  - New algorithm for single pair shortest path: org.graph4j.alg.sp.BidirectionalDijkstra
+  - New algorithm for bridge detection: org.graph4j.alg.connectivity.BridgeDetectionAlgorithm
+  - Bug: Graph.maxVertexNumber() was not correct (should return -1 in case of an empty graph)
+  - Bug: Graph.addVertex() was not correct (due to maxVertexNumber being incorrect)

@@ -18,7 +18,7 @@ BGL https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
 https://github.com/YaccConstructor/QuickGraph/tree/master/src/QuickGraph/Algorithms
 
 NetworkX or the BGL. or Igraph
-JGraphT—A Java Library for Graph Data Structures and Algorithms
+JGraphT—A Java Library for Graph Data Structures and Algorithms https://arxiv.org/abs/1904.08355
 
 R Plots
 https://sites.harding.edu/fmccown/r/
@@ -39,7 +39,6 @@ Comparatii legate de modul de rulare / performanta:
 Implementare de noi algoritmi
 
 Shortest Paths:
-	-Bidirectional Dijkstra (multithreaded Dijkstra?)
 	https://en.wikipedia.org/wiki/Johnson%27s_algorithm
 Johnson's algorithm
 	https://en.wikipedia.org/wiki/Johnson%27s_algorithm	
@@ -50,13 +49,22 @@ Finding the k-shortest path between two nodes
 
 
 For the Assignment Problem
+
+Succesive shortest path algorithm
+https://github.com/kevin-wayne/algs4/blob/master/src/main/java/edu/princeton/cs/algs4/AssignmentProblem.java
+
 Hungarian algorithm ( Kuhn Munkres Minima lWeight Bipartite Perfect Matching)
 https://en.wikipedia.org/wiki/Hungarian_algorithm
 https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/matching/KuhnMunkresMinimalWeightBipartitePerfectMatching.java
 https://github.com/KevinStern/software-and-algorithms/blob/master/src/main/java/blogspot/software_and_algorithms/stern_library/optimization/HungarianAlgorithm.java
 
+
 Jonker-Volgenant Algorithm for Linear Assignment Problem
 R. Jonker and A. Volgenant, "A shortest augmenting path algorithm for dense and spare linear assignment problems"
+https://github.com/yongyanghz/LAPJV-algorithm-c/blob/master/LAPJV/lap.cpp
+
+
+
 
 
 PageRank
@@ -99,3 +107,29 @@ Dynamic Connected Components (using Disjoint Sets)
 Reverse Cuthill Mckee Ordering
 Smallest Last Vertex Ordering
 Sequential Vertex Coloring
+
+
+
+    //graph
+    //vertices=4n, degree=4n, adjList=4n+2*4m, adjPos=4n+2*4m 
+    //vertexWeight=8n, edgeWeight=4n+2*8m
+    //vertexLabel=4n, edgeLabel=4n+2*4m
+    //
+    //vertexIndex=4n
+    //adjSet=n^2/64 ~ m
+    //labelVertexMap=4n + 16n
+    //labelEdgeMap=16m + 16m
+    //
+    //simple graph: 16n + 16m (adjPos true, adjSet false) OK    
+    //simple with fast adjacency test: 16n + 17m OK
+    //edge weighted graph: 20n + 32/33m  OK
+    //edge labeled graph: 20n + 24/25m OK
+    //vertex labeled graph:24n + 16m OK
+
+    //
+    //digraph
+    //vertices=4n, degree=4n, indegree=4n, adjList = 4n+4m, predList=4n+4m, predPos=4n + 4m
+    //vertexWeight=8n, edgeWeight=4n+8m
+    //vertexLabel=4n, edgeLabel=4n+4m
+    //simple digraph=24n + 12/13m OK
+    //simple weighted digraph=28n + 20/21m OK

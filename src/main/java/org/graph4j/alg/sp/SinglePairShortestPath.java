@@ -16,13 +16,14 @@
  */
 package org.graph4j.alg.sp;
 
+import org.graph4j.Graph;
 import org.graph4j.util.Path;
 
 /**
- * Find a shortest path from u to v, for given vertices u and v. If we solve the
- * single-source problem with source vertex u, we solve this problem also.
+ * Find a shortest path from s to t, for given vertices s and t. If we solve the
+ * single-source problem with source vertex s, we solve this problem also.
  * Moreover, all known algorithms for this problem have the same worst-case
- * asymptotic running time as the best single-source algorithms
+ * asymptotic running time as the best single-source algorithms.
  *
  * @author Cristian Frăsinaru
  */
@@ -38,11 +39,35 @@ public interface SinglePairShortestPath {
 
     /**
      *
+     * @return the source vertex number.
+     */
+    int getSource();
+
+    /**
+     *
+     * @return the target vertex number.
+     */
+    int getTarget();
+
+    /**
+     *
      * @return the weight of the shortest path from the source to the target, or
-     * <code>Double.POSTIVE_INFINITY</code> if no path exist.
+     * {@link Double#POSITIVE_INFINITY} if no path exists.
      */
     default double getPathWeight() {
-        return findPath().computeEdgesWeight();
+        Path path = findPath();
+        return path == null ? Double.POSITIVE_INFINITY : path.computeEdgesWeight();
     }
 
+    /**
+     * Returns the default implementation of this interface.
+     *
+     * @param graph the input graph.
+     * @param source the source vertex.
+     * @param target the target vertex.
+     * @return the default implementation of this interface.
+     */
+    static SinglePairShortestPath getInstance(Graph graph, int source, int target) {
+        return new BidirectionalDijkstra(graph, source, target);
+    }
 }

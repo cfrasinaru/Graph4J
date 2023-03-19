@@ -17,6 +17,11 @@
 package org.graph4j;
 
 /**
+ * Enables iteration over the edges incident from a source vertex, returning one
+ * by one the successors of the source along with information regarding the
+ * corresponding edge.
+ *
+ * Used in directed graphs.
  *
  * @author Cristian Frăsinaru
  * @param <E> the type of edge labels.

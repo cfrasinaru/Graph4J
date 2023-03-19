@@ -37,10 +37,10 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
 
     protected final int source;
     protected final int[] vertices;
-    protected double cost[];
+    protected double[] cost;
     protected int[] before;
     protected int[] size;
-    protected boolean solved[];
+    protected boolean[] solved;
     protected int numSolved;
 
     /**
@@ -59,18 +59,6 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
     @Override
     public int getSource() {
         return source;
-    }
-
-    @Deprecated
-    protected Path[] getAllPaths() {
-        Path[] paths = new Path[vertices.length];
-        if (before == null) {
-            compute(-1);
-        }
-        for (int i = 0, n = vertices.length; i < n; i++) {
-            paths[i] = createPathEndingIn(i);
-        }
-        return paths;
     }
 
     @Override
@@ -119,9 +107,9 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
         this.numSolved = 0;
         Arrays.fill(cost, Double.POSITIVE_INFINITY);
         Arrays.fill(before, -1);
+        cost[graph.indexOf(source)] = 0;
         preCompute();
 
-        cost[graph.indexOf(source)] = 0;
         while (true) {
             int vi = findMinIndex();
             solved[vi] = true;

@@ -74,6 +74,7 @@ public interface SingleSourceShortestPath {
     }
 
     /**
+     * Returns the default implementation of this interface.
      *
      * @param graph the input graph.
      * @param source the source vertex.

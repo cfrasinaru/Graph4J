@@ -16,6 +16,7 @@
  */
 package org.graph4j.util;
 
+import java.util.List;
 import org.graph4j.Graph;
 
 /**
@@ -56,7 +57,6 @@ public class VertexList extends VertexCollection {
         super.addAll(vertices);
     }
 
-    
     /**
      *
      * @param v a vertex number
@@ -88,6 +88,42 @@ public class VertexList extends VertexCollection {
      */
     public int get(int pos) {
         return vertices[pos];
+    }
+
+    /**
+     * Replaces the vertex at the specified position in this list with the
+     * specified vertex.
+     *
+     * @param pos position of the vertex to replace.
+     * @param v a vertex number.
+     */
+    public void set(int pos, int v) {
+        int u = vertices[pos];
+        vertices[pos] = v;
+        if (bitset != null) {
+            bitset.set(u, false);
+            bitset.set(v, true);
+        }
+    }
+
+    /**
+     * Inserts a vertex at the specified position in this list.
+     *
+     * @param pos position where the vertex must be inserted.
+     * @param v a vertex number.
+     */
+    public void insert(int pos, int v) {
+        if (numVertices >= vertices.length) {
+            grow();
+        }
+        for (int j = numVertices; j > pos; j--) {
+            vertices[j] = vertices[j - 1];
+        }
+        vertices[pos] = v;
+        numVertices++;
+        if (bitset != null) {
+            bitset.set(v, true);
+        }
     }
 
 }

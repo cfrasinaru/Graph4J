@@ -1,3 +1,8 @@
+1.0.2
+  - Examples of using Graph4J API: org.graph4j.examples
+  - Support for tournament graphs: org.graph4j.alg.Tournament
+	(determining if a digraph is tournament, obtaining a hamiltonian path in a tournament)
+  
 1.0.1	2023-03-19
   - New algorithm for single pair shortest path: org.graph4j.alg.sp.BidirectionalDijkstra
   - New algorithm for bridge detection: org.graph4j.alg.connectivity.BridgeDetectionAlgorithm

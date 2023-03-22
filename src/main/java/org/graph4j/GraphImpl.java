@@ -713,6 +713,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
     public Edge<E> edge(int v, int u) {
         int vi = indexOf(v);
         int posvu = adjListPos(v, u);
+        if (posvu < 0) {
+            throw new InvalidEdgeException(v, u);
+        }
         return edgeAt(vi, posvu);
     }
 

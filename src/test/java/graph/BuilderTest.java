@@ -38,6 +38,16 @@ public class BuilderTest {
         var g = GraphBuilder.numVertices(0).buildGraph();
         assertEquals(0, g.numVertices());
         assertEquals(0, g.numEdges());
+
+        g.addVertex();
+        g.addVertex();
+        g.addVertex();
+        assertEquals(3, g.numVertices());
+
+        g.addEdge(0, 1);
+        g.addEdge(0, 2);
+        g.addEdge(1, 2);
+        assertEquals(3, g.numEdges());
     }
 
     @Test
@@ -71,7 +81,7 @@ public class BuilderTest {
 
     @Test
     public void buildDigraph() {
-        var g = GraphBuilder.vertexRange(0, 4)                
+        var g = GraphBuilder.vertexRange(0, 4)
                 .addEdges("0-2, 0-3, 1-2, 1-3, 2-3, 3-4")
                 .buildDigraph();
         assertEquals(6, g.numEdges());

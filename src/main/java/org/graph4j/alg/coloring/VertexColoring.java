@@ -38,6 +38,7 @@ public class VertexColoring<T> {
     private Map<T, VertexSet> colorMap;
 
     /**
+     * Creates an empty coloring - no vertex has a color assigned to it.
      *
      * @param graph the input graph.
      */
@@ -47,7 +48,9 @@ public class VertexColoring<T> {
     }
 
     /**
-     * 
+     * Creates a vertex coloring using the colors in the given array: the color
+     * of the vertex with index {@code i} in the graph is {@code colors[i]}.
+     *
      * @param graph the input graph.
      * @param colors an array of color numbers.
      */
@@ -59,6 +62,9 @@ public class VertexColoring<T> {
     }
 
     /**
+     * Creates a vertex coloring using the specified color classes: all the
+     * vertices in the i-th set of the {@code colorClasses} list are assigned
+     * color {@code i}.
      *
      * @param graph the input graph.
      * @param colorClasses the already computed color classes.
@@ -73,15 +79,17 @@ public class VertexColoring<T> {
     }
 
     /**
+     * Returns {@code true} if a color has been set for a vertex v.
      *
      * @param v a vertex number.
-     * @return {@code true} if a color was set for the vertex.
+     * @return {@code true} if a color has been set for the vertex v.
      */
     public boolean isColorSet(int v) {
         return vertexColor[graph.indexOf(v)] != null;
     }
 
     /**
+     * Assigns a color to the specified vertex.
      *
      * @param v a vertex number.
      * @param color an object representing the color, or {@code null} to uncolor
@@ -93,15 +101,21 @@ public class VertexColoring<T> {
     }
 
     /**
+     * Returns the color assigned to a vertex v, or {@code null} if no color has
+     * been set.
      *
      * @param v a vertex number;
-     * @return the color assigned to v, or {@code null} if no color was set.
+     * @return the color assigned to v, or {@code null} if no color has been
+     * set.
      */
     public T getColor(int v) {
         return (T) vertexColor[graph.indexOf(v)];
     }
 
     /**
+     * Creates and returns the color classes. It is executed in a lazy fashion:
+     * if the color classes are already created, it only returns them. If the
+     * coloring changes, the color classes are computed again.
      *
      * @return the color classes.
      */
@@ -129,6 +143,7 @@ public class VertexColoring<T> {
     }
 
     /**
+     * Return the number of used colors.
      *
      * @return the number of used colors.
      */
@@ -137,6 +152,7 @@ public class VertexColoring<T> {
     }
 
     /**
+     * Returns the number of vertices which have been assigned a color.
      *
      * @return the number of colored vertices.
      */
@@ -145,6 +161,7 @@ public class VertexColoring<T> {
     }
 
     /**
+     * Returns {@code true} if all the vertices have been colored.
      *
      * @return {@code true} if all the vertices have been colored.
      */

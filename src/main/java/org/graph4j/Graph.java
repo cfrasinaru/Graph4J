@@ -166,11 +166,13 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
 
     /**
      * Returns an edge object corresponding to the edge vu, containing all the
-     * additional information. The edge may or may be not be part of the graph.
+     * additional information. If there is no such edge in the graph, it throws
+     * {@code InvalidEdgeException}.
      *
      * @param v a vertex number
      * @param u a vertex number
-     * @return the edge corresponding to the vertices v and u.
+     * @return the edge in the graph corresponding to the vertices v and u.
+     * @throws InvalidEdgeException if there is no vu edge in the graph.
      */
     Edge<E> edge(int v, int u);
 

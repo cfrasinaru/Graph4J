@@ -60,4 +60,13 @@ public class Path extends Trail {
         }
     }
 
+    /**
+     * A hamiltonian path contains all vertices in the graph.
+     *
+     * @return {@code true} if the path is hamiltonian.
+     */
+    public boolean isHamiltonian() {
+        return numVertices == graph.numVertices() && !IntArrays.containsDuplicates(vertices());
+    }
+
 }

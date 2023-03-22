@@ -22,6 +22,7 @@ import org.graph4j.GraphBuilder;
 import org.graph4j.util.Clique;
 import org.graph4j.util.StableSet;
 import org.graph4j.util.VertexHeap;
+import org.graph4j.util.VertexList;
 import org.graph4j.util.VertexQueue;
 import org.graph4j.util.VertexSet;
 
@@ -34,6 +35,21 @@ public class VertexCollectionTest {
     public VertexCollectionTest() {
     }
 
+    @Test
+    public void testList() {
+        var g = GraphBuilder.numVertices(10).buildGraph();
+        var list = new VertexList(g);
+        list.addAll(0, 0, 1, 1, 2);
+        assertEquals(5, list.size());        
+        assertTrue(list.contains(0) && list.contains(1));
+        list.insert(2, 3);
+        assertEquals(6, list.size());
+        assertEquals(3, list.get(2));
+        assertEquals(1, list.get(3));
+        list.set(3, 4);
+        assertEquals(4, list.get(3));
+    }
+    
     @Test
     public void testSet() {
         var g = GraphBuilder.numVertices(10).buildGraph();

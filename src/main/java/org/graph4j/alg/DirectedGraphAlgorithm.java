@@ -17,6 +17,7 @@
 package org.graph4j.alg;
 
 import org.graph4j.Digraph;
+import org.graph4j.alg.connectivity.StrongConnectivityAlgorithm;
 
 /**
  * Accepts only directed graphs as input.
@@ -26,6 +27,7 @@ import org.graph4j.Digraph;
 public abstract class DirectedGraphAlgorithm {
 
     protected final Digraph graph;
+    protected Boolean stronglyConnected;
 
     /**
      *
@@ -33,6 +35,19 @@ public abstract class DirectedGraphAlgorithm {
      */
     public DirectedGraphAlgorithm(Digraph graph) {
         this.graph = graph;
+    }
+
+    /**
+     * Returns {@code true} if the digraph is strongly connected.
+     *
+     * @return {@code true} if the digraph is strongly connected.
+     */
+    public boolean isStronglyConnected() {
+        if (stronglyConnected == null) {
+            stronglyConnected = StrongConnectivityAlgorithm.getInstance(graph)
+                    .isStronglyConnected();
+        }
+        return stronglyConnected;
     }
 
 }

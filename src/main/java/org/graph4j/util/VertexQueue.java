@@ -16,7 +16,6 @@
  */
 package org.graph4j.util;
 
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 import org.graph4j.Graph;
 
@@ -33,6 +32,10 @@ public class VertexQueue extends VertexCollection {
 
     public VertexQueue(Graph graph, int initialCapacity) {
         super(graph, initialCapacity);
+    }
+
+    public VertexQueue(Graph graph, int[] vertices) {
+        super(graph, vertices);
     }
 
     /**

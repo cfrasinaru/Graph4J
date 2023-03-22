@@ -17,19 +17,22 @@
 package org.graph4j.generate;
 
 import java.util.Random;
+import org.graph4j.Digraph;
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
+import org.graph4j.alg.Tournament;
 
 /**
- * Generates <em>tournament</em> graphs . A <em>tournament</em> is a directed
+ * Generates <em>tournament</em> graphs. A tournament is a directed
  * graph (digraph) obtained by assigning a direction for each edge in an
  * undirected complete graph. That is, it is an orientation of a complete graph.
  *
+ * @see Tournament
  * @author Cristian Frăsinaru
  */
 public class TournamentGenerator extends AbstractGraphGenerator {
 
-    private Random rand = new Random();
+    private final Random rand = new Random();
 
     public TournamentGenerator(int numVertices) {
         super(numVertices);
@@ -43,17 +46,17 @@ public class TournamentGenerator extends AbstractGraphGenerator {
      *
      * @return a random tournament.
      */
-    public Graph createRandom() {
+    public Digraph createRandom() {
         var g = GraphBuilder.vertices(vertices).buildDigraph();
         addEdges(g, true);
         return g;
     }
 
     /**
-     * 
+     *
      * @return an acyclic tournament.
      */
-    public Graph createAcyclic() {
+    public Digraph createAcyclic() {
         var g = GraphBuilder.vertices(vertices).buildDigraph();
         addEdges(g, false);
         return g;

@@ -16,11 +16,17 @@
  */
 package algorithms;
 
+import org.graph4j.Digraph;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.util.Path;
 import org.graph4j.alg.sp.DijkstraShortestPathDefault;
 import org.graph4j.GraphBuilder;
+import org.graph4j.Graphs;
+import org.graph4j.alg.sp.BidirectionalDijkstra;
+import org.graph4j.alg.sp.DijkstraShortestPathHeap;
+import org.graph4j.generate.EdgeWeightsGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
@@ -45,6 +51,25 @@ public class DijkstraTest {
         var alg = new DijkstraShortestPathDefault(g, 1);
         assertEquals(0, alg.findPath(1).length());//source
         assertEquals(new Path(g, new int[]{1, 3, 2, 4, 5}), alg.findPath(5)); //vertex 5
+    }
+
+    @Test
+    public void cross() {
+        int n = 10;
+        Digraph g = new RandomGnpGraphGenerator(n, Math.random()).createDigraph();
+        EdgeWeightsGenerator.randomIntegers(g, 0, n);
+        var alg1 = new DijkstraShortestPathHeap(g, 0);
+        var alg2 = new BidirectionalDijkstra(g, 0, n - 1);
+        double x1 = alg1.getPathWeight(n - 1);
+        double x2 = alg2.getPathWeight();
+        assertEquals(x1, x2);
+        /*
+        if (x1 != x2) {
+            System.out.println(g);
+            System.out.println(Graphs.transpose(g));
+            System.out.println(x1);
+            System.out.println(x2);
+        }*/
     }
 
 }

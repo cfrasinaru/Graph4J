@@ -16,6 +16,8 @@
  */
 package org.graph4j.alg.coloring;
 
+import org.graph4j.Graph;
+
 /**
  *
  * @author Cristian Frăsinaru
@@ -35,5 +37,15 @@ public interface VertexColoringAlgorithm {
      * {@code null} if no coloring can be found by this algorithm.
      */
     public VertexColoring findColoring(int numColors);
+
+    /**
+     * Returns the default implementation of this interface.
+     *
+     * @param graph the input graph.
+     * @return the default implementation of this interface.
+     */
+    static VertexColoringAlgorithm getInstance(Graph graph) {
+        return new GreedyColoring(graph);
+    }
 
 }

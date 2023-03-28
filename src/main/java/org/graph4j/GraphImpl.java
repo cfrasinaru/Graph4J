@@ -279,7 +279,8 @@ class GraphImpl<V, E> implements Graph<V, E> {
     @Override
     public int indexOf(int v) {
         if (vertexIndex == null) {
-            return v; //default vertices
+            //default vertices
+            return v < 0 || v >= numVertices ? -1 : v;
         }
         return vertexIndex.indexOf(v);
     }
@@ -488,11 +489,15 @@ class GraphImpl<V, E> implements Graph<V, E> {
     @Override
     public int addEdge(int v, int u) {
         if (safeMode) {
+            checkVertex(v);
+            checkVertex(u);
             if (!allowingSelfLoops && v == u) {
-                throw new IllegalArgumentException("Loops are not allowed: " + v);
+                //throw new IllegalArgumentException("Loops are not allowed: " + v);
+                return -1;
             }
             if (!allowingMultipleEdges && containsEdge(v, u)) {
-                throw new IllegalArgumentException("Multiple edges are not allowed: " + v + "-" + u);
+                //throw new IllegalArgumentException("Multiple edges are not allowed: " + v + "-" + u);
+                return -1;
             }
         }
         //after adding u to the adjacency list of v, 
@@ -524,9 +529,6 @@ class GraphImpl<V, E> implements Graph<V, E> {
     //Adds u to the adjacency list of v
     protected int addToAdjList(int v, int u) {
         int vi = indexOf(v);
-        if (vi < 0) {
-            throw new InvalidVertexException(v);
-        }
         if (adjList[vi] == null || degree[vi] == adjList[vi].length) {
             growAdjList(v);
         }

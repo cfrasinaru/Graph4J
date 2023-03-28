@@ -25,7 +25,7 @@ import org.graph4j.alg.sp.SinglePairShortestPath;
 import org.graph4j.util.Path;
 
 /**
- * In this example, we assume that there are <em>locations</em> described by the
+ * We assume that there are <em>locations</em> described by the
  * class {@link Location}. Locations may be connected to other locations by
  * roads having a specified length. The problem is to find the shortest path
  * between two specified locations.
@@ -124,16 +124,16 @@ class ShortestPathExample {
         int target = graph.findVertex(toLoc);
 
         //create an algorithm for determining the shortest path
-        //in this case, the algorithm is {@code BidirectionalDijkstra}.
+        //in this case, the algorithm is BidirectionalDijkstra.
         var alg = SinglePairShortestPath.getInstance(graph, source, target);
         //same as
         //var alg = new BidirectionalDijkstra(graph, source, target);
 
-        //the length of the shortest path
+        //the length (weight) of the shortest path
         double length = alg.getPathWeight();
         System.out.println("The length of the shortest path: " + length);
 
-        //the actual shortest path, containing vertex numbers.
+        //the actual shortest path, containing vertex numbers
         Path path = alg.findPath();
         System.out.println("The shortest path in the graph: " + path);
 

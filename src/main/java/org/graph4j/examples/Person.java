@@ -16,24 +16,21 @@
  */
 package org.graph4j.examples;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * A location has a name and some neighbors, that is another locations it is
- * connected to. The distances (road lengths) between connected locations are
- * known.
  *
- * @see ShortestPathExample
+ * @see MaximalCliqueExample
  * @author Cristian Frăsinaru
  */
-class Location {
+class Person {
 
     private final String name;
-    private final Map<Location, Double> neighbors = new HashMap<>();
+    private final List<Person> friends = new ArrayList<>();
 
-    public Location(String name) {
+    public Person(String name) {
         this.name = name;
     }
 
@@ -41,8 +38,8 @@ class Location {
         return name;
     }
 
-    public Map<Location, Double> getNeighbors() {
-        return neighbors;
+    public List<Person> getFriends() {
+        return friends;
     }
 
     @Override
@@ -68,7 +65,7 @@ class Location {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Location other = (Location) obj;
+        final Person other = (Person) obj;
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }

@@ -43,8 +43,8 @@ public interface MaximalCliqueIterator {
      * @param graph the input graph.
      * @return the default implementation of this interface.
      */
-    default MaximalCliqueIterator getInstance(Graph graph) {
-        return new BronKerboschCliqueIterator(graph);
+    static MaximalCliqueIterator getInstance(Graph graph) {
+        return new BronKerboschCliqueIterator2(graph);
     }
 
 }

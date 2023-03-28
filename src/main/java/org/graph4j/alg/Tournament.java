@@ -18,7 +18,7 @@ package org.graph4j.alg;
 
 import org.graph4j.Digraph;
 import org.graph4j.DirectedMultigraph;
-import org.graph4j.alg.connectivity.StrongConnectivityAlgorithm;
+import org.graph4j.Graph;
 import org.graph4j.generate.TournamentGenerator;
 import org.graph4j.util.Path;
 import org.graph4j.util.VertexQueue;
@@ -53,29 +53,16 @@ public class Tournament extends DirectedGraphAlgorithm {
     }
 
     private boolean checkTournament() {
-        for (int v : graph.vertices()) {
-            for (var it = graph.successorIterator(v); it.hasNext();) {
-                int u = it.next(); //v -> u
-                if (u == v) {
-                    return false; //self-loop
-                }
-                if (graph.containsEdge(u, v)) {
+        int n = graph.numVertices();
+        if (graph.isAllowingMultipleEdges() || graph.isAllowingSelfLoops()) {
+            for (int v : graph.vertices()) {
+                if (graph.indegree(v) + graph.outdegree(v) != n - 1) {
                     return false;
                 }
             }
+            return true;
         }
-        if (graph.isAllowingMultipleEdges()) {
-            var dg = (DirectedMultigraph) graph;
-            for (int v : graph.vertices()) {
-                for (var it = graph.successorIterator(v); it.hasNext();) {
-                    int u = it.next();
-                    if (dg.multiplicity(v, u) > 1) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
+        return graph.numEdges() == Graph.maxEdges(n);
     }
 
     /**

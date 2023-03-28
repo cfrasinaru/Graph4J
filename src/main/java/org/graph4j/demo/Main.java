@@ -17,14 +17,11 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
-import org.graph4j.Digraph;
-import org.graph4j.GraphBuilder;
-import org.graph4j.Graphs;
-import org.graph4j.alg.Tournament;
-import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;
+import java.util.Iterator;
+import java.util.Set;
+import org.graph4j.alg.clique.BronKerboschCliqueIterator;
 import org.graph4j.generate.RandomGnpGraphGenerator;
-import org.graph4j.generate.TournamentGenerator;
-import org.jgrapht.alg.connectivity.BiconnectivityInspector;
+import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
 
 /**
  * Driver class for running the comparisons with other libraries.
@@ -34,7 +31,7 @@ import org.jgrapht.alg.connectivity.BiconnectivityInspector;
 class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        //var app = new BronKerboschDemo();
+        var app = new BronKerboschDemo();
         //var app = new HopcroftKarpDemo();
         //var app = new PushRelabelDemo();
         //var app = new EdmondsKarpDemo();
@@ -51,7 +48,7 @@ class Main {
         //var app = new BellmanFordDemo();
         //var app = new FloydWarshallDemo();
         //var app = new BidirectionalDijkstraDemo();
-        //var app = new DijkstraDemo1();
+        //var app = new DijkstraDemo2();
 
         //var app = new DFSVisitorDemo();
         //var app = new BFSVisitorDemo();
@@ -69,7 +66,7 @@ class Main {
         //var app = new SparseGraphDemo();
         //var app = new CompleteGraphDemo();
         //var app = new EmptyGraphDemo();
-        var app = new Main();
+        //var app = new Main();
         //app.benchmark();
         app.demo();
     }
@@ -79,14 +76,49 @@ class Main {
     }
 
     private void test() {
-        long t0 = System.currentTimeMillis();
-        var g = new TournamentGenerator(5_000).createRandom();
-        long t1 = System.currentTimeMillis();
-        System.out.println(">>>>>>>>>> " + (t1-t0));
-        var alg = new Tournament(g);
-        System.out.println(alg.isTournament());
-        System.out.println(alg.getHamiltonianPath());
+        //int n = 10000;
+        //var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
+        //var alg = new DijkstraShortestPathHeap(g, 0);
+        //alg.findPath(n-1);
+        
+        //var g = GraphGenerator.complete(10);
+        /*
+        var g = new RandomGnpGraphGenerator(50, 0.5).createGraph();
+        var alg = new BronKerboschCliqueFinder(g);
+        alg.compute();
+        */
+        //var g = GraphGenerator.complete(30);
+        /*
+        var g = new RandomGnpGraphGenerator(30, 0.1).createGraph();
+        
+        var alg = new BronKerboschCliqueIterator(g);
+        while (alg.hasNext()) {
+            System.out.println("-------------------------> " + alg.next());
+        }*/
+        /*
+        int n = 30;
+        for (int i = 0; i < 100; i++) {
+            var g = new RandomGnpGraphGenerator(n, Math.random()).createGraph();
+            int c1 = 0;
+            var alg1 = new BronKerboschCliqueIterator(g);
+            while (alg1.hasNext()) {
+                alg1.next();
+                c1++;
+            }
+            int c2 = 0;
+            var jg = Converter.createJGraphT(g);
+            var alg2 = new BronKerboschCliqueFinder(jg);
+            Iterator<Set<Integer>> it = alg2.iterator();
+            while (it.hasNext()) {
+                it.next();
+                c2++;
+            }
+            if (c1 != c2) {
+                System.out.println("Ooops!");
+            }
+        }*/
     }
+            
 
     protected void run(Runnable snippet) {
         System.gc();

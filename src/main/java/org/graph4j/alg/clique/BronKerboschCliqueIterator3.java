@@ -32,26 +32,21 @@ import org.graph4j.util.VertexSet;
  *
  * @author Cristian Frăsinaru
  */
-public class BronKerboschCliqueIterator extends SimpleGraphAlgorithm
+public class BronKerboschCliqueIterator3 extends SimpleGraphAlgorithm
         implements MaximalCliqueIterator {
 
-    private final Deque<Clique> cliqueStack;
-    private final Deque<VertexSet> candidatesStack;
-    private final Deque<VertexSet> finishedStack;
+    private final Deque<Node> stack;
     private Clique currentClique;
     private final boolean debug = false;
 
-    public BronKerboschCliqueIterator(Graph graph) {
+    public BronKerboschCliqueIterator3(Graph graph) {
         super(graph);
         //
-        int n = graph.numVertices();
-        cliqueStack = new ArrayDeque<>(n);
-        candidatesStack = new ArrayDeque<>(n);
-        finishedStack = new ArrayDeque<>(n);
-        //
-        cliqueStack.push(new Clique(graph));
-        candidatesStack.push(new VertexSet(graph, graph.vertices()));
-        finishedStack.push(new VertexSet(graph));
+        stack = new ArrayDeque<>(graph.numVertices());
+        stack.push(new Node(
+                new Clique(graph),
+                new VertexSet(graph, graph.vertices()),
+                new VertexSet(graph)));
     }
 
     @Override
@@ -72,19 +67,18 @@ public class BronKerboschCliqueIterator extends SimpleGraphAlgorithm
         if (currentClique != null) {
             return true;
         }
-        while (!cliqueStack.isEmpty()) {
-            var clique = cliqueStack.peek();
-            var candidates = candidatesStack.peek();
-            var finished = finishedStack.peek();
+        while (!stack.isEmpty()) {
+            var node = stack.peek();
+            var clique = node.clique;
+            var candidates = node.candidates;
+            var finished = node.finished;
             /*if (debug) {
                 System.out.println("Pop Current clique: " + clique);
                 System.out.println("Pop Candidates: " + candidates);
                 System.out.println("Pop Finished: " + finished);
             }*/
             if (candidates.isEmpty()) {
-                cliqueStack.pop();
-                candidatesStack.pop();
-                finished = finishedStack.pop();
+                stack.pop();
                 if (finished.isEmpty()) {
                     currentClique = clique;
                     assert currentClique.isValid();
@@ -116,9 +110,7 @@ public class BronKerboschCliqueIterator extends SimpleGraphAlgorithm
             }
             if (!connected) {
                 var newClique = clique.union(v);
-                cliqueStack.push(newClique);
-                candidatesStack.push(newCandidates);
-                finishedStack.push(newFinished);
+                stack.push(new Node(newClique, newCandidates, newFinished));
                 /*if (debug) {
                     System.out.println("\tPush Clique: " + newClique);
                     System.out.println("\tPush Candidates: " + newCandidates);
@@ -131,4 +123,16 @@ public class BronKerboschCliqueIterator extends SimpleGraphAlgorithm
         return false;
     }
 
+    private class Node {
+
+        public Node(Clique clique, VertexSet candidates, VertexSet finished) {
+            this.clique = clique;
+            this.candidates = candidates;
+            this.finished = finished;
+        }
+
+        Clique clique;
+        VertexSet candidates;
+        VertexSet finished;
+    }
 }

@@ -16,12 +16,11 @@
  */
 package org.graph4j.demo;
 
-import org.graph4j.alg.clique.BronKerboschCliqueIterator;
-import org.graph4j.alg.clique.PivotBronKerboschCliqueIterator;
 import java.util.Iterator;
 import java.util.Set;
-import org.jgrapht.alg.clique.PivotBronKerboschCliqueFinder;
+import org.graph4j.alg.clique.*;
 import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
 
 /**
  *
@@ -29,10 +28,10 @@ import org.graph4j.generate.RandomGnpGraphGenerator;
  */
 class BronKerboschDemo extends PerformanceDemo {
 
-    private final double probability = 0.4;
+    private final double probability = 0.1;
 
     public BronKerboschDemo() {
-        numVertices = 200;
+        numVertices = 2500;
         //runJGraphT = true;
         runAlgs4 = true;
     }
@@ -46,7 +45,7 @@ class BronKerboschDemo extends PerformanceDemo {
     @Override
     protected void testGraph4J() {
         int count = 0;
-        var alg = new PivotBronKerboschCliqueIterator(graph);
+        var alg = new BronKerboschCliqueIterator3(graph);
         while (alg.hasNext()) {
             alg.next();
             count++;
@@ -57,7 +56,7 @@ class BronKerboschDemo extends PerformanceDemo {
     @Override
     protected void testJGraphT() {
         int count = 0;
-        var finder = new PivotBronKerboschCliqueFinder(jgrapht);
+        var finder = new BronKerboschCliqueFinder(jgrapht);
         Iterator<Set<Integer>> it = finder.iterator();
         while (it.hasNext()) {
             Set<Integer> clique = it.next();
@@ -69,13 +68,16 @@ class BronKerboschDemo extends PerformanceDemo {
 
     @Override
     protected void testAlgs4() {
+        //int count = 0;
+        //var alg = new org.graph4j.alg.clique.BronKerboschCliqueFinder(graph);
+        //System.out.println(alg.getCliques().size());
         int count = 0;
         var alg = new BronKerboschCliqueIterator(graph);
         while (alg.hasNext()) {
             alg.next();
             count++;
         }
-        System.out.println(count);
+        System.out.println(count);        
     }
 
     

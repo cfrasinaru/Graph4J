@@ -16,8 +16,11 @@
  */
 package org.graph4j.alg.clique;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.graph4j.Graph;
 import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.util.Clique;
 import org.graph4j.util.VertexSet;
 
 /**
@@ -26,39 +29,66 @@ import org.graph4j.util.VertexSet;
  * @author Cristian Frăsinaru
  */
 @Deprecated
-class BronKerboschCliqueFinder extends SimpleGraphAlgorithm {
+public class BronKerboschCliqueFinder extends SimpleGraphAlgorithm {
 
-    private int count;
+    private Clique workingClique;
+    List<Clique> cliques;
 
     public BronKerboschCliqueFinder(Graph graph) {
         super(graph);
     }
 
-    public int compute() {
-        var clique = new VertexSet(graph);
-        var candidates = new VertexSet(graph, graph.vertices());
-        var excluded = new VertexSet(graph);
-        compute(clique, candidates, excluded);
-        return count;
+    private void compute() {
+        cliques = new ArrayList<>();
+
+        //this is the current clique that is expaned up to a maximal clique
+        workingClique = new Clique(graph);
+
+        //subg are the vertices of the subgraph where we look for a clique
+        var subg = new VertexSet(graph, graph.vertices());
+
+        //cand are the vertices available to expand the working clique
+        var cand = new VertexSet(graph, graph.vertices());
+
+        expand(subg, cand);
     }
 
-    private void compute(VertexSet clique, VertexSet candidates, VertexSet excluded) {
-        if (candidates.isEmpty() && excluded.isEmpty()) {
-            count++;
+    public List<Clique> getCliques() {
+        if (cliques == null) {
+            compute();
+        }
+        return cliques;
+    }
+
+    private void expand(VertexSet subg, VertexSet cand) {
+        /*
+        System.out.println("clique: " + workingClique);
+        System.out.println("subg: " + subg);
+        System.out.println("cand: " + cand);
+         */
+        if (subg.isEmpty()) {
+            //found a maximal clique
+            //System.out.println(workingClique);
+            cliques.add(workingClique);
             return;
         }
-        while (!candidates.isEmpty()) {
-            int v = candidates.peek();
+
+        //int u = subg.peek();
+        //var tempCand = new VertexSet(cand);
+        //tempCand.removeAll(graph.neighbors(u));
+        var tempCand = cand;
+        //
+        while (!tempCand.isEmpty()) {
+            int v = tempCand.peek();
+            workingClique.add(v);
             var neighbors = graph.neighbors(v);
+            var newSubg = subg.intersection(neighbors);
+            var newCand = cand.intersection(neighbors);
 
-            var newClique = clique.union(v);
-            var newCandidates = candidates.intersection(neighbors);
-            var newExcluded = excluded.intersection(neighbors);
+            expand(newSubg, newCand);
 
-            compute(newClique, newCandidates, newExcluded);
-
-            candidates.pop();
-            excluded.add(v);
+            tempCand.remove(v);
+            workingClique.remove(v);
         }
     }
 

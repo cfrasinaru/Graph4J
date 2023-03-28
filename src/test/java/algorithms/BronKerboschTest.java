@@ -74,7 +74,7 @@ public class BronKerboschTest {
         int n = 50;
         double p = 0.1;
         for (int i = 0; i < 100; i++) {
-            var g = new GnpGraphGenerator(n, p).createGraph();
+            var g = new RandomGnpGraphGenerator(n, p).createGraph();
             int c1 = 0;
             var alg1 = new BronKerboschCliqueIterator(g);
             while (alg1.hasNext()) {

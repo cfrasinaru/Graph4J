@@ -31,7 +31,7 @@ class HopcroftKarpDemo extends PerformanceDemo {
     private final double probability = 0.1;
 
     public HopcroftKarpDemo() {
-        numVertices = 1_000;
+        numVertices = 2_000;
         runJGraphT = true;
         runAlgs4 = true;
     }

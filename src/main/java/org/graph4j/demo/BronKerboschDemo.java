@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.Set;
 import org.graph4j.alg.clique.*;
 import org.graph4j.generate.RandomGnpGraphGenerator;
-import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
 
 /**
  *
@@ -28,10 +27,10 @@ import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
  */
 class BronKerboschDemo extends PerformanceDemo {
 
-    private final double probability = 0.1;
+    private final double probability = 0.7;
 
     public BronKerboschDemo() {
-        numVertices = 2500;
+        numVertices = 100;
         //runJGraphT = true;
         runAlgs4 = true;
     }
@@ -45,9 +44,9 @@ class BronKerboschDemo extends PerformanceDemo {
     @Override
     protected void testGraph4J() {
         int count = 0;
-        var alg = new BronKerboschCliqueIterator3(graph);
+        var alg = new PivotBronKerboschCliqueIterator(graph);
         while (alg.hasNext()) {
-            alg.next();
+            var q = alg.next();
             count++;
         }
         System.out.println(count);
@@ -56,7 +55,7 @@ class BronKerboschDemo extends PerformanceDemo {
     @Override
     protected void testJGraphT() {
         int count = 0;
-        var finder = new BronKerboschCliqueFinder(jgrapht);
+        var finder = new org.jgrapht.alg.clique.BronKerboschCliqueFinder(jgrapht);
         Iterator<Set<Integer>> it = finder.iterator();
         while (it.hasNext()) {
             Set<Integer> clique = it.next();
@@ -74,7 +73,7 @@ class BronKerboschDemo extends PerformanceDemo {
         int count = 0;
         var alg = new BronKerboschCliqueIterator(graph);
         while (alg.hasNext()) {
-            alg.next();
+            var q = alg.next();
             count++;
         }
         System.out.println(count);        

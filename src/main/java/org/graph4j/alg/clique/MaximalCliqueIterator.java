@@ -17,6 +17,7 @@
 package org.graph4j.alg.clique;
 
 import org.graph4j.Graph;
+import org.graph4j.alg.GraphMeasures;
 import org.graph4j.util.Clique;
 
 /**
@@ -44,7 +45,11 @@ public interface MaximalCliqueIterator {
      * @return the default implementation of this interface.
      */
     static MaximalCliqueIterator getInstance(Graph graph) {
-        return new BronKerboschCliqueIterator2(graph);
+        if (GraphMeasures.density(graph) < 0.5) {
+            return new BronKerboschCliqueIterator(graph);
+        } else {
+            return new PivotBronKerboschCliqueIterator(graph);
+        }
     }
 
 }

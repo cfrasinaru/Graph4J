@@ -17,7 +17,10 @@
 package org.graph4j.alg;
 
 import java.util.stream.IntStream;
+import org.graph4j.Digraph;
 import org.graph4j.Graph;
+import org.graph4j.Multigraph;
+import org.graph4j.util.CheckArguments;
 
 /**
  * Various <i>sizes</i> related to a graph.
@@ -27,6 +30,24 @@ import org.graph4j.Graph;
  * @author Cristian Frăsinaru
  */
 public class GraphMeasures {
+
+    /**
+     *
+     * @param graph the input graph (directed or undirected).
+     * @return the density of the graph.
+     */
+    public static double density(Graph graph) {
+        int n = graph.numVertices();
+        if (n == 0) {
+            return 0;
+        }
+        double m = graph.numVertices();
+        if (graph instanceof Digraph) {
+            return m / Digraph.maxEdges(n);
+        } else {
+            return m / Graph.maxEdges(n);
+        }
+    }
 
     /**
      *

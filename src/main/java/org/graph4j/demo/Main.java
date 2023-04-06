@@ -19,7 +19,7 @@ package org.graph4j.demo;
 import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.Set;
-import org.graph4j.alg.clique.BronKerboschCliqueIterator;
+import org.graph4j.alg.clique.PivotBronKerboschCliqueIterator;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
 
@@ -28,7 +28,7 @@ import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
  *
  * @author Cristian Frăsinaru
  */
-class Main {
+public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
         var app = new BronKerboschDemo();
@@ -75,7 +75,7 @@ class Main {
         run(this::test);
     }
 
-    private void test() {
+    private void test() {        
         //int n = 10000;
         //var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
         //var alg = new DijkstraShortestPathHeap(g, 0);
@@ -95,12 +95,12 @@ class Main {
         while (alg.hasNext()) {
             System.out.println("-------------------------> " + alg.next());
         }*/
-        /*
+        
         int n = 30;
         for (int i = 0; i < 100; i++) {
             var g = new RandomGnpGraphGenerator(n, Math.random()).createGraph();
             int c1 = 0;
-            var alg1 = new BronKerboschCliqueIterator(g);
+            var alg1 = new PivotBronKerboschCliqueIterator(g);
             while (alg1.hasNext()) {
                 alg1.next();
                 c1++;
@@ -116,7 +116,7 @@ class Main {
             if (c1 != c2) {
                 System.out.println("Ooops!");
             }
-        }*/
+        }
     }
             
 

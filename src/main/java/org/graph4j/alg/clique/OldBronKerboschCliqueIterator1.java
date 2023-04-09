@@ -28,26 +28,30 @@ import org.graph4j.util.VertexSet;
  *
  * Iterates over all the maximal cliques of a graph.
  *
- * Performs well on dense graphs. On sparse graphs, it is slightly slower than
- * {@link BronKerboschCliqueIterator}.
+ * Performs well on sparse graphs. Not so good on dense graphs, where
+ * {@link PivotBronKerboschCliqueIterator} performs better.
  *
  * @author Cristian Frăsinaru
  */
-public class PivotBronKerboschCliqueIterator extends SimpleGraphAlgorithm
+@Deprecated
+class OldBronKerboschCliqueIterator1 extends SimpleGraphAlgorithm
         implements MaximalCliqueIterator {
 
-    private final Deque<Node> stack;
+    private final Deque<VertexSet> candidatesStack;
+    private final Deque<VertexSet> finishedStack;
     private final Clique workingClique;
     private Clique currentClique;
 
-    public PivotBronKerboschCliqueIterator(Graph graph) {
+    public OldBronKerboschCliqueIterator1(Graph graph) {
         super(graph);
         //
+        int n = graph.numVertices();
         workingClique = new Clique(graph);
-        stack = new ArrayDeque<>(graph.numVertices());
-        var candidates = new VertexSet(graph, graph.vertices());
-        var finished = new VertexSet(graph);
-        stack.push(new Node(candidates, finished));
+        candidatesStack = new ArrayDeque<>(n);
+        finishedStack = new ArrayDeque<>(n);
+        //
+        candidatesStack.push(new VertexSet(graph, graph.vertices()));
+        finishedStack.push(new VertexSet(graph));
     }
 
     @Override
@@ -68,13 +72,12 @@ public class PivotBronKerboschCliqueIterator extends SimpleGraphAlgorithm
         if (currentClique != null) {
             return true;
         }
-        while (!stack.isEmpty()) {
-            var node = stack.peek();
-            var candidates = node.candidates;
-            var reduced = node.reduced;
-            var finished = node.finished;
+        while (!candidatesStack.isEmpty()) {
+            var candidates = candidatesStack.peek();
+            var finished = finishedStack.peek();
             if (candidates.isEmpty()) {
-                stack.pop();
+                candidatesStack.pop();
+                finishedStack.pop();
                 if (finished.isEmpty()) {
                     currentClique = new Clique(workingClique);
                     workingClique.pop();
@@ -87,12 +90,10 @@ public class PivotBronKerboschCliqueIterator extends SimpleGraphAlgorithm
                 }
                 continue;
             }
-            if (reduced.isEmpty()) {
-                stack.pop();
-                continue;
-            }
-            int v = reduced.peek();
+
+            int v = candidates.peek();
             var neighbors = graph.neighbors(v);
+
             var newCandidates = candidates.intersection(neighbors);
             var newFinished = finished.intersection(neighbors);
 
@@ -111,73 +112,15 @@ public class PivotBronKerboschCliqueIterator extends SimpleGraphAlgorithm
                     break;
                 }
             }
-            
             if (!connected) {
                 workingClique.add(v);
-                stack.push(new Node(newCandidates, newFinished));
+                candidatesStack.push(newCandidates);
+                finishedStack.push(newFinished);
             }
-            reduced.pop();
-            candidates.remove(v);
+            candidates.pop();
             finished.add(v);
         }
         return false;
     }
 
-    private int choosePivot2(VertexSet candidates, VertexSet finished) {
-        return candidates.isEmpty() ? -1 : candidates.peek();
-    }
-
-    //choose the vertex x in P U X with as many neighbors in the candidates set
-    //the pivot=-1 when both candidates and finished are empty
-    private int choosePivot(VertexSet candidates, VertexSet finished) {
-        int pivot = -1, maxDeg = -1;
-        //System.out.println("choosing pivot of: " + candidates + ", " + finished);
-        for (int v : candidates.vertices()) {
-            int deg = countNeighbors(v, candidates);
-            if (maxDeg < deg) {
-                maxDeg = deg;
-                pivot = v;
-            }
-        }
-        for (int v : finished.vertices()) {
-            int deg = countNeighbors(v, candidates);
-            if (maxDeg < deg) {
-                maxDeg = deg;
-                pivot = v;
-            }
-        }
-        return pivot;
-    }
-
-    private int countNeighbors(int v, VertexSet set) {
-        int count = 0;
-        for (int u : set.vertices()) {
-            if (graph.containsEdge(v, u)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    private class Node {
-
-        final VertexSet candidates;
-        final VertexSet finished;
-        VertexSet reduced; //candidates minus pivot neighbors
-
-        public Node(VertexSet candidates, VertexSet finished) {
-            this.candidates = candidates;
-            this.finished = finished;
-            //
-            if (candidates.size() > 1) {
-                int pivot = choosePivot(candidates, finished);
-                if (pivot >= 0) {
-                    reduced = new VertexSet(candidates);
-                    reduced.removeAll(graph.neighbors(pivot));
-                }
-            } else {
-                reduced = candidates;
-            }
-        }
-    }
 }

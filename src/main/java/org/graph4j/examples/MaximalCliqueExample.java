@@ -22,7 +22,6 @@ import java.util.Random;
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
 import org.graph4j.alg.clique.MaximalCliqueIterator;
-import static org.graph4j.generate.GraphGenerator.path;
 import org.graph4j.util.Clique;
 
 /**
@@ -40,7 +39,7 @@ public class MaximalCliqueExample {
 
     private final int numPersons = 30;
     private List<Person> persons;
-    private static final double FRIENDSHIP_PROBABILITY = 1;
+    private static final double FRIENDSHIP_PROBABILITY = 0.5;
     private static final int TIMEOUT = 5; //seconds
     //
     private Graph graph;

@@ -16,6 +16,8 @@
  */
 package org.graph4j.util;
 
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 import org.graph4j.Graph;
@@ -41,7 +43,13 @@ public class VertexSet extends VertexCollection {
     }
 
     public VertexSet(VertexSet other) {
-        this(other.graph, other.vertices());
+        this.graph = other.graph;
+        this.numVertices = other.numVertices;
+        this.first = other.first;
+        this.vertices = Arrays.copyOf(other.vertices, other.vertices.length);
+        if (other.bitset != null) {
+            this.bitset = (BitSet) other.bitset.clone();
+        }
     }
 
     @Override
@@ -49,6 +57,10 @@ public class VertexSet extends VertexCollection {
         if (contains(v)) {
             return false;
         }
+        return super.add(v);
+    }
+
+    protected boolean addDirectly(int v) {
         return super.add(v);
     }
 
@@ -115,17 +127,18 @@ public class VertexSet extends VertexCollection {
             set2 = this;
         }
         VertexSet result = new VertexSet(graph, set1.size());
-        for (int v : set1.vertices) {
+        for (int v : set1.vertices()) {
             if (set2.contains(v)) {
-                result.add(v);
+                result.addDirectly(v);
             }
         }
         return result;
     }
 
     /**
+     * It is assumed that the other argument does not contain duplicates.
      *
-     * @param other an array of vertex numbers.
+     * @param other an array of vertex numbers, without duplicates.
      * @return a new set containing vertices belonging to this set and the other
      * array.
      */
@@ -139,7 +152,7 @@ public class VertexSet extends VertexCollection {
         VertexSet result = new VertexSet(graph, min);
         for (int v : other) {
             if (this.contains(v)) {
-                result.add(v);
+                result.addDirectly(v);
             }
         }
         return result;

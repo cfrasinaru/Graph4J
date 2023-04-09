@@ -17,11 +17,6 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
-import java.util.Iterator;
-import java.util.Set;
-import org.graph4j.alg.clique.PivotBronKerboschCliqueIterator;
-import org.graph4j.generate.RandomGnpGraphGenerator;
-import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
 
 /**
  * Driver class for running the comparisons with other libraries.
@@ -31,7 +26,7 @@ import org.jgrapht.alg.clique.BronKerboschCliqueFinder;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        var app = new BronKerboschDemo();
+        //var app = new BronKerboschDemo();
         //var app = new HopcroftKarpDemo();
         //var app = new PushRelabelDemo();
         //var app = new EdmondsKarpDemo();
@@ -66,7 +61,7 @@ public class Main {
         //var app = new SparseGraphDemo();
         //var app = new CompleteGraphDemo();
         //var app = new EmptyGraphDemo();
-        //var app = new Main();
+        var app = new Main();
         //app.benchmark();
         app.demo();
     }
@@ -75,50 +70,14 @@ public class Main {
         run(this::test);
     }
 
-    private void test() {        
-        //int n = 10000;
-        //var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
-        //var alg = new DijkstraShortestPathHeap(g, 0);
-        //alg.findPath(n-1);
-        
-        //var g = GraphGenerator.complete(10);
+    private void test() {
         /*
-        var g = new RandomGnpGraphGenerator(50, 0.5).createGraph();
-        var alg = new BronKerboschCliqueFinder(g);
-        alg.compute();
-        */
-        //var g = GraphGenerator.complete(30);
-        /*
-        var g = new RandomGnpGraphGenerator(30, 0.1).createGraph();
-        
-        var alg = new BronKerboschCliqueIterator(g);
-        while (alg.hasNext()) {
-            System.out.println("-------------------------> " + alg.next());
-        }*/
-        
-        int n = 30;
-        for (int i = 0; i < 100; i++) {
-            var g = new RandomGnpGraphGenerator(n, Math.random()).createGraph();
-            int c1 = 0;
-            var alg1 = new PivotBronKerboschCliqueIterator(g);
-            while (alg1.hasNext()) {
-                alg1.next();
-                c1++;
-            }
-            int c2 = 0;
-            var jg = Converter.createJGraphT(g);
-            var alg2 = new BronKerboschCliqueFinder(jg);
-            Iterator<Set<Integer>> it = alg2.iterator();
-            while (it.hasNext()) {
-                it.next();
-                c2++;
-            }
-            if (c1 != c2) {
-                System.out.println("Ooops!");
-            }
-        }
+        int n = 20000;
+        var g = new RandomGnpGraphGenerator(n, 0.2).createGraph();
+        var alg = new DijkstraShortestPathHeap(g, 0);
+        alg.findPath(n-1);
+         */
     }
-            
 
     protected void run(Runnable snippet) {
         System.gc();

@@ -33,13 +33,16 @@ import org.graph4j.Graph;
  */
 abstract class VertexCollection implements Iterable<Integer> {
 
-    protected final Graph graph;
+    protected Graph graph;
     protected int[] vertices;
     protected int numVertices;
-    protected int first = 0;
+    protected int first = 0; //for queues
     protected BitSet bitset; //which vertices of the graph are in this collection
     protected final static int DEFAULT_CAPACITY = 10;
 
+    protected VertexCollection() {
+    }
+    
     /**
      *
      * @param graph the graph the vertices belong to.
@@ -136,7 +139,7 @@ abstract class VertexCollection implements Iterable<Integer> {
     }
 
     protected int indexOf(int v, int startPos) {
-        for (int i = 0; i < numVertices; i++) {
+        for (int i = startPos; i < numVertices; i++) {
             if (vertices[first + i] == v) {
                 return i;
             }
@@ -250,7 +253,7 @@ abstract class VertexCollection implements Iterable<Integer> {
      * @return {@code true}, if this collection contains the vertex v.
      */
     public boolean contains(int v) {
-        //for smaller sets, just iterate
+        //for smaller sets, just iterate        
         if (numVertices <= DEFAULT_CAPACITY) {
             return indexOf(v) >= 0;
         }

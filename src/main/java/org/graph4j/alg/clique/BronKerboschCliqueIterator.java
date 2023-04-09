@@ -28,29 +28,49 @@ import org.graph4j.util.VertexSet;
  *
  * Iterates over all the maximal cliques of a graph.
  *
- * Performs well on sparse graphs. Not so good on dense graphs, where
- * {@link PivotBronKerboschCliqueIterator} performs better.
+ * Implemented after: Etsuji Tomita, Akira Tanaka, Haruhisa Takahashi, "The
+ * worst-case time complexity for generating all maximal cliques and
+ * computational experiments".
  *
  * @author Cristian Frăsinaru
  */
 public class BronKerboschCliqueIterator extends SimpleGraphAlgorithm
         implements MaximalCliqueIterator {
 
-    private final Deque<VertexSet> candidatesStack;
-    private final Deque<VertexSet> finishedStack;
+    private int[][] adjMatrix;
+    private final Deque<Node> stack;
     private final Clique workingClique;
     private Clique currentClique;
 
+    /**
+     *
+     * @param graph the input graph.
+     */
     public BronKerboschCliqueIterator(Graph graph) {
+        this(graph, false);
+    }
+
+    /**
+     * Using the adjacency matrix allows for a slightly faster execution of the
+     * algorithm, at the expense of using more memory. Not recommended for large
+     * sparse graphs.
+     *
+     * @param graph the input graph.
+     * @param useAdjacencyMatrix {@code true} if the algorithm will compute and
+     * use the adjacency matrix of the graph in order to test if two vertices
+     * are adjacent.
+     */
+    public BronKerboschCliqueIterator(Graph graph, boolean useAdjacencyMatrix) {
         super(graph);
+        if (useAdjacencyMatrix) {
+            adjMatrix = graph.adjacencyMatrix();
+        }
         //
-        int n = graph.numVertices();
         workingClique = new Clique(graph);
-        candidatesStack = new ArrayDeque<>(n);
-        finishedStack = new ArrayDeque<>(n);
-        //
-        candidatesStack.push(new VertexSet(graph, graph.vertices()));
-        finishedStack.push(new VertexSet(graph));
+        stack = new ArrayDeque<>(graph.numVertices());
+        var subg = new VertexSet(graph, graph.vertices());
+        var cand = new VertexSet(graph, graph.vertices());
+        stack.push(new Node(subg, cand, createExt(subg, cand)));
     }
 
     @Override
@@ -71,55 +91,105 @@ public class BronKerboschCliqueIterator extends SimpleGraphAlgorithm
         if (currentClique != null) {
             return true;
         }
-        while (!candidatesStack.isEmpty()) {
-            var candidates = candidatesStack.peek();
-            var finished = finishedStack.peek();
-            if (candidates.isEmpty()) {
-                candidatesStack.pop();
-                finishedStack.pop();
-                if (finished.isEmpty()) {
-                    currentClique = new Clique(workingClique);
+        while (!stack.isEmpty()) {
+            var node = stack.peek();
+            var subg = node.subg;
+            var cand = node.cand;
+            var ext = node.ext;
+            if (ext.isEmpty()) {
+                stack.pop();
+                if (!workingClique.isEmpty()) {
                     workingClique.pop();
-                    assert currentClique.isValid();
-                    return true;
-                } else {
-                    if (!workingClique.isEmpty()) {
-                        workingClique.pop();
-                    }
                 }
                 continue;
             }
+            int v = ext.pop();
+            cand.remove(v);
 
-            int v = candidates.peek();
             var neighbors = graph.neighbors(v);
-
-            var newCandidates = candidates.intersection(neighbors);
-            var newFinished = finished.intersection(neighbors);
-
-            //if a finished node is connected to all candidates, cut this branch
-            boolean connected = false;
-            over:
-            for (int f : newFinished.vertices()) {
-                connected = true;
-                for (int c : newCandidates.vertices()) {
-                    if (!graph.containsEdge(f, c)) {
-                        connected = false;
-                        break;
-                    }
-                }
-                if (connected) {
-                    break;
-                }
+            var newSubg = subg.intersection(neighbors);
+            if (newSubg.isEmpty()) {
+                currentClique = new Clique(workingClique);
+                currentClique.add(v);
+                assert currentClique.isValid();
+                return true;
             }
-            if (!connected) {
-                workingClique.add(v);
-                candidatesStack.push(newCandidates);
-                finishedStack.push(newFinished);
+            var newCand = cand.intersection(neighbors);
+            if (newCand.isEmpty()) {
+                continue;
             }
-            candidates.pop();
-            finished.add(v);
+            var newExt = createExt(newSubg, newCand);
+            if (newExt.isEmpty()) {
+                continue;
+            }
+            workingClique.add(v);
+            stack.push(new Node(newCand, newSubg, newExt));
         }
         return false;
     }
 
+    //pivot is a vertex in subg that has maximum neighbors in cand
+    private int choosePivot(VertexSet subg, VertexSet cand) {
+        if (subg.size() == 1) {
+            return subg.peek();
+        }
+        int pivot = -1, maxDeg = -1;
+        for (int v : subg.vertices()) {
+            int deg = countNeighbors(v, cand);
+            if (maxDeg < deg) {
+                maxDeg = deg;
+                pivot = v;
+            }
+        }
+        return pivot;
+    }
+
+    private int countNeighbors(int v, VertexSet set) {
+        if (adjMatrix != null) {
+            return countNeighborsUsingAdjMatrix(v, set);
+        }
+        int count = 0;
+        for (int u : set.vertices()) {
+            if (graph.containsEdge(v, u)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int countNeighborsUsingAdjMatrix(int v, VertexSet set) {
+        int count = 0;
+        int vi = graph.indexOf(v);
+        for (int u : set.vertices()) {
+            int ui = graph.indexOf(u);
+            if (adjMatrix[vi][ui] == 1) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    //ext = cand - neighbors(pivot)
+    private VertexSet createExt(VertexSet subg, VertexSet cand) {
+        if (cand.isEmpty()) {
+            return cand;
+        }
+        var ext = new VertexSet(cand);
+        int pivot = choosePivot(subg, cand);
+        ext.removeAll(graph.neighbors(pivot));
+        return ext;
+    }
+
+    private class Node {
+
+        final VertexSet cand;
+        final VertexSet subg;
+        final VertexSet ext;
+
+        public Node(VertexSet subg, VertexSet cand, VertexSet ext) {
+            this.cand = subg;
+            this.subg = cand;
+            this.ext = ext;
+        }
+    }
 }

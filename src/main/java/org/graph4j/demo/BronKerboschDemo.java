@@ -27,12 +27,12 @@ import org.graph4j.generate.RandomGnpGraphGenerator;
  */
 class BronKerboschDemo extends PerformanceDemo {
 
-    private final double probability = 0.7;
+    private final double probability = 0.001;
 
     public BronKerboschDemo() {
-        numVertices = 100;
-        //runJGraphT = true;
-        runAlgs4 = true;
+        numVertices = 10_000;
+        runJGraphT = true;
+        //runAlgs4 = true;
     }
 
     @Override
@@ -43,13 +43,15 @@ class BronKerboschDemo extends PerformanceDemo {
 
     @Override
     protected void testGraph4J() {
+        long t0 = System.currentTimeMillis();
         int count = 0;
-        var alg = new PivotBronKerboschCliqueIterator(graph);
+        var alg = new BronKerboschCliqueIterator(graph, true);
         while (alg.hasNext()) {
             var q = alg.next();
             count++;
         }
-        System.out.println(count);
+        long t1 = System.currentTimeMillis();
+        System.out.println(count + ", " + count / (t1-t0) + " cliques pe millisecond");
     }
 
     @Override
@@ -67,16 +69,11 @@ class BronKerboschDemo extends PerformanceDemo {
 
     @Override
     protected void testAlgs4() {
-        //int count = 0;
-        //var alg = new org.graph4j.alg.clique.BronKerboschCliqueFinder(graph);
-        //System.out.println(alg.getCliques().size());
-        int count = 0;
-        var alg = new BronKerboschCliqueIterator(graph);
-        while (alg.hasNext()) {
-            var q = alg.next();
-            count++;
-        }
-        System.out.println(count);        
+        /*
+        var alg = new org.graph4j.alg.clique.TomitaCliqueFinder(graph);        
+        System.out.println(alg.getCliques().size());
+        */        
+        
     }
 
     

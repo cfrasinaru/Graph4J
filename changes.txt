@@ -1,4 +1,7 @@
-1.0.2
+1.0.3
+  
+1.0.2	2023-04-09
+  - Improved algorithm for enumerating maximal cliques: org.graph4j.alg.clique.BronKerboschCliqueIterator
   - Examples of using Graph4J API: org.graph4j.examples
   - Support for tournament graphs: org.graph4j.alg.Tournament
 	(determining if a digraph is tournament, obtaining a hamiltonian path in a tournament)

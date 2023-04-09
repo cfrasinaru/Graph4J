@@ -24,15 +24,22 @@ import org.graph4j.util.Clique;
 import org.graph4j.util.VertexSet;
 
 /**
- * Recursive implementation.
  *
+ * Obtains all maximal cliques of a graph. Recursive implementation. It is more
+ * convenient to use {@link BronKerboschCliqueIterator}.
+ *
+ * Implemented after: Etsuji Tomita, Akira Tanaka, Haruhisa Takahashi, "The
+ * worst-case time complexity for generating all maximal cliques and
+ * computational experiments".
+ *
+ * @see BronKerboschCliqueIterator
  * @author Cristian Frăsinaru
  */
 @Deprecated
 public class BronKerboschCliqueFinder extends SimpleGraphAlgorithm {
 
     private Clique workingClique;
-    List<Clique> cliques;
+    private List<Clique> cliques;
 
     public BronKerboschCliqueFinder(Graph graph) {
         super(graph);
@@ -61,35 +68,52 @@ public class BronKerboschCliqueFinder extends SimpleGraphAlgorithm {
     }
 
     private void expand(VertexSet subg, VertexSet cand) {
-        /*
-        System.out.println("clique: " + workingClique);
-        System.out.println("subg: " + subg);
-        System.out.println("cand: " + cand);
-         */
         if (subg.isEmpty()) {
             //found a maximal clique
-            //System.out.println(workingClique);
             cliques.add(workingClique);
             return;
         }
 
-        //int u = subg.peek();
-        //var tempCand = new VertexSet(cand);
-        //tempCand.removeAll(graph.neighbors(u));
-        var tempCand = cand;
+        int u = choosePivot(subg, cand);
+        var ext = new VertexSet(cand);
+        ext.removeAll(graph.neighbors(u));
         //
-        while (!tempCand.isEmpty()) {
-            int v = tempCand.peek();
+        while (!ext.isEmpty()) {
+            int v = ext.pop();
+
             workingClique.add(v);
+
             var neighbors = graph.neighbors(v);
             var newSubg = subg.intersection(neighbors);
-            var newCand = cand.intersection(neighbors);
+            var newCand = newSubg.isEmpty() ? newSubg : cand.intersection(neighbors);
 
             expand(newSubg, newCand);
 
-            tempCand.remove(v);
+            cand.remove(v);
             workingClique.remove(v);
         }
+    }
+
+    private int choosePivot(VertexSet subg, VertexSet cand) {
+        int pivot = -1, maxDeg = -1;
+        for (int v : subg.vertices()) {
+            int deg = countNeighbors(v, cand);
+            if (maxDeg < deg) {
+                maxDeg = deg;
+                pivot = v;
+            }
+        }
+        return pivot;
+    }
+
+    private int countNeighbors(int v, VertexSet set) {
+        int count = 0;
+        for (int u : set.vertices()) {
+            if (graph.containsEdge(v, u)) {
+                count++;
+            }
+        }
+        return count;
     }
 
 }

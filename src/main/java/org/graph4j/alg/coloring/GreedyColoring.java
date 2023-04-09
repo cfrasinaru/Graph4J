@@ -22,11 +22,21 @@ import org.graph4j.Graph;
 import org.graph4j.alg.GraphAlgorithm;
 
 /**
+ * Greedy coloring is a simple heuristic algorithm that assigns colors to the
+ * vertices of a graph in a greedy manner, that is, by selecting the smallest
+ * possible color that has not yet been used by any of the neighboring vertices.
+ *
+ * The order in which vertices are colored can be specified at the beginning.
  *
  * @author Cristian Frăsinaru
  */
 public class GreedyColoring extends GraphAlgorithm implements VertexColoringAlgorithm {
 
+    /**
+     * The vertices will be colored in the order of their graph indices.
+     *
+     * @param graph the input graph.
+     */
     public GreedyColoring(Graph graph) {
         super(graph);
     }

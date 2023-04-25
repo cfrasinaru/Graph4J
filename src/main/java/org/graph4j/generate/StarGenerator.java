@@ -78,6 +78,8 @@ public class StarGenerator extends AbstractGraphGenerator {
     }
     
     private void addEdges(Graph g, boolean outward) {
+        boolean safeMode = g.isSafeMode();
+        g.setSafeMode(false);
         int[] other = IntStream.of(vertices).filter(v -> v != center).toArray();
         for (int v : other) {
             if (outward) {
@@ -86,6 +88,7 @@ public class StarGenerator extends AbstractGraphGenerator {
                 g.addEdge(v, center);
             }
         }
+        g.setSafeMode(safeMode);
     }
     
 }

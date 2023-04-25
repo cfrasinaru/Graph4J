@@ -1,4 +1,10 @@
 1.0.3
+  - Exact algorithm for vertex coloring: BacktrackColoring
+  - Simple heuristic for determining a single maximal clique: MaximalCliqueFinder
+  - New heuristic algorithm for vertex coloring: RecursiveLargestFirst (RLF)
+  - New greedy coloring algorithms: Random, LargestDegreeFirst, SmallestDegreeLast, DSatur
+  - All graph generators run with safeMode(false)
+  - VertexSet uses a IntHashMap for improving the performance of vertex removal
   
 1.0.2	2023-04-09
   - Improved algorithm for enumerating maximal cliques: org.graph4j.alg.clique.BronKerboschCliqueIterator
@@ -7,7 +13,7 @@
 	(determining if a digraph is tournament, obtaining a hamiltonian path in a tournament)
   
 1.0.1	2023-03-19
-  - New algorithm for single pair shortest path: org.graph4j.alg.sp.BidirectionalDijkstra
-  - New algorithm for bridge detection: org.graph4j.alg.connectivity.BridgeDetectionAlgorithm
+  - Algorithm for single pair shortest path: org.graph4j.alg.sp.BidirectionalDijkstra
+  - Algorithm for bridge detection: org.graph4j.alg.connectivity.BridgeDetectionAlgorithm
   - Bug: Graph.maxVertexNumber() was not correct (should return -1 in case of an empty graph)
   - Bug: Graph.addVertex() was not correct (due to maxVertexNumber being incorrect)

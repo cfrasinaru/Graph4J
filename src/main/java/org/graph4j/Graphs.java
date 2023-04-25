@@ -20,9 +20,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 import org.graph4j.alg.AcyclicOrientation;
+import org.graph4j.alg.bipartite.BipartitionAlgorithm;
+import org.graph4j.alg.connectivity.BiconnectivityAlgorithm;
 import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;
 import org.graph4j.alg.cycle.CycleDetectionAlgorithm;
-import org.graph4j.alg.connectivity.TarjanBiconnectivity;
 import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
 import org.graph4j.traverse.DFSIterator;
 import org.graph4j.util.CheckArguments;
@@ -126,6 +127,33 @@ public class Graphs {
     }
 
     /**
+     * Determines if a graph is complete (there is an edge between every two
+     * vertices).
+     *
+     * @param graph the input graph.
+     * @return {@code true} if the graph is complete.
+     */
+    public static boolean isComplete(Graph graph) {
+        int n = graph.numVertices();
+        if (graph.isDirected()) {
+            return graph.numEdges() >= Digraph.maxEdges(n);
+        }
+        return graph.numEdges() >= Graph.maxEdges(n);
+    }
+
+    /**
+     * Determines if a graph is bipartite (its vertices can be partitioned in
+     * two disjoint stable sets).
+     *
+     * @see BipartitionAlgorithm
+     * @param graph the input graph.
+     * @return {@code true} if the graph is bipartite.
+     */
+    public static boolean isBipartite(Graph graph) {
+        return BipartitionAlgorithm.getInstance(graph).isBipartite();
+    }
+
+    /**
      * Determines if a graph is connected. If the input graph is directed, the
      * algorithm is performed on its support graph (it tests weak connectivity).
      *
@@ -161,12 +189,14 @@ public class Graphs {
     }
 
     /**
-     * @see TarjanBiconnectivity
+     * Determiens if the graph is biconnected (2-connected).
+     *
+     * @see BiconnectivityAlgorithm
      * @param graph the input graph
      * @return {@code true} if the graph is biconnected (2-connected).
      */
     public static boolean isBiconnected(Graph graph) {
-        return new TarjanBiconnectivity(graph).isBiconnected();
+        return BiconnectivityAlgorithm.getInstance(graph).isBiconnected();
     }
 
     /**

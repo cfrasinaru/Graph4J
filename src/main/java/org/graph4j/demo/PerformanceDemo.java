@@ -38,6 +38,7 @@ abstract class PerformanceDemo {
     protected static final String GUAVA = "Guava";
     protected static final String JUNG = "JUNG";
     protected static final String ALGS4 = "ALGS4";
+    protected static final String OTHER = "Other";
 
     protected Graph graph;
 
@@ -63,6 +64,7 @@ abstract class PerformanceDemo {
     protected boolean runGuava = false;
     protected boolean runJung = false;
     protected boolean runAlgs4 = false;
+    protected boolean runOther = false;
 
     protected static final String EOL = System.lineSeparator();
     protected static final String TAB = "\t";
@@ -190,6 +192,9 @@ abstract class PerformanceDemo {
     protected void testGuava() {
     }
 
+    protected void testOther() {
+    }
+    
     protected void demo() {
         System.out.println(this.getClass().getSimpleName() + " " + Tools.formatTimestamp(new Date()));
         //without warmup, this is not benchmarked
@@ -223,8 +228,8 @@ abstract class PerformanceDemo {
     }
 
     protected void runAll(boolean singleRun) {
-        singleRun(this::createGraph, "Create graph");
-        singleRun(this::prepareGraphs, "Prepare other");
+        singleRun(this::createGraph, "Create");
+        singleRun(this::prepareGraphs, "Prepare");
         if (runGraph4J) {
             run(this::testGraph4J, singleRun, GRAPH4J);
         }
@@ -242,6 +247,9 @@ abstract class PerformanceDemo {
         }
         if (runAlgs4) {
             run(this::testAlgs4, singleRun, ALGS4);
+        }
+        if (runOther) {
+            run(this::testOther, singleRun, OTHER);
         }
     }
 

@@ -16,21 +16,22 @@
  */
 package org.graph4j.alg.coloring;
 
-import java.util.Arrays;
-import java.util.BitSet;
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
+import org.graph4j.util.IntArrays;
 
 /**
- * Greedy coloring is a simple heuristic algorithm that assigns colors to the
- * vertices of a graph in a greedy manner, that is, by selecting the smallest
- * possible color that has not yet been used by any of the neighboring vertices.
+ * {@inheritDoc}
  *
- * The order in which vertices are colored can be specified at the beginning.
+ * <p>
+ * The order in which vertices are colored is either according to their indices
+ * in the graph, or can be specified in the constructor.
  *
  * @author Cristian Frăsinaru
  */
-public class GreedyColoring extends GraphAlgorithm implements VertexColoringAlgorithm {
+public class GreedyColoring extends GreedyColoringBase {
+
+    protected int pos = 0;
+    protected int[] vertexOrdering;
 
     /**
      * The vertices will be colored in the order of their graph indices.
@@ -39,68 +40,38 @@ public class GreedyColoring extends GraphAlgorithm implements VertexColoringAlgo
      */
     public GreedyColoring(Graph graph) {
         super(graph);
+        this.vertexOrdering = graph.vertices();
     }
 
-    @Override
-    public VertexColoring findColoring() {
-        return findColoring(graph.numVertices());
-    }
-
-    @Override
-    public VertexColoring findColoring(int numColors) {
-        int colors[] = new int[numColors];
-        Arrays.fill(colors, -1);
-        var used = new BitSet();
-        for (int v : graph.vertices()) {
-            //finding the colors used by the neighbors of v
-            for (var it = graph.neighborIterator(v); it.hasNext();) {
-                int u = it.next();
-                int ui = graph.indexOf(u);
-                if (colors[ui] >= 0) {
-                    used.set(colors[ui]);
-                }
-            }
-            //finding a color for v, not used by its neighbors
-            int color = 0;
-            while (used.get(color) && color < numColors - 1) {
-                color++;
-            }
-            if (color == numColors) {
-                return null;
-            }
-            colors[graph.indexOf(v)] = color;
-            used.clear();
+    /**
+     * The vertices will be colored in a specified order.
+     *
+     * @param graph the input graph.
+     * @param vertexOrdering an ordering of the graph vertices.
+     */
+    public GreedyColoring(Graph graph, int[] vertexOrdering) {
+        super(graph);
+        if (!IntArrays.sameValues(graph.vertices(), vertexOrdering)) {
+            throw new IllegalArgumentException(
+                    "The ordering is invalid - it must contain the vertices "
+                    + "of the graph in any given order.");
         }
-        return new VertexColoring(graph, colors);
+        this.vertexOrdering = vertexOrdering;
     }
 
-    /*
     @Override
-    public VertexColoring findColoring(int numColors) {
-        List<VertexSet> colorClasses = new ArrayList<>();
-        for (int v : graph.vertices()) {
-            boolean foundColorClass = false;
-            nextSet:
-            for (var set : colorClasses) {
-                for (var u : set.vertices()) {
-                    if (graph.containsEdge(v, u)) {
-                        continue nextSet;
-                    }
-                }
-                set.add(v);
-                foundColorClass = true;
-                break;
-            }
-            if (!foundColorClass) {
-                if (colorClasses.size() == numColors) {
-                    //numbers of colors exceeded
-                    return null;
-                }
-                var set = new VertexSet(graph);
-                set.add(v);
-                colorClasses.add(set);
-            }
-        }
-        return new VertexColoring(graph, colorClasses);
-    }*/
+    protected void init() {
+        pos = 0;
+    }
+
+    @Override
+    protected boolean hasUncoloredVertices() {
+        return pos < vertexOrdering.length;
+    }
+
+    @Override
+    protected int nextUncoloredVertex() {
+        return vertexOrdering[pos++];
+    }
+
 }

@@ -803,8 +803,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     @Override
-    public boolean containsEdge(int v, int u
-    ) {
+    public boolean containsEdge(int v, int u) {
         checkVertex(v);
         checkVertex(u);
         //if the degree of v is small enough, just iterate

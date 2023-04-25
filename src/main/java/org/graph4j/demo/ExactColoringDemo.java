@@ -16,64 +16,64 @@
  */
 package org.graph4j.demo;
 
-import java.util.Iterator;
-import java.util.Set;
-import org.graph4j.alg.clique.*;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
-class BronKerboschDemo extends PerformanceDemo {
+class ExactColoringDemo extends PerformanceDemo {
 
-    private final double probability = 0.8;
+    private final double probability = 0.2;
 
-    public BronKerboschDemo() {
-        numVertices = 100;
-        //runJGraphT = true;
+    public ExactColoringDemo() {
+        numVertices = 50;
+        runJGraphT = true; //very slow
+        //runOther = true;
     }
 
     @Override
     protected void createGraph() {
         graph = new RandomGnpGraphGenerator(numVertices, probability).createGraph();
+        //graph = GraphGenerator.wheel(numVertices);
+        //graph = GraphGenerator.cycle(numVertices);
+        //graph = GraphGenerator.complete(numVertices);
+        //graph = new RandomGnmGraphGenerator(numVertices, 5 * numVertices).createGraph();
+        //graph = GraphGenerator.completeBipartite(numVertices, numVertices);
+        //graph = new RandomTreeGenerator(numVertices).create();
     }
 
     @Override
     protected void testGraph4J() {
-        long t0 = System.currentTimeMillis();
-        int count = 0;
-        var alg = new BronKerboschCliqueIterator(graph);
-        while (alg.hasNext()) {
-            var q = alg.next();
-            //System.out.println(q);
-            count++;
-        }
-        long t1 = System.currentTimeMillis();
-        //System.out.println(count + ", " + count / (t1-t0) + " cliques per millisecond");
-        System.out.println(count + ", " + 1000.0 * (t1-t0) / count + " seconds to generate one million cliques");
+        var alg = new org.graph4j.alg.coloring.BacktrackColoring(graph);
+        var col = alg.findColoring();
+        System.out.println(col.numUsedColors());
+
     }
 
     @Override
     protected void testJGraphT() {
-        int count = 0;
-        var finder = new org.jgrapht.alg.clique.BronKerboschCliqueFinder(jgrapht);
-        Iterator<Set<Integer>> it = finder.iterator();
-        while (it.hasNext()) {
-            Set<Integer> clique = it.next();
-            //System.out.println(clique);
-            count++;
-        }
-        System.out.println(count);
+        var alg = new org.jgrapht.alg.color.BrownBacktrackColoring(jgrapht);
+        var col = alg.getColoring();
+        System.out.println(col.getNumberColors());
+
     }
 
-    
+    @Override
+    protected void testOther() {
+        /*
+        var alg = new org.graph4j.alg.coloring.BacktrackColoring2(graph);
+        var col = alg.findColoring();
+        System.out.println(col.numUsedColors());
+        */
+    }
+
     @Override
     protected void prepareArgs() {
         int steps = 10;
         args = new int[steps];
         for (int i = 0; i < steps; i++) {
-            args[i] = 100 * (i + 1);
+            args[i] = 1000 * (i + 1);
         }
     }
 }

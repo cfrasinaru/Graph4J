@@ -17,35 +17,32 @@
 package org.graph4j.alg.coloring;
 
 import org.graph4j.Graph;
+import org.graph4j.alg.ordering.VertexOrderings;
 
 /**
+ * {@inheritDoc}
  *
+ * <p>
+ * The vertices are colored in decreasing order by their degree. The vertex
+ * ordering is computed statically before the algorithm starts.
+ *
+ * <p>
+ * The Largest First Vertex Ordering (LFVO) produces an ordering of the vertices
+ * such that the vertices with the largest degree are processed first.
+ *
+ * @see VertexOrderings
  * @author Cristian Frăsinaru
  */
-public interface VertexColoringAlgorithm {
+public class LargestDegreeFirstColoring extends GreedyColoring {
 
     /**
+     * The vertices will be colored in decreasing order by their degree.
      *
-     * @return a coloring of the graph.
+     * @param graph the input graph;
      */
-    VertexColoring findColoring();
-
-    /**
-     *
-     * @param numColors maximum number of colors to be used.
-     * @return a coloring of the graph with the specified number of colors, or
-     * {@code null} if no coloring can be found by this algorithm.
-     */
-    VertexColoring findColoring(int numColors);
-
-    /**
-     * Returns the default implementation of this interface.
-     *
-     * @param graph the input graph.
-     * @return the default implementation of this interface.
-     */
-    static VertexColoringAlgorithm getInstance(Graph graph) {
-        return new DSaturGreedyColoring(graph);
+    public LargestDegreeFirstColoring(Graph graph) {
+        super(graph);
+        this.vertexOrdering = VertexOrderings.largestDegreeFirst(graph);
     }
 
 }

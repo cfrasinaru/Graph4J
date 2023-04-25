@@ -201,8 +201,8 @@ public class IntArrays {
      *
      * @param array1 an array of integers.
      * @param array2 an array of integers.
-     * @return {@code true}, if the two arrays have the same values, regardless of
-     * order.
+     * @return {@code true}, if the two arrays have the same values, regardless
+     * of order.
      */
     public static boolean sameValues(int[] array1, int[] array2) {
         if (array1 == array2) {
@@ -215,6 +215,7 @@ public class IntArrays {
     }
 
     /**
+     * Creates a new array with the original elements shuffled.
      *
      * @param array an array of integers.
      * @return a new array with the original elements shuffled.
@@ -224,6 +225,7 @@ public class IntArrays {
     }
 
     /**
+     * Creates a new array with the original elements shuffled.
      *
      * @param array an array of integers.
      * @param random a generator of random numbers.
@@ -244,7 +246,7 @@ public class IntArrays {
      *
      * @param array an array of integers.
      * @param fromPos a position in the array.
-     * @param toPos  a position in the array.
+     * @param toPos a position in the array.
      * @return a string representation of the specified part of the array.
      */
     public static String toString(int[] array, int fromPos, int toPos) {

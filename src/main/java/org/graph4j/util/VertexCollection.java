@@ -42,7 +42,7 @@ abstract class VertexCollection implements Iterable<Integer> {
 
     protected VertexCollection() {
     }
-    
+
     /**
      *
      * @param graph the graph the vertices belong to.
@@ -228,7 +228,7 @@ abstract class VertexCollection implements Iterable<Integer> {
         for (var it = iterator(); it.hasNext();) {
             int v = it.next();
             if (!IntArrays.contains(vertices, v)) {
-                remove(v);
+                it.remove();
                 modified = true;
             }
         }
@@ -254,7 +254,8 @@ abstract class VertexCollection implements Iterable<Integer> {
      */
     public boolean contains(int v) {
         //for smaller sets, just iterate        
-        if (numVertices <= DEFAULT_CAPACITY) {
+        //if (numVertices <= DEFAULT_CAPACITY) {
+        if (numVertices * numVertices < graph.numVertices()) {
             return indexOf(v) >= 0;
         }
         //for larger sets, create the bitset and use it

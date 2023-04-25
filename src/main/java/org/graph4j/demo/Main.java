@@ -17,6 +17,9 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
+import org.graph4j.GraphBuilder;
+import org.graph4j.alg.coloring.BacktrackColoring;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  * Driver class for running the comparisons with other libraries.
@@ -26,6 +29,9 @@ import java.io.FileNotFoundException;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
+        var app = new ExactColoringDemo();
+        //var app = new GreedyColoringDemo();
+        //var app = new GraphMetricsDemo();
         //var app = new BronKerboschDemo();
         //var app = new HopcroftKarpDemo();
         //var app = new PushRelabelDemo();
@@ -34,7 +40,6 @@ public class Main {
         //var app = new KruskalMSTDemo();
         //var app = new PrimMSTDemo();
         //var app = new LineGraphDemo();
-        //var app = new GreedyColoringDemo();
         //var app = new BipartiteDemo();
         //var app = new StrongConnectivityDemo();
         //var app = new BiconnectivityDemo();
@@ -61,7 +66,7 @@ public class Main {
         //var app = new SparseGraphDemo();
         //var app = new CompleteGraphDemo();
         //var app = new EmptyGraphDemo();
-        var app = new Main();
+        //var app = new Main();
         //app.benchmark();
         app.demo();
     }
@@ -70,13 +75,35 @@ public class Main {
         run(this::test);
     }
 
+    private void test1() {
+        var g = GraphBuilder.numVertices(8)
+                .addEdges("0-5, 0-6, 0-7, 1-2, 1-3, 1-5, 1-7, 2-5, 3-4, 3-6, 3-7, 4-5, 4-6, 5-6").buildGraph();
+        var alg1 = new BacktrackColoring(g);
+        var col1 = alg1.findColoring(3);
+        System.out.println(col1.numUsedColors());
+    }
+
     private void test() {
-        /*
-        int n = 20000;
-        var g = new RandomGnpGraphGenerator(n, 0.2).createGraph();
-        var alg = new DijkstraShortestPathHeap(g, 0);
-        alg.findPath(n-1);
-         */
+        int n = 18;
+        for (int i = 0; i < 1000; i++) {
+            var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
+
+            try {
+                var alg1 = new BacktrackColoring(g);
+                var col1 = alg1.findColoring();
+
+                var alg2 = new org.jgrapht.alg.color.BrownBacktrackColoring(Converter.createJGraphT(g));
+                var col2 = alg2.getColoring();
+
+                if (col1.numUsedColors() != col2.getNumberColors()) {
+                    System.out.println(col1.numUsedColors() + " != " + col2.getNumberColors());
+                    System.out.println(g);
+                    break;
+                }
+            } catch (Exception e) {
+                System.out.println(g);
+            }
+        }
     }
 
     protected void run(Runnable snippet) {

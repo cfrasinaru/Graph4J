@@ -188,16 +188,27 @@ public class GraphMetrics extends GraphAlgorithm {
      * @return the distances matrix
      */
     public int[][] distances() {
+        if (GraphMeasures.density(graph) < 0.3) {
+            return distancesBFS();
+        }
+        return distancesFW();
+    }
+
+    //uses Floyd-Warshall to compute all pairs shortest paths
+    //complexity O(n^3)
+    private int[][] distancesFW() {
         int n = graph.numVertices();
         this.dist = new int[n][n];
         var alg = new FloydWarshallShortestPath(graph);
         int n1 = directed ? n : n - 1;
         for (int i = 0; i < n1; i++) {
             int v = graph.vertexAt(i);
+            //var alg = new DijkstraShortestPathHeap(graph, v);
             int from = directed ? 0 : i + 1;
             for (int j = from; j < n; j++) {
                 int u = graph.vertexAt(j);
                 double d = alg.getPathWeight(v, u);
+                //double d = alg.getPathWeight(u);
                 if (d == Double.POSITIVE_INFINITY) {
                     dist[i][j] = Integer.MAX_VALUE;
                 } else {
@@ -206,6 +217,28 @@ public class GraphMetrics extends GraphAlgorithm {
                 if (!directed) {
                     dist[j][i] = dist[i][j];
                 }
+            }
+        }
+        return dist;
+    }
+
+    //uses BFS from each vertex to compute all pairs shortest paths
+    //complexity O(n(n+m))
+    private int[][] distancesBFS() {
+        int n = graph.numVertices();
+        this.dist = new int[n][n];
+        for (int v : graph.vertices()) {
+            int vi = graph.indexOf(v);
+            Arrays.fill(dist[vi], Integer.MAX_VALUE);
+            var bfs = new BFSIterator(graph, v);
+            while (bfs.hasNext()) {
+                var node = bfs.next();
+                if (node.component() > 0) {
+                    break;
+                }
+                int u = node.vertex();
+                int ui = graph.indexOf(u);
+                dist[vi][ui] = node.level();
             }
         }
         return dist;

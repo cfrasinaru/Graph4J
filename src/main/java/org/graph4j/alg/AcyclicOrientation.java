@@ -38,7 +38,8 @@ public class AcyclicOrientation extends SimpleGraphAlgorithm {
      * @param graph the input undirected graph.
      */
     public AcyclicOrientation(Graph graph) {
-        this(graph, graph.vertices());
+        super(graph);
+        this.vertexOrdering = graph.vertices();
     }
 
     /**

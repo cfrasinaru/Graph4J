@@ -4,12 +4,14 @@ https://github.com/jrtom/jung
 https://github.com/google/guava/tree/master/guava/src/com/google/common/graph
 https://github.com/google/guava/wiki/GraphsExplained
 
-
 https://gephi.org/users/supported-graph-formats/
 
-Python
+NetworkX
 https://networkx.org/
 https://github.com/networkx/networkx/tree/main/networkx/algorithms
+
+NetworKit
+https://networkit.github.io/index.html
 
 C++
 BGL https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
@@ -38,8 +40,21 @@ Comparatii legate de modul de rulare / performanta:
 
 Implementare de noi algoritmi
 
+Package .ordering
+vertex orderings: lex-bfs,  maximum cardinality search (?), maximal neighborhood search (?), degeneracy (?)
+
+Package .col
+Chordal Ggraph coloring
+https://en.wikipedia.org/wiki/Chordal_graph
+https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/color/ChordalGraphColoring.java
+
+JCOL
+https://github.com/shah314/graphcoloring
+ColPack (C++)
+https://github.com/CSCsw/ColPack
+
+
 Shortest Paths:
-	https://en.wikipedia.org/wiki/Johnson%27s_algorithm
 Johnson's algorithm
 	https://en.wikipedia.org/wiki/Johnson%27s_algorithm	
 Finding the k-shortest path between two nodes
@@ -47,6 +62,10 @@ Finding the k-shortest path between two nodes
 	https://en.wikipedia.org/wiki/K_shortest_path_routing
 
 
+Chordal Graphs
+generation: Linear-Time Generation of Random Chordal Graphs
+recognition: LexBFS
+coloring, maximum clique
 
 For the Assignment Problem
 
@@ -73,12 +92,33 @@ https://en.wikipedia.org/wiki/PageRank
 http://infolab.stanford.edu/~backrub/google.html
 https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/scoring/PageRank.html
 
+
+
 MST
 Boruvka Algorithm
 	https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm
 Randomized minimum spanning tree algorithm ?
 
 Metrici si masuri specifice relatiilor sociale
+
+[1] F. W. Takes, W. A. Kosters,
+"Determining the diameter of small world networks."
+Proceedings of the 20th ACM international conference on Information and knowledge management, 2011
+https://dl.acm.org/doi/abs/10.1145/2063576.2063748
+
+.. [2] F. W. Takes, W. A. Kosters,
+"Computing the Eccentricity Distribution of Large Graphs."
+Algorithms, 2013
+
+https://www.mdpi.com/1999-4893/6/1/100
+.. [3] M. Borassi, P. Crescenzi, M. Habib, W. A. Kosters, A. Marino, F. W. Takes,
+"Fast diameter and radius BFS-based computation in (weakly connected) real-world graphs: With an application to the six degrees of separation games. "
+Theoretical Computer Science, 2015
+https://www.sciencedirect.com/science/article/pii/S0304397515001644
+
+
+
+
 
 Generaratoare de grafuri
 OK k-regulate

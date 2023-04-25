@@ -23,9 +23,9 @@ import org.graph4j.GraphBuilder;
 import org.graph4j.alg.Tournament;
 
 /**
- * Generates <em>tournament</em> graphs. A tournament is a directed
- * graph (digraph) obtained by assigning a direction for each edge in an
- * undirected complete graph. That is, it is an orientation of a complete graph.
+ * Generates <em>tournament</em> graphs. A tournament is a directed graph
+ * (digraph) obtained by assigning a direction for each edge in an undirected
+ * complete graph. That is, it is an orientation of a complete graph.
  *
  * @see Tournament
  * @author Cristian Frăsinaru
@@ -65,7 +65,6 @@ public class TournamentGenerator extends AbstractGraphGenerator {
     private void addEdges(Graph g, boolean random) {
         boolean safeMode = g.isSafeMode();
         g.setSafeMode(false);
-
         int n = vertices.length;
         for (int i = 0; i < n - 1; i++) {
             for (int j = i + 1; j < n; j++) {

@@ -16,7 +16,7 @@
  */
 package algorithms;
 
-import org.checkerframework.checker.units.qual.g;
+import org.graph4j.alg.coloring.DSaturGreedyColoring;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.alg.coloring.GreedyColoring;
@@ -27,32 +27,33 @@ import org.graph4j.generate.GraphGenerator;
  *
  * @author Cristian Frăsinaru
  */
-public class ColoringTest {
+public class GreedyColoringTest {
 
-    public ColoringTest() {
+    public GreedyColoringTest() {
     }
 
     @Test
     public void manual() {
+        int red = 0, green = 1, yellow = 2;
         var g = GraphGenerator.cycle(5);
-        var col = new VertexColoring<String>(g);
-        col.setColor(0, "red");
-        col.setColor(1, "green");
-        col.setColor(2, "red");
-        col.setColor(3, "green");
-        col.setColor(4, "yellow");
+        var col = new VertexColoring(g);
+        col.setColor(0, red);
+        col.setColor(1, green);
+        col.setColor(2, red);
+        col.setColor(3, green);
+        col.setColor(4, yellow);
 
         assertTrue(col.isComplete());
         assertTrue(col.isProper());
         assertEquals(3, col.getColorClasses().size());
 
-        col.setColor(4, "red");
+        col.setColor(4, red);
         assertEquals(2, col.getColorClasses().size());
         assertFalse(col.isProper());
     }
 
     @Test
-    public void emptyGreedy() {
+    public void empty() {
         var g = GraphGenerator.empty(5);
         var alg = new GreedyColoring(g);
         var col = alg.findColoring();
@@ -61,11 +62,29 @@ public class ColoringTest {
     }
 
     @Test
-    public void completeGreedy() {
+    public void complete() {
         var g = GraphGenerator.complete(5);
         var alg = new GreedyColoring(g);
         var col = alg.findColoring();
         assertEquals(5, col.numUsedColors());
+        assertTrue(col.isProper());
+    }
+
+    @Test
+    public void dsaturBipartite() {
+        var g = GraphGenerator.completeBipartite(5, 6);
+        var alg = new DSaturGreedyColoring(g);
+        var col = alg.findColoring();
+        assertEquals(2, col.numUsedColors());
+        assertTrue(col.isProper());
+    }
+
+    @Test
+    public void dsaturWheel() {
+        var g = GraphGenerator.wheel(6); //center+C5
+        var alg = new DSaturGreedyColoring(g);
+        var col = alg.findColoring();
+        assertEquals(4, col.numUsedColors());
         assertTrue(col.isProper());
     }
 

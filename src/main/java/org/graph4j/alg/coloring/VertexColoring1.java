@@ -16,15 +16,13 @@
  */
 package org.graph4j.alg.coloring;
 
-import java.util.Arrays;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
+import java.util.stream.Stream;
 import org.graph4j.Edge;
 import org.graph4j.Graph;
-import org.graph4j.util.IntArrays;
 import org.graph4j.util.VertexSet;
 
 /**
@@ -33,25 +31,23 @@ import org.graph4j.util.VertexSet;
  *
  * @see VertexColoringAlgorithm
  * @author Cristian Frăsinaru
+ * @param <T> the type of vertex colors.
  */
-public class VertexColoring {
+@Deprecated
+class VertexColoring1<T> {
 
     private final Graph graph;
-    private final int[] vertexColor;
-    private int numColoredVertices = 0;
-    private BitSet usedColors;
-    private Map<Integer, VertexSet> colorMap;
+    private final Object[] vertexColor;
+    private Map<T, VertexSet> colorMap;
 
     /**
      * Creates an empty coloring - no vertex has a color assigned to it.
      *
      * @param graph the input graph.
      */
-    public VertexColoring(Graph graph) {
+    public VertexColoring1(Graph graph) {
         this.graph = graph;
-        vertexColor = new int[graph.numVertices()];
-        Arrays.fill(vertexColor, -1);
-        this.usedColors = new BitSet();
+        vertexColor = new Object[graph.numVertices()];
     }
 
     /**
@@ -61,29 +57,10 @@ public class VertexColoring {
      * @param graph the input graph.
      * @param colors an array of color numbers.
      */
-    public VertexColoring(Graph graph, int colors[]) {
+    public VertexColoring1(Graph graph, int colors[]) {
         this(graph);
         for (int i = 0; i < colors.length; i++) {
-            this.vertexColor[i] = colors[i];
-            if (colors[i] >= 0) {
-                numColoredVertices++;
-                this.usedColors.set(colors[i]);
-            }
-        }
-    }
-
-    /**
-     *
-     * @param graph the input graph.
-     * @param other a vertex coloring.
-     */
-    public VertexColoring(Graph graph, VertexColoring other) {
-        this.graph = other.graph;
-        this.numColoredVertices = other.numColoredVertices;
-        this.vertexColor = IntArrays.copyOf(other.vertexColor);
-        this.usedColors = (BitSet) other.usedColors.clone();
-        if (other.colorMap != null) {
-            this.colorMap = new HashMap<>(other.colorMap);
+            vertexColor[i] = colors[i];
         }
     }
 
@@ -95,15 +72,11 @@ public class VertexColoring {
      * @param graph the input graph.
      * @param colorClasses the already computed color classes.
      */
-    public VertexColoring(Graph graph, List<VertexSet> colorClasses) {
+    public VertexColoring1(Graph graph, List<VertexSet> colorClasses) {
         this(graph);
         for (int color = 0, k = colorClasses.size(); color < k; color++) {
             for (int v : colorClasses.get(color).vertices()) {
                 vertexColor[graph.indexOf(v)] = color;
-                if (color >= 0) {
-                    numColoredVertices++;
-                    usedColors.set(color);
-                }
             }
         }
     }
@@ -115,38 +88,31 @@ public class VertexColoring {
      * @return {@code true} if a color has been set for the vertex v.
      */
     public boolean isColorSet(int v) {
-        return vertexColor[graph.indexOf(v)] >= 0;
+        return vertexColor[graph.indexOf(v)] != null;
     }
 
     /**
      * Assigns a color to the specified vertex.
      *
      * @param v a vertex number.
-     * @param color the color to be set, or {@code -1} to uncolor the specified
-     * vertex.
+     * @param color an object representing the color, or {@code null} to uncolor
+     * the specified vertex.
      */
-    public void setColor(int v, int color) {
-        int vi = graph.indexOf(v);
-        int oldColor = vertexColor[vi];
-        vertexColor[vi] = color;
-        if (oldColor < 0 && color >= 0) {
-            numColoredVertices++;
-        } else if (oldColor >= 0 && color < 0) {
-            numColoredVertices--;
-        }
-        usedColors.set(color, color >= 0);
+    public void setColor(int v, T color) {
+        vertexColor[graph.indexOf(v)] = color;
         colorMap = null;
     }
 
     /**
-     * Returns the color assigned to a vertex v, or {@code -1} if no color has
+     * Returns the color assigned to a vertex v, or {@code null} if no color has
      * been set.
      *
      * @param v a vertex number;
-     * @return the color assigned to v, or {@code -1} if no color has been set.
+     * @return the color assigned to v, or {@code null} if no color has been
+     * set.
      */
-    public int getColor(int v) {
-        return vertexColor[graph.indexOf(v)];
+    public T getColor(int v) {
+        return (T) vertexColor[graph.indexOf(v)];
     }
 
     /**
@@ -156,7 +122,7 @@ public class VertexColoring {
      *
      * @return the color classes.
      */
-    public Map<Integer, VertexSet> getColorClasses() {
+    public Map<T, VertexSet> getColorClasses() {
         if (colorMap == null) {
             createColorClasses();
         }
@@ -166,8 +132,8 @@ public class VertexColoring {
     private void createColorClasses() {
         colorMap = new HashMap<>();
         for (int i = 0, n = graph.numVertices(); i < n; i++) {
-            int color = vertexColor[i];
-            if (color == -1) {
+            T color = (T) vertexColor[i];
+            if (color == null) {
                 continue;
             }
             var set = colorMap.get(color);
@@ -185,7 +151,7 @@ public class VertexColoring {
      * @return the number of used colors.
      */
     public int numUsedColors() {
-        return usedColors.cardinality();
+        return getColorClasses().size();
     }
 
     /**
@@ -194,7 +160,7 @@ public class VertexColoring {
      * @return the number of colored vertices.
      */
     public int numColoredVertices() {
-        return numColoredVertices;
+        return (int) Stream.of(vertexColor).filter(c -> c != null).count();
     }
 
     /**
@@ -203,7 +169,12 @@ public class VertexColoring {
      * @return {@code true} if all the vertices have been colored.
      */
     public boolean isComplete() {
-        return numColoredVertices == vertexColor.length;
+        for (var color : vertexColor) {
+            if (color == null) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -217,9 +188,9 @@ public class VertexColoring {
             Edge e = it.next();
             int vi = graph.indexOf(e.source());
             int ui = graph.indexOf(e.target());
-            int vc = vertexColor[vi];
-            int uc = vertexColor[ui];
-            if (vc != -1 && uc != -1 && vc == uc) {
+            T vc = (T) vertexColor[vi];
+            T uc = (T) vertexColor[ui];
+            if (vc != null && uc != null && vc.equals(uc)) {
                 System.err.println("Vertices " + e.source() + " and " + e.target()
                         + " have the same color: " + vc);
                 return false;
@@ -232,8 +203,8 @@ public class VertexColoring {
     public String toString() {
         var sb = new StringJoiner(",");
         for (int v : graph.vertices()) {
-            int vc = vertexColor[graph.indexOf(v)];
-            if (vc != -1) {
+            T vc = (T) vertexColor[graph.indexOf(v)];
+            if (vc != null) {
                 sb.add(v + ":" + vc);
             }
         }

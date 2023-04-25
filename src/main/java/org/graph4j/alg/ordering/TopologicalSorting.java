@@ -14,31 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg;
+package org.graph4j.alg.ordering;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 import org.graph4j.Digraph;
+import org.graph4j.alg.DirectedGraphAlgorithm;
 
 /**
+ * Computes an ordering of a directed graph vertices such that for every
+ * directed edge uv from vertex u to vertex v, u comes before v in the ordering.
  *
  * @author Cristian Frăsinaru
  */
-public class TopologicalSort extends DirectedGraphAlgorithm {
+public class TopologicalSorting extends DirectedGraphAlgorithm {
 
     /**
-     * 
+     *
      * @param digraph the input directed graph.
      */
-    public TopologicalSort(Digraph digraph) {
+    public TopologicalSorting(Digraph digraph) {
         super(digraph);
     }
 
     /**
      *
-     * @return the topological order, or null if the digraph is not acyclic.
+     * @return the topological order, or {@code null} if the digraph is not
+     * acyclic.
      */
-    public int[] sort() {
+    public int[] compute() {
         int n = graph.numVertices();
         int[] inDegrees = graph.indegrees();
         Queue<Integer> queue = new ArrayDeque<>(n);

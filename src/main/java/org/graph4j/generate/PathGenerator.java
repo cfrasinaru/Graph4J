@@ -58,6 +58,8 @@ public class PathGenerator extends AbstractGraphGenerator {
     }
 
     private void addEdges(Graph g, boolean leftToRight) {
+        boolean safeMode = g.isSafeMode();
+        g.setSafeMode(false);
         for (int i = 0, n = vertices.length; i < n - 1; i++) {
             int v = vertices[i];
             int u = vertices[i + 1];
@@ -67,6 +69,7 @@ public class PathGenerator extends AbstractGraphGenerator {
                 g.addEdge(u, v);
             }
         }
+        g.setSafeMode(safeMode);
     }
 
 }

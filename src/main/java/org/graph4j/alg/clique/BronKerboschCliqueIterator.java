@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 import org.graph4j.Graph;
 import org.graph4j.alg.SimpleGraphAlgorithm;
 import org.graph4j.util.Clique;
+import org.graph4j.util.IntArrays;
 import org.graph4j.util.VertexSet;
 
 /**
@@ -47,29 +48,37 @@ public class BronKerboschCliqueIterator extends SimpleGraphAlgorithm
      * @param graph the input graph.
      */
     public BronKerboschCliqueIterator(Graph graph) {
-        this(graph, false);
+        this(graph, false, false);
     }
 
     /**
      * Using the adjacency matrix allows for a slightly faster execution of the
-     * algorithm, at the expense of using more memory. Not recommended for large
+     * algorithm, at the expense of using more memory.Not recommended for large
      * sparse graphs.
      *
      * @param graph the input graph.
+     * @param shuffle if the vertices are shuffled before.
      * @param useAdjacencyMatrix {@code true} if the algorithm will compute and
      * use the adjacency matrix of the graph in order to test if two vertices
      * are adjacent.
      */
-    public BronKerboschCliqueIterator(Graph graph, boolean useAdjacencyMatrix) {
+    public BronKerboschCliqueIterator(Graph graph, boolean shuffle, boolean useAdjacencyMatrix) {
         super(graph);
         if (useAdjacencyMatrix) {
             adjMatrix = graph.adjacencyMatrix();
         }
         //
+        int n = graph.numVertices();
         workingClique = new Clique(graph);
-        stack = new ArrayDeque<>(graph.numVertices());
-        var subg = new VertexSet(graph, graph.vertices());
-        var cand = new VertexSet(graph, graph.vertices());
+        stack = new ArrayDeque<>(n);
+        //
+        var set = new VertexSet(graph, n);
+        int[] vertices = shuffle ? IntArrays.shuffle(graph.vertices()) : graph.vertices();
+        for (int v : vertices) {
+            set.add(v);
+        }
+        var subg = set;
+        var cand = new VertexSet(set);
         stack.push(new Node(subg, cand, createExt(subg, cand)));
     }
 
@@ -157,6 +166,7 @@ public class BronKerboschCliqueIterator extends SimpleGraphAlgorithm
         return count;
     }
 
+    //slightly faster
     private int countNeighborsUsingAdjMatrix(int v, VertexSet set) {
         int count = 0;
         int vi = graph.indexOf(v);
@@ -180,10 +190,13 @@ public class BronKerboschCliqueIterator extends SimpleGraphAlgorithm
         return ext;
     }
 
+    //subg are the vertices of the subgraph where we look for a clique
+    //cand are the vertices available to expand the working clique
+    //ext = cand - neighbors(pivot)
     private class Node {
 
-        final VertexSet cand;
         final VertexSet subg;
+        final VertexSet cand;
         final VertexSet ext;
 
         public Node(VertexSet subg, VertexSet cand, VertexSet ext) {

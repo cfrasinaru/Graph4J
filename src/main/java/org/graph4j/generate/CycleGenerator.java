@@ -62,6 +62,8 @@ public class CycleGenerator extends AbstractGraphGenerator {
     }
 
     private void addEdges(Graph g, boolean clockwise) {
+        boolean safeMode = g.isSafeMode();
+        g.setSafeMode(false);
         for (int i = 0, n = vertices.length; i < n; i++) {
             int v = vertices[i];
             int u = vertices[(i + 1) % n];
@@ -71,6 +73,7 @@ public class CycleGenerator extends AbstractGraphGenerator {
                 g.addEdge(u, v);
             }
         }
+        g.setSafeMode(safeMode);
     }
 
 }

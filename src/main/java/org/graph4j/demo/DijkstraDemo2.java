@@ -31,8 +31,8 @@ class DijkstraDemo2 extends PerformanceDemo {
     private final double probability = 0.5;
 
     public DijkstraDemo2() {
-        numVertices = 1000;
-        runJGraphT = true;
+        numVertices = 2000;
+        //runJGraphT = true;
         //runJung = true;
         //runAlgs4 = true;
     }

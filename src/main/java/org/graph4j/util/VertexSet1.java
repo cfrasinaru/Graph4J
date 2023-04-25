@@ -27,28 +27,28 @@ import org.graph4j.Graph;
  *
  * @author Cristian Frăsinaru
  */
-public class VertexSet extends VertexCollection {
+class VertexSet1 extends VertexCollection {
 
     protected IntHashMap posMap; //positions
     //protected HashMap<Integer, Integer> posMap; //positions
 
-    protected VertexSet() {
+    protected VertexSet1() {
     }
 
-    public VertexSet(Graph graph) {
+    public VertexSet1(Graph graph) {
         super(graph);
     }
 
-    public VertexSet(Graph graph, int initialCapacity) {
+    public VertexSet1(Graph graph, int initialCapacity) {
         super(graph, initialCapacity);
     }
 
-    public VertexSet(Graph graph, int[] vertices) {
+    public VertexSet1(Graph graph, int[] vertices) {
         super(graph, vertices.length);
         addAll(vertices);
     }
 
-    public VertexSet(VertexSet other) {
+    public VertexSet1(VertexSet1 other) {
         this.graph = other.graph;
         this.numVertices = other.numVertices;
         this.first = other.first;
@@ -120,8 +120,8 @@ public class VertexSet extends VertexCollection {
     @Override
     protected int indexOf(int v) {
         //for smaller sets, just iterate        
-        //if (numVertices * numVertices < graph.numVertices()) {
-        if (numVertices <= DEFAULT_CAPACITY) {
+        if (numVertices * numVertices < graph.numVertices()) {
+        //if (numVertices <= DEFAULT_CAPACITY) {
             return super.indexOf(v);
         }
         //for larger sets, create the posMap and use it
@@ -174,8 +174,9 @@ public class VertexSet extends VertexCollection {
      * @return a new set containing vertices belonging to both this and the
      * other set.
      */
-    public VertexSet intersection(VertexSet other) {
-        VertexSet set1, set2;
+    public VertexSet1 intersection(VertexSet1 other) {
+        VertexSet1 set1;
+        VertexSet1 set2;
         if (this.size() <= other.size()) {
             set1 = this;
             set2 = other;
@@ -183,7 +184,7 @@ public class VertexSet extends VertexCollection {
             set1 = other;
             set2 = this;
         }
-        VertexSet result = new VertexSet(graph, set1.size());
+        VertexSet1 result = new VertexSet1(graph, set1.size());
         for (int v : set1.vertices()) {
             if (set2.contains(v)) {
                 result.addDirectly(v);
@@ -199,14 +200,14 @@ public class VertexSet extends VertexCollection {
      * @return a new set containing vertices belonging to this set and the other
      * array.
      */
-    public VertexSet intersection(int... other) {
+    public VertexSet1 intersection(int... other) {
         int min;
         if (this.numVertices <= other.length) {
             min = this.numVertices;
         } else {
             min = other.length;
         }
-        VertexSet result = new VertexSet(graph, min);
+        VertexSet1 result = new VertexSet1(graph, min);
         for (int v : other) {
             if (this.contains(v)) {
                 result.addDirectly(v);
@@ -221,8 +222,8 @@ public class VertexSet extends VertexCollection {
      * @return a new set containing vertices belonging to this set or the other
      * array.
      */
-    public VertexSet union(int... other) {
-        VertexSet result = new VertexSet(graph, this.size() + other.length);
+    public VertexSet1 union(int... other) {
+        VertexSet1 result = new VertexSet1(graph, this.size() + other.length);
         union(this, other, result);
         return result;
     }
@@ -243,7 +244,7 @@ public class VertexSet extends VertexCollection {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final VertexSet other = (VertexSet) obj;
+        final VertexSet1 other = (VertexSet1) obj;
         return IntArrays.sameValues(this.vertices(), other.vertices());
     }
 

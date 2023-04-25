@@ -20,7 +20,7 @@ import java.util.Arrays;
 import org.graph4j.Graph;
 
 /**
- * Implementation of a binary heap using arrays. The keys stored in the heap
+ * Implementation of a binary min heap using arrays. The keys stored in the heap
  * represent the vertex indices of a graph, from 0 to numVertices() - 1.
  *
  * The order relation is given by a comparator.
@@ -76,7 +76,7 @@ public class VertexHeap {
      *
      * @param key a vertex index.
      */
-    private void add(int key) {
+    public void add(int key) {
         if (size + 1 >= keys.length) {
             grow();
         }

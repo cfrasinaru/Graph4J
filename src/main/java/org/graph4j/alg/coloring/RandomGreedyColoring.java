@@ -17,35 +17,32 @@
 package org.graph4j.alg.coloring;
 
 import org.graph4j.Graph;
+import org.graph4j.util.IntArrays;
 
 /**
+ * {@inheritDoc}
+ *
+ * <p>
+ * The order in which vertices are colored is chosen randomly each time the
+ * method {@code findColoring{ is invoked.
  *
  * @author Cristian Frăsinaru
  */
-public interface VertexColoringAlgorithm {
+public class RandomGreedyColoring extends GreedyColoring {
 
     /**
+     * The vertices will be colored in a randomly chosen order.
      *
-     * @return a coloring of the graph.
+     * @param graph the input graph;
      */
-    VertexColoring findColoring();
+    public RandomGreedyColoring(Graph graph) {
+        super(graph);
+    }
 
-    /**
-     *
-     * @param numColors maximum number of colors to be used.
-     * @return a coloring of the graph with the specified number of colors, or
-     * {@code null} if no coloring can be found by this algorithm.
-     */
-    VertexColoring findColoring(int numColors);
-
-    /**
-     * Returns the default implementation of this interface.
-     *
-     * @param graph the input graph.
-     * @return the default implementation of this interface.
-     */
-    static VertexColoringAlgorithm getInstance(Graph graph) {
-        return new DSaturGreedyColoring(graph);
+    @Override
+    protected void init() {
+        super.init();
+        this.vertexOrdering = IntArrays.shuffle(graph.vertices());
     }
 
 }

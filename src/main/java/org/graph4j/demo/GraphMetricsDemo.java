@@ -16,58 +16,48 @@
  */
 package org.graph4j.demo;
 
-import org.graph4j.alg.GraphMetrics;
-import org.graph4j.generate.RandomGnmGraphGenerator;
-import org.graph4j.generate.GraphGenerator;
-import org.graph4j.traverse.BFSIterator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.jgrapht.alg.shortestpath.GraphMeasurer;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
-class GraphMetricsDemo {
+class GraphMetricsDemo extends PerformanceDemo {
 
-    private void test1() {
-        int n = 100_000;
-        var graph = new RandomGnmGraphGenerator(n, n * 10).createGraph();
-        System.out.println("-------------------------------------------------");
-        System.out.println("Iterator");
-        int maxLevel = -1;
-        int v = graph.vertexAt(0);
-        var bfs1 = new BFSIterator(graph, v);
-        while (bfs1.hasNext()) {
-            var node = bfs1.next();
-            if (maxLevel < node.level()) {
-                maxLevel = node.level();
-            }
+    private final double probability = 0.08;
+
+    public GraphMetricsDemo() {
+        numVertices = 3000;
+        //runJGraphT = true;
+    }
+
+    @Override
+    protected void createGraph() {
+        graph = new RandomGnpGraphGenerator(numVertices, probability).createGraph();
+        //graph = new RandomTreeGenerator(numVertices).create();
+    }
+
+    @Override
+    protected void testGraph4J() {
+        var alg = new org.graph4j.alg.GraphMetrics(graph);
+        System.out.println(alg.diameter());
+
+    }
+
+    @Override
+    protected void testJGraphT() {
+        var alg = new GraphMeasurer(jgrapht);
+        System.out.println(alg.getDiameter());
+    }
+
+    @Override
+    protected void prepareArgs() {
+        int steps = 10;
+        args = new int[steps];
+        for (int i = 0; i < steps; i++) {
+            args[i] = 100 * (i + 1);
         }
-        System.out.println("maxLevel=" + maxLevel);
-        System.out.println("maxLevel=" + bfs1.maxLevel());
-        System.out.println("ecc=" + new GraphMetrics(graph).eccentricity(v, true));
     }
-    
-    private void demoRandom() {
-        int n = 50_000;
-        double p = 0.0005;
-        int m = (int) (p * (n * (n - 1) / 2));
-        //var g = Graphs.randomGnp(n, p);
-        //var g = new GnmRandomGenerator(n, m).createGraph();
-        var g = GraphGenerator.cycle(n);
-        //g.addEdge(n - 1000, n - 1);
-        g.addEdge(n / 2, n / 2 + 1000);
-        long t0 = System.currentTimeMillis();
-        System.out.println(new GraphMetrics(g).girth());
-        long t1 = System.currentTimeMillis();
-        System.out.println((t1 - t0) + "ms");
 
-        var jg = Converter.createJGraphT(g);
-        t0 = System.currentTimeMillis();
-        //var gnp = new GnpRandomGraphGenerator<Integer, DefaultEdge>(n, p);
-        //var gnp = new GnmRandomGraphGenerator<Integer, DefaultEdge>(n, m);
-        //gnp.generateGraph(Tools.createJGraph(null));
-        //System.out.println(jg);
-        System.out.println(org.jgrapht.GraphMetrics.getGirth(jg));
-        t1 = System.currentTimeMillis();
-        System.out.println((t1 - t0) + "ms");
-    }
 }

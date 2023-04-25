@@ -45,6 +45,8 @@ public class RandomTreeGenerator extends AbstractGraphGenerator {
     public Graph create() {
         int n = vertices.length;
         var g = GraphBuilder.vertices(vertices).estimatedNumEdges(n - 1).buildGraph();
+        boolean safeMode = g.isSafeMode();
+        g.setSafeMode(false);
         var random = new Random();
         int[] shuffled = IntArrays.shuffle(vertices, random);
         for (int i = 1; i < n; i++) {
@@ -52,6 +54,7 @@ public class RandomTreeGenerator extends AbstractGraphGenerator {
             int u = shuffled[random.nextInt(i)];
             g.addEdge(v, u);
         }
+        g.setSafeMode(safeMode);
         return g;
     }
     

@@ -20,6 +20,7 @@ import edu.princeton.cs.algs4.BellmanFordSP;
 import org.graph4j.alg.sp.BellmanFordShortestPath;
 import org.graph4j.generate.CompleteGraphGenerator;
 import org.graph4j.generate.EdgeWeightsGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
@@ -28,16 +29,16 @@ import org.graph4j.generate.EdgeWeightsGenerator;
 class BellmanFordDemo extends PerformanceDemo {
 
     public BellmanFordDemo() {
-        numVertices = 1000;
+        numVertices = 500;
         runJGraphT = true;
         runAlgs4 = true;
     }
 
     @Override
     protected void createGraph() {
-        //graph = new GnpRandomGenerator(500, 0.5).createGraph();
+        graph = new RandomGnpGraphGenerator(numVertices, 0.2).createDigraph();
         //EdgeWeightsGenerator.randomIntegers(graph, 1, 1000);
-        graph = new CompleteGraphGenerator(numVertices).createDigraph();
+        //graph = new CompleteGraphGenerator(numVertices).createDigraph();
         EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
     }
 

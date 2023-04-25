@@ -113,12 +113,10 @@ class OldBronKerboschCliqueIterator extends SimpleGraphAlgorithm
                     //solution
                     currentClique = new Clique(workingClique);
                     currentClique.add(v);
-                    //System.out.println("----> clique found: " + currentClique);
                     assert currentClique.isValid();
                     return true;
                 } else {
                     //dead-end
-                    //System.out.println("...... dead-end");
                     continue;
                 }
             }
@@ -142,12 +140,6 @@ class OldBronKerboschCliqueIterator extends SimpleGraphAlgorithm
                 workingClique.add(v);
                 candidatesStack.push(newCandidates);
                 finishedStack.push(newFinished);
-                /*
-                System.out.println("adding a new node: ");
-                System.out.println("\tworking clique: " + workingClique);
-                System.out.println("\tcandidates: " + newCandidates);
-                System.out.println("\tfinished: " + newFinished);
-                */
             }
             candidates.pop();
             finished.add(v);

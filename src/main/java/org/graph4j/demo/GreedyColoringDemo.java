@@ -16,8 +16,7 @@
  */
 package org.graph4j.demo;
 
-import org.graph4j.alg.coloring.GreedyColoring;
-import org.graph4j.generate.RandomGnmGraphGenerator;
+import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
  *
@@ -25,22 +24,28 @@ import org.graph4j.generate.RandomGnmGraphGenerator;
  */
 class GreedyColoringDemo extends PerformanceDemo {
 
-    public GreedyColoringDemo() {        
+    private final double probability = 0.5;
+
+    public GreedyColoringDemo() {
+        numVertices = 2_000;
         runJGraphT = true;
+        runOther = true;
     }
 
     @Override
     protected void createGraph() {
-        //graph = GraphGenerator.complete(3_000);
-        numVertices = 3_000_000;
-        graph = new RandomGnmGraphGenerator(numVertices, 5*numVertices).createGraph();
-        //graph = GraphGenerator.completeBipartite(1000, 1000);
-        //graph = new RandomTreeGenerator(1_000_000).create();
+        graph = new RandomGnpGraphGenerator(numVertices, probability).createGraph();
+        //graph = GraphGenerator.wheel(numVertices);
+        //graph = GraphGenerator.cycle(numVertices);
+        //graph = GraphGenerator.complete(numVertices);
+        //graph = new RandomGnmGraphGenerator(numVertices, 5 * numVertices).createGraph();
+        //graph = GraphGenerator.completeBipartite(numVertices, numVertices);
+        //graph = new RandomTreeGenerator(numVertices).create();
     }
 
     @Override
     protected void testGraph4J() {
-        var alg = new GreedyColoring(graph);
+        var alg = new org.graph4j.alg.coloring.DSaturGreedyColoring(graph);
         var col = alg.findColoring();
         System.out.println(col.numUsedColors());
 
@@ -48,10 +53,24 @@ class GreedyColoringDemo extends PerformanceDemo {
 
     @Override
     protected void testJGraphT() {
-        var alg = new org.jgrapht.alg.color.GreedyColoring(jgrapht);
+        var alg = new org.jgrapht.alg.color.SaturationDegreeColoring(jgrapht);
         var col = alg.getColoring();
         System.out.println(col.getNumberColors());
     }
-   
 
+    @Override
+    protected void testOther() {
+        var alg = new org.graph4j.alg.coloring.RecursiveLargestFirstColoring(graph);
+        var col = alg.findColoring();
+        System.out.println(col.numUsedColors());
+    }
+
+    @Override
+    protected void prepareArgs() {
+        int steps = 10;
+        args = new int[steps];
+        for (int i = 0; i < steps; i++) {
+            args[i] = 1000 * (i + 1);
+        }
+    }
 }

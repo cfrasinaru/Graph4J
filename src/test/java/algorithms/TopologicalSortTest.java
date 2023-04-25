@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.alg.AcyclicOrientation;
 import org.graph4j.GraphBuilder;
-import org.graph4j.alg.TopologicalSort;
+import org.graph4j.alg.ordering.TopologicalSorting;
 
 /**
  *
@@ -33,7 +33,7 @@ public class TopologicalSortTest {
         var g = GraphBuilder.numVertices(5)
                 .addEdges("4-3,4-2,4-1,4-0,3-2,3-1,3-0,2-1,2-0,1-0")
                 .buildDigraph();
-        assertArrayEquals(new int[]{4, 3, 2, 1, 0}, new TopologicalSort(g).sort());                
+        assertArrayEquals(new int[]{4, 3, 2, 1, 0}, new TopologicalSorting(g).compute());                
     }
 
     @Test
@@ -41,10 +41,10 @@ public class TopologicalSortTest {
         var g = GraphBuilder.numVertices(5).addPath(0, 1, 2, 3, 4).buildGraph();
         
         var d1 = new AcyclicOrientation(g).create();
-        assertArrayEquals(new int[]{0, 1, 2, 3, 4}, new TopologicalSort(d1).sort());
+        assertArrayEquals(new int[]{0, 1, 2, 3, 4}, new TopologicalSorting(d1).compute());
         
         var d2 = new AcyclicOrientation(g, new int[]{4,3,2,1,0}).create();
-        assertArrayEquals(new int[]{4, 3, 2, 1, 0}, new TopologicalSort(d2).sort());
+        assertArrayEquals(new int[]{4, 3, 2, 1, 0}, new TopologicalSorting(d2).compute());
     }
 
 }

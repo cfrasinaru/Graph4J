@@ -85,6 +85,8 @@ public class RegularGraphGenerator extends AbstractGraphGenerator {
     }
 
     private void addEdges(Graph g, boolean directed) {
+        boolean safeMode = g.isSafeMode();
+        g.setSafeMode(false);
         int n = vertices.length;
         int k = directed ? degree : degree / 2;
         for (int i = 0; i < n; i++) {
@@ -102,6 +104,7 @@ public class RegularGraphGenerator extends AbstractGraphGenerator {
                 g.addEdge(v, u);
             }
         }
+        g.setSafeMode(safeMode);
     }
 
 }

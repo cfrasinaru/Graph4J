@@ -19,8 +19,6 @@ package org.graph4j.alg;
 import java.util.stream.IntStream;
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
-import org.graph4j.Multigraph;
-import org.graph4j.util.CheckArguments;
 
 /**
  * Various <i>sizes</i> related to a graph.

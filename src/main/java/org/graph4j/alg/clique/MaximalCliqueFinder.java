@@ -17,60 +17,100 @@
 package org.graph4j.alg.clique;
 
 import org.graph4j.Graph;
-import org.graph4j.Graphs;
-import org.graph4j.alg.GraphMeasures;
 import org.graph4j.alg.SimpleGraphAlgorithm;
 import org.graph4j.util.Clique;
+import org.graph4j.util.VertexHeap;
 import org.graph4j.util.VertexSet;
 
 /**
- * Heuristic for determining a maximal clique.
+ * This class contains both a simple heuristic for determining a single maximal
+ * clique and a method that attempts to find the maximum clique by enumerating
+ * all of them using Bron-Kerbosch algorithm.
  *
+ * A <em>maximal</em> clique is a clique that cannot be extended by including
+ * one more adjacent vertex.
+ *
+ * A <em>maximum</em> clique is a clique of largest size in the graph.
+ * Determining a maximum clique is a NP-hard problem.
+ *
+ * @see BronKerboschCliqueIterator
  * @author Cristian Frăsinaru
  */
 public class MaximalCliqueFinder extends SimpleGraphAlgorithm {
+
+    private boolean[] visited;
+    private long timeLimit;
 
     public MaximalCliqueFinder(Graph graph) {
         super(graph);
     }
 
-    public Clique getClique() {
-        if (Graphs.isComplete(graph)) {
-            return new Clique(graph, graph.vertices());
-        }
-        Clique clique = null;
-        int maxSize = -1;
-        int maxDeg = GraphMeasures.maxDegree(graph);
-        //int attempts = 1;
-        int attempts = (int)Math.sqrt(graph.numVertices()); //?
-        for (int i = 0; i < attempts; i++) {
-            var bk = new BronKerboschCliqueIterator(graph, attempts > 1, false);
-            var q = bk.next();
-            int size = q.size();
-            if (size > maxSize) {
-                clique = q;
-                maxSize = size;
-            }
-            if (maxSize == maxDeg + 1) {
-                break;
-            }
-        }
-        return clique;
+    /**
+     *
+     * @param graph the input graph;
+     * @param timeLimit a time limit in milliseconds.
+     */
+    public MaximalCliqueFinder(Graph graph, long timeLimit) {
+        super(graph);
+        this.timeLimit = timeLimit;
     }
 
     /**
+     * Returns a maximal clique. The algorithm tries to create a maximal clique
+     * starting with vertices of higher degree. For each vertex, it invokes the
+     * method {@link #getMaximalClique(int)} in order to construct a maximal
+     * clique including that vertex. At the end, it returns the largest clique
+     * found.
      *
      * @return a maximal clique.
      */
-    public Clique getClique2() {
+    public Clique getMaximalClique() {
+        if (graph.isComplete()) {
+            return new Clique(graph, graph.vertices());
+        }
+        long startTime = System.currentTimeMillis();
+        int[] deg = graph.degrees();
+        var heap = new VertexHeap(graph, (i, j) -> deg[j] - deg[i]);
+        visited = new boolean[graph.numVertices()];
+        Clique maxClique = null;
+        while (!heap.isEmpty()) {
+            if (timeLimit > 0
+                    && maxClique != null
+                    && System.currentTimeMillis() - startTime > timeLimit) {
+                break;
+            }
+            int v = graph.vertexAt(heap.poll());
+            int vi = graph.indexOf(v);
+            if (maxClique != null && deg[vi] < maxClique.size()) {
+                break;
+            }
+            if (visited[vi]) {
+                continue;
+            }
+            Clique clique = getMaximalClique(v);
+            if (maxClique == null || clique.size() > maxClique.size()) {
+                maxClique = clique;
+            }
+        }
+        return maxClique;
+    }
+
+    /**
+     * Creates a maximal clique starting with the given vertex. The additional
+     * vertices of the clique are added in descending order of their degree in
+     * the graph.
+     *
+     * @param startVertex the first vertex added to the maximal clique.
+     * @return a maximal clique.
+     */
+    public Clique getMaximalClique(int startVertex) {
         var clique = new Clique(graph);
-        var cand = new VertexSet(graph, graph.vertices());
-        int first = GraphMeasures.maxDegreeVertex(graph);
-        clique.add(first);
-        cand.remove(first);
-        cand.retainAll(graph.neighbors(first));
+        clique.add(startVertex);
+        var cand = new VertexSet(graph, graph.neighbors(startVertex));
+        visited[graph.indexOf(startVertex)] = true;
         while (!cand.isEmpty()) {
-            int v = chooseVertex(graph, cand, clique);
+            int v = chooseVertex(cand);
+            visited[graph.indexOf(v)] = true;
             clique.add(v);
             cand.remove(v);
             cand.retainAll(graph.neighbors(v));
@@ -78,11 +118,11 @@ public class MaximalCliqueFinder extends SimpleGraphAlgorithm {
         return clique;
     }
 
-    private int chooseVertex(Graph g, VertexSet cand, VertexSet set) {
+    private int chooseVertex(VertexSet cand) {
         int bestDeg = -1;
         int bestVertex = -1;
         for (int v : cand.vertices()) {
-            int count = g.degree(v);
+            int count = graph.degree(v);
             if (count > bestDeg) {
                 bestDeg = count;
                 bestVertex = v;
@@ -91,54 +131,32 @@ public class MaximalCliqueFinder extends SimpleGraphAlgorithm {
         return bestVertex;
     }
 
-    //The first vertex added to Q should be the vertex in G 
-    //that has the largest number of neighbors.
-    //Subsequent vertices added to Q should be chosen as those that 
-    //have a maximal number of neighbors that are adjacent to vertices in Q. 
-    //Ties in condition (b) can be broken by selecting the vertex 
-    //with the maximum number of neighbors. 
-    //choose the best candidate, according to (a) and (b)
-    private int chooseVertex2(Graph g, VertexSet cand, VertexSet set) {
-        int bestAdj = -1;
-        int bestDeg = Integer.MAX_VALUE;
-        int bestVertex = -1;
-        for (int v : cand.vertices()) {
-            int count = countNeighborsAdjTo(g, v, set);
-            if (count > bestAdj) {
-                bestAdj = count;
-                bestDeg = g.degree(v);
-                bestVertex = v;
-            } else if (count == bestAdj) {
-                count = g.degree(v);
-                if (count < bestDeg) {
-                    bestVertex = v;
-                    bestDeg = count;
-                }
+    /**
+     * This method iterates over all maximal cliques of the graph, in order to
+     * find the maximum one. If it cannot finish in the alloted time, it returns
+     * {@code null}.
+     *
+     * @return the maximum clique of the graph or {@code null} if it cannot be
+     * found in the alloted time.
+     */
+    public Clique findMaximumClique() {
+        if (graph.isComplete()) {
+            return new Clique(graph, graph.vertices());
+        }
+        long startTime = System.currentTimeMillis();
+        Clique maxClique = null;
+        var alg = new BronKerboschCliqueIterator(graph);
+        while (alg.hasNext()) {
+            if (timeLimit > 0
+                    && System.currentTimeMillis() - startTime > timeLimit) {
+                return null;
+            }
+            Clique clique = alg.next();
+            if (maxClique == null || clique.size() > maxClique.size()) {
+                maxClique = clique;
             }
         }
-        return bestVertex;
-    }
-
-    //neighbors of v adjacent to vertices in the set
-    private int countNeighborsAdjTo(Graph g, int v, VertexSet set) {
-        int count = 0;
-        for (var it = g.neighborIterator(v); it.hasNext();) {
-            int u = it.next();
-            if (isAdjacentTo(g, u, set)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    //true if v is adjacent to a vertex in set
-    private boolean isAdjacentTo(Graph g, int v, VertexSet set) {
-        for (int u : set.vertices()) {
-            if (g.containsEdge(v, u)) {
-                return true;
-            }
-        }
-        return false;
+        return maxClique;
     }
 
 }

@@ -16,6 +16,7 @@
  */
 package algorithms;
 
+import org.graph4j.GraphBuilder;
 import org.graph4j.alg.coloring.BacktrackColoring;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -66,21 +67,42 @@ public class ExactColoringTest {
         assertTrue(col.isProper());
     }
 
-    /*
-        int n = 21;
-        for (int i = 0; i < 100; i++) {
-            var g = new RandomGnpGraphGenerator(n, 0.3).createGraph();
-            
-            var alg1 = new BacktrackColoring(g, 10_000);
-            var col1 = alg1.findColoring();            
+    @Test
+    public void other() {
+        var g = GraphBuilder.vertices(10, 20, 30, 40)
+                .addEdges("10-20,10-30,20-30,10-40")
+                .buildGraph();
+        var alg = new BacktrackColoring(g);
+        var col = alg.findColoring();
+        assertEquals(3, col.numUsedColors());
+        assertTrue(col.isProper());
+    }
 
-            var alg2 = new org.jgrapht.alg.color.BrownBacktrackColoring(Converter.createJGraphT(g));
-            var col2 = alg2.getColoring();
-            
-            if (col1.numUsedColors() != col2.getNumberColors()) {
+    /*
+    private void test() {
+        int n = 20;
+        for (int i = 0; i < 1000; i++) {
+            var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
+
+            try {
+                var alg1 = new BacktrackColoring(g);
+                var col1 = alg1.findColoring();
+
+                var alg2 = new org.jgrapht.alg.color.BrownBacktrackColoring(Converter.createJGraphT(g));
+                var col2 = alg2.getColoring();
+
+                var alg3 = new GurobiColoring(g);
+                var col3 = alg3.findColoring();
+
+                if (col1.numUsedColors() != col2.getNumberColors() || col2.getNumberColors() != col3.numUsedColors()) {
+                    System.out.println(col1.numUsedColors() + ", " + col2.getNumberColors() + ", " + col3.numUsedColors());
+                    System.out.println(g);
+                    break;
+                }
+            } catch (Exception e) {
                 System.out.println(g);
-                break;
             }
         }
+    }
      */
 }

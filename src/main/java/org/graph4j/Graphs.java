@@ -127,21 +127,6 @@ public class Graphs {
     }
 
     /**
-     * Determines if a graph is complete (there is an edge between every two
-     * vertices).
-     *
-     * @param graph the input graph.
-     * @return {@code true} if the graph is complete.
-     */
-    public static boolean isComplete(Graph graph) {
-        int n = graph.numVertices();
-        if (graph.isDirected()) {
-            return graph.numEdges() >= Digraph.maxEdges(n);
-        }
-        return graph.numEdges() >= Graph.maxEdges(n);
-    }
-
-    /**
      * Determines if a graph is bipartite (its vertices can be partitioned in
      * two disjoint stable sets).
      *

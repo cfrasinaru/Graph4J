@@ -1,4 +1,4 @@
-1.0.3
+1.0.3	2023-04-29
   - Exact algorithm for vertex coloring: BacktrackColoring
   - Simple heuristic for determining a single maximal clique: MaximalCliqueFinder
   - New heuristic algorithm for vertex coloring: RecursiveLargestFirst (RLF)

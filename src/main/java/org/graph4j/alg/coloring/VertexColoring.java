@@ -119,6 +119,16 @@ public class VertexColoring {
     }
 
     /**
+     * Returns {@code true} if the given color has been used for some vertex.
+     *
+     * @param color a color number.
+     * @return {@code true} if the color has been used for some vertex.
+     */
+    public boolean isColorUsed(int color) {
+        return usedColors.get(color);
+    }
+
+    /**
      * Assigns a color to the specified vertex.
      *
      * @param v a vertex number.
@@ -220,8 +230,8 @@ public class VertexColoring {
             int vc = vertexColor[vi];
             int uc = vertexColor[ui];
             if (vc != -1 && uc != -1 && vc == uc) {
-                System.err.println("Vertices " + e.source() + " and " + e.target()
-                        + " have the same color: " + vc);
+                //System.err.println("Vertices " + e.source() + " and " + e.target()
+                //        + " have the same color: " + vc);
                 return false;
             }
         }

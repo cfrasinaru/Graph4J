@@ -25,11 +25,12 @@ import org.graph4j.generate.RandomGnpGraphGenerator;
 class ExactColoringDemo extends PerformanceDemo {
 
     private final double probability = 0.2;
+    private final int timeLimit = 60_000; //ms
 
     public ExactColoringDemo() {
-        numVertices = 50;
-        runJGraphT = true; //very slow
-        //runOther = true;
+        numVertices = 100;
+        //runJGraphT = true; //very slow
+        runOther = true; //gurobi
     }
 
     @Override
@@ -45,7 +46,7 @@ class ExactColoringDemo extends PerformanceDemo {
 
     @Override
     protected void testGraph4J() {
-        var alg = new org.graph4j.alg.coloring.BacktrackColoring(graph);
+        var alg = new org.graph4j.alg.coloring.BacktrackColoring(graph, timeLimit);
         var col = alg.findColoring();
         System.out.println(col.numUsedColors());
 
@@ -61,11 +62,9 @@ class ExactColoringDemo extends PerformanceDemo {
 
     @Override
     protected void testOther() {
-        /*
-        var alg = new org.graph4j.alg.coloring.BacktrackColoring2(graph);
+        var alg = new org.graph4j.alg.coloring.GurobiColoring(graph, timeLimit);
         var col = alg.findColoring();
         System.out.println(col.numUsedColors());
-        */
     }
 
     @Override

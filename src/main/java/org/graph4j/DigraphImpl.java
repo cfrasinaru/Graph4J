@@ -60,6 +60,11 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     }
 
     @Override
+    public boolean isComplete() {
+        return numEdges == Digraph.maxEdges(numVertices);
+    }
+    
+    @Override
     public Digraph<V, E> copy() {
         return copy(true, true, true, true, true);
     }

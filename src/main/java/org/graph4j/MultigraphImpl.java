@@ -42,6 +42,20 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
     }
 
     @Override
+    public boolean isComplete() {
+        for (int i = 0; i < numVertices - 1; i++) {
+            int v = vertexAt(i);
+            for (int j = i + 1; j < numVertices; j++) {
+                int u = vertexAt(j);
+                if (!containsEdge(v, u)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
     public void setEdgeLabel(int v, int u, E label) {
         throw new UnsupportedOperationException("Cannot set labels on individual edges in a multigraph or pseudograph.");
     }
@@ -49,12 +63,13 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
     @Override
     public void setEdgeWeight(int v, int u, double weight) {
         throw new UnsupportedOperationException("Cannot set weights on individual edges in a multigraph or pseudograph.");
-    }    
+    }
 
     @Override
     public Multigraph<V, E> copy() {
         return (Multigraph<V, E>) super.copy();
     }
+
     @Override
     public Multigraph<V, E> copy(boolean vertexWeights, boolean vertexLabels, boolean edges, boolean edgeWeights, boolean edgeLabels) {
         return (Multigraph<V, E>) super.copy(vertexWeights, vertexLabels, edges, edgeWeights, edgeLabels);
@@ -70,6 +85,5 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
         throw new UnsupportedOperationException(
                 "Cost-matrix is not supported for multigraphs and pseudographs.");
     }
-   
-   
+
 }

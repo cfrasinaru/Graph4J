@@ -75,7 +75,7 @@ public class DSaturGreedyColoring extends GreedyColoringBase {
 
     @Override
     protected int nextUncoloredVertex() {
-        return heap.poll();
+        return graph.vertexAt(heap.poll());
     }
 
     @Override

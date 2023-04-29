@@ -58,7 +58,7 @@ public class ZykovColoring extends SimpleGraphAlgorithm
         while (!stack.isEmpty()) {            
             var g = stack.pop();
             //System.out.println(g.numVertices() + ", " + g.numEdges());
-            if (Graphs.isComplete(g)) {
+            if (g.isComplete()) {
                 if (chi > g.numVertices()) {
                     chi = g.numVertices();
                 }

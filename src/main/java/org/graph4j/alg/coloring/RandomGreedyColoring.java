@@ -24,7 +24,7 @@ import org.graph4j.util.IntArrays;
  *
  * <p>
  * The order in which vertices are colored is chosen randomly each time the
- * method {@code findColoring{ is invoked.
+ * method {@code findColoring} is invoked.
  *
  * @author Cristian Frăsinaru
  */

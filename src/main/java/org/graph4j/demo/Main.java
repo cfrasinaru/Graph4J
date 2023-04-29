@@ -18,8 +18,12 @@ package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
 import org.graph4j.GraphBuilder;
+import org.graph4j.alg.clique.BronKerboschCliqueIterator;
+import org.graph4j.alg.clique.MaximalCliqueFinder;
 import org.graph4j.alg.coloring.BacktrackColoring;
+import org.graph4j.alg.coloring.GurobiColoring;
 import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.graph4j.util.Clique;
 
 /**
  * Driver class for running the comparisons with other libraries.
@@ -75,16 +79,27 @@ public class Main {
         run(this::test);
     }
 
+    private void testMaxClique() {
+        int n = 100;
+        var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
+        var alg = new MaximalCliqueFinder(g);
+        var q1 = alg.getMaximalClique();
+        var q2 = alg.findMaximumClique();
+        System.out.println(q1.size() + ": " + q1);
+        System.out.println(q2.size() + ": " + q2);        
+    }
+
     private void test1() {
-        var g = GraphBuilder.numVertices(8)
-                .addEdges("0-5, 0-6, 0-7, 1-2, 1-3, 1-5, 1-7, 2-5, 3-4, 3-6, 3-7, 4-5, 4-6, 5-6").buildGraph();
-        var alg1 = new BacktrackColoring(g);
-        var col1 = alg1.findColoring(3);
-        System.out.println(col1.numUsedColors());
+        int n = 20;
+        var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
+        //var alg = new BacktrackColoring(g);
+        var alg = new GurobiColoring(g);
+        var col = alg.findColoring();
+        System.out.println(col.numUsedColors() + ": " + col);
     }
 
     private void test() {
-        int n = 18;
+        int n = 20;
         for (int i = 0; i < 1000; i++) {
             var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
 
@@ -95,8 +110,11 @@ public class Main {
                 var alg2 = new org.jgrapht.alg.color.BrownBacktrackColoring(Converter.createJGraphT(g));
                 var col2 = alg2.getColoring();
 
-                if (col1.numUsedColors() != col2.getNumberColors()) {
-                    System.out.println(col1.numUsedColors() + " != " + col2.getNumberColors());
+                var alg3 = new GurobiColoring(g);
+                var col3 = alg3.findColoring();
+
+                if (col1.numUsedColors() != col2.getNumberColors() || col2.getNumberColors() != col3.numUsedColors()) {
+                    System.out.println(col1.numUsedColors() + ", " + col2.getNumberColors() + ", " + col3.numUsedColors());
                     System.out.println(g);
                     break;
                 }

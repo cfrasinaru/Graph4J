@@ -60,6 +60,22 @@ class DirectedMultigraphImpl<V, E> extends DigraphImpl<V, E> implements Directed
     public DirectedMultigraph<V, E> complement() {
         return (DirectedMultigraph<V, E>) super.complement();
     }
-   
+
+    @Override
+    public boolean isComplete() {
+        for (int i = 0; i < numVertices; i++) {
+            int v = vertexAt(i);
+            for (int j = 0; j < numVertices; j++) {
+                if (i == j) {
+                    continue;
+                }
+                int u = vertexAt(j);
+                if (!containsEdge(v, u)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
 }

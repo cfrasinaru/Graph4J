@@ -17,6 +17,7 @@
 package org.graph4j;
 
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -786,8 +787,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     @Override
-    public int[] neighbors(int v
-    ) {
+    public int[] neighbors(int v) {
         int vi = indexOf(v);
         if (vi < 0) {
             throw new InvalidVertexException(v);
@@ -801,6 +801,20 @@ class GraphImpl<V, E> implements Graph<V, E> {
         }
         return adjList[vi];
     }
+   
+
+    private AdjacencySet getAdjSet(int vi) {
+        if (adjSet == null) {
+            adjSet = new AdjacencySet[maxVertices];
+        }
+        if (adjSet[vi] == null) {
+            adjSet[vi] = new AdjacencyBitSet();
+            for (int pos = 0; pos < degree[vi]; pos++) {
+                adjSet[vi].add(adjList[vi][pos]);
+            }
+        }
+        return adjSet[vi];
+    }
 
     @Override
     public boolean containsEdge(int v, int u) {
@@ -812,16 +826,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
             return adjListPos(v, u) >= 0;
         }
         //switch to adjacency sets (bitsets)
-        if (adjSet == null) {
-            adjSet = new AdjacencySet[maxVertices];
-        }
-        if (adjSet[vi] == null) {
-            adjSet[vi] = new AdjacencyBitSet();
-            for (int pos = 0; pos < degree[vi]; pos++) {
-                adjSet[vi].add(adjList[vi][pos]);
-            }
-        }
-        return adjSet[vi].contains(u);
+        return getAdjSet(vi).contains(u);
     }
 
     @Override
@@ -1073,6 +1078,11 @@ class GraphImpl<V, E> implements Graph<V, E> {
     @Override
     public boolean isDirected() {
         return directed;
+    }
+
+    @Override
+    public boolean isComplete() {
+        return numEdges == Graph.maxEdges(numVertices);
     }
 
     @Override

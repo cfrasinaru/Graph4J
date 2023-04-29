@@ -16,6 +16,7 @@
  */
 package org.graph4j;
 
+import java.util.BitSet;
 import org.graph4j.util.EdgeSet;
 import org.graph4j.util.VertexSet;
 
@@ -105,13 +106,35 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     int[] vertices();
 
     /**
-     * A graph is considered empty if it has no vertices.
+     * A graph is considered <em>empty</em> if it has no vertices.
      *
      * @return {@code true} if the number of vertices is 0, otherwise false.
      */
     default boolean isEmpty() {
         return numVertices() == 0;
     }
+
+    /**
+     * A graph with only vertices and no edges is known as an <em>edgeless</em>
+     * graph.
+     *
+     * @return {@code true} if the number of edges is 0, otherwise false.
+     */
+    default boolean isEdgeless() {
+        return numEdges() == 0;
+    }
+
+    /**
+     * Determines if the graph is complete. In case of undirected graphs, that
+     * means that there is an edge between every two vertices. In case of
+     * directed graphs, for every two vertices v and u, both vu and uv edges
+     * must exist. In case of multigraphs and pseudographs, the presence of
+     * self-loops or multiple edges between two vertices does not affect this
+     * property.
+     *
+     * @return {@code true} if the graph is complete.
+     */
+    boolean isComplete();
 
     /**
      * Vertices, having various numbers, are stored indexed in an array.
@@ -222,7 +245,8 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * @return the vertices that are adjacent to v.
      */
     int[] neighbors(int v);
-
+    
+    
     /**
      * Iterates over the edges incident from v, returning the neighbors of v,
      * along with information regarding their edges.

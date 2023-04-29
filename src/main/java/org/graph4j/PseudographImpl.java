@@ -35,7 +35,7 @@ class PseudographImpl<V, E> extends MultigraphImpl<V, E> implements Pseudograph<
         super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
         selfLoops = new HashMap<>();
     }
-
+   
     @Override
     protected PseudographImpl newInstance() {
         return new PseudographImpl();

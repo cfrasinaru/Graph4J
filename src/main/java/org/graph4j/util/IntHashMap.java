@@ -17,7 +17,7 @@
 package org.graph4j.util;
 
 /**
- * Adappte after the implementation of IntHashMap in Apache Commons Collection.
+ * Adapted after the implementation of IntHashMap in Apache Commons Collection.
  *
  * @author Justin Couch
  * @author Alex Chaffee (alex@apache.org)
@@ -131,8 +131,9 @@ public class IntHashMap {
     }
 
     /**
+     * Copy constructor.
      *
-     * @param other
+     * @param other the {@code IntHashMap} object that will be copied.
      */
     public IntHashMap(IntHashMap other) {
         this.loadFactor = other.loadFactor;
@@ -179,11 +180,8 @@ public class IntHashMap {
      * @param value a value to search for.
      * @return     <code>true</code> if and only if some key maps to the
      * <code>value</code> argument in this hashtable as determined by the
-     * <tt>equals</tt> method; <code>false</code> otherwise.
+     * <code>equals</code> method; <code>false</code> otherwise.
      * @throws NullPointerException if the value is <code>null</code>.
-     * @see #containsKey(int)
-     * @see #containsValue(Object)
-     * @see java.util.Map
      */
     public boolean containsValue(int value) {
         Entry tab[] = table;
@@ -203,9 +201,8 @@ public class IntHashMap {
      *
      * @param key possible key.
      * @return <code>true</code> if and only if the specified object is a key in
-     * this hashtable, as determined by the <tt>equals</tt>
-     * method; <code>false</code> otherwise.
-     * @see #contains(Object)
+     * this hashtable, as determined by the <code>equals</code> method;
+     * <code>false</code> otherwise.
      */
     public boolean containsKey(int key) {
         Entry tab[] = table;
@@ -227,7 +224,6 @@ public class IntHashMap {
      * @return the value to which the key is mapped in this hashtable;
      * <code>null</code> if the key is not mapped to any value in this
      * hashtable.
-     * @see #put(int, Object)
      */
     public int get(int key) {
         Entry tab[] = table;
@@ -299,7 +295,6 @@ public class IntHashMap {
      * @return the previous value of the specified key in this hashtable, or
      * <code>null</code> if it did not have one.
      * @throws NullPointerException if the key is <code>null</code>.
-     * @see #get(int)
      */
     public final int put(int key, int value) {
         // Makes sure the key is not already in the hashtable.
@@ -401,7 +396,7 @@ public class IntHashMap {
         }
         return values;
     }
-    
+
     @Override
     public String toString() {
         var sb = new StringBuilder();

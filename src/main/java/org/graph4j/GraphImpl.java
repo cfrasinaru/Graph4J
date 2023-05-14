@@ -1206,7 +1206,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
             if (vertexLabel != null) {
                 sub.setVertexLabel(v, vertexLabel[vi]);
             }
-            for (int j = 0; j < degree[v]; j++) {
+            for (int j = 0; j < degree[vi]; j++) {
                 int u = adjList[vi][j];
                 if ((directed || v <= u) && IntArrays.contains(vertices, u)) {
                     if (edgeWeight != null) {

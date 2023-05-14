@@ -1,19 +1,26 @@
+1.0.4
+	-Algorithm for counting the number of triangles in a graph: TriangleCounter
+	(found a bug in JGraphT when comparing the results for random Gnp graphs with n=1000, p=0.01)
+	-Simple greedy heuristic for the vertex separator problem: GreedyVertexSeparator
+	-Parallel implementation of backtrack vertex coloring: ParallelBacktrackColoring
+	-Gurobi implementation of the assignment model for vertex coloring: GurobiAssignmentColoring
+	
 1.0.3	2023-04-29
-  - Exact algorithm for vertex coloring: BacktrackColoring
-  - Simple heuristic for determining a single maximal clique: MaximalCliqueFinder
-  - New heuristic algorithm for vertex coloring: RecursiveLargestFirst (RLF)
-  - New greedy coloring algorithms: Random, LargestDegreeFirst, SmallestDegreeLast, DSatur
-  - All graph generators run with safeMode(false)
-  - VertexSet uses a IntHashMap for improving the performance of vertex removal
+	- Exact algorithm for vertex coloring: BacktrackColoring
+	- Simple heuristic for determining a single maximal clique: MaximalCliqueFinder
+	- New heuristic algorithm for vertex coloring: RecursiveLargestFirst (RLF)
+	- New greedy coloring algorithms: Random, LargestDegreeFirst, SmallestDegreeLast, DSatur
+	- All graph generators run with safeMode(false)
+	- VertexSet uses a IntHashMap for improving the performance of vertex removal
   
 1.0.2	2023-04-09
-  - Improved algorithm for enumerating maximal cliques: org.graph4j.alg.clique.BronKerboschCliqueIterator
-  - Examples of using Graph4J API: org.graph4j.examples
-  - Support for tournament graphs: org.graph4j.alg.Tournament
+	- Improved algorithm for enumerating maximal cliques: org.graph4j.alg.clique.BronKerboschCliqueIterator
+	- Examples of using Graph4J API: org.graph4j.examples
+	- Support for tournament graphs: org.graph4j.alg.Tournament
 	(determining if a digraph is tournament, obtaining a hamiltonian path in a tournament)
   
 1.0.1	2023-03-19
-  - Algorithm for single pair shortest path: org.graph4j.alg.sp.BidirectionalDijkstra
-  - Algorithm for bridge detection: org.graph4j.alg.connectivity.BridgeDetectionAlgorithm
-  - Bug: Graph.maxVertexNumber() was not correct (should return -1 in case of an empty graph)
-  - Bug: Graph.addVertex() was not correct (due to maxVertexNumber being incorrect)
+	- Algorithm for single pair shortest path: org.graph4j.alg.sp.BidirectionalDijkstra
+	- Algorithm for bridge detection: org.graph4j.alg.connectivity.BridgeDetectionAlgorithm
+	- Bug: Graph.maxVertexNumber() was not correct (should return -1 in case of an empty graph)
+	- Bug: Graph.addVertex() was not correct (due to maxVertexNumber being incorrect)

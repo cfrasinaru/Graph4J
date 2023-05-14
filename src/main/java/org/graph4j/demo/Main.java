@@ -17,13 +17,14 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
-import org.graph4j.GraphBuilder;
-import org.graph4j.alg.clique.BronKerboschCliqueIterator;
-import org.graph4j.alg.clique.MaximalCliqueFinder;
-import org.graph4j.alg.coloring.BacktrackColoring;
-import org.graph4j.alg.coloring.GurobiColoring;
+import java.util.ArrayList;
+import java.util.List;
+import org.graph4j.alg.TriangleCounter;
+import org.graph4j.alg.coloring.exact.GurobiAssignmentColoring;
+import org.graph4j.alg.coloring.exact.ParallelBacktrackColoring;
+import org.graph4j.generate.GraphGenerator;
 import org.graph4j.generate.RandomGnpGraphGenerator;
-import org.graph4j.util.Clique;
+import org.graph4j.util.VertexList;
 
 /**
  * Driver class for running the comparisons with other libraries.
@@ -33,7 +34,9 @@ import org.graph4j.util.Clique;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        var app = new ExactColoringDemo();
+        var app = new Main();
+        //var app = new TriangleCounterDemo();
+        //var app = new ExactColoringDemo();
         //var app = new GreedyColoringDemo();
         //var app = new GraphMetricsDemo();
         //var app = new BronKerboschDemo();
@@ -70,7 +73,6 @@ public class Main {
         //var app = new SparseGraphDemo();
         //var app = new CompleteGraphDemo();
         //var app = new EmptyGraphDemo();
-        //var app = new Main();
         //app.benchmark();
         app.demo();
     }
@@ -79,47 +81,33 @@ public class Main {
         run(this::test);
     }
 
-    private void testMaxClique() {
-        int n = 100;
-        var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
-        var alg = new MaximalCliqueFinder(g);
-        var q1 = alg.getMaximalClique();
-        var q2 = alg.findMaximumClique();
-        System.out.println(q1.size() + ": " + q1);
-        System.out.println(q2.size() + ": " + q2);        
-    }
-
-    private void test1() {
-        int n = 20;
-        var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
-        //var alg = new BacktrackColoring(g);
-        var alg = new GurobiColoring(g);
-        var col = alg.findColoring();
-        System.out.println(col.numUsedColors() + ": " + col);
-    }
-
     private void test() {
+    }
+
+    private void test2() {
         int n = 20;
         for (int i = 0; i < 1000; i++) {
-            var g = new RandomGnpGraphGenerator(n, 0.5).createGraph();
+            var g = new RandomGnpGraphGenerator(n, Math.random()).createGraph();
 
             try {
-                var alg1 = new BacktrackColoring(g);
+                var alg1 = new ParallelBacktrackColoring(g);
                 var col1 = alg1.findColoring();
 
                 var alg2 = new org.jgrapht.alg.color.BrownBacktrackColoring(Converter.createJGraphT(g));
                 var col2 = alg2.getColoring();
 
-                var alg3 = new GurobiColoring(g);
+                var alg3 = new GurobiAssignmentColoring(g);
                 var col3 = alg3.findColoring();
 
                 if (col1.numUsedColors() != col2.getNumberColors() || col2.getNumberColors() != col3.numUsedColors()) {
+                    System.out.println("WHAAAAAAAAAAAAAAAT!!!!\n" + g);
                     System.out.println(col1.numUsedColors() + ", " + col2.getNumberColors() + ", " + col3.numUsedColors());
                     System.out.println(g);
                     break;
                 }
             } catch (Exception e) {
-                System.out.println(g);
+                System.out.println("NOOOOOOOOOOOOOOO!!!!\n" + g);
+                break;
             }
         }
     }

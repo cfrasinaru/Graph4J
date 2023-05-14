@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg.coloring;
+package org.graph4j.alg.coloring.exact;
 
 import gurobi.GRB;
 import gurobi.GRBEnv;
@@ -23,49 +23,30 @@ import gurobi.GRBLinExpr;
 import gurobi.GRBModel;
 import gurobi.GRBVar;
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
-import org.graph4j.alg.clique.MaximalCliqueFinder;
-import org.graph4j.util.Clique;
+import org.graph4j.alg.coloring.VertexColoring;
 
 /**
- * Requires a valid Gurobi installation.
+ * ILP Assignment model. Requires a valid Gurobi installation.
  *
  * @author Cristian Frăsinaru
  */
-public class GurobiColoring extends SimpleGraphAlgorithm
-        implements VertexColoringAlgorithm {
+public class GurobiAssignmentColoring extends ExactColoringBase {
 
     protected GRBEnv env;
     protected GRBModel model;
     private GRBVar x[][];
 
-    private Clique maxClique;
-    private long timeLimit;
-
-    public GurobiColoring(Graph graph) {
+    public GurobiAssignmentColoring(Graph graph) {
         super(graph);
     }
 
-    public GurobiColoring(Graph graph, long timeLimit) {
-        super(graph);
-        this.timeLimit = timeLimit;
+    public GurobiAssignmentColoring(Graph graph, long timeLimit) {
+        super(graph, timeLimit);
     }
 
     @Override
-    public VertexColoring findColoring() {
-        if (maxClique == null) {
-            maxClique = new MaximalCliqueFinder(graph).getMaximalClique();
-        }
-        VertexColoring coloring = new DSaturGreedyColoring(graph).findColoring();
-        for (int j = coloring.numUsedColors() - 1, k = maxClique.size(); j >= k; j--) {
-            var c = findColoring(j);
-            if (c == null) {
-                break;
-            } else {
-                coloring = c;
-            }
-        }
-        return coloring;
+    protected GurobiAssignmentColoring getInstance(Graph graph, long timeLimit) {
+        return new GurobiAssignmentColoring(graph, timeLimit);
     }
 
     @Override
@@ -150,9 +131,10 @@ public class GurobiColoring extends SimpleGraphAlgorithm
     protected VertexColoring createColoring(int numColors) throws GRBException {
         VertexColoring coloring = new VertexColoring(graph);
         for (int i = 0, n = graph.numVertices(); i < n; i++) {
-            for (int j = 0; j < numColors; j++) {
-                if (x[i][j].get(GRB.DoubleAttr.X) > .00001) {
-                    coloring.setColor(i, j);
+            int v = graph.vertexAt(i);
+            for (int c = 0; c < numColors; c++) {
+                if (x[i][c].get(GRB.DoubleAttr.X) > .00001) {
+                    coloring.setColor(v, c);
                     break;
                 }
             }

@@ -17,7 +17,6 @@
 package org.graph4j.alg;
 
 import org.graph4j.Digraph;
-import org.graph4j.DirectedMultigraph;
 import org.graph4j.Graph;
 import org.graph4j.generate.TournamentGenerator;
 import org.graph4j.util.Path;
@@ -29,7 +28,7 @@ import org.graph4j.util.VertexQueue;
  * an undirected complete graph. That is, it is an orientation of a complete
  * graph.
  *
- * Each tournament has a hamiltonian path.
+ * Every tournament has a hamiltonian path.
  *
  * @see TournamentGenerator
  * @author Cristian Frăsinaru
@@ -66,7 +65,7 @@ public class Tournament extends DirectedGraphAlgorithm {
     }
 
     /**
-     * Each tournament has a hamiltonian path.
+     * Every tournament has a hamiltonian path.
      *
      * @return a hamiltonian path in this tournament.
      */

@@ -48,11 +48,19 @@ Chordal Ggraph coloring
 https://en.wikipedia.org/wiki/Chordal_graph
 https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/color/ChordalGraphColoring.java
 
+
+3-coloring
+Wigderson’S Algorithm https://iq.opengenus.org/wigderson-algorithm/
+
 JCOL
 https://github.com/shah314/graphcoloring
 ColPack (C++)
 https://github.com/CSCsw/ColPack
 
+
+Min cutset
+Karger's Algorithm
+https://en.wikipedia.org/wiki/Karger%27s_algorithm
 
 Shortest Paths:
 Johnson's algorithm

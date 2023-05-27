@@ -17,7 +17,6 @@
 package org.graph4j.util;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 import org.graph4j.Graph;

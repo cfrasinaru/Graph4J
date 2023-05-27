@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg;
+package org.graph4j.alg.ordering;
 
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
+import org.graph4j.alg.SimpleGraphAlgorithm;
 import org.graph4j.util.IntArrays;
 
 /**

@@ -1,6 +1,7 @@
-1.0.4
+1.0.4	2023-04-27
+	-Parallel implementation of Filter-Kruskal algorithm for MST: ParallelFilterKruskal
+	-Improved algorithms for computing graph metrics (center, radius, etc): GraphMetrics
 	-Algorithm for counting the number of triangles in a graph: TriangleCounter
-	(found a bug in JGraphT when comparing the results for random Gnp graphs with n=1000, p=0.01)
 	-Simple greedy heuristic for the vertex separator problem: GreedyVertexSeparator
 	-Parallel implementation of backtrack vertex coloring: ParallelBacktrackColoring
 	-Gurobi implementation of the assignment model for vertex coloring: GurobiAssignmentColoring
@@ -14,9 +15,9 @@
 	- VertexSet uses a IntHashMap for improving the performance of vertex removal
   
 1.0.2	2023-04-09
-	- Improved algorithm for enumerating maximal cliques: org.graph4j.alg.clique.BronKerboschCliqueIterator
+	- Improved algorithm for enumerating maximal cliques: BronKerboschCliqueIterator
 	- Examples of using Graph4J API: org.graph4j.examples
-	- Support for tournament graphs: org.graph4j.alg.Tournament
+	- Support for tournament graphs: org.graph4j.support.Tournament
 	(determining if a digraph is tournament, obtaining a hamiltonian path in a tournament)
   
 1.0.1	2023-03-19

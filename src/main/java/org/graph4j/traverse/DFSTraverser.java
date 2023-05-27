@@ -170,6 +170,7 @@ public class DFSTraverser {
             if (!ok) {
                 stack.pop();
                 instack[vi] = false;
+                //node.leaf = ?;
                 visitor.finishVertex(node);
                 if (parent != null) {
                     visitor.upward(node, parent);

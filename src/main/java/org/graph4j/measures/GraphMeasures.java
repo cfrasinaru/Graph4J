@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg;
+package org.graph4j.measures;
 
 import java.util.stream.IntStream;
 import org.graph4j.Digraph;
@@ -110,4 +110,55 @@ public class GraphMeasures {
         return IntStream.of(graph.vertices())
                 .map(v -> graph.degree(v)).average().orElse(0);
     }
+
+    /**
+     * A <em>triangle</em> is formed by three distinct vertices connected all
+     * with each other.
+     *
+     * @param graph the input graph.
+     * @return the number of triangles in the graph.
+     * @see TriangleCounter
+     */
+    public long numberOfTriangles(Graph graph) {
+        return new TriangleCounter(graph).count();
+    }
+
+    /**
+     * A <em>triplet</em> is formed by three distinct vertices that are
+     * connected by either two (open triplet) or three (closed triplet)
+     * undirected edges. A triangle graph therefore includes three closed
+     * triplets.
+     *
+     * @param graph the input graph.
+     * @return the number of triplets in an undirected graph.
+     */
+    public long numberOfTriplets(Graph graph) {
+        if (graph.isDirected()) {
+            throw new UnsupportedOperationException();
+        }
+        long count = 0;
+        for (int v : graph.vertices()) {
+            int deg = graph.degree(v);
+            count += deg * (deg - 1) / 2;
+        }
+        return count;
+    }
+    /**
+     * A <em>triplet</em> is formed by three distinct vertices that are
+     * connected by either two (open triplet) or three (closed triplet)
+     * undirected edges. A triangle graph therefore includes three closed
+     * triplets.
+     *
+     * @param graph
+     * @return the number of triplets in a directed graph.
+     */
+    /*
+    public long numberOfTriplets(Digraph graph) {
+        long count = 0;
+        for (int v : graph.vertices()) {
+            int deg = graph.indegree(v) + graph.outdegree(v);
+            count += deg;
+        }
+        return count;
+    }*/
 }

@@ -122,7 +122,7 @@ public class SearchNode {
         }
         return b;
     }
-
+  
     @Override
     public int hashCode() {
         int hash = 3;

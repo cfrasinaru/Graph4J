@@ -20,7 +20,7 @@ import java.util.Random;
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
-import org.graph4j.alg.Tournament;
+import org.graph4j.support.Tournament;
 
 /**
  * Generates <em>tournament</em> graphs. A tournament is a directed graph

@@ -49,8 +49,8 @@ class BFSVisitorExample {
             }
 
             @Override
-            public void finishVertex(SearchNode node) {
-                System.out.println("Finish vertex: " + node);
+            public void finishVertex(SearchNode node, boolean leaf) {
+                System.out.println("Finish vertex: " + node + ", leaf: " + leaf);
             }
 
             @Override

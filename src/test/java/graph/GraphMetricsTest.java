@@ -16,11 +16,13 @@
  */
 package graph;
 
+import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.util.VertexSet;
-import org.graph4j.alg.GraphMetrics;
+import org.graph4j.metrics.GraphMetrics;
 import org.graph4j.GraphBuilder;
+import org.graph4j.generate.GraphGenerator;
 
 /**
  *
@@ -55,4 +57,52 @@ public class GraphMetricsTest {
         assertEquals(new VertexSet(g, new int[]{1, 3, 5, 7}), gm.periphery());
         assertEquals(new VertexSet(g, new int[]{1, 3, 4, 5, 7, 8, 9}), gm.pseudoPeriphery());
     }
+
+    @Test
+    public void path() {
+        int n = 1 + new Random().nextInt(100);
+        var g = GraphGenerator.path(n);
+        var gm = new GraphMetrics(g);
+        assertEquals(n - 1, gm.diameter());
+        assertEquals(n / 2, gm.radius());
+    }
+
+    @Test
+    public void cycle() {
+        int n = 6;
+        var g = GraphGenerator.cycle(n);
+        var gm = new GraphMetrics(g);
+        assertEquals(n / 2, gm.diameter());
+        assertEquals(n / 2, gm.radius());
+    }
+
+    @Test
+    public void complete() {
+        int n = 1 + new Random().nextInt(100);
+        var g = GraphGenerator.complete(n);
+        var gm = new GraphMetrics(g);
+        assertEquals(1, gm.radius());
+        assertEquals(1, gm.diameter());
+    }
+
+    /*
+    private void testDiam() {
+        int n = 10;
+        for (int i = 0; i < 100; i++) {
+            //var g = new RandomGnpGraphGenerator(n, Math.random()).createGraph();
+            var g = GraphGenerator.path(n);
+            //var g = GraphGenerator.randomTree(n);
+            //var g = GraphGenerator.cycle(n);
+            int d1 = new ExtremaCalculator(g).getDiameter();
+            double d2 = org.jgrapht.GraphMetrics.getDiameter(Converter.createJGraphT(g));
+            if (d2 == Double.POSITIVE_INFINITY) {
+                d2 = Integer.MAX_VALUE;
+            }
+            if (d1 != d2) {
+                System.out.println("NO! " + d1 + ", " + d2);
+                System.out.println(g);
+                break;
+            }
+        }
+    }*/
 }

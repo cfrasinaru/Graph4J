@@ -19,8 +19,12 @@ BGL https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
 .NET
 https://github.com/YaccConstructor/QuickGraph/tree/master/src/QuickGraph/Algorithms
 
-NetworkX or the BGL. or Igraph
-JGraphT—A Java Library for Graph Data Structures and Algorithms https://arxiv.org/abs/1904.08355
+iGraph
+https://igraph.org/c/doc/
+
+
+teexGraph (diameter)
+https://github.com/franktakes/teexgraph
 
 R Plots
 https://sites.harding.edu/fmccown/r/
@@ -30,6 +34,10 @@ https://github.com/vigna/fastutil
 
 Linear regression
 https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearRegression.java.html
+
+
+Stanford Large Network Dataset Collection
+https://snap.stanford.edu/data/
 
 Comparatii legate de modul de rulare / performanta:
 - crearea de grafuri (empty,random,complete)
@@ -62,6 +70,7 @@ Min cutset
 Karger's Algorithm
 https://en.wikipedia.org/wiki/Karger%27s_algorithm
 
+
 Shortest Paths:
 Johnson's algorithm
 	https://en.wikipedia.org/wiki/Johnson%27s_algorithm	
@@ -81,9 +90,10 @@ For the Assignment Problem
 Succesive shortest path algorithm
 https://github.com/kevin-wayne/algs4/blob/master/src/main/java/edu/princeton/cs/algs4/AssignmentProblem.java
 
-Hungarian algorithm ( Kuhn Munkres Minima lWeight Bipartite Perfect Matching)
-https://en.wikipedia.org/wiki/Hungarian_algorithm
+Hungarian algorithm ( Kuhn Munkres Minimal Weight Bipartite Perfect Matching)
 https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/matching/KuhnMunkresMinimalWeightBipartitePerfectMatching.java
+
+https://en.wikipedia.org/wiki/Hungarian_algorithm
 https://github.com/KevinStern/software-and-algorithms/blob/master/src/main/java/blogspot/software_and_algorithms/stern_library/optimization/HungarianAlgorithm.java
 
 
@@ -100,6 +110,9 @@ PageRank
 https://en.wikipedia.org/wiki/PageRank
 http://infolab.stanford.edu/~backrub/google.html
 https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/scoring/PageRank.html
+
+Scoring algorithms
+https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/scoring/package-summary.html
 
 
 

@@ -19,7 +19,7 @@ package algorithms;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
-import org.graph4j.alg.Tournament;
+import org.graph4j.support.Tournament;
 import org.graph4j.generate.TournamentGenerator;
 import org.graph4j.util.Path;
 

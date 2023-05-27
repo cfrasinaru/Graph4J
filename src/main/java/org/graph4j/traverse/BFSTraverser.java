@@ -132,6 +132,7 @@ public class BFSTraverser {
                 maxLevel = node.level();
             }
             var parent = node.parent();
+            boolean leaf = true;
             for (int u : graph.neighbors(v)) {
                 int ui = graph.indexOf(u);
                 if (visited[ui] == null) {
@@ -140,6 +141,7 @@ public class BFSTraverser {
                     queue.add(child);
                     inqueue[ui] = true;
                     visitor.treeEdge(node, child);
+                    leaf = false;
                 } else {
                     //back edge or cross edge
                     var other = visited[ui]; //already visited
@@ -163,7 +165,7 @@ public class BFSTraverser {
                     }
                 }
             }//for
-            visitor.finishVertex(node);
+            visitor.finishVertex(node, leaf);
         }//while
     }
 

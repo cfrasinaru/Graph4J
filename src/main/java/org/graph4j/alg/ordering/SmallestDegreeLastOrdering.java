@@ -18,7 +18,7 @@ package org.graph4j.alg.ordering;
 
 import org.graph4j.Graph;
 import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.alg.GraphMeasures;
+import org.graph4j.measures.GraphMeasures;
 import org.graph4j.util.VertexSet;
 
 /**

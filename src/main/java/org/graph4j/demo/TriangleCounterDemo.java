@@ -24,11 +24,12 @@ import org.graph4j.generate.RandomGnpGraphGenerator;
  */
 class TriangleCounterDemo extends PerformanceDemo {
 
-    private final double probability = 0.01;
+    private final double probability = 0.9;
 
     public TriangleCounterDemo() {
-        numVertices = 5000;
+        numVertices = 1000;
         runJGraphT = true;
+        //n=10_000, p=0.01, graph4j=2.68s, jgrapht=554.85s = 194x
     }
 
     @Override
@@ -38,7 +39,7 @@ class TriangleCounterDemo extends PerformanceDemo {
 
     @Override
     protected void testGraph4J() {
-        long count = new org.graph4j.alg.TriangleCounter(graph).count();
+        long count = new org.graph4j.measures.TriangleCounter(graph).count();
         System.out.println(count);
 
     }
@@ -54,7 +55,7 @@ class TriangleCounterDemo extends PerformanceDemo {
         int steps = 10;
         args = new int[steps];
         for (int i = 0; i < steps; i++) {
-            args[i] = 100 * (i + 1);
+            args[i] = 200 * (i + 1);
         }
     }
 

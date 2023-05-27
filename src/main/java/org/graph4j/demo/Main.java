@@ -17,14 +17,10 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import org.graph4j.alg.TriangleCounter;
+import org.graph4j.metrics.GraphMetrics;
 import org.graph4j.alg.coloring.exact.GurobiAssignmentColoring;
 import org.graph4j.alg.coloring.exact.ParallelBacktrackColoring;
-import org.graph4j.generate.GraphGenerator;
 import org.graph4j.generate.RandomGnpGraphGenerator;
-import org.graph4j.util.VertexList;
 
 /**
  * Driver class for running the comparisons with other libraries.
@@ -34,17 +30,17 @@ import org.graph4j.util.VertexList;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        var app = new Main();
+        //var app = new Main();
+        //var app = new GraphMetricsDemo();
         //var app = new TriangleCounterDemo();
         //var app = new ExactColoringDemo();
         //var app = new GreedyColoringDemo();
-        //var app = new GraphMetricsDemo();
         //var app = new BronKerboschDemo();
         //var app = new HopcroftKarpDemo();
         //var app = new PushRelabelDemo();
         //var app = new EdmondsKarpDemo();
         //var app = new CycleDetectionDemo();
-        //var app = new KruskalMSTDemo();
+        var app = new KruskalMSTDemo();
         //var app = new PrimMSTDemo();
         //var app = new LineGraphDemo();
         //var app = new BipartiteDemo();
@@ -81,10 +77,11 @@ public class Main {
         run(this::test);
     }
 
-    private void test() {
+
+    private void test() {        
     }
 
-    private void test2() {
+    private void testColoring() {
         int n = 20;
         for (int i = 0; i < 1000; i++) {
             var g = new RandomGnpGraphGenerator(n, Math.random()).createGraph();
@@ -100,13 +97,13 @@ public class Main {
                 var col3 = alg3.findColoring();
 
                 if (col1.numUsedColors() != col2.getNumberColors() || col2.getNumberColors() != col3.numUsedColors()) {
-                    System.out.println("WHAAAAAAAAAAAAAAAT!!!!\n" + g);
+                    System.out.println("OOPS!\n" + g);
                     System.out.println(col1.numUsedColors() + ", " + col2.getNumberColors() + ", " + col3.numUsedColors());
                     System.out.println(g);
                     break;
                 }
             } catch (Exception e) {
-                System.out.println("NOOOOOOOOOOOOOOO!!!!\n" + g);
+                System.err.println(e);
                 break;
             }
         }

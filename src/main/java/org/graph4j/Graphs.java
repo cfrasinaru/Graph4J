@@ -19,7 +19,7 @@ package org.graph4j;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
-import org.graph4j.alg.AcyclicOrientation;
+import org.graph4j.alg.ordering.AcyclicOrientation;
 import org.graph4j.alg.bipartite.BipartitionAlgorithm;
 import org.graph4j.alg.connectivity.BiconnectivityAlgorithm;
 import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;

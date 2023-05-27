@@ -18,10 +18,12 @@ package org.graph4j.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -240,6 +242,19 @@ public class IntArrays {
             other[j] = temp;
         }
         return other;
+    }
+
+    /**
+     *
+     * @param array an array of integers.
+     * @param comparator a comparator.
+     * @return a new array with the original elements sorted.
+     */
+    public static int[] sort(int[] array, Comparator<Integer> comparator) {
+        return IntStream.of(array).boxed()
+                .sorted(comparator)
+                .mapToInt(Integer::intValue)
+                .toArray();
     }
 
     /**

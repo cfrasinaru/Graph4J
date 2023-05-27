@@ -14,12 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg;
+package org.graph4j.metrics;
 
 import org.graph4j.alg.cycle.CycleDetectionAlgorithm;
 import java.util.Arrays;
 import org.graph4j.util.Cycle;
 import org.graph4j.Graph;
+import org.graph4j.alg.GraphAlgorithm;
+import org.graph4j.measures.GraphMeasures;
 import org.graph4j.util.VertexSet;
 import org.graph4j.alg.sp.FloydWarshallShortestPath;
 import org.graph4j.traverse.BFSIterator;
@@ -32,10 +34,12 @@ import org.graph4j.util.CheckArguments;
  */
 public class GraphMetrics extends GraphAlgorithm {
 
+    private final ExtremaCalculator extremaCalculator;
     private int dist[][]; //distances
     private int ecc[]; //eccentricities
-    private int diameter;
-    private int radius;
+    private Integer girth;
+    private Integer diameter;
+    private Integer radius;
 
     /**
      *
@@ -43,6 +47,7 @@ public class GraphMetrics extends GraphAlgorithm {
      */
     public GraphMetrics(Graph graph) {
         super(graph);
+        extremaCalculator = new ExtremaCalculator(graph);
     }
 
     /**
@@ -53,8 +58,12 @@ public class GraphMetrics extends GraphAlgorithm {
      * graph ia acyclic.
      */
     public int girth() {
+        if (girth != null) {
+            return girth;
+        }
         Cycle cycle = new CycleDetectionAlgorithm(graph).findShortestCycle();
-        return cycle != null ? cycle.length() : Integer.MAX_VALUE;
+        girth = cycle != null ? cycle.length() : Integer.MAX_VALUE;
+        return girth;
     }
 
     /**
@@ -82,7 +91,7 @@ public class GraphMetrics extends GraphAlgorithm {
      * @param vertex a vertex number
      * @param inConnectedComponent specifies to compute the eccentricity in the
      * connected component of the vertex
-     * @return the eccentricity of the vertex
+     * @return the eccentricity of the vertex.
      */
     public int eccentricity(int vertex, boolean inConnectedComponent) {
         if (!inConnectedComponent && ecc != null) {
@@ -99,9 +108,7 @@ public class GraphMetrics extends GraphAlgorithm {
                 }
                 break;
             }
-            if (maxLevel < node.level()) {
-                maxLevel = node.level();
-            }
+            maxLevel = node.level();
         }
         return maxLevel;
     }
@@ -147,34 +154,21 @@ public class GraphMetrics extends GraphAlgorithm {
         if (ecc != null) {
             return ecc;
         }
-        if (dist == null) {
-            distances();
-        }
-        int n = graph.numVertices();
-        this.ecc = new int[n];
-        Arrays.fill(ecc, Integer.MIN_VALUE);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                int d = dist[i][j];
-                if (ecc[i] < d) {
-                    ecc[i] = d; //maximum distance from i
-                }
-            }
-        }
-        this.diameter = Integer.MIN_VALUE;
-        for (int i = 0; i < n; i++) {
-            if (diameter < ecc[i]) {
-                diameter = ecc[i]; //maximum of them all
-            }
-        }
-        this.radius = Integer.MAX_VALUE;
-        if (diameter < Integer.MAX_VALUE) {
+        if (dist != null) {
+            int n = graph.numVertices();
+            this.ecc = new int[n];
+            Arrays.fill(ecc, Integer.MIN_VALUE);
             for (int i = 0; i < n; i++) {
-                if (radius > ecc[i]) {
-                    radius = ecc[i]; //minimum of them all
+                for (int j = 0; j < n; j++) {
+                    int d = dist[i][j];
+                    if (ecc[i] < d) {
+                        ecc[i] = d; //maximum distance from i
+                    }
                 }
             }
+            return ecc;
         }
+        ecc = new EccentricitiesCalculator(graph).calculate();
         return ecc;
     }
 
@@ -182,79 +176,38 @@ public class GraphMetrics extends GraphAlgorithm {
      * Computes and stores for later retrieval all the distances between graph
      * vertices. If the distances are already computed, it simply returns them.
      *
-     * Note that some methods of this class might trigger this compution, in
+     * Note that some methods of this class might trigger this computation, in
      * order to create their response.
      *
      * @return the distances matrix
      */
     public int[][] distances() {
-        if (GraphMeasures.density(graph) < 0.3) {
-            return distancesBFS();
-        }
-        return distancesFW();
-    }
-
-    //uses Floyd-Warshall to compute all pairs shortest paths
-    //complexity O(n^3)
-    private int[][] distancesFW() {
-        int n = graph.numVertices();
-        this.dist = new int[n][n];
-        var alg = new FloydWarshallShortestPath(graph);
-        int n1 = directed ? n : n - 1;
-        for (int i = 0; i < n1; i++) {
-            int v = graph.vertexAt(i);
-            //var alg = new DijkstraShortestPathHeap(graph, v);
-            int from = directed ? 0 : i + 1;
-            for (int j = from; j < n; j++) {
-                int u = graph.vertexAt(j);
-                double d = alg.getPathWeight(v, u);
-                //double d = alg.getPathWeight(u);
-                if (d == Double.POSITIVE_INFINITY) {
-                    dist[i][j] = Integer.MAX_VALUE;
-                } else {
-                    dist[i][j] = (int) d;
-                }
-                if (!directed) {
-                    dist[j][i] = dist[i][j];
-                }
-            }
-        }
-        return dist;
-    }
-
-    //uses BFS from each vertex to compute all pairs shortest paths
-    //complexity O(n(n+m))
-    private int[][] distancesBFS() {
-        int n = graph.numVertices();
-        this.dist = new int[n][n];
-        for (int v : graph.vertices()) {
-            int vi = graph.indexOf(v);
-            Arrays.fill(dist[vi], Integer.MAX_VALUE);
-            var bfs = new BFSIterator(graph, v);
-            while (bfs.hasNext()) {
-                var node = bfs.next();
-                if (node.component() > 0) {
-                    break;
-                }
-                int u = node.vertex();
-                int ui = graph.indexOf(u);
-                dist[vi][ui] = node.level();
-            }
+        if (dist == null) {
+            dist = new DistancesCalculator(graph).calculate();
         }
         return dist;
     }
 
     /**
      * The <i>diameter</i> of a graph is the length of the "longest shortest
-     * path", that is the greatest distance between any two vertices.
-     *
-     * Computes all the eccentricities.
+     * path", that is the greatest distance between any two vertices. A
+     * disconnected graph has infinite diameter.
      *
      * @return the diameter of the graph
      */
     public int diameter() {
-        if (ecc == null) {
-            eccentricities();
+        if (diameter != null) {
+            return diameter;
+        }
+        if (ecc != null) {
+            this.diameter = Integer.MIN_VALUE;
+            for (int i = 0, n = graph.numVertices(); i < n; i++) {
+                if (diameter < ecc[i]) {
+                    diameter = ecc[i]; //maximum of them all
+                }
+            }
+        } else {
+            diameter = extremaCalculator.getDiameter();
         }
         return diameter;
     }
@@ -263,14 +216,22 @@ public class GraphMetrics extends GraphAlgorithm {
      * The <i>radius</i> of a graph is the minimum eccentricity of vertices. A
      * disconnected graph has infinite radius.
      *
-     * Computes all the eccentricities.
-     *
      * @return the radius of the graph, or <code>Integer.MAX_VALUE</code> if the
      * graph is disconnected.
      */
     public int radius() {
-        if (ecc == null) {
-            eccentricities();
+        if (radius != null) {
+            return radius;
+        }
+        if (ecc != null) {
+            this.radius = Integer.MAX_VALUE;
+            for (int i = 0, n = graph.numVertices(); i < n; i++) {
+                if (radius > ecc[i]) {
+                    radius = ecc[i]; //minimum of them all
+                }
+            }
+        } else {
+            radius = extremaCalculator.getRadius();
         }
         return radius;
     }
@@ -279,50 +240,31 @@ public class GraphMetrics extends GraphAlgorithm {
      * The <i>center</i> of a graph is the set of vertices having eccentricities
      * equal to the graph radius (the set of central points).
      *
-     * @return the graph center
+     * @return the graph center.
      */
     public VertexSet center() {
-        eccentricities(); //also computes the radius
-        VertexSet set = new VertexSet(graph);
-        if (radius == Integer.MAX_VALUE) {
-            return set;
-        }
-        for (int v : graph.vertices()) {
-            if (eccentricity(v) == radius) {
-                set.add(v);
-            }
-        }
-        return set;
+        return extremaCalculator.getCenter();
     }
 
     /**
      * The <i>periphery</i> of a graph is the set of vertices having
      * eccentricities equal to the graph diameter.
      *
-     * @return the graph periphery
+     * @return the graph periphery.
      */
     public VertexSet periphery() {
-        eccentricities();
-        VertexSet set = new VertexSet(graph);
-        if (diameter == Integer.MAX_VALUE) {
-            return set;
-        }
-        for (int v : graph.vertices()) {
-            if (eccentricity(v) == diameter) {
-                set.add(v);
-            }
-        }
-        return set;
+        return extremaCalculator.getPeriphery();
     }
 
     /**
      * A <i>pseudo-peripheral</i> vertex v has the property that, for any vertex
      * u, if u is as far away from v as possible, then v is as far away from u
-     * as possible
+     * as possible. Computes the distances and the eccentricities.
      *
-     * @return the graph pseudo periphery
+     * @return the graph pseudo periphery.
      */
     public VertexSet pseudoPeriphery() {
+        distances();
         eccentricities();
         VertexSet set = new VertexSet(graph);
         for (int i = 0, n = graph.numVertices(); i < n; i++) {

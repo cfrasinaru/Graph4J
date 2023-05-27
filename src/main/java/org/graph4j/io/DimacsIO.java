@@ -31,6 +31,9 @@ import org.graph4j.GraphBuilder;
  *
  * e edge-source2 edge-target2
  *
+ * http://prolland.free.fr/works/research/dsat/dimacs.html
+ * https://www.diag.uniroma1.it//challenge9/format.shtml#graph
+ *
  * @author Cristian Frăsinaru
  */
 public class DimacsIO {

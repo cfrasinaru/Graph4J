@@ -16,7 +16,8 @@
  */
 package org.graph4j.demo;
 
-import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.graph4j.generate.GraphGenerator;
+import org.graph4j.metrics.*;
 import org.jgrapht.alg.shortestpath.GraphMeasurer;
 
 /**
@@ -25,32 +26,43 @@ import org.jgrapht.alg.shortestpath.GraphMeasurer;
  */
 class GraphMetricsDemo extends PerformanceDemo {
 
-    private final double probability = 0.08;
+    private final double probability = 0.5;
 
     public GraphMetricsDemo() {
         numVertices = 3000;
         //runJGraphT = true;
+        runOther = true;
     }
 
     @Override
     protected void createGraph() {
-        graph = new RandomGnpGraphGenerator(numVertices, probability).createGraph();
-        //graph = new RandomTreeGenerator(numVertices).create();
+        //graph = GraphGenerator.randomGnp(numVertices, probability);
+        graph = GraphGenerator.randomTree(numVertices);
+        //graph = GraphGenerator.cycle(numVertices);
     }
 
     @Override
     protected void testGraph4J() {
-        var alg = new org.graph4j.alg.GraphMetrics(graph);
-        System.out.println(alg.diameter());
+        System.out.println(new ExtremaCalculator(graph).getDiameter());
+        //var alg = new org.graph4j.metrics.GraphMetrics(graph);
+        //System.out.println(alg.diameter());
+        //new org.graph4j.metrics.GraphMetrics(graph).eccentricities();
 
     }
 
     @Override
     protected void testJGraphT() {
         var alg = new GraphMeasurer(jgrapht);
-        System.out.println(alg.getDiameter());
+        //System.out.println(alg.getDiameter());   
+        alg.getVertexEccentricityMap();
     }
 
+    @Override
+    protected void testOther() {
+        System.out.println(new ParallelExtremaCalculator(graph).getDiameter());
+    }
+
+    
     @Override
     protected void prepareArgs() {
         int steps = 10;

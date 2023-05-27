@@ -17,6 +17,8 @@
 package org.graph4j.util;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import org.graph4j.Graph;
 
 /**
@@ -27,7 +29,7 @@ import org.graph4j.Graph;
  *
  * @author Cristian Frăsinaru
  */
-public class VertexHeap {
+public class VertexHeap implements Iterable<Integer> {
 
     private final Graph graph;
     private final IntComparator comparator;
@@ -74,9 +76,26 @@ public class VertexHeap {
 
     /**
      *
+     * @return a new array containing the keys in the heap.
+     */
+    public int[] keys() {
+        return Arrays.copyOf(keys, size);
+    }
+
+    /**
+     *
+     * @return an iterator over the vertices in the heap.
+     */
+    @Override
+    public Iterator<Integer> iterator() {
+        return new VertexHeapIterator();
+    }
+
+    /**
+     *
      * @param key a vertex index.
      */
-    public void add(int key) {
+    public final void add(int key) {
         if (size + 1 >= keys.length) {
             grow();
         }
@@ -109,18 +128,41 @@ public class VertexHeap {
         int top = keys[1];
         keys[1] = keys[size--];
         positions[keys[1]] = 1;
+        positions[top] = -1;
         siftDown(1);
         return top;
     }
 
     /**
+     * Removes a specified key from the heap.
      *
      * @param key the index of a vertex.
+     * @return {@code true} if the heap has changed.
      */
-    public void update(int key) {
+    public boolean remove(int key) {
+        if (key < 0 || key >= positions.length) {
+            throw new IllegalArgumentException("Invalid key: " + key);
+        }
         int pos = positions[key];
-        if (pos == 1) {
-            return; //is top
+        if (pos < 0) {
+            return false;
+        }
+        keys[pos] = keys[size--];
+        positions[keys[pos]] = pos;
+        positions[key] = -1;
+        siftDown(pos);
+        return true;
+    }
+
+    /**
+     *
+     * @param key the index of a vertex.
+     * @return {@code true} if the heap has changed.
+     */
+    public boolean update(int key) {
+        int pos = positions[key];
+        if (pos <= 1) {
+            return false; //is top or does not exist
         }
         int parent = pos >> 1;
         if (compareTo(pos, parent) < 0) {
@@ -128,6 +170,7 @@ public class VertexHeap {
         } else {
             siftDown(pos);
         }
+        return true;
     }
 
     private void swap(int pos1, int pos2) {
@@ -206,6 +249,32 @@ public class VertexHeap {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    private class VertexHeapIterator implements Iterator<Integer> {
+
+        private int pos = 0;
+
+        @Override
+        public Integer next() {
+            if (pos > size) {
+                throw new NoSuchElementException();
+            }
+            return keys[++pos];
+        }
+
+        @Override
+        public boolean hasNext() {
+            return pos < size;
+        }
+
+        @Override
+        public void remove() {
+            if (pos <= 0) {
+                throw new NoSuchElementException();
+            }
+            VertexHeap.this.remove(keys[pos--]);
+        }
     }
 
 }

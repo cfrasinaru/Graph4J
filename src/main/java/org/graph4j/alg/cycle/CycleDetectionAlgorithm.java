@@ -102,7 +102,6 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
         } else {
             return dfs();
         }
-
     }
 
     /**

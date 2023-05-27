@@ -17,7 +17,7 @@
 package org.graph4j.demo;
 
 import org.graph4j.Graphs;
-import org.graph4j.alg.GraphMeasures;
+import org.graph4j.measures.GraphMeasures;
 import org.graph4j.alg.connectivity.BiconnectivityAlgorithm;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 import org.graph4j.io.*;

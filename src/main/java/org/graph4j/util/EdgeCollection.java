@@ -65,6 +65,18 @@ abstract class EdgeCollection { //WORK IN PROGRESS
         this.numEdges = edges.length;
     }
 
+    /**
+     *
+     * @param graph the graph the edges belong to.
+     * @param edges the initial set of edges.
+     */
+    public EdgeCollection(Graph graph, Edge[] edges) {
+        this(graph, edges.length);
+        for (Edge e : edges) {
+            add(e.source(), e.target());
+        }
+    }
+
     //lazy creation
     /*
     private void createBitSet() {
@@ -134,7 +146,7 @@ abstract class EdgeCollection { //WORK IN PROGRESS
      * @param u a vertex number.
      * @return true, if the collection changed as a result of this call.
      */
-    public boolean add(int v, int u) {
+    public final boolean add(int v, int u) {
         if (numEdges == edges.length) {
             grow();
         }

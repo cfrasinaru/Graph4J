@@ -17,6 +17,7 @@
 package org.graph4j.util;
 
 import org.graph4j.Graph;
+import org.graph4j.Edge;
 
 /**
  * * A set of edges of a graph.
@@ -37,5 +38,8 @@ public class EdgeSet extends EdgeCollection { //WORK IN PROGRESS
         super(graph, edges);
     }
    
+    public EdgeSet(Graph graph, Edge[] edges) {
+        super(graph, edges);
+    }
     
 }

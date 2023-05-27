@@ -17,7 +17,7 @@
 package org.graph4j.alg.cut;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphMeasures;
+import org.graph4j.measures.GraphMeasures;
 import org.graph4j.alg.SimpleGraphAlgorithm;
 import org.graph4j.util.VertexSet;
 

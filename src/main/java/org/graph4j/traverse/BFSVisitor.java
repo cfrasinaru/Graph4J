@@ -34,11 +34,13 @@ public interface BFSVisitor {
     }
 
     /**
-     * Invoked after all the neighbors of the current vertex have been visited.
+     * Invoked after all the neighbors of the current vertex have been visited
+     * (added to the queue).
      *
      * @param node the current node.
+     * @param leaf {@code true} if the node is a leaf in the BFS tree.
      */
-    default void finishVertex(SearchNode node) {
+    default void finishVertex(SearchNode node, boolean leaf) {
     }
 
     /**

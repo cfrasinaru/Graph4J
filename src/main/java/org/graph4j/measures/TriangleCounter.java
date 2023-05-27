@@ -14,10 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg;
+package org.graph4j.measures;
 
 import org.graph4j.Graph;
 import org.graph4j.Multigraph;
+import org.graph4j.alg.UndirectedGraphAlgorithm;
 import org.graph4j.util.VertexList;
 
 /**

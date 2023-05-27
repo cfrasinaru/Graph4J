@@ -20,8 +20,6 @@ import com.google.common.graph.Traverser;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 import org.graph4j.traverse.BFSVisitor;
 import org.graph4j.traverse.BFSTraverser;
-import org.graph4j.traverse.DFSVisitor;
-import org.graph4j.traverse.DFSTraverser;
 import org.graph4j.traverse.SearchNode;
 
 /**
@@ -45,7 +43,7 @@ class BFSVisitorDemo extends PerformanceDemo {
         for (int v : graph.vertices()) {
             new BFSTraverser(graph).traverse(v, new BFSVisitor(){
                 @Override
-                public void startVertex(SearchNode node) {
+                public void  startVertex(SearchNode node) {
                     k1++;
                 }
             });

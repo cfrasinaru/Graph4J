@@ -118,28 +118,14 @@ https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/scoring/package-sum
 
 MST
 Boruvka Algorithm
-	https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm
+https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm
+
 Randomized minimum spanning tree algorithm ?
 
+Parallel Prim
+https://en.wikipedia.org/wiki/Prim%27s_algorithm
+
 Metrici si masuri specifice relatiilor sociale
-
-[1] F. W. Takes, W. A. Kosters,
-"Determining the diameter of small world networks."
-Proceedings of the 20th ACM international conference on Information and knowledge management, 2011
-https://dl.acm.org/doi/abs/10.1145/2063576.2063748
-
-.. [2] F. W. Takes, W. A. Kosters,
-"Computing the Eccentricity Distribution of Large Graphs."
-Algorithms, 2013
-
-https://www.mdpi.com/1999-4893/6/1/100
-.. [3] M. Borassi, P. Crescenzi, M. Habib, W. A. Kosters, A. Marino, F. W. Takes,
-"Fast diameter and radius BFS-based computation in (weakly connected) real-world graphs: With an application to the six degrees of separation games. "
-Theoretical Computer Science, 2015
-https://www.sciencedirect.com/science/article/pii/S0304397515001644
-
-
-
 
 
 Generaratoare de grafuri

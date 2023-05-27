@@ -18,6 +18,7 @@ package org.graph4j.demo;
 
 import edu.princeton.cs.algs4.KruskalMST;
 import org.graph4j.alg.mst.KruskalMinimumSpanningTree;
+import org.graph4j.alg.mst.ParallelFilterKruskal;
 import org.graph4j.generate.EdgeWeightsGenerator;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 
@@ -30,9 +31,10 @@ class KruskalMSTDemo extends PerformanceDemo {
     private final double probability = 0.1;
 
     public KruskalMSTDemo() {
-        numVertices = 5000;
-        runJGraphT = true;
+        numVertices = 1000;
+        //runJGraphT = true;
         runAlgs4 = true;
+        runOther = true;
     }
 
     @Override
@@ -61,6 +63,13 @@ class KruskalMSTDemo extends PerformanceDemo {
         alg.edges();
     }
 
+    @Override
+    protected void testOther() {
+        var alg = new ParallelFilterKruskal(graph);
+        System.out.println(alg.getWeight());
+        alg.getEdges();
+    }
+    
     @Override
     protected void prepareArgs() {
         int steps = 10;

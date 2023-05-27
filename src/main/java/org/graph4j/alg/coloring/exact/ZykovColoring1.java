@@ -28,22 +28,22 @@ import org.graph4j.alg.coloring.VertexColoring;
  *
  * @author Cristian Frăsinaru
  */
-public class ZykovColoring extends ExactColoringBase {
+class ZykovColoring1 extends ExactColoringBase {
 
-    private Deque<Node> stack;
+    private Deque<Graph> stack;
     private int chi;
 
-    public ZykovColoring(Graph graph) {
+    public ZykovColoring1(Graph graph) {
         super(graph);
     }
 
-    public ZykovColoring(Graph graph, long timeLimit) {
+    public ZykovColoring1(Graph graph, long timeLimit) {
         super(graph, timeLimit);
     }
 
     @Override
-    protected ZykovColoring getInstance(Graph graph, long timeLimit) {
-        return new ZykovColoring(graph, timeLimit);
+    protected ZykovColoring1 getInstance(Graph graph, long timeLimit) {
+        return new ZykovColoring1(graph, timeLimit);
     }
 
     @Override
@@ -61,31 +61,30 @@ public class ZykovColoring extends ExactColoringBase {
     private void compute() {
         chi = Integer.MAX_VALUE;
         stack = new ArrayDeque<>();
-        stack.push(new Node(graph, initialColoring));
+        stack.push(graph);
         while (!stack.isEmpty()) {
-            var node = stack.pop();
-            System.out.println(node.graph.numVertices() + ", " + node.graph.numEdges() + ", chi=" + chi + ", stack: " + stack.size());
-            if (node.graph.isComplete()) {
-                if (chi > node.graph.numVertices()) {
-                    chi = node.graph.numVertices();
+            var g = stack.pop();
+            System.out.println(g.numVertices() + ", " + g.numEdges() + ", chi=" + chi + ", stack: " + stack.size());
+            if (g.isComplete()) {
+                if (chi > g.numVertices()) {
+                    chi = g.numVertices();
                 }
                 continue;
             }
-            /*
-            if (node.graph.numVertices() < 90) {
+            if (g.numVertices() < 90) {
                 System.out.println("Backtrack coloring");
-                var bt = new ParallelBacktrackColoring(node.graph);
+                var bt = new ParallelBacktrackColoring(g);
                 var col = bt.findColoring();
                 if (chi > col.numUsedColors()) {
                     chi = col.numUsedColors();
                 }
                 continue;
-            }*/
-            var clique = new MaximalCliqueFinder(node.graph).getMaximalClique();
+            }
+            var clique = new MaximalCliqueFinder(g).getMaximalClique();
             if (clique.numVertices() >= chi) {
                 continue;
             }
-            var col = new RecursiveLargestFirstColoring(node.graph).findColoring();
+            var col = new RecursiveLargestFirstColoring(g).findColoring();
             if (chi > col.numUsedColors()) {
                 chi = col.numUsedColors();
                 if (chi == clique.numVertices()) {
@@ -98,34 +97,31 @@ public class ZykovColoring extends ExactColoringBase {
             //b) both have the same domain containing 2 values
             // and they are adjacent with an uncolored vertex 
             // which is adjacent with as many vertices having 2 values in their domains
-            int n = node.graph.numVertices();
+            int n = g.numVertices();
             int maxv = -1, maxu = -1, max = -1;
-            /*
-            for (int v : node.vertices()) {
-                if (node.degree(v) == n - 1) {
+            for (int v : g.vertices()) {
+                if (g.degree(v) == n - 1) {
                     continue;
                 }
-                for (int u : node.vertices()) {
-                    if (u == v || node.containsEdge(v, u)) {
+                for (int u : g.vertices()) {
+                    if (u == v || g.containsEdge(v, u)) {
                         continue;
                     }
-                    int d = node.degree(v) + node.degree(u);
+                    int d = g.degree(v) + g.degree(u);
                     if (max < d) {
                         max = d;
                         maxv = v;
                         maxu = u;
                     }
                 }
-            }*/
-            var g1 = node.graph.copy();
+            }
+            var g1 = g.copy();
             g1.addEdge(maxv, maxu);
-            var col1 = new VertexColoring(g1, node.coloring);
-            stack.push(new Node(g1, col1));
+            stack.push(g1);
 
-            var g2 = node.graph.copy();
+            var g2 = g.copy();
             g2.contractVertices(maxv, maxu);
-            var col2 = new VertexColoring(g2, node.coloring);
-            stack.push(new Node(g2, col2));
+            stack.push(g2);
 
         }
     }

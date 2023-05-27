@@ -17,7 +17,6 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
-import org.graph4j.metrics.GraphMetrics;
 import org.graph4j.alg.coloring.exact.GurobiAssignmentColoring;
 import org.graph4j.alg.coloring.exact.ParallelBacktrackColoring;
 import org.graph4j.generate.RandomGnpGraphGenerator;

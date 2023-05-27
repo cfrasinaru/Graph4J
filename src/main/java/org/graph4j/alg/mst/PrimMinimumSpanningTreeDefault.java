@@ -17,7 +17,6 @@
 package org.graph4j.alg.mst;
 
 import org.graph4j.Graph;
-import org.graph4j.util.VertexHeap;
 
 /**
  * Uses a binary heap. Complexity O(m + m long n)

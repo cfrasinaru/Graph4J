@@ -47,12 +47,12 @@ public class ParallelFilterKruskal extends GraphAlgorithm
     private final UnionFind unionFind;
     private final Edge[] edges; // the edges we work with
     private final long finalNrOfEdges; // the number of edges that the result tree should have
-    private double totalWeight; // the weight of the result tree (MST)
+    private MutableDouble totalWeight; // the weight of the result tree (MST)
     private boolean calculated;
 
     public ParallelFilterKruskal(Graph graph) {
         super(graph);
-        this.totalWeight = 0.0;
+        this.totalWeight = new MutableDouble(0.0);
         this.edges = graph.edges();
 
         int nrVertices = graph.numVertices();
@@ -65,7 +65,7 @@ public class ParallelFilterKruskal extends GraphAlgorithm
         this.finalNrOfEdges = nrVertices - 1;
     }
 
-    private ParallelFilterKruskal(Graph graph, Graph tree, UnionFind unionFind, Edge[] edges, double totalWeight) {
+    private ParallelFilterKruskal(Graph graph, Graph tree, UnionFind unionFind, Edge[] edges, MutableDouble totalWeight) {
         super(graph);
         this.tree = tree;
         this.unionFind = unionFind;
@@ -93,7 +93,7 @@ public class ParallelFilterKruskal extends GraphAlgorithm
             if (root1 != root2) {
                 unionFind.union(root1, root2);
                 tree.addEdge(edge);
-                totalWeight += edge.weight();
+                totalWeight.add(edge.weight());
             }
         }
     }
@@ -191,7 +191,7 @@ public class ParallelFilterKruskal extends GraphAlgorithm
     @Override
     public double getWeight() {
         compute();
-        return totalWeight;
+        return totalWeight.getValue();
     }
 
     @Override
@@ -277,4 +277,20 @@ public class ParallelFilterKruskal extends GraphAlgorithm
         }
     }
 
+    private class MutableDouble {
+
+        private double value;
+
+        public MutableDouble(double value) {
+            this.value = value;
+        }
+
+        public double getValue() {
+            return this.value;
+        }
+
+        public void add(double value) {
+            this.value += value;
+        }
+    }
 }

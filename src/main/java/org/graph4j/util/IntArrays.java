@@ -129,6 +129,23 @@ public class IntArrays {
 
     /**
      *
+     * @param array1 an array of integers.
+     * @param array2 an array of integers.
+     * @return a new array containing the common values.
+     */
+    public static int[] intersection(int[] array1, int[] array2) {
+        int[] inter = new int[Math.min(array1.length, array2.length)];
+        int k = 0;
+        for (int a : array1) {
+            if (contains(array2, a)) {
+                inter[k++] = a;
+            }
+        }
+        return k == inter.length ? inter : Arrays.copyOf(inter, k);
+    }
+
+    /**
+     *
      * @param array an array of integers.
      * @return a List representation of the array.
      */

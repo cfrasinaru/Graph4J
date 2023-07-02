@@ -77,7 +77,7 @@ public class WheelGenerator extends AbstractGraphGenerator {
     
     private void addEdges(Graph g, boolean clockwise, boolean outward) {
         boolean safeMode = g.isSafeMode();
-        //g.setSafeMode(false);
+        g.setSafeMode(false);
         int[] cycle = IntStream.of(vertices).filter(v -> v != center).toArray();
         for (int i = 0; i < cycle.length; i++) {
             int v = cycle[i];

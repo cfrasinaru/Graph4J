@@ -92,6 +92,8 @@ public class MaximalCliqueFinder extends SimpleGraphAlgorithm {
                 maxClique = clique;
             }
         }
+        assert maxClique != null;
+        assert maxClique.isValid();
         return maxClique;
     }
 

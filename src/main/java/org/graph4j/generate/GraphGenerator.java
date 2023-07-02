@@ -163,13 +163,23 @@ public class GraphGenerator {
     }
 
     /**
-     *
+     * @see RegularGraphGenerator
      * @param n the number of vertices.
      * @param degree the degree of all vertices.
      * @return a regular graph.
      */
     public static Graph regular(int n, int degree) {
         return new RegularGraphGenerator(n, degree).createGraph();
+    }
+
+    /**
+     * @see GridGenerator
+     * @param rows number of rows.
+     * @param cols number of columns.
+     * @return a grid graph.
+     */
+    public static Graph grid(int rows, int cols) {
+        return new GridGenerator(rows, cols).createGraph();
     }
 
 }

@@ -45,19 +45,19 @@ import org.graph4j.util.VertexSet;
  * @author Cristian Frăsinaru
  */
 public class RecursiveLargestFirstColoring extends SimpleGraphAlgorithm
-        implements VertexColoringAlgorithm {
+        implements ColoringAlgorithm {
 
     public RecursiveLargestFirstColoring(Graph graph) {
         super(graph);
     }
 
     @Override
-    public VertexColoring findColoring() {
+    public Coloring findColoring() {
         return findColoring(graph.numVertices());
     }
 
     @Override
-    public VertexColoring findColoring(int numColors) {
+    public Coloring findColoring(int numColors) {
         int[] colors = new int[graph.numVertices()];
         int currentColor = -1;
         var g = graph.copy();
@@ -72,7 +72,9 @@ public class RecursiveLargestFirstColoring extends SimpleGraphAlgorithm
             }
             g.removeVertices(set.vertices());
         }
-        return new VertexColoring(graph, colors);
+        var coloring = new Coloring(graph, colors);
+        assert coloring.isProper();
+        return coloring;
     }
 
     private StableSet createMaximalStableSet(Graph g) {

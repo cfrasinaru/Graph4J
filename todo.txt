@@ -15,6 +15,7 @@ https://networkit.github.io/index.html
 
 C++
 BGL https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
+KOALA https://github.com/krzysztof-turowski/koala-networkit
 
 .NET
 https://github.com/YaccConstructor/QuickGraph/tree/master/src/QuickGraph/Algorithms
@@ -39,14 +40,9 @@ https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearRegression.java
 Stanford Large Network Dataset Collection
 https://snap.stanford.edu/data/
 
-Comparatii legate de modul de rulare / performanta:
-- crearea de grafuri (empty,random,complete)
-- dfs, bfs
-- conectivitate
-- cicluri
 
-
-Implementare de noi algoritmi
+A Bloom filter is a space-efficient probabilistic data structure, that is used to test whether an element is a member of a set.
+https://en.m.wikipedia.org/wiki/Bloom_filter
 
 Package .ordering
 vertex orderings: lex-bfs,  maximum cardinality search (?), maximal neighborhood search (?), degeneracy (?)

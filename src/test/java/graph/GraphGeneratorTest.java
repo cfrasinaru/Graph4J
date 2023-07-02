@@ -16,6 +16,7 @@
  */
 package graph;
 
+import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.Graph;
@@ -32,6 +33,8 @@ import org.graph4j.generate.RegularGraphGenerator;
  * @author Cristian Frăsinaru
  */
 public class GraphGeneratorTest {
+
+    private final Random random = new Random();
 
     public GraphGeneratorTest() {
     }
@@ -139,6 +142,15 @@ public class GraphGeneratorTest {
         for (int v : g.vertices()) {
             assertEquals(degree, g.degree(v));
         }
+    }
+
+    @Test
+    public void grid() {
+        int m = 1 + random.nextInt(10);
+        int n = 1 + random.nextInt(10);
+        Graph g = GraphGenerator.grid(m, n);
+        assertEquals(m * n, g.numVertices());
+        assertEquals((m - 1) * n + (n - 1) * m, g.numEdges());
     }
 
 }

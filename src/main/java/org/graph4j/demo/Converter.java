@@ -32,7 +32,7 @@ import org.graph4j.Graph;
  *
  * @author Cristian Frăsinaru
  */
-class Converter {
+public class Converter {
 
     public static org.jgrapht.Graph createJGraphT(Graph g) {
         org.jgrapht.Graph jg;

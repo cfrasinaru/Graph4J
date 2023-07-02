@@ -51,4 +51,13 @@ public abstract class SimpleGraphAlgorithm {
         }
     }
 
+    /**
+     * 
+     * @return the input graph.
+     */
+    public Graph getGraph() {
+        return graph;
+    }
+
+    
 }

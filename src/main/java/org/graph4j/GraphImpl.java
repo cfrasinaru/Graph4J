@@ -17,7 +17,6 @@
 package org.graph4j;
 
 import java.util.Arrays;
-import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -41,7 +40,7 @@ import org.graph4j.util.VertexSet;
 class GraphImpl<V, E> implements Graph<V, E> {
 
     protected String name;
-    protected int maxVertices; //maximum number of vertices
+    protected int maxVertices; //estimated maximum number of vertices
     protected int numVertices; //number of vertices
     protected long numEdges;  //number of edges
 
@@ -75,13 +74,6 @@ class GraphImpl<V, E> implements Graph<V, E> {
     protected boolean safeMode = true;
 
     protected GraphImpl() {
-    }
-
-    @Deprecated
-    private GraphImpl(int numVertices, int maxVertices, int avgDegree,
-            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        this(IntStream.range(0, numVertices).toArray(), maxVertices, avgDegree,
-                directed, allowingMultipleEdges, allowingSelfLoops);
     }
 
     /**
@@ -192,6 +184,12 @@ class GraphImpl<V, E> implements Graph<V, E> {
         if (adjSet != null) {
             copy.adjSet = new AdjacencySet[numVertices];
         }
+        if (edgeWeight != null) {
+            copy.edgeWeight = new double[numVertices][];
+        }
+        if (edgeLabel != null) {
+            copy.edgeLabel = new Object[numVertices][];
+        }
         if (edges) {
             for (int i = 0; i < numVertices; i++) {
                 if (adjList[i] != null) {
@@ -200,10 +198,10 @@ class GraphImpl<V, E> implements Graph<V, E> {
                 if (adjPos != null && adjPos[i] != null) {
                     copy.adjPos[i] = Arrays.copyOf(adjPos[i], adjPos[i].length);
                 }
-                if (this.edgeWeight != null && edgeWeights) {
+                if (edgeWeight != null && edgeWeight[i] != null && edgeWeights) {
                     copy.edgeWeight[i] = Arrays.copyOf(edgeWeight[i], edgeWeight[i].length);
                 }
-                if (this.edgeLabel != null && edgeLabels) {
+                if (edgeLabel != null && edgeLabel[i] != null && edgeLabels) {
                     copy.edgeLabel[i] = Arrays.copyOf(edgeLabel[i], edgeLabel[i].length);
                 }
                 if (adjSet != null && adjSet[i] != null) {
@@ -341,29 +339,38 @@ class GraphImpl<V, E> implements Graph<V, E> {
             labelVertexMap.remove(vertexLabel[vi]);
         }
         //swap with the last pos
-        swapVertexWithLast(vi);
+        boolean isLastPos = vi == numVertices - 1;
+        if (!isLastPos) {
+            swapVertexWithLast(vi);
+        }
+        numVertices--;
+        maxVertexNumber = null;
         //
         if (vertexIndex == null) {
             initVertexIndex();
+        } else {
+            vertexIndex.remove(v);
+            if (!isLastPos) {
+                vertexIndex.set(vertices[vi], vi);
+            }
         }
-        vertexIndex.remove(v);
-        vertexIndex.set(vertices[vi], vi);
-        //
-        numVertices--;
-        maxVertexNumber = null;
-        //adjListMatrix = null;
     }
 
     protected void swapVertexWithLast(int i) {
         int lastPos = numVertices - 1;
         vertices[i] = vertices[lastPos];
         degree[i] = degree[lastPos];
+        //
         adjList[i] = adjList[lastPos];
+        adjList[lastPos] = null;
+        //
         if (adjPos != null) {
             adjPos[i] = adjPos[lastPos];
+            adjPos[lastPos] = null;
         }
         if (adjSet != null) {
             adjSet[i] = adjSet[lastPos];
+            adjSet[lastPos] = null;
         }
         if (vertexWeight != null) {
             vertexWeight[i] = vertexWeight[lastPos];
@@ -607,24 +614,19 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     protected void removeAllEdgesAt(int vi) {
-        /*
-        int v = vertices[vi];
-        int deg = degree[vi];
-        for (var it = neighborIterator(v, deg); it.hasPrevious();) {
-            it.previous();
-            it.removeEdge();
-        }*/
-        int v = vertices[vi];
         for (int pos = 0, deg = degree[vi]; pos < deg; pos++) {
             int u = adjList[vi][pos];
             int ui = indexOf(u);
-            removeFromAdjListAt(ui, adjPos[vi][pos]);
+            if (!directed) {
+                //remove also the edge uv, for undirected graph
+                removeFromAdjListAt(ui, adjPos[vi][pos]);
+            }
             if (labelEdgeMap != null) {
                 labelEdgeMap.remove(edgeLabel[vi][pos]);
             }
         }
         numEdges -= degree[vi];
-        degree[vi] = 0;
+        degree[vi] = 0; //bulk
     }
 
     //Removes u from the adjacency list of v        
@@ -801,11 +803,10 @@ class GraphImpl<V, E> implements Graph<V, E> {
         }
         return adjList[vi];
     }
-   
 
     private AdjacencySet getAdjSet(int vi) {
         if (adjSet == null) {
-            adjSet = new AdjacencySet[maxVertices];
+            adjSet = new AdjacencySet[numVertices];
         }
         if (adjSet[vi] == null) {
             adjSet[vi] = new AdjacencyBitSet();
@@ -1169,7 +1170,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
 
     @Override
     public EdgeIterator<E> edgeIterator() {
-        return new EdgeIteratorImpl<E>(this);
+        return new EdgeIteratorImpl<>(this);
     }
 
     @Override

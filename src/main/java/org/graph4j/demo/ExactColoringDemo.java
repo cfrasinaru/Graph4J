@@ -19,8 +19,7 @@ package org.graph4j.demo;
 import org.graph4j.Graphs;
 import org.graph4j.measures.GraphMeasures;
 import org.graph4j.alg.connectivity.BiconnectivityAlgorithm;
-import org.graph4j.generate.RandomGnpGraphGenerator;
-import org.graph4j.io.*;
+import org.graph4j.io.DimacsIO;
 
 /**
  *
@@ -39,7 +38,7 @@ class ExactColoringDemo extends PerformanceDemo {
     public ExactColoringDemo() {
         numVertices = 70;
         //runJGraphT = true; //very slow
-        runOther = true; //gurobi
+        //runOther = true; //gurobi
     }
 
     @Override
@@ -49,14 +48,17 @@ class ExactColoringDemo extends PerformanceDemo {
         //gurobi wins: mug100_1, 1-FullIns_4, 1-Insertions_4
         //graph4j wins: school1 (time), le450_5b(time), le450_15c(22<23), r1000.5(240<252), queen10_10(11<12)
         //graph4j wins: random(70,0.5)
-        //ash608GPIA
         //1-Insertions_4
         //String name = "1-FullIns_4";
         //String name = "myciel6";
         //String name = "1-Insertions_4";
         //String name = "mug100_1";
-        String name = "queen9_9";
+        String name = "queen8_8";
+        //String name = "school1"; //ok
+        //String name = "ash608GPIA"; //nope
+        //String name = "le450_5a";
         graph = new DimacsIO().read("d:/datasets/coloring/instances/" + name + ".col");
+        
         System.out.println("n=" + graph.numVertices());
         System.out.println("m=" + graph.numEdges());
         System.out.println("density=" + GraphMeasures.density(graph));
@@ -92,28 +94,23 @@ class ExactColoringDemo extends PerformanceDemo {
 
     @Override
     protected void testGraph4J() {
-        var alg = new org.graph4j.alg.coloring.exact.ParallelBacktrackColoring(graph, timeLimit);
+        var alg = new org.graph4j.alg.coloring.BacktrackColoring(graph, timeLimit);
         var col = alg.findColoring();
         System.out.println(col.numUsedColors());
     }
 
     @Override
     protected void testJGraphT() {
-        /*
         var alg = new org.jgrapht.alg.color.BrownBacktrackColoring(jgrapht);
         var col = alg.getColoring();
         System.out.println(col.getNumberColors());
-         */
-        var alg = new org.graph4j.alg.coloring.exact.SimpleBacktrackColoring(graph, timeLimit);
-        var col = alg.findColoring();
-        System.out.println(col.numUsedColors());
     }
 
     @Override
     protected void testOther() {
-        var alg = new org.graph4j.alg.coloring.exact.GurobiAssignmentColoring(graph, timeLimit);
+        var alg = new org.graph4j.alg.coloring.GurobiAssignmentColoring(graph, timeLimit);
         //var alg = new org.graph4j.alg.coloring.BacktrackColoring(graph, timeLimit);
-        //var alg = new org.graph4j.alg.coloring.ZykovColoring(graph, timeLimit);
+        //var alg = new org.graph4j.alg.coloring.bb.ZykovColoring(graph, timeLimit);
         var col = alg.findColoring();
         System.out.println(col.numUsedColors());
     }
@@ -125,5 +122,9 @@ class ExactColoringDemo extends PerformanceDemo {
         for (int i = 0; i < steps; i++) {
             args[i] = 1000 * (i + 1);
         }
+    }
+    
+    public static void main(String args[]) {
+        new ExactColoringDemo().demo();
     }
 }

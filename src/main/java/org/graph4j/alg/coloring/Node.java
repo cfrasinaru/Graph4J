@@ -14,68 +14,67 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg.coloring.exact;
+package org.graph4j.alg.coloring;
 
+import org.graph4j.util.Domain;
 import java.util.Arrays;
 import org.graph4j.Graph;
-import org.graph4j.alg.coloring.VertexColoring;
 
 /**
- * A node in the systematic search tree.
+ * A node in the backtrack coloring search tree.
  *
  * @author Cristian Frăsinaru
  */
-class Node {
+public class Node {
 
-    Graph graph;
-    boolean findAll;
-    int vertex;
-    int color;
-    VertexColoring coloring;
+    private final Graph graph;
+    private final boolean findAll;
+    final int vertex; //the node was created as the result of vertex = color
+    final int color;
+    final Node parent;
+    Coloring coloring;
     Domain[] domains;
     Domain minDomain;
-    Node parent;
+    boolean removeSymmetricalColors;
+    boolean propagator;
+    boolean failed;
 
-    public Node(Graph graph, Node parent, int vertex, int color, Domain[] domains, VertexColoring coloring, boolean findAll) {
-        this.graph = graph;
+    public Node(ExactColoringBase alg, Node parent, int vertex, int color, Domain[] domains, Coloring coloring,
+            boolean removeSymmetricalColors) {
+        this.graph = alg.getGraph();
         this.parent = parent;
         this.vertex = vertex;
         this.color = color;
         this.domains = domains;
         this.coloring = coloring;
-        this.findAll = findAll;
+        this.findAll = alg.getSolutionsLimit() > 1;
+        this.removeSymmetricalColors = removeSymmetricalColors;
     }
 
     public void prepare() {
-        //resolve singleton domains
         //find the domain with the minimum size
         int minSize = Integer.MAX_VALUE;
         minDomain = null;
+
         for (var dom : domains) {
-            int v = dom.vertex;
+            int v = dom.vertex();
             if (coloring.isColorSet(v)) {
                 continue;
             }
-            if (dom.size == 1) {
-                coloring.setColor(v, dom.values[0]);
-                continue;
-            }
-            if (dom.size < minSize) {
-                minSize = dom.size;
+            if (dom.size() < minSize) {
+                minSize = dom.size();
                 minDomain = dom;
-            } else if (dom.size == minSize) {
-                if (graph.degree(minDomain.vertex) < graph.degree(dom.vertex)) {
+            } else if (dom.size() == minSize) {
+                if (graph.degree(minDomain.vertex()) < graph.degree(dom.vertex())) {
                     minDomain = dom;
-                } else {
-                    //System.out.println("Still a tie \n\t" + minDomain + "\n\t" + dom);
                 }
             }
         }
         if (minDomain != null) {
             minDomain = new Domain(minDomain);
-            this.domains[graph.indexOf(minDomain.vertex)] = minDomain;
+            this.domains[graph.indexOf(minDomain.vertex())] = minDomain;
             //remove symmetrical colors from minDomain
-            if (!findAll) {
+            if (!findAll && removeSymmetricalColors) {
                 removeSymmetricalColors();
             }
             //trace();
@@ -86,7 +85,7 @@ class Node {
         var sb = new StringBuilder();
         var temp = this;
         while (temp != null) {
-            sb.append(temp.minDomain.vertex).append(" - ");
+            sb.append(temp.minDomain.vertex()).append(" - ");
             temp = temp.parent;
         }
         System.out.println(sb.reverse());
@@ -98,8 +97,8 @@ class Node {
         int free = -1;
         int i = 0;
         int count = 0;
-        while (i < minDomain.size) {
-            int c = minDomain.values[i];
+        while (i < minDomain.size()) {
+            int c = minDomain.valueAt(i);
             if (!coloring.isColorUsed(c)) {
                 //if (coloring.uncoloredNeighbors(c) == 0) {
                 if (free >= 0) {
@@ -117,9 +116,44 @@ class Node {
         }
     }
 
+    /**
+     *
+     * @return the domains.
+     */
+    public Domain[] domains() {
+        return domains;
+    }
+
+    /**
+     *
+     * @param pos the position in the domains array.
+     * @return the domain.
+     */
+    public Domain domain(int pos) {
+        return domains[pos];
+    }
+
+    /**
+     *
+     * @return the coloring.
+     */
+    public Coloring coloring() {
+        return coloring;
+    }
+
+    /**
+     *
+     * @return the parent.
+     */
+    public Node parent() {
+        return parent;
+    }
+
     @Override
     public String toString() {
-        return (minDomain == null ? "" : minDomain.vertex)
-                + "\n\t" + Arrays.toString(domains) + "\n\t" + coloring;
+        return "Decision: " + vertex + "=" + color + "\n\t"
+                + "Pivot: " + (minDomain == null ? "" : minDomain.vertex()) + "\n\t"
+                + Arrays.toString(domains) + "\n\t"
+                + coloring;
     }
 }

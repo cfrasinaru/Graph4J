@@ -20,7 +20,7 @@ import org.graph4j.alg.coloring.DSaturGreedyColoring;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.alg.coloring.GreedyColoring;
-import org.graph4j.alg.coloring.VertexColoring;
+import org.graph4j.alg.coloring.Coloring;
 import org.graph4j.generate.GraphGenerator;
 
 /**
@@ -36,7 +36,7 @@ public class GreedyColoringTest {
     public void manual() {
         int red = 0, green = 1, yellow = 2;
         var g = GraphGenerator.cycle(5);
-        var col = new VertexColoring(g);
+        var col = new Coloring(g);
         col.setColor(0, red);
         col.setColor(1, green);
         col.setColor(2, red);

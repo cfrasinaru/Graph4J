@@ -27,4 +27,8 @@ public class InvalidColoringException extends RuntimeException {
                 + " have the same color: " + color);
     }
 
+    public InvalidColoringException(String message) {
+        super(message);
+    }
+
 }

@@ -14,24 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg.coloring.exact;
+package org.graph4j.util;
 
 import java.util.Arrays;
-import org.graph4j.util.IntArrays;
+import java.util.stream.IntStream;
 
 /**
- * The domain of available values for a vertex.
+ * A domain of available non-negative values for a vertex.
  *
- * @see BacktrackColoring
+ * The values of the domain are indexed, being represented internally using an
+ * array.
+ *
  * @author Cristian Frăsinaru
  */
-class Domain {
+public class Domain {
 
     int vertex;
     int[] values;
     int[] positions; //position of a value in the values array
     int size;
 
+    /**
+     * Used for inheriting in a lazy fashion another domain's values.
+     *
+     * @param parent the parent domain.
+     */
     public Domain(Domain parent) {
         this.vertex = parent.vertex;
         this.size = parent.size;
@@ -39,40 +46,92 @@ class Domain {
         this.positions = Arrays.copyOf(parent.positions, parent.positions.length);
     }
 
-    //singleton
+    /**
+     * Used for creating single-value domains.
+     *
+     * @param vertex a vertex number.
+     * @param value the value assigned for the vertex.
+     */
     public Domain(int vertex, int value) {
         this.vertex = vertex;
         this.size = 1;
         this.values = new int[]{value};
         positions = new int[value + 1];
+        Arrays.fill(positions, -1);
         positions[value] = 0;
     }
 
+    /**
+     *
+     * @param vertex a vertex number.
+     * @param values an array of available values for the vertex.
+     */
     public Domain(int vertex, int[] values) {
+        assert values != null;
         this.vertex = vertex;
         this.size = values.length;
         this.values = IntArrays.copyOf(values);
-        positions = new int[size];
+        //
+        int max = IntStream.of(values).max().orElse(-1);
+        positions = new int[max + 1];
+        Arrays.fill(positions, -1);
         for (int i = 0; i < size; i++) {
             positions[values[i]] = i;
         }
     }
 
+    /**
+     *
+     * @return the vertex number.
+     */
     public int vertex() {
         return vertex;
     }
 
+    /**
+     *
+     * @return the number of values in the domain.
+     */
     public int size() {
         return size;
     }
 
-    //removes and returns a value in the domain
+    /**
+     *
+     * @return the values in the domain.
+     */
+    public int[] values() {
+        if (values.length > size) {
+            values = Arrays.copyOf(values, size);
+        }
+        return values;
+    }
+
+    /**
+     *
+     * @param pos a position in the domain.
+     * @return the value at the specified position.
+     */
+    public int valueAt(int pos) {
+        return values[pos];
+    }
+
+    /**
+     *
+     * @return removes and returns a value in the domain.
+     */
     public int poll() {
         int value = values[size - 1];
         removeAtPos(size - 1);
         return value;
     }
 
+    /**
+     *
+     * @param value the value to be removed from the domain.
+     * @return {@code true} if the domain has changed as a result of this
+     * operation.
+     */
     public boolean remove(int value) {
         int pos = indexOf(value);
         if (pos < 0) {
@@ -82,10 +141,32 @@ class Domain {
         return true;
     }
 
+    /**
+     *
+     * @param value a value;
+     * @return the position (index) of the value in the domain.
+     */
     public int indexOf(int value) {
+        if (value < 0 || value >= positions.length) {
+            return -1;
+        }
         return positions[value];
     }
 
+    /**
+     *
+     * @param value a value.
+     * @return {@code true} if the value belongs to the domain.
+     */
+    public boolean contains(int value) {
+        return indexOf(value) >= 0;
+    }
+
+    /**
+     * Removes the value at the specified position.
+     *
+     * @param pos a position.
+     */
     public void removeAtPos(int pos) {
         positions[values[pos]] = -1;
         if (pos != size - 1) {
@@ -95,6 +176,12 @@ class Domain {
         size--;
     }
 
+    /**
+     * Swaps the values at the specified positions.
+     *
+     * @param i a position in the domain.
+     * @param j a position in the domain.
+     */
     public void swapPos(int i, int j) {
         int aux = values[i];
         values[i] = values[j];

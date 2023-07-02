@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg.coloring.exact;
+package org.graph4j.alg.coloring;
 
-import org.graph4j.alg.coloring.*;
+import org.graph4j.util.Domain;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,9 +24,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.graph4j.Graph;
-import org.graph4j.alg.clique.MaximalCliqueFinder;
 
 /**
  * Attempts at finding the optimum coloring of a graph using a systematic
@@ -51,90 +49,36 @@ import org.graph4j.alg.clique.MaximalCliqueFinder;
  *
  * @author Cristian Frăsinaru
  */
-public class ParallelBacktrackColoring extends ExactColoringBase {
+public abstract class BacktrackColoringBase extends ExactColoringBase {
 
-    private Set<VertexColoring> solutions;
-    private boolean findAll;
-    private List<Worker> workers;
+    protected List<Worker> workers;
+    protected long nodesExplored;
 
-    public ParallelBacktrackColoring(Graph graph) {
+    public BacktrackColoringBase(Graph graph) {
         super(graph);
     }
 
-    public ParallelBacktrackColoring(Graph graph, long timeLimit) {
+    public BacktrackColoringBase(Graph graph, long timeLimit) {
         super(graph, timeLimit);
     }
 
-    public ParallelBacktrackColoring(Graph graph, VertexColoring initialColoring) {
+    public BacktrackColoringBase(Graph graph, Coloring initialColoring) {
         super(graph, initialColoring);
     }
 
-    public ParallelBacktrackColoring(Graph graph, VertexColoring initialColoring, long timeLimit) {
+    public BacktrackColoringBase(Graph graph, Coloring initialColoring, long timeLimit) {
         super(graph, initialColoring, timeLimit);
     }
 
     @Override
-    protected ParallelBacktrackColoring getInstance(Graph graph, long timeLimit) {
-        return new ParallelBacktrackColoring(graph, initialColoring, timeLimit);
-    }
-
-    /**
-     *
-     * @param numColors the maximum number of colors to be used.
-     * @return all the vertex colorings of the graph.
-     */
-    public Set<VertexColoring> findAllColorings(int numColors) {
-        findAll = true;
-        compute(numColors);
-        return solutions;
-    }
-
-    @Override
-    public VertexColoring findColoring(int numColors) {
-        findAll = false;
-        compute(numColors);
-        return solutions.isEmpty() ? null : solutions.iterator().next();
-    }
-
-    private void compute(int numColors) {
-        //TODO
-        //for small numColors and 
-        //if there is a small vertex separator (A,C,B)
-        //findAllColorings(C)
-        //color A U C and B U C with the initial coloring given by C    
-        /*
-        if (numColors == 3 && graph.numVertices() >= 100) {
-            var sep = new GreedyVertexSeparator(graph).getSeparator();
-            if (sep.separator().size() <= 10) {
-                var a = sep.leftShore();
-                var b = sep.rightShore();
-                var c = sep.separator();
-                var g0 = graph.subgraph(c);
-                var g1 = graph.subgraph(a.union(c.vertices()));
-                var g2 = graph.subgraph(b.union(c.vertices()));                
-                var all = new ParallelBacktrackColoring(g0).findAllColorings(numColors);
-                int x = 0;
-                for(var col0 : all) {
-                    System.out.println(x++);
-                    var col1 = new ParallelBacktrackColoring(g1, col0).findColoring(numColors);
-                    if (col1 != null) {
-                        var col2 = new ParallelBacktrackColoring(g2, col0).findColoring(numColors);
-                        if (col2 != null) {
-                            System.out.println("Bingo!");
-                            return;
-                        }
-                    }
-                }
-                System.out.println("NOPE");
-            }
-        }*/
-        
+    protected void solve(int numColors) {
         solutions = new HashSet<>();
         Node root = init(numColors);
         if (root == null) {
             return;
         }
-        int cores = Runtime.getRuntime().availableProcessors();
+        int cores = 1;
+        //int cores = Runtime.getRuntime().availableProcessors();
         this.workers = new ArrayList<>(cores);
         for (int i = 0; i < cores; i++) {
             var worker = new Worker(numColors, root);
@@ -149,21 +93,28 @@ public class ParallelBacktrackColoring extends ExactColoringBase {
         }
     }
 
-    //before findColoring
-    private Node init(int numColors) {
+    //returns false if it detects infeasibility
+    protected boolean prepareRootColoring(Coloring rootColoring, int numColors) {
+        getMaximalClique();
+        if (maxClique.size() > numColors) {
+            return false;
+        }
+        int color = 0;
+        for (int v : maxClique.vertices()) {
+            rootColoring.setColor(v, color++);
+        }
+        return true;
+    }
+
+    //before the coloring starts
+    protected Node init(int numColors) {
         if (startTime == 0) {
             startTime = System.currentTimeMillis();
         }
-        if (!findAll && initialColoring.isEmpty()) {
-            if (maxClique == null) {
-                maxClique = new MaximalCliqueFinder(graph).getMaximalClique();
-            }
-            if (maxClique.size() > numColors) {
+        Coloring rootColoring = new Coloring(graph, initialColoring);
+        if (solutionsLimit == 1 && initialColoring.isEmpty()) {
+            if (!prepareRootColoring(rootColoring, numColors)) {
                 return null;
-            }            
-            int color = 0;
-            for (int v : maxClique.vertices()) {
-                initialColoring.setColor(v, color++);
             }
         }
         int[] availableColors = new int[numColors];
@@ -174,16 +125,17 @@ public class ParallelBacktrackColoring extends ExactColoringBase {
         Domain[] domains = new Domain[n];
         for (int i = 0; i < n; i++) {
             int v = graph.vertexAt(i);
-            int color = initialColoring.getColor(v);
+            int color = rootColoring.getColor(v);
             if (color >= 0) {
                 domains[i] = new Domain(v, color);
             } else {
                 domains[i] = new Domain(v, availableColors);
             }
         }
-        Node root = new Node(graph, null, -1, -1, domains, initialColoring, findAll);
-        for (int v : initialColoring.getColoredVertices()) {
-            int color = initialColoring.getColor(v);
+        Node root = createNode(null, -1, -1, domains, rootColoring);
+        nodesExplored = 1;
+        for (int v : rootColoring.getColoredVertices()) {
+            int color = rootColoring.getColor(v);
             if (!propagateAssignment(v, color, root, new int[n * numColors][2])) {
                 return null;
             }
@@ -193,44 +145,50 @@ public class ParallelBacktrackColoring extends ExactColoringBase {
         return root;
     }
 
-    //after the assignment v=color, prunte the other domains
-    private boolean propagateAssignment(int v, int color, Node node, int[][] assignQueue) {
-        var coloring = node.coloring;
-        var domains = node.domains;
-        int i = 0, j = 1;
-        assignQueue[i][0] = v;
-        assignQueue[i][1] = color;
-        while (i < j) {
-            v = assignQueue[i][0];
-            color = assignQueue[i][1];
-            i++;
-            for (var it = graph.neighborIterator(v); it.hasNext();) {
-                int u = it.next();
-                if (coloring.isColorSet(u)) {
-                    continue;
-                }
-                int ui = graph.indexOf(u);
-                var dom = domains[ui];
-                int pos = dom.indexOf(color);
-                if (pos < 0) {
-                    continue;
-                }
-                if (dom.size == 1) {
-                    return false;
-                }
-                if (node.parent != null && dom == node.parent.domains[ui]) {
-                    dom = new Domain(dom);
-                    domains[ui] = dom;
-                }
-                dom.removeAtPos(pos);
-                if (dom.size == 1) {
-                    assignQueue[j][0] = u;
-                    assignQueue[j][1] = dom.values[0];
-                    j++;
-                }
-            }
-        }
+    protected Node createNode(Node parent, int vertex, int color, Domain[] domains, Coloring coloring) {
+        return new Node(this, parent, vertex, color, domains, coloring, true);
+    }
 
+    //after the assignment v=color, prune the other domains
+    protected abstract boolean propagateAssignment(int v, int color, Node node, int[][] assignQueue);
+
+    //part of the propagation: removes a color from a domain
+    //warning: domains references may change
+    //returns -1 if the domain has become empty or infeasibility was detected
+    //returns 1 it the domain has become singleton
+    //returns 0 otherwise (the color was removed)
+    protected int removeColor(int u, int color, Node node, int[][] assignQueue, int queuePos) {
+        int ui = graph.indexOf(u);
+        var dom = node.domains[ui];
+        int pos = dom.indexOf(color);
+        if (pos < 0) {
+            return 0;
+        }
+        if (dom.size() == 1) {
+            return -1;
+        }
+        if (node.parent != null && dom == node.parent.domains[ui]) {
+            dom = new Domain(dom);
+            node.domains[ui] = dom;
+        }
+        dom.removeAtPos(pos);
+        node.propagator = true;
+        if (dom.size() == 1) {
+            int singleColor = dom.valueAt(0);
+            node.coloring.setColor(u, singleColor);
+            if (!propagationForcedColor(u, singleColor, node)) {
+                return -1;
+            }
+            assignQueue[queuePos][0] = u;
+            assignQueue[queuePos][1] = singleColor;
+            return 1;
+        }
+        return 0;
+    }
+
+    //invoked when u must be colored with color as a result of propagation
+    //if infeasibility is detected, it returns false
+    protected boolean propagationForcedColor(int u, int color, Node node) {
         return true;
     }
 
@@ -247,14 +205,24 @@ public class ParallelBacktrackColoring extends ExactColoringBase {
         return null;
     }
 
-    private class Worker extends Thread {
+    /**
+     *
+     * @return the number of nodes explored during the search.
+     */    
+    @Deprecated
+    private long nodesExplored() {
+        return nodesExplored;
+    }
+
+    //a thread exploring the search space
+    protected class Worker extends Thread {
 
         boolean running;
         int numColors;
         final int[][] assignQueue;
         final Deque<Node> nodeStack;
 
-        public Worker(int numColors, Node root) {
+        Worker(int numColors, Node root) {
             this.numColors = numColors;
             assignQueue = new int[graph.numVertices() * numColors][2];
             nodeStack = new ArrayDeque<>();
@@ -265,7 +233,7 @@ public class ParallelBacktrackColoring extends ExactColoringBase {
         public void run() {
             running = true;
             while (running) {
-                if (!findAll && !solutions.isEmpty()) {
+                if (solutions.size() >= solutionsLimit) {
                     return;
                 }
                 if (timeLimit > 0 && System.currentTimeMillis() - startTime > timeLimit) {
@@ -284,23 +252,31 @@ public class ParallelBacktrackColoring extends ExactColoringBase {
                     }
                     if (node.coloring.isComplete()) {
                         nodeStack.pop();
-                        if (!node.coloring.isProper()) {
+                        if (!isValid(node.coloring)) {
                             continue;
                         }
                         //found a solution
                         solutions.add(node.coloring);
-                        if (findAll) {
-                            continue;
-                        }
-                        return;
+                        continue;
                     }
                     assert node.minDomain != null;
-                    if (node.minDomain.size == 0) {
+                    
+                    if (node.failed && !nodeStack.isEmpty()) {
+                        nodeStack.pop();
+                        continue;
+                    }
+                    
+                    if (node.minDomain.size() == 0) {                    
+                        //when popping a non propagator
+                        //it's parent should pe popped too
+                        if (!node.propagator && node.parent != null) {                            
+                            node.parent.failed = true;
+                        }
                         nodeStack.pop();
                         continue;
                     }
                     //pick a color in the node's domain
-                    v = node.minDomain.vertex;
+                    v = node.minDomain.vertex();
                     color = node.minDomain.poll();
                 }
 
@@ -311,18 +287,16 @@ public class ParallelBacktrackColoring extends ExactColoringBase {
 
                 //create the new coloring
                 //color and propagate the assignment v=c
-                var newColoring = new VertexColoring(graph, node.coloring);
+                var newColoring = new Coloring(graph, node.coloring);
                 newColoring.setColor(v, color);
 
-                Node newNode = new Node(graph, node, v, color, newDomains, newColoring, findAll);
+                Node newNode = createNode(node, v, color, newDomains, newColoring);
+                nodesExplored++;
                 if (propagateAssignment(v, color, newNode, assignQueue)) {
                     newNode.prepare();
                     synchronized (graph) {
-                        //System.out.println(newNode);
                         nodeStack.push(newNode);
                     }
-                } else {
-                    //System.out.println("Failure; colored vertices=" + node.coloring.numColoredVertices());
                 }
             }
         }
@@ -335,7 +309,7 @@ public class ParallelBacktrackColoring extends ExactColoringBase {
                 Node selected = null;
                 Node node = nodeStack.peek();
                 while (node != null) {
-                    if (node.minDomain != null && node.minDomain.size > 0) {
+                    if (node.minDomain != null && node.minDomain.size() > 0) {
                         selected = node;
                     }
                     node = node.parent;

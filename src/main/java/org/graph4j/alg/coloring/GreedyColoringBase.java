@@ -33,10 +33,11 @@ import org.graph4j.alg.SimpleGraphAlgorithm;
  * @author Cristian Frăsinaru
  */
 public abstract class GreedyColoringBase extends SimpleGraphAlgorithm
-        implements VertexColoringAlgorithm {
+        implements ColoringAlgorithm {
 
     protected int[] colors; //the colors assigned to vertices
     protected BitSet used; // colors
+    protected int numColors; //colors will be from [0..numColors-1]
 
     /**
      *
@@ -47,14 +48,16 @@ public abstract class GreedyColoringBase extends SimpleGraphAlgorithm
     }
 
     @Override
-    public VertexColoring findColoring() {
-        return findColoring(graph.numVertices());
+    public Coloring findColoring() {
+        numColors = graph.numVertices();
+        return findColoring(numColors);
     }
 
     @Override
-    public VertexColoring findColoring(int numColors) {
+    public Coloring findColoring(int numColors) {
+        this.numColors = numColors;
         init();
-        this.colors = new int[numColors];
+        this.colors = new int[graph.numVertices()];
         Arrays.fill(colors, -1);
         this.used = new BitSet();
         while (hasUncoloredVertices()) {
@@ -62,10 +65,7 @@ public abstract class GreedyColoringBase extends SimpleGraphAlgorithm
             //finding the colors used by the neighbors of v
             for (var it = graph.neighborIterator(v); it.hasNext();) {
                 int u = it.next();
-                int ui = graph.indexOf(u);
-                if (colors[ui] >= 0) {
-                    used.set(colors[ui]);
-                }
+                markUsedColor(u, it.getEdgeWeight());
             }
             //finding a color for v, not used by its neighbors
             int color = 0;
@@ -79,7 +79,17 @@ public abstract class GreedyColoringBase extends SimpleGraphAlgorithm
             used.clear();
             update(v);
         }
-        return new VertexColoring(graph, colors);
+        var coloring = new Coloring(graph, colors);
+        assert isValid(coloring);
+        return coloring;
+    }
+
+    //by default, it marks the color of u
+    protected void markUsedColor(int u, double weight) {
+        int ui = graph.indexOf(u);
+        if (colors[ui] >= 0) {
+            used.set(colors[ui]);
+        }
     }
 
     //called before the coloring algorithm starts

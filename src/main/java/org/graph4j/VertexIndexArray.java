@@ -28,9 +28,9 @@ class VertexIndexArray implements VertexIndex {
     private int[] index;
 
     /**
-     * The maximum vertex number that can be stored.
      *
-     * @param maxVertexNumber
+     *
+     * @param maxVertexNumber the maximum vertex number that can be stored.
      */
     public VertexIndexArray(int maxVertexNumber) {
         this.index = new int[maxVertexNumber + 1];

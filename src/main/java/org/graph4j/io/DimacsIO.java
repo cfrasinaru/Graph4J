@@ -57,8 +57,16 @@ public class DimacsIO {
                     }
                     int v = Integer.parseInt(tokens[1]);
                     int u = Integer.parseInt(tokens[2]);
+                    double d = -1;
+                    if (tokens.length >= 4) {
+                        d = Double.parseDouble(tokens[3]);
+                    }
                     if (v != u) {
-                        graph.addEdge(v, u);
+                        if (d > 0) {
+                            graph.addEdge(v, u, d);
+                        } else {
+                            graph.addEdge(v, u);
+                        }
                     }
                 }
             }

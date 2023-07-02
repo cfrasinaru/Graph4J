@@ -25,10 +25,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringJoiner;
-import org.graph4j.Edge;
 import org.graph4j.Graph;
-import org.graph4j.util.IntArrays;
 import org.graph4j.util.VertexSet;
+import org.jgrapht.alg.interfaces.VertexColoringAlgorithm;
 
 /**
  * A coloring of the vertices of a graph. Coloring algorithms will usually
@@ -37,35 +36,24 @@ import org.graph4j.util.VertexSet;
  * @see VertexColoringAlgorithm
  * @author Cristian Frăsinaru
  */
-public class VertexColoring {
+public class Coloring {
 
-    private final Graph graph;
-    private final int[] vertexColor;
-    private int numColoredVertices = 0;
-    private BitSet usedColors;
-    private Map<Integer, VertexSet> colorMap;
-    private int[] uncoloredNeighbors;
+    protected final Graph graph;
+    protected final int[] vertexColor;
+    protected int numColoredVertices = 0;
+    protected BitSet usedColors;
+    protected Map<Integer, VertexSet> colorMap;
 
     /**
      * Creates an empty coloring - no vertex has a color assigned to it.
      *
      * @param graph the input graph.
      */
-    public VertexColoring(Graph graph) {
-        this(graph, graph.numVertices());
-    }
-
-    /**
-     *
-     * @param graph the input graph.
-     * @param estimatedNumColors the estimated number of colors.
-     */
-    public VertexColoring(Graph graph, int estimatedNumColors) {
+    public Coloring(Graph graph) {
         this.graph = graph;
         vertexColor = new int[graph.numVertices()];
         Arrays.fill(vertexColor, -1);
         this.usedColors = new BitSet();
-        //this.uncoloredNeighbors = new int[estimatedNumColors];
     }
 
     /**
@@ -73,16 +61,31 @@ public class VertexColoring {
      * @param graph the input graph.
      * @param other a vertex coloring.
      */
-    public VertexColoring(Graph graph, VertexColoring other) {
-        this.graph = other.graph;
-        this.numColoredVertices = other.numColoredVertices;
-        this.vertexColor = IntArrays.copyOf(other.vertexColor);
-        this.usedColors = (BitSet) other.usedColors.clone();
-        if (other.colorMap != null) {
-            this.colorMap = new HashMap<>(other.colorMap);
-        }
-        if (other.uncoloredNeighbors != null) {
-            this.uncoloredNeighbors = IntArrays.copyOf(other.uncoloredNeighbors);
+    public Coloring(Graph graph, Coloring other) {
+        this.graph = graph;
+        if (other.graph == graph) {
+            this.numColoredVertices = other.numColoredVertices;
+            this.vertexColor = Arrays.copyOf(other.vertexColor, graph.numVertices());
+            assert vertexColor.length == graph.numVertices();
+            this.usedColors = (BitSet) other.usedColors.clone();
+            if (other.colorMap != null) {
+                this.colorMap = new HashMap<>();
+                for (var entry : other.colorMap.entrySet()) {
+                    int color = entry.getKey();
+                    VertexSet set = entry.getValue();
+                    this.colorMap.put(color, new VertexSet(this.graph, set.vertices()));
+                }
+            }
+        } else {
+            vertexColor = new int[graph.numVertices()];
+            Arrays.fill(vertexColor, -1);
+            this.usedColors = new BitSet();
+            for (int v : graph.vertices()) {
+                int col = other.getColor(v);
+                if (col >= 0) {
+                    this.setColor(v, col);
+                }
+            }
         }
     }
 
@@ -93,7 +96,7 @@ public class VertexColoring {
      * @param graph the input graph.
      * @param colors an array of color numbers.
      */
-    public VertexColoring(Graph graph, int colors[]) {
+    public Coloring(Graph graph, int colors[]) {
         this(graph);
         for (int i = 0; i < colors.length; i++) {
             this.vertexColor[i] = colors[i];
@@ -112,7 +115,7 @@ public class VertexColoring {
      * @param graph the input graph.
      * @param colorClasses the already computed color classes.
      */
-    public VertexColoring(Graph graph, List<VertexSet> colorClasses) {
+    public Coloring(Graph graph, List<VertexSet> colorClasses) {
         this(graph);
         for (int color = 0, k = colorClasses.size(); color < k; color++) {
             for (int v : colorClasses.get(color).vertices()) {
@@ -140,7 +143,11 @@ public class VertexColoring {
      * @return {@code true} if a color has been set for the vertex v.
      */
     public boolean isColorSet(int v) {
-        return vertexColor[graph.indexOf(v)] >= 0;
+        int pos = graph.indexOf(v);
+        if (pos < 0) {
+            return false;
+        }
+        return vertexColor[pos] >= 0;
     }
 
     /**
@@ -153,14 +160,13 @@ public class VertexColoring {
         return usedColors.get(color);
     }
 
-    /**
-     *
-     * @param color a color
-     * @return the number of uncolored vertices adjacent to vertices colored
-     * with the given color.
-     */
-    public int uncoloredNeighbors(int color) {
-        return uncoloredNeighbors[color];
+    private boolean checkColorUsed(int color) {
+        for (int i = 0; i < vertexColor.length; i++) {
+            if (vertexColor[i] == color) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -170,35 +176,56 @@ public class VertexColoring {
      * @param color the color to be set, or {@code -1} to uncolor the specified
      * vertex.
      */
-    public void setColor(int v, int color) {
+    public final void setColor(int v, int color) {
         int vi = graph.indexOf(v);
         int oldColor = vertexColor[vi];
+        if (oldColor == color) {
+            return;
+        }
         vertexColor[vi] = color;
         if (oldColor < 0 && color >= 0) {
             numColoredVertices++;
         } else if (oldColor >= 0 && color < 0) {
             numColoredVertices--;
         }
-        usedColors.set(color, color >= 0);
-
-        if (uncoloredNeighbors != null) {
-            int x = color >= 0 ? 1 : -1;
-            for (var it = graph.neighborIterator(v); it.hasNext();) {
-                int u = it.next();
-                int other = getColor(u);
-                if (other < 0) {
-                    uncoloredNeighbors[color] += x;
-                } else {
-                    uncoloredNeighbors[other] -= x;
-                }
-            }
-            //System.out.println(v + " colored with " + color);
-            //System.out.println("Uncolored neigbors: " + Arrays.toString(uncoloredNeighbors));
+        if (color >= 0) {
+            usedColors.set(color);
+        } else {
+            usedColors.set(color, checkColorUsed(color));
+        }
+        if (oldColor >= 0) {
+            usedColors.set(oldColor, checkColorUsed(oldColor));
         }
 
-        colorMap = null;
+        //update colorMap
+        if (colorMap != null) {
+            var set = colorMap.get(color);
+            if (color >= 0) {
+                if (set == null) {
+                    set = new VertexSet(graph);
+                    colorMap.put(color, set);
+                }
+                set.add(v);
+            } else {
+                if (set != null) {
+                    set.remove(v);
+                    if (set.isEmpty()) {
+                        colorMap.remove(color);
+                    }
+                }
+            }
+            if (oldColor >= 0) {
+                var oldSet = colorMap.get(oldColor);
+                if (oldSet != null) {
+                    oldSet.remove(v);
+                    if (oldSet.isEmpty()) {
+                        colorMap.remove(oldColor);
+                    }
+                }
+            }
+        }
     }
-
+    
     /**
      * Returns the color assigned to a vertex v, or {@code -1} if no color has
      * been set.
@@ -208,7 +235,7 @@ public class VertexColoring {
      */
     public int getColor(int v) {
         int vi = graph.indexOf(v);
-        return vi >= 0 ? vertexColor[vi] : -1;
+        return vi < 0 || vi >= vertexColor.length ? -1 : vertexColor[vi];
     }
 
     /**
@@ -225,9 +252,10 @@ public class VertexColoring {
         return colorMap;
     }
 
+    //key=color, value = vertices colored with the color
     private void createColorClasses() {
         colorMap = new HashMap<>();
-        for (int i = 0, n = graph.numVertices(); i < n; i++) {
+        for (int i = 0; i < vertexColor.length; i++) {
             int color = vertexColor[i];
             if (color == -1) {
                 continue;
@@ -260,6 +288,28 @@ public class VertexColoring {
     }
 
     /**
+     *
+     * @param color a color.
+     * @return the number of vertices colored with color.
+     */
+    public int numColoredVertices(int color) {
+        if (colorMap == null) {
+            createColorClasses();
+        }
+        var set = colorMap.get(color);
+        return set == null ? 0 : set.size();
+        /*
+        int count = 0;
+        for (int i = 0; i < vertexColor.length; i++) {
+            if (vertexColor[i] == color) {
+                count++;
+            }
+        }
+        return count;
+         */
+    }
+
+    /**
      * Returns {@code true} if no vertex has been colored.
      *
      * @return {@code true} if no vertex has been colored.
@@ -285,7 +335,20 @@ public class VertexColoring {
      */
     public boolean isProper() {
         try {
-            checkValidity();
+            checkProper();
+            return true;
+        } catch (InvalidColoringException e) {
+            return false;
+        }
+    }
+
+    /**
+     *
+     * @return {@code true} if the coloring is equitable.
+     */
+    public boolean isEquitable() {
+        try {
+            checkEquitable();
             return true;
         } catch (InvalidColoringException e) {
             return false;
@@ -295,15 +358,41 @@ public class VertexColoring {
     /**
      * If the coloring is not proper, it throws an exception.
      */
-    public void checkValidity() {
-        for (var it = graph.edgeIterator(); it.hasNext();) {
-            Edge e = it.next();
-            int vi = graph.indexOf(e.source());
-            int ui = graph.indexOf(e.target());
-            int vc = vertexColor[vi];
-            int uc = vertexColor[ui];
-            if (vc != -1 && uc != -1 && vc == uc) {
-                throw new InvalidColoringException(e.source(), e.target(), vc);
+    public void checkProper() {
+        assert graph.numVertices() == vertexColor.length;
+        for (int v : graph.vertices()) {
+            int vc = vertexColor[graph.indexOf(v)];
+            if (vc == -1) {
+                continue;
+            }
+            for (var it = graph.neighborIterator(v); it.hasNext();) {
+                int u = it.next();
+                int uc = vertexColor[graph.indexOf(u)];
+                if (uc != -1 && vc == uc) {
+                    throw new InvalidColoringException(v, u, vc);
+                }
+            }
+        }
+    }
+
+    /**
+     * If the coloring is not equitable, it throws an exception.
+     */
+    public void checkEquitable() {
+        getColorClasses();
+        int k = colorMap.size();
+        for (int i = 0; i < k - 1; i++) {
+            var set1 = colorMap.get(i);
+            int size1 = set1 == null ? 0 : set1.size();
+            for (int j = i + 1; j < k; j++) {
+                var set2 = colorMap.get(j);
+                int size2 = set2 == null ? 0 : set2.size();
+                if (Math.abs(size1 - size2) > 1) {
+                    throw new InvalidColoringException(
+                            "Invalid color class sizes: "
+                            + size1 + ", " + size2
+                            + "\n\t" + set1 + "\n\t" + set2);
+                }
             }
         }
     }
@@ -366,15 +455,16 @@ public class VertexColoring {
     }
 
     @Override
-    public String toString() {
+    public String toString() {                
         var sb = new StringJoiner(",");
-        for (int v : graph.vertices()) {
-            int vc = vertexColor[graph.indexOf(v)];
+        for (int i = 0; i < vertexColor.length; i++) {
+            int vc = vertexColor[i];
             if (vc != -1) {
-                sb.add(v + ":" + vc);
+                sb.add(graph.vertexAt(i) + ":" + vc);
             }
         }
-        return sb.toString();
+        return sb.toString() + "\n" + getColorClasses().toString();
+         
     }
 
     @Override
@@ -396,7 +486,7 @@ public class VertexColoring {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final VertexColoring other = (VertexColoring) obj;
+        final Coloring other = (Coloring) obj;
         if (!Objects.equals(this.graph, other.graph)) {
             return false;
         }

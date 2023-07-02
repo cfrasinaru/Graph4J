@@ -162,4 +162,25 @@ public class OperationsTest {
         assertTrue(t.containsEdge(3, 0));
         assertTrue(t.containsEdge(3, 1));
     }
+
+    @Test
+    public void addRemove1() {
+        int n = 10;
+        var g = GraphGenerator.randomGnp(n, 0.5);
+        g.addVertex(n);
+        g.removeVertex(n);
+        g.addVertex(n);
+    }
+
+    @Test
+    public void addRemove2() {
+        int n = 10;
+        var g = GraphBuilder.numVertices(n).buildDigraph();
+        g.addVertex(n);
+        for (int i = 0; i < n - 1; i++) {
+            g.addEdge(n, i);
+        }
+        g.removeVertex(n);
+    }
+
 }

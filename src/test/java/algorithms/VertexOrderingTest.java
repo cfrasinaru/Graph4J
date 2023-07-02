@@ -19,7 +19,7 @@ package algorithms;
 import org.graph4j.GraphBuilder;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import org.graph4j.alg.coloring.VertexColoring;
+import org.graph4j.alg.coloring.Coloring;
 import org.graph4j.alg.ordering.VertexOrderings;
 
 /**

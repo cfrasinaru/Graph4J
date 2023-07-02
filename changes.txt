@@ -1,3 +1,9 @@
+1.0.5	2023-07-02
+	-Greedy coloring algorithms for bandwith and equitable coloring
+	-Exact backtracking coloring algoritms for bandwith and equitable coloring
+	-Exact ILP coloring algoritms for bandwith and equitable coloring (using Gurobi)
+	-Generator for grid graphs and digraphs: GridGenerator
+	
 1.0.4	2023-04-27
 	-Parallel implementation of Filter-Kruskal algorithm for MST: ParallelFilterKruskal
 	-Improved algorithms for computing graph metrics (center, radius, etc): GraphMetrics

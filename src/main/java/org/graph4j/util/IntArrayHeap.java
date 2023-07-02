@@ -22,6 +22,7 @@ import java.util.Arrays;
  *
  * @author Cristian Frăsinaru
  */
+@Deprecated
 class IntArrayHeap {
 
     private IntComparator comparator;

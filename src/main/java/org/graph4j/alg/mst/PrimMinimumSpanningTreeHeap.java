@@ -20,8 +20,10 @@ import org.graph4j.Graph;
 import org.graph4j.util.VertexHeap;
 
 /**
- * Uses a binary heap. Complexity O(m + m long n)
- * 
+ * Implementation of Prim's algorithm that uses a binary heap.
+ *
+ * Complexity O(m + m long n)
+ *
  * @author Cristian Frăsinaru
  */
 public class PrimMinimumSpanningTreeHeap extends PrimMinimumSpanningTreeBase {
@@ -31,7 +33,7 @@ public class PrimMinimumSpanningTreeHeap extends PrimMinimumSpanningTreeBase {
     public PrimMinimumSpanningTreeHeap(Graph graph) {
         super(graph);
     }
-    
+
     @Override
     protected void preCompute() {
         this.heap = new VertexHeap(graph, (i, j) -> (int) Math.signum(cost[i] - cost[j]));

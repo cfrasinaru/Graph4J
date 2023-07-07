@@ -31,7 +31,8 @@ import org.graph4j.util.EdgeSet;
 import org.graph4j.util.UnionFind;
 
 /**
- * Parallel implementation of the Filter-Kruskal algorithm.
+ * Parallel implementation of the Filter-Kruskal algorithm for finding a minimum
+ * spanning tree.
  *
  * (see
  * https://en.wikipedia.org/wiki/Parallel_algorithms_for_minimum_spanning_trees#Approach_2:_Filter-Kruskal).

@@ -21,7 +21,8 @@ import org.graph4j.alg.GraphAlgorithm;
 import org.graph4j.util.EdgeSet;
 
 /**
- *
+ * Base class for minimum spanning tree implementations.
+ * 
  * @author Cristian Frăsinaru
  */
 public abstract class MinimumSpanningTreeBase extends GraphAlgorithm

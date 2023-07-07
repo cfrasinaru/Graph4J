@@ -4,7 +4,10 @@ import org.graph4j.Edge;
 import org.graph4j.Graph;
 
 /**
- * you can see more : https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm
+ *
+ * Boruvka algorithm for finding a minimum spanning tree.
+ *
+ * You can see more : https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm
  *
  * @author Sorodoc Cosmin
  */

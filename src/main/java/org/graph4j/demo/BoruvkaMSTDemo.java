@@ -19,7 +19,6 @@ package org.graph4j.demo;
 import edu.princeton.cs.algs4.BoruvkaMST;
 import org.graph4j.alg.mst.BoruvkaMinimumSpanningTreeDefault;
 import org.graph4j.alg.mst.BoruvkaMinimumSpanningTreeParallel;
-import org.graph4j.demo.PerformanceDemo;
 import org.graph4j.generate.EdgeWeightsGenerator;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 

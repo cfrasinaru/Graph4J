@@ -23,6 +23,7 @@ import org.graph4j.util.EdgeSet;
 import org.graph4j.util.UnionFind;
 
 /**
+ * Kruskal algorithm for finding a minimum spanning tree.
  *
  * @author Cristian Frăsinaru
  */

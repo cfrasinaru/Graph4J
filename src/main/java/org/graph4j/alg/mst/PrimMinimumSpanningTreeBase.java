@@ -21,7 +21,7 @@ import org.graph4j.Graph;
 import org.graph4j.util.EdgeSet;
 
 /**
- * Uses a binary heap. Complexity O(m + m long n)
+ * Base class for Prim's algorithm implementations.
  *
  * @author Cristian Frăsinaru
  */

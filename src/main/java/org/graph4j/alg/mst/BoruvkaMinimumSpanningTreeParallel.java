@@ -13,7 +13,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * you can see more :
+ *
+ * Parallel implementation of the Boruvka algorithm for finding a minimum
+ * spanning tree.
+ *
+ * You can see more :
  * https://web.archive.org/web/20110410100229id_/http://www.globalstf.org:80/docs/proceedings/adpc/ADPC_22.pdf
  * SECTION 5 - EXPERIMENTS
  *

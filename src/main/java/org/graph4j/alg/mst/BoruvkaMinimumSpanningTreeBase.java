@@ -6,6 +6,8 @@ import org.graph4j.util.EdgeSet;
 import org.graph4j.util.UnionFind;
 
 /**
+ * Base class for Boruvka's minimum spanning tree implementations.
+ *
  * @author Sorodoc Cosmin
  */
 public abstract class BoruvkaMinimumSpanningTreeBase extends MinimumSpanningTreeBase {

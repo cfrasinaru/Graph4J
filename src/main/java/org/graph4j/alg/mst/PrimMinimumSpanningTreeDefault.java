@@ -19,8 +19,8 @@ package org.graph4j.alg.mst;
 import org.graph4j.Graph;
 
 /**
- * Uses a binary heap. Complexity O(m + m long n)
- * 
+ * Prim's algorithm for finding a minimum spanning tree.
+ *
  * @author Cristian Frăsinaru
  */
 public class PrimMinimumSpanningTreeDefault extends PrimMinimumSpanningTreeBase {
@@ -28,7 +28,7 @@ public class PrimMinimumSpanningTreeDefault extends PrimMinimumSpanningTreeBase 
     public PrimMinimumSpanningTreeDefault(Graph graph) {
         super(graph);
     }
-    
+
     @Override
     protected int findMinIndex() {
         int minIndex = -1;

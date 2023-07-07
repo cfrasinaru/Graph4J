@@ -22,18 +22,18 @@ import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
 
 /**
- * A <i>star</i> is a graph formed by connecting a single universal vertex,
- * called <i>center</i>, to an independent set of vertices.
+ * A <em>star</em> is a graph formed by connecting a single universal vertex,
+ * called <em>center</em>, to an independent set of vertices.
  *
  * A star graph with n vertices is actually the complete bipartite graph
- * K(1,n-1). A star with 3 edges is called a <i>claw</i>.
+ * K(1,n-1). A star with 3 edges is called a <em>claw</em>.
  *
  * @author Cristian Frăsinaru
  */
 public class StarGenerator extends AbstractGraphGenerator {
-    
+
     private int center;
-    
+
     public StarGenerator(int numVertices) {
         super(numVertices);
         this.center = 0;
@@ -76,7 +76,7 @@ public class StarGenerator extends AbstractGraphGenerator {
         addEdges(g, outward);
         return g;
     }
-    
+
     private void addEdges(Graph g, boolean outward) {
         boolean safeMode = g.isSafeMode();
         g.setSafeMode(false);
@@ -90,5 +90,5 @@ public class StarGenerator extends AbstractGraphGenerator {
         }
         g.setSafeMode(safeMode);
     }
-    
+
 }

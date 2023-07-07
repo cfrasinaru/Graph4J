@@ -245,8 +245,7 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * @return the vertices that are adjacent to v.
      */
     int[] neighbors(int v);
-    
-    
+
     /**
      * Iterates over the edges incident from v, returning the neighbors of v,
      * along with information regarding their edges.
@@ -336,7 +335,7 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * @param v a vertex number.
      * @param u a vertex number.
      * @return the position of u in the adjacecny list of v, or {@code -1} if
-     * the edge is already in the graph.
+     * the edge is already in the graph or v and u are the same.
      */
     int addEdge(int v, int u);
 
@@ -347,7 +346,7 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * @param weight edge weight.
      * @param label edge label.
      * @return the position of u in the adjacecny list of v, or {@code -1} if
-     * the edge is already in the graph.
+     * the edge is already in the graph or v and u are the same.
      */
     int addEdge(int v, int u, double weight, E label);
 
@@ -363,7 +362,8 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      *
      * @param e an edge object.
      * @return the position of the target node in the source node adjacency
-     * list, or {@code -1} if the edge is already in the graph.
+     * list, or {@code -1} if the edge is already in the graph or v and u are
+     * the same.
      */
     int addEdge(Edge<E> e);
 
@@ -374,7 +374,7 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * @param vLabel the label of a uniquely identifiable vertex.
      * @param uLabel the label of a uniquely identifiable vertex.
      * @return the position of u in the adjacecny list of v, or {@code -1} if
-     * the edge is already in the graph.
+     * the edge is already in the graph or vLabel and uLabel are the same.
      */
     default int addEdge(V vLabel, V uLabel) {
         int v = findVertex(vLabel);

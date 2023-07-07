@@ -33,7 +33,7 @@ public class RegularGraphGenerator extends AbstractGraphGenerator {
     private int degree;
 
     /**
-     * 
+     *
      * @param numVertices the number of vertices.
      * @param degree the degree of all vertices.
      */
@@ -42,9 +42,9 @@ public class RegularGraphGenerator extends AbstractGraphGenerator {
     }
 
     /**
-     * 
-     * @param firstVertex the number of the first vertex in the geenrated graph.
-     * @param lastVertex the number of the last vertex in the geenrated graph.
+     *
+     * @param firstVertex the number of the first vertex in the generated graph.
+     * @param lastVertex the number of the last vertex in the generated graph.
      * @param degree the degree of all vertices.
      */
     public RegularGraphGenerator(int firstVertex, int lastVertex, int degree) {

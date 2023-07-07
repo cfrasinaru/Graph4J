@@ -18,6 +18,7 @@ package org.graph4j.alg.coloring;
 
 import org.graph4j.Graph;
 import org.graph4j.util.Clique;
+import org.graph4j.util.Cycle;
 
 /**
  *
@@ -60,9 +61,17 @@ public interface ColoringAlgorithm {
      */
     default Clique getMaximalClique() {
         throw new IllegalArgumentException(
-                "Computing a maximal clique is not supported for this implementation");
+                "Computing a maximal clique is not supported by this implementation.");
     }
 
+    /**
+     * 
+     * @return a long cycle of the graph to be colored.
+     */
+    default Cycle getLongCycle() {
+        throw new IllegalArgumentException(
+                "Computing a long cycle is not supported by this implementation.");
+    }
     /**
      *
      * @return a lower bound of the coloring number.

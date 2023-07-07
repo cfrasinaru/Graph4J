@@ -34,7 +34,6 @@ import org.graph4j.util.VertexSet;
 public abstract class ExactColoringBase extends SimpleGraphAlgorithm
         implements ColoringAlgorithm {
 
-    protected Clique maxClique;
     protected long timeLimit;
     protected long startTime;
     protected boolean timeExpired;
@@ -42,6 +41,8 @@ public abstract class ExactColoringBase extends SimpleGraphAlgorithm
     protected List<VertexSet> components; //connected components
     protected Set<Coloring> solutions;
     protected int solutionsLimit = 1;
+    //
+    private Clique maxClique;    
 
     public ExactColoringBase(Graph graph) {
         this(graph, null, 0);
@@ -103,10 +104,6 @@ public abstract class ExactColoringBase extends SimpleGraphAlgorithm
         return solutionsLimit;
     }
 
-    /**
-     *
-     * @return a maximal clique for the input graph.
-     */
     @Override
     public Clique getMaximalClique() {
         if (maxClique == null) {
@@ -114,6 +111,7 @@ public abstract class ExactColoringBase extends SimpleGraphAlgorithm
         }
         return maxClique;
     }
+
 
     @Override
     public Coloring findColoring() {

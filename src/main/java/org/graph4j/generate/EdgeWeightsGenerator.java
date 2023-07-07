@@ -20,7 +20,7 @@ import java.util.Random;
 import org.graph4j.Graph;
 
 /**
- * Generates weights for a graph.
+ * Generates weights for the edges of a graph.
  *
  * @author Cristian Frăsinaru
  */

@@ -21,6 +21,10 @@ import org.graph4j.Graph;
 
 /**
  *
+ * Generator for complete bipartite graphs.
+ *
+ * A <em>bipartite</em> graph is a graph whose vertices can be decomposed into
+ * two disjoint stable sets (no two vertices within the same set are adjacent).
  *
  * @author Cristian Frăsinaru
  */

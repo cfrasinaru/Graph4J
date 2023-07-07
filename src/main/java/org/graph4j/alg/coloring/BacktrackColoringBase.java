@@ -77,8 +77,8 @@ public abstract class BacktrackColoringBase extends ExactColoringBase {
         if (root == null) {
             return;
         }
-        int cores = 1;
-        //int cores = Runtime.getRuntime().availableProcessors();
+        //int cores = 1;
+        int cores = Runtime.getRuntime().availableProcessors();
         this.workers = new ArrayList<>(cores);
         for (int i = 0; i < cores; i++) {
             var worker = new Worker(numColors, root);
@@ -95,7 +95,7 @@ public abstract class BacktrackColoringBase extends ExactColoringBase {
 
     //returns false if it detects infeasibility
     protected boolean prepareRootColoring(Coloring rootColoring, int numColors) {
-        getMaximalClique();
+        var maxClique = getMaximalClique();
         if (maxClique.size() > numColors) {
             return false;
         }
@@ -192,6 +192,59 @@ public abstract class BacktrackColoringBase extends ExactColoringBase {
         return true;
     }
 
+    //invoke when a node was proven infeasible
+    //only for necsp
+    //the node was the result of an assignment x=a
+    //consider the other nodes to follow x=b
+    //look at the domains of uncolored vertices of the parent
+    //if all the domains including b, include also a (*)
+    //node x=b can be discarded
+    //suppose that there is a solution with x=b
+    //replace color b with a - it is possible cf (*)
+    //this would be a solution with x=a, which just failed
+    @Deprecated
+    protected void propagateFailure(Node node) {
+        Node parent = node.parent;
+        if (parent == null) {
+            return;
+        }
+        System.out.println("FAILED " + node);
+        System.out.println("PARENT " + parent);
+        int v = node.vertex;
+        int color = node.color;
+        assert v == parent.minDomain.vertex();
+        //v is the pivot of node.parent
+        //check all the colors in the domain of v
+        //System.out.println("propagate failure " + v + " = " + color + " up  to \n\t" + parent);
+        int i = 0;
+        Domain vDomain = parent.domain(graph.indexOf(v));
+        if (vDomain.size() <= 1) {
+            return;
+        }
+        nextColor:
+        while (i < vDomain.size()) {
+            int other = vDomain.valueAt(i);
+            if (other == color) {
+                continue;
+            }
+            for (int u : graph.vertices()) {
+                if (parent.coloring.isColorSet(u)) {
+                    continue;
+                }
+                Domain uDomain = parent.domain(graph.indexOf(u));
+                System.out.println("Checking for colors " + other + "," + color + "\n\t" + vDomain + "\n\t" + uDomain);
+                if (uDomain.contains(other) && !uDomain.contains(color)) {
+                    System.out.println("\tNOPE");
+                    i++;
+                    continue nextColor;
+                }
+            }
+            //remove other from v's domain
+            vDomain.removeAtPos(i);
+            System.out.println("\tRemoved some stuff!");
+        }
+    }
+
     //finds a node for a jobless thread
     private Node findNode() {
         List<Worker> aux = new ArrayList<>(workers);
@@ -208,14 +261,14 @@ public abstract class BacktrackColoringBase extends ExactColoringBase {
     /**
      *
      * @return the number of nodes explored during the search.
-     */    
+     */
     @Deprecated
     private long nodesExplored() {
         return nodesExplored;
     }
 
     //a thread exploring the search space
-    protected class Worker extends Thread {
+    private class Worker extends Thread {
 
         boolean running;
         int numColors;
@@ -260,18 +313,20 @@ public abstract class BacktrackColoringBase extends ExactColoringBase {
                         continue;
                     }
                     assert node.minDomain != null;
-                    
+
                     if (node.failed && !nodeStack.isEmpty()) {
                         nodeStack.pop();
                         continue;
                     }
-                    
-                    if (node.minDomain.size() == 0) {                    
+
+                    if (node.minDomain.size() == 0) {
+                        //the current node has failed, remove it from stack
                         //when popping a non propagator
                         //it's parent should pe popped too
-                        if (!node.propagator && node.parent != null) {                            
+                        if (!node.propagator && node.parent != null) {
                             node.parent.failed = true;
                         }
+                        //propagateFailure(node);
                         nodeStack.pop();
                         continue;
                     }

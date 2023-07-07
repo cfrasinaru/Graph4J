@@ -79,7 +79,7 @@ public class GurobiAssignmentColoring extends GurobiColoringBase
         }
 
         int color = 0;
-        getMaximalClique();
+        var maxClique = getMaximalClique();
         for (int u : maxClique.vertices()) {
             model.addConstr(x[graph.indexOf(u)][color++], GRB.EQUAL, 1, "maxclique_" + u);
         }

@@ -20,6 +20,7 @@ import java.util.Random;
 import org.graph4j.Graph;
 
 /**
+ * Generates weights for the vertices of a graph.
  *
  * @author Cristian Frăsinaru
  */

@@ -64,6 +64,10 @@ public class Node {
             if (dom.size() < minSize) {
                 minSize = dom.size();
                 minDomain = dom;
+                /*
+                if (minSize == 2) {
+                    break;
+                }*/
             } else if (dom.size() == minSize) {
                 if (graph.degree(minDomain.vertex()) < graph.degree(dom.vertex())) {
                     minDomain = dom;

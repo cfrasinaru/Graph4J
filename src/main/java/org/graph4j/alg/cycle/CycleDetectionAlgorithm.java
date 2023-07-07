@@ -39,6 +39,7 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
     private int target;
     private int parity;
     private boolean shortest;
+    private boolean longer;
 
     /**
      *
@@ -52,6 +53,7 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
         this.target = -1;
         this.parity = -1;
         this.shortest = false;
+        this.longer = false;
     }
 
     //cycles of length 1 or 2
@@ -195,6 +197,18 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
         return findCycle();
     }
 
+    /**
+     * An heuristic for finding a long cycle. There is no guarantee that the
+     * cycle returned is the longest cycle in the graph.
+     *
+     * @return a cycle that is supposed to be long.
+     */
+    public Cycle findLongCycle() {
+        reset();
+        this.longer = true;
+        return findCycle();
+    }
+
     private Cycle dfs() {
         var visitor = new DFSCycleVisitor();
         new DFSTraverser(graph).traverse(
@@ -250,6 +264,7 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
         @Override
         public void treeEdge(SearchNode from, SearchNode to) {
             //finding the cycle before backEdge
+            //we look for the target and not wait for backEdge to reach it
             if (target >= 0
                     && (directed || from.vertex() != target)
                     && graph.containsEdge(to.vertex(), target)) {
@@ -259,13 +274,24 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
                     interrupt();
                 }
             }
-        }
+        }        
 
         @Override
         public void backEdge(SearchNode from, SearchNode to) {
-            if (target < 0) {
-                Cycle temp = createCycleFromBackEdge(from, to);
-                if (parity < 0 || temp.length() % 2 == parity) {
+            if (target >= 0) {
+                return;
+            }
+            //found a cycle
+            Cycle temp = createCycleFromBackEdge(from, to);
+            if (parity < 0 || temp.length() % 2 == parity) {
+                if (longer) {
+                    if (cycle == null || temp.size() > cycle.size()) {
+                        cycle = temp;
+                        if (cycle.size() == graph.numVertices() - 1) {
+                            //interrupt();
+                        }
+                    }
+                } else {
                     cycle = temp;
                     interrupt();
                 }

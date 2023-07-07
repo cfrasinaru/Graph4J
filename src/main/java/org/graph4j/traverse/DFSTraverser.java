@@ -129,10 +129,12 @@ public class DFSTraverser {
             int[] neighbors = graph.neighbors(v);
             boolean ok = false;
             while (!ok && nextPos[vi] < neighbors.length) {
+                //we have another neighbor to process
                 int u = neighbors[nextPos[vi]];
                 int ui = graph.indexOf(u);
                 nextPos[vi]++;
                 if (visited[ui] == null) {
+                    //the neighbor is not visited, add a tree edge
                     var next = new SearchNode(compIndex, u, node.level() + 1, orderIndex++, node);
                     stack.push(next);
                     instack[ui] = true;
@@ -142,16 +144,21 @@ public class DFSTraverser {
                     ok = true;
                     break;
                 }
+                //the neighbor is visited
                 //back edge, forward edge or cross edge
                 var other = visited[ui]; //already visited
                 if (other.equals(parent)) {
-                    //if (directed || (multigraph && ((Multigraph) graph).multiplicity(v, u) > 1)) {
                     if (directed) {
+                        //return to the parent, via a directed edge
                         visitor.backEdge(node, other);
                     }
                 } else {
                     if (!directed) {
-                        visitor.backEdge(node, other);
+                        if (other.order() < node.order()) {
+                            visitor.backEdge(node, other);
+                        }
+                        //otherwise, it should be a forward edge, 
+                        //but in the undirected case, it was already visited
                     } else {
                         if (instack[ui] && other.order() < node.order()) {
                             //other.isAncestorOf(node)
@@ -191,7 +198,7 @@ public class DFSTraverser {
     /**
      *
      * @return {@code true} if the traversal was interrupted before all vertices
-     * have been visited.     
+     * have been visited.
      */
     public boolean isInterrupted() {
         return interrupted;

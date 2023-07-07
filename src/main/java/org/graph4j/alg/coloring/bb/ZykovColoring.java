@@ -279,7 +279,7 @@ class ZykovColoring extends ExactColoringBase {
         if (startTime == 0) {
             startTime = System.currentTimeMillis();
         }
-        getMaximalClique();
+        var maxClique = getMaximalClique();
         if (maxClique.size() > numColors) {
             return false;
         }

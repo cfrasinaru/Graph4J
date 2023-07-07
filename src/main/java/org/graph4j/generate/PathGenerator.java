@@ -22,6 +22,15 @@ import org.graph4j.GraphBuilder;
 
 /**
  *
+ * A <em>path</em> graph consists of a single path. If the vertices of the graph
+ * are <code>0,1,...,n-1</code> then its edges are <code>(i, i+1)</code>, for
+ * <code>i=0,...,n-2</code>
+ *
+ *
+ * The cycle graph with n vertices is denoted by P<sub>n</sub>. The number of
+ * edges of P<sub>n</sub> is <code>n-1</code> and every vertex has degree 2,
+ * except the extremities which have degree 1.
+ *
  * @author Cristian Frăsinaru
  */
 public class PathGenerator extends AbstractGraphGenerator {

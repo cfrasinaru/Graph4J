@@ -131,24 +131,15 @@ OK k-regulate
 
 - care au o anumita secventa (di)grafica
 	folosind fluxuri
+graph generation for several graph families (cliques, paths, cycles, fans, wheels, caterpillars, complete 
+-partite, regular trees) and random graphs models (Erdős–Rényi, Barabási–Albert, Watts–Strogatz),
 
 Planarity
 
 
-	Breadth First Search
-	Depth First Search
 Uniform Cost Search
-
-	Dijkstra's Shortest Paths
-	Bellman-Ford Shortest Paths
 Johnson's All-Pairs Shortest Paths
-	Kruskal's Minimum Spanning Tree
-	Prim's Minimum Spanning Tree
-	Connected Components
-	Strongly Connected Components
 Dynamic Connected Components (using Disjoint Sets)
-	Topological Sort
-	Transpose
 Reverse Cuthill Mckee Ordering
 Smallest Last Vertex Ordering
 Sequential Vertex Coloring

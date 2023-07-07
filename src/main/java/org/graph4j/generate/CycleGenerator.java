@@ -21,6 +21,14 @@ import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
 
 /**
+ * A <em>cycle</em> graph consists of a single cycle. If the vertices of the
+ * graph are <code>0,1,...,n-1</code> then its edges are
+ * <code>(i, (i+1) mod n)</code>, for <code>i=0,...,n-1</code>
+ *
+ *
+ * The cycle graph with n vertices is denoted by C<sub>n</sub>. The number of
+ * vertices in a cycle graph equals the number of edges and every vertex has
+ * degree 2.
  *
  * @author Cristian Frăsinaru
  */

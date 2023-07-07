@@ -12,6 +12,7 @@
     </properties>
     
     <dependencies>
+        
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
@@ -61,6 +62,19 @@
             <artifactId>gurobi</artifactId>
             <version>9.5</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.choco-solver</groupId>
+            <artifactId>choco-solver</artifactId>
+            <version>4.10.12</version>
+        </dependency>           
+        
+        <dependency>
+            <groupId>com.google.ortools</groupId>
+            <artifactId>ortools-java</artifactId>
+            <version>9.6.2534</version>
+        </dependency>
+        
         
         <dependency>
             <groupId>org.junit.jupiter</groupId>

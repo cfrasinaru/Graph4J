@@ -47,7 +47,7 @@ public abstract class GurobiColoringBase extends ExactColoringBase {
         solutions = new HashSet<>();
         try {
             env = new GRBEnv(true);
-            env.set(GRB.IntParam.OutputFlag, 0); //outputEnabled
+            env.set(GRB.IntParam.OutputFlag, 0);
             env.start();
 
             model = new GRBModel(env);

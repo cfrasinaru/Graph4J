@@ -1,8 +1,12 @@
+1.0.6
+	-A* algorithm for determining the shortest path using a distance heursitic: AStarAlgorithm
+	-Iterators over all cliques, with min and max size, DFS or BFS: DFSCliqueIterator, BFSCliqueIterator
+	-ILP (Gurobi) implementation of the stable set model for equitable coloring: GurobiStableModelEquitableColoring
 	
 1.0.5	2023-07-07
 	-Sequential and parallel implementations of Boruvka algorithm for MST: BoruvkaMinimumSpanningTreeDefault/Parallel
 	-CSP (Choco) implementation for vertex coloring: ChocoColoring
-	-Generator for Barbasi-Albert networks: BarabasiALbertGenerator
+	-Generator for Barabasi-Albert networks: BarabasiALbertGenerator
 	-Generator for Watts-Strogatz networks: WattsStrogatzGenerator
 	-Greedy coloring algorithms for bandwith and equitable coloring
 	-Exact backtracking coloring algoritms for bandwith and equitable coloring

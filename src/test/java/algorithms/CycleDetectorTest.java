@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.util.Cycle;
 import org.graph4j.GraphBuilder;
-import org.graph4j.alg.cycle.CycleDetectionAlgorithm;
+import org.graph4j.alg.cycle.CycleFinder;
 
 /**
  *
@@ -31,7 +31,7 @@ public class CycleDetectorTest {
     @Test
     public void graphAnyCycle() {
         var g = GraphBuilder.vertexRange(1, 5).addEdges("1-2,2-3,3-4,4-5").buildGraph();
-        var detector = new CycleDetectionAlgorithm(g);
+        var detector = new CycleFinder(g);
         assertFalse(detector.containsCycle());
 
         g.addEdge(2, 4);
@@ -42,7 +42,7 @@ public class CycleDetectorTest {
     @Test
     public void digraphAnyCycle() {
         var g = GraphBuilder.vertexRange(1, 5).addEdges("1-2,2-3,3-4,4-5").buildDigraph();
-        var detector = new CycleDetectionAlgorithm(g);
+        var detector = new CycleFinder(g);
         assertFalse(detector.containsCycle());
 
         g.addEdge(2, 4);
@@ -62,7 +62,7 @@ public class CycleDetectorTest {
                 .addPath(1, 10, 11)
                 .addEdge(9, 11)
                 .buildGraph();
-        var detector = new CycleDetectionAlgorithm(g);
+        var detector = new CycleFinder(g);
         assertEquals(new Cycle(g, new int[]{1, 2, 3, 4, 5, 6, 7}), detector.findAnyCycle());
         assertEquals(new Cycle(g, new int[]{1, 8, 9, 11, 10}), detector.findShortestCycle());
     }
@@ -73,7 +73,7 @@ public class CycleDetectorTest {
                 .addPath(1, 2, 3, 4, 5, 6, 7, 8, 9).addEdge(3, 8)
                 .addClique(6, 10, 11)
                 .buildGraph();
-        var detector = new CycleDetectionAlgorithm(g);
+        var detector = new CycleFinder(g);
         Cycle c1 = new Cycle(g, new int[]{3, 4, 5, 6, 7, 8});
         Cycle c2 = new Cycle(g, new int[]{6, 10, 11});
         assertEquals(c1, detector.findAnyCycle(6));
@@ -85,11 +85,11 @@ public class CycleDetectorTest {
     @Test
     public void specialCases() {
         var g1 = GraphBuilder.vertexRange(0,2).addEdges("0-1,1-1,1-2").buildPseudograph();
-        assertEquals(1, new CycleDetectionAlgorithm(g1).findAnyCycle().length()); //1-1
+        assertEquals(1, new CycleFinder(g1).findAnyCycle().length()); //1-1
         var g2 = GraphBuilder.vertexRange(0,2).addEdges("0-1,1-2,1-2").buildMultigraph();
-        assertEquals(2, new CycleDetectionAlgorithm(g2).findAnyCycle().length()); //1-2
+        assertEquals(2, new CycleFinder(g2).findAnyCycle().length()); //1-2
         var g3 = GraphBuilder.vertexRange(0,2).addEdges("0-1,1-2,2-1").buildDigraph();
-        assertEquals(2, new CycleDetectionAlgorithm(g3).findAnyCycle().length()); //1-2
+        assertEquals(2, new CycleFinder(g3).findAnyCycle().length()); //1-2
     }
     
 

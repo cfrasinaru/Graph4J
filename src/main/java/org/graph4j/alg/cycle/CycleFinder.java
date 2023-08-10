@@ -29,12 +29,13 @@ import org.graph4j.util.CheckArguments;
 import org.graph4j.traverse.BFSVisitor;
 
 /**
+ * Searches for a cycle in a directed or undirected graph.
  *
- *
+ * Multigraphs and pseudographs are supported.
  *
  * @author Cristian Frăsinaru
  */
-public class CycleDetectionAlgorithm extends GraphAlgorithm {
+public class CycleFinder extends GraphAlgorithm {
 
     private int target;
     private int parity;
@@ -45,7 +46,7 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
      *
      * @param graph the input graph.
      */
-    public CycleDetectionAlgorithm(Graph graph) {
+    public CycleFinder(Graph graph) {
         super(graph);
     }
 
@@ -274,7 +275,7 @@ public class CycleDetectionAlgorithm extends GraphAlgorithm {
                     interrupt();
                 }
             }
-        }        
+        }
 
         @Override
         public void backEdge(SearchNode from, SearchNode to) {

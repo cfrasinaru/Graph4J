@@ -28,8 +28,8 @@ import org.graph4j.Graph;
  * of the chromatic number. The colors of the vertices in the maximal clique are
  * fixed before the backtracking algorithm starts.
  *
- * Secondly, an initial coloring is computed using a simple heuristic.
- * This gives an upper bound <code>k</code>of the chromatic number.
+ * Secondly, an initial coloring is computed using a simple heuristic. This
+ * gives an upper bound <code>k</code>of the chromatic number.
  *
  * Next, the algorithm will attemtp to color the graph using a number of colors
  * ranging from <code>k-1</code> to <code>q</code>, determining the optimal
@@ -76,6 +76,7 @@ public class BacktrackColoring extends BacktrackColoringBase {
             i++;
             for (var it = graph.neighborIterator(v); it.hasNext();) {
                 int u = it.next();
+                //for (int u : graph.neighbors(v)) {
                 int ret = removeColor(u, color, node, assignQueue, j);
                 if (ret < 0) {
                     return false;

@@ -23,9 +23,9 @@ import org.graph4j.util.VertexHeap;
 import org.graph4j.util.VertexSet;
 
 /**
- * This class contains both a simple heuristic for determining a single maximal
- * clique and a method that attempts to find the maximum clique by enumerating
- * all of them using Bron-Kerbosch algorithm.
+ * Computes a maximal clique. This class contains both a simple heuristic for
+ * determining a single maximal clique and a method that attempts to find the
+ * maximum clique by enumerating all of them using Bron-Kerbosch algorithm.
  *
  * A <em>maximal</em> clique is a clique that cannot be extended by including
  * one more adjacent vertex.
@@ -39,20 +39,9 @@ import org.graph4j.util.VertexSet;
 public class MaximalCliqueFinder extends SimpleGraphAlgorithm {
 
     private boolean[] visited;
-    private long timeLimit;
 
     public MaximalCliqueFinder(Graph graph) {
         super(graph);
-    }
-
-    /**
-     *
-     * @param graph the input graph;
-     * @param timeLimit a time limit in milliseconds.
-     */
-    public MaximalCliqueFinder(Graph graph, long timeLimit) {
-        super(graph);
-        this.timeLimit = timeLimit;
     }
 
     /**
@@ -68,17 +57,11 @@ public class MaximalCliqueFinder extends SimpleGraphAlgorithm {
         if (graph.isComplete()) {
             return new Clique(graph, graph.vertices());
         }
-        long startTime = System.currentTimeMillis();
         int[] deg = graph.degrees();
         var heap = new VertexHeap(graph, (i, j) -> deg[j] - deg[i]);
         visited = new boolean[graph.numVertices()];
         Clique maxClique = null;
         while (!heap.isEmpty()) {
-            if (timeLimit > 0
-                    && maxClique != null
-                    && System.currentTimeMillis() - startTime > timeLimit) {
-                break;
-            }
             int v = graph.vertexAt(heap.poll());
             int vi = graph.indexOf(v);
             if (maxClique != null && deg[vi] < maxClique.size()) {
@@ -109,6 +92,9 @@ public class MaximalCliqueFinder extends SimpleGraphAlgorithm {
         var clique = new Clique(graph);
         clique.add(startVertex);
         var cand = new VertexSet(graph, graph.neighbors(startVertex));
+        if (visited == null) {
+            visited = new boolean[graph.numVertices()];
+        }
         visited[graph.indexOf(startVertex)] = true;
         while (!cand.isEmpty()) {
             int v = chooseVertex(cand);
@@ -135,13 +121,14 @@ public class MaximalCliqueFinder extends SimpleGraphAlgorithm {
 
     /**
      * This method iterates over all maximal cliques of the graph, in order to
-     * find the maximum one. If it cannot finish in the alloted time, it returns
+     * find the maximum one.If it cannot finish in the alloted time, it returns
      * {@code null}.
      *
+     * @param timeLimit a time limit in milliseconds (0 for no time limit).
      * @return the maximum clique of the graph or {@code null} if it cannot be
      * found in the alloted time.
      */
-    public Clique findMaximumClique() {
+    public Clique findMaximumClique(long timeLimit) {
         if (graph.isComplete()) {
             return new Clique(graph, graph.vertices());
         }
@@ -154,6 +141,7 @@ public class MaximalCliqueFinder extends SimpleGraphAlgorithm {
                 return null;
             }
             Clique clique = alg.next();
+            System.out.println(clique);
             if (maxClique == null || clique.size() > maxClique.size()) {
                 maxClique = clique;
             }

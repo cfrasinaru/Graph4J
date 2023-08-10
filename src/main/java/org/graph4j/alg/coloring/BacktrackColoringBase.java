@@ -268,7 +268,7 @@ public abstract class BacktrackColoringBase extends ExactColoringBase {
     }
 
     //a thread exploring the search space
-    private class Worker extends Thread {
+    protected class Worker extends Thread {
 
         boolean running;
         int numColors;
@@ -318,7 +318,6 @@ public abstract class BacktrackColoringBase extends ExactColoringBase {
                         nodeStack.pop();
                         continue;
                     }
-
                     if (node.minDomain.size() == 0) {
                         //the current node has failed, remove it from stack
                         //when popping a non propagator

@@ -28,10 +28,10 @@ import org.graph4j.generate.RandomGnpGraphGenerator;
  */
 class BoruvkaMSTDemo extends PerformanceDemo {
 
-    private final double probability = 0.3;
+    private final double probability = 0.1;
 
     public BoruvkaMSTDemo() {
-        numVertices = 5000;
+        numVertices = 10_000;
         runJGraphT = true;
         //runAlgs4 = true;
         runOther = true;

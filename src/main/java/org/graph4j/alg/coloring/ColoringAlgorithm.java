@@ -33,8 +33,12 @@ public interface ColoringAlgorithm {
     Graph getGraph();
 
     /**
+     * In case of exact algorithms, this method should return the optimum
+     * coloring, if one can be computed within the alloted time. Otherwise, in
+     * case of heuristics or if the time limit is exceeded, it should return the
+     * best valid coloring that could be computed.
      *
-     * @return a coloring of the graph.
+     * @return a valid coloring of the graph.
      */
     Coloring findColoring();
 
@@ -47,9 +51,12 @@ public interface ColoringAlgorithm {
     Coloring findColoring(int numColors);
 
     /**
+     * The validity depends on the type of coloring: simple, equitable,
+     * bandwith, etc. By default, this method return {@code true} if the
+     * coloring is proper.
      *
      * @param coloring a vertex coloring.
-     * @return {@code true} if the coloring is proper.
+     * @return {@code true} if the coloring is valid.
      */
     default boolean isValid(Coloring coloring) {
         return coloring.isProper();
@@ -64,14 +71,6 @@ public interface ColoringAlgorithm {
                 "Computing a maximal clique is not supported by this implementation.");
     }
 
-    /**
-     * 
-     * @return a long cycle of the graph to be colored.
-     */
-    default Cycle getLongCycle() {
-        throw new IllegalArgumentException(
-                "Computing a long cycle is not supported by this implementation.");
-    }
     /**
      *
      * @return a lower bound of the coloring number.
@@ -92,6 +91,10 @@ public interface ColoringAlgorithm {
     }
 
     /**
+     * This method should return {@code false} for those type of colorings where
+     * it may be possible to exist a k-coloring, even if there is no
+     * (k+1)-coloring, for example in the case of equitable coloring. By
+     * default, it returns {@code true}.
      *
      * @return {@code true} if the search for the optimum coloring should stop
      * when the current instance cannot be solved.
@@ -101,6 +104,10 @@ public interface ColoringAlgorithm {
     }
 
     /**
+     * This method should return {@code true} if the implementation of the
+     * {@link #findColoring(int)} method returns the optimum coloring and not
+     * just a valid coloring repsecting the given upper bound. By default, it
+     * returns {@code false}.
      *
      * @return {@code true} for optimisation models.
      */

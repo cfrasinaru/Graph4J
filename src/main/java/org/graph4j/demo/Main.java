@@ -17,17 +17,22 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import org.graph4j.Graphs;
 import org.graph4j.alg.coloring.BacktrackColoring;
 import org.graph4j.alg.coloring.GurobiAssignmentColoring;
 import org.graph4j.alg.coloring.bw.BacktrackBandwithColoring;
 import org.graph4j.alg.coloring.bw.GurobiBandwithColoring;
 import org.graph4j.alg.coloring.bw.GurobiOptBandwithColoring;
-import org.graph4j.alg.coloring.eq.BacktrackEquitableColoring;
 import org.graph4j.alg.coloring.eq.GurobiAssignmentEquitableColoring;
+import org.graph4j.alg.coloring.eq.GurobiStableModelEquitableColoring;
+import org.graph4j.alg.sp.AStarAlgorithm;
+import org.graph4j.alg.sp.AStarEuclideanEstimator;
 import org.graph4j.generate.EdgeWeightsGenerator;
 import org.graph4j.generate.GraphGenerator;
 import org.graph4j.io.DimacsIO;
+import org.graph4j.measures.GraphMeasures;
+import org.graph4j.metrics.GraphMetrics;
 
 /**
  * Driver class for running the comparisons with other libraries.
@@ -37,7 +42,7 @@ import org.graph4j.io.DimacsIO;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        //var app = new Main();
+        var app = new Main();
         //var app = new ExactBandwithColoringDemo();
         //var app = new ExactEquitableColoringDemo();
         //var app = new ExactColoringDemo();        
@@ -49,7 +54,7 @@ public class Main {
         //var app = new PushRelabelDemo();
         //var app = new EdmondsKarpDemo();
         //var app = new CycleDetectionDemo();
-        var app = new BoruvkaMSTDemo();
+        //var app = new BoruvkaMSTDemo();
         //var app = new KruskalMSTDemo();
         //var app = new PrimMSTDemo();
         //var app = new LineGraphDemo();
@@ -87,8 +92,49 @@ public class Main {
         run(this::test);
     }
 
+    private void test() {
+        int n = 4;
+        var g = GraphGenerator.grid(n, n);
+        System.out.println(g);
+        EdgeWeightsGenerator.randomDoubles(g, 0, 1);
+        var alg = new AStarAlgorithm(g, 0, g.numVertices() - 1, new AStarEuclideanEstimator(n));
+        System.out.println(alg.findPath());
+    }
+
     private void test0() {
-        //var g = new org.graph4j.generate.WattsStrogatzGenerator(10, 2, 0.5, 0).createGraph();        
+
+        /*
+        var g = GraphBuilder.numVertices(7).addCycle(0, 1, 2, 3, 4)
+                .addEdge(4, 5)
+                .addEdge(4, 6)
+                .addEdge(3, 6)
+                .buildGraph();
+         */
+        //var g = GraphGenerator.randomGnp(100, 0.9);
+        //var g = GraphGenerator.complete(5);
+        //var g = GraphGenerator.cycle(15);
+        //var g = new DimacsIO().read("d:/datasets/coloring/instances/DSJC1000.9.col");
+        var g = new DimacsIO().read("d:/datasets/coloring/instances/queen9_9.col");
+        var alg = new GurobiStableModelEquitableColoring(g, 1 * 60 * 1000);
+        //var alg = new GurobiAssignmentEquitableColoring(g, 1 * 60 * 1000);
+        //var alg = new BacktrackEquitableColoring(g, 2 * 60 * 1000);
+
+        //var alg = new BacktrackColoring(g, 1 * 60 * 1000);
+        //var alg = new ChocoColoring(g, 1 * 60 * 1000);
+        //var alg = new GurobiAssignmentColoring(g, 1 * 60 * 1000);
+        var col = alg.findColoring();
+        if (col != null) {
+            System.out.println(col.numUsedColors());
+            System.out.println(col);
+        }
+
+        //System.out.println(Arrays.toString(g.degrees()));
+        //new BacktrackColoring(g).findColoring();
+        //var alg = new MaximumInducedPath(g);
+        //var path = alg.findPath();
+        //System.out.println("size=" + path.numVertices());
+        //var alg = new MaximumInducedCycle(g);
+        //System.out.println(alg.findCycle());
     }
 
     private void test1() {
@@ -136,9 +182,9 @@ public class Main {
         //System.out.println(alg.findColoring().numUsedColors()); 
     }
 
-    private void test() {
-        int n = 50;
-        for (int i = 0; i < 1; i++) {
+    private void test2() {
+        int n = 30;
+        for (int i = 0; i < 100; i++) {
             var g = GraphGenerator.randomGnp(n, Math.random());
             try {
                 var alg1 = new BacktrackColoring(g);
@@ -197,11 +243,12 @@ public class Main {
     }
 
     private void test4() {
-        int n = 20;
+        int n = 30;
         for (int i = 0; i < 100; i++) {
-            var g = GraphGenerator.randomGnp(n, Math.random());
+            var g = GraphGenerator.randomGnp(n, 0.9);
             try {
-                var alg1 = new BacktrackEquitableColoring(g);
+                //var alg1 = new BacktrackEquitableColoring(g);
+                var alg1 = new GurobiStableModelEquitableColoring(g);
                 var col1 = alg1.findColoring();
                 assert col1.isEquitable();
 

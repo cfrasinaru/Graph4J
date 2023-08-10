@@ -264,8 +264,28 @@ public class IntArrays {
     /**
      *
      * @param array an array of integers.
+     * @return a new array with the original elements sorted ascending.
+     */
+    public static int[] sort(int[] array) {
+        int[] sorted = Arrays.copyOf(array, array.length);
+        Arrays.sort(sorted);
+        return sorted;
+    }
+
+    /**
+     *
+     * @param array an array of integers.
+     * @return a new array with the original elements sorted descending.
+     */
+    public static int[] sortDesc(int[] array) {
+        return sort(array, (a, b) -> b - a);
+    }
+
+    /**
+     *
+     * @param array an array of integers.
      * @param comparator a comparator.
-     * @return a new array with the original elements sorted.
+     * @return a new array with the original elements sorted by the comparator.
      */
     public static int[] sort(int[] array, Comparator<Integer> comparator) {
         return IntStream.of(array).boxed()

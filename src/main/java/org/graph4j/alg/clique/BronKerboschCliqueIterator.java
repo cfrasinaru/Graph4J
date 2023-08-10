@@ -68,11 +68,10 @@ public class BronKerboschCliqueIterator extends SimpleGraphAlgorithm
             adjMatrix = graph.adjacencyMatrix();
         }
         //
-        int n = graph.numVertices();
         workingClique = new Clique(graph);
-        stack = new ArrayDeque<>(n);
+        stack = new ArrayDeque<>((int)graph.numEdges());
         //
-        var set = new VertexSet(graph, n);
+        var set = new VertexSet(graph, graph.numVertices());
         int[] vertices = shuffle ? IntArrays.shuffle(graph.vertices()) : graph.vertices();
         for (int v : vertices) {
             set.add(v);
@@ -118,6 +117,7 @@ public class BronKerboschCliqueIterator extends SimpleGraphAlgorithm
             var neighbors = graph.neighbors(v);
             var newSubg = subg.intersection(neighbors);
             if (newSubg.isEmpty()) {
+                
                 currentClique = new Clique(workingClique);
                 currentClique.add(v);
                 assert currentClique.isValid();

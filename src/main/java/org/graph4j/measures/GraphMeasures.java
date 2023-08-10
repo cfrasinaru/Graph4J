@@ -16,6 +16,7 @@
  */
 package org.graph4j.measures;
 
+import java.util.Objects;
 import java.util.stream.IntStream;
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
@@ -112,6 +113,29 @@ public class GraphMeasures {
     }
 
     /**
+     * The <em>degree distribution</em> is the probability distribution P of the
+     * graph degrees over the whole graph. If there are n vertices in the graph
+     * and n<sub>k</sub> of them have degree k, we have P(k)=n<sub>k</sub>/n.
+     *
+     * @param graph the input graph.
+     * @return the degree distribution of the graph.
+     */
+    public static double[] degreeDistribution(Graph graph) {
+        int n = graph.numVertices();
+        double[] p = new double[n];
+        if (n == 0) {
+            return p;
+        }
+        for (int v : graph.vertices()) {
+            p[graph.degree(v)]++;
+        }
+        for (int i = 0; i < n; i++) {
+            p[i] = p[i] / n;
+        }
+        return p;
+    }
+
+    /**
      * A <em>triangle</em> is formed by three distinct vertices connected all
      * with each other.
      *
@@ -119,7 +143,7 @@ public class GraphMeasures {
      * @return the number of triangles in the graph.
      * @see TriangleCounter
      */
-    public long numberOfTriangles(Graph graph) {
+    public static long numberOfTriangles(Graph graph) {
         return new TriangleCounter(graph).count();
     }
 
@@ -132,7 +156,7 @@ public class GraphMeasures {
      * @param graph the input graph.
      * @return the number of triplets in an undirected graph.
      */
-    public long numberOfTriplets(Graph graph) {
+    public static long numberOfTriplets(Graph graph) {
         if (graph.isDirected()) {
             throw new UnsupportedOperationException();
         }
@@ -143,6 +167,8 @@ public class GraphMeasures {
         }
         return count;
     }
+    
+            
     /**
      * A <em>triplet</em> is formed by three distinct vertices that are
      * connected by either two (open triplet) or three (closed triplet)

@@ -52,7 +52,7 @@ public class DFSBipartitionAlgorithm extends BipartitionAlgorithmBase {
         @Override
         public void backEdge(SearchNode from, SearchNode to) {
             //a back edge produces a circuit
-            //if nodes from and to have different colors, it iss an even circuit
+            //if nodes from and to have different colors, it is an even circuit
             if (color[graph.indexOf(from.vertex())] != color[graph.indexOf(to.vertex())]) {
                 return;
             }

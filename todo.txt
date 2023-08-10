@@ -1,3 +1,8 @@
+Parallel Prim
+https://en.wikipedia.org/wiki/Prim%27s_algorithm
+
+
+
 https://github.com/jgrapht/jgrapht
 https://github.com/kevin-wayne/algs4
 https://github.com/jrtom/jung
@@ -75,6 +80,8 @@ Finding the k-shortest path between two nodes
 	https://cs.stackexchange.com/questions/18849/finding-the-k-shortest-path-between-two-nodes
 	https://en.wikipedia.org/wiki/K_shortest_path_routing
 
+Finding and listing induced paths and cycles: https://www.sciencedirect.com/science/article/pii/S0166218X12000327
+Finding an induced path that is not a shortest path: https://web.math.princeton.edu/~pds/papers/shortestpath/paper.pdf
 
 Chordal Graphs
 generation: Linear-Time Generation of Random Chordal Graphs
@@ -112,14 +119,8 @@ https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/scoring/package-sum
 
 
 
-MST
-Boruvka Algorithm
-https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm
-
 Randomized minimum spanning tree algorithm ?
 
-Parallel Prim
-https://en.wikipedia.org/wiki/Prim%27s_algorithm
 
 Metrici si masuri specifice relatiilor sociale
 

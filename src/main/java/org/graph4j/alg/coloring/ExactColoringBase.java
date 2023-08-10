@@ -41,8 +41,9 @@ public abstract class ExactColoringBase extends SimpleGraphAlgorithm
     protected List<VertexSet> components; //connected components
     protected Set<Coloring> solutions;
     protected int solutionsLimit = 1;
+    protected boolean outputEnabled = true;
     //
-    private Clique maxClique;    
+    private Clique maxClique;
 
     public ExactColoringBase(Graph graph) {
         this(graph, null, 0);
@@ -88,48 +89,40 @@ public abstract class ExactColoringBase extends SimpleGraphAlgorithm
 
     protected abstract ColoringAlgorithm getInstance(Graph graph, long timeLimit);
 
-    /**
-     *
-     * @return {@code true} if time expired before determining the optimum.
-     */
-    public boolean isTimeExpired() {
-        return timeExpired;
-    }
-
-    /**
-     *
-     * @return the solutions limit.
-     */
-    public int getSolutionsLimit() {
-        return solutionsLimit;
-    }
-
     @Override
     public Clique getMaximalClique() {
         if (maxClique == null) {
             maxClique = new MaximalCliqueFinder(graph).getMaximalClique();
+            //maxClique = new MaximalCliqueFinder(graph).findMaximumClique(timeLimit);
+            if (outputEnabled) {
+                System.out.println("Maximal clique of size " + maxClique.size() + " found: " + maxClique);
+            }
         }
         return maxClique;
     }
 
-
     @Override
     public Coloring findColoring() {
-        this.startTime = System.currentTimeMillis();
         Coloring coloring = getHeuristicColoring();
         int upperBound = coloring.maxColorNumber();
         int lowerBound = getLowerBound();
         int i = upperBound;
         while (i >= lowerBound) {
-            System.out.println(this.getClass().getSimpleName() + ": trying " + i + " colors");
+            if (outputEnabled) {
+                System.out.println(this.getClass().getSimpleName() + ": trying " + i + " colors");
+            }
             var c = findColoring(i);
             if (c == null) {
+                if (outputEnabled) {
+                    System.out.println(timeExpired ? "\tTime expired" : "\tNo solution");
+                }
                 if (isStoppingOnFailure()) {
                     break;
                 } else {
                     i--;
                 }
             } else {
+                System.out.println("\tSolution found");
                 coloring = c;
                 i = c.maxColorNumber();
                 if (isOptimalityEnsured()) {
@@ -149,6 +142,8 @@ public abstract class ExactColoringBase extends SimpleGraphAlgorithm
      * @return all the vertex colorings of the graph.
      */
     public Set<Coloring> findAllColorings(int numColors, int solutionsLimit) {
+        this.startTime = System.currentTimeMillis();
+        this.timeExpired = false;
         if (solutionsLimit <= 0) {
             solutionsLimit = Integer.MAX_VALUE;
         }
@@ -159,6 +154,8 @@ public abstract class ExactColoringBase extends SimpleGraphAlgorithm
 
     @Override
     public Coloring findColoring(int numColors) {
+        this.startTime = System.currentTimeMillis();
+        this.timeExpired = false;
         solutionsLimit = 1;
         if (components == null) {
             components = new ConnectivityAlgorithm(graph).getConnectedSets();
@@ -198,5 +195,48 @@ public abstract class ExactColoringBase extends SimpleGraphAlgorithm
 
     //invoked if the graph is connected
     protected abstract void solve(int numColors);
+
+    /**
+     *
+     * @return {@code true} if time expired before determining the optimum.
+     */
+    public boolean isTimeExpired() {
+        return timeExpired;
+    }
+
+    protected boolean checkTime() {
+        if (timeLimit <= 0) {
+            return true;
+        }
+        if (System.currentTimeMillis() - startTime > timeLimit) {
+            timeExpired = true;
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @return the solutions limit.
+     */
+    public int getSolutionsLimit() {
+        return solutionsLimit;
+    }
+
+    /**
+     *
+     * @return {@code true} if the output of the algorithm is enabled.
+     */
+    public boolean isOutputEnabled() {
+        return outputEnabled;
+    }
+
+    /**
+     *
+     * @param outputEnabled if {@code true}, the output is enabled.
+     */
+    public void setOutputEnabled(boolean outputEnabled) {
+        this.outputEnabled = outputEnabled;
+    }
 
 }

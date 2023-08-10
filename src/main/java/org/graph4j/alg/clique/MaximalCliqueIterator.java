@@ -17,26 +17,13 @@
 package org.graph4j.alg.clique;
 
 import org.graph4j.Graph;
-import org.graph4j.util.Clique;
 
 /**
- * Iterates over all maximal cliques of a graph.
+ * Iterates over all <em>maximal</em> cliques of a graph.
  *
  * @author Cristian Frăsinaru
  */
-public interface MaximalCliqueIterator {
-
-    /**
-     *
-     * @return {@code true} if the iteration has more elements.
-     */
-    boolean hasNext();
-
-    /**
-     *
-     * @return the next element in the iteration.
-     */
-    Clique next();
+public interface MaximalCliqueIterator extends CliqueIterator {
 
     /**
      *

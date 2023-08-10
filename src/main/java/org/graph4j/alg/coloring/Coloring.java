@@ -442,7 +442,7 @@ public class Coloring {
 
     /**
      *
-     * @return the maximum color number.
+     * @return the maximum color number that was used.
      */
     public int maxColorNumber() {
         int max = -1;

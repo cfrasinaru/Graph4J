@@ -50,7 +50,7 @@ public class MaximalCliqueTest {
         int n = 10;
         var g = GraphGenerator.complete(n);
         var alg = new MaximalCliqueFinder(g);
-        var opt = alg.findMaximumClique();
+        var opt = alg.findMaximumClique(0);
         assertEquals(n, opt.size());
     }
     

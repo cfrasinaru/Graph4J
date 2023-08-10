@@ -16,7 +16,6 @@
  */
 package org.graph4j.util;
 
-import java.util.List;
 import org.graph4j.Graph;
 
 /**
@@ -45,6 +44,11 @@ public class VertexList extends VertexCollection {
     @Override
     public boolean remove(int v) {
         return super.remove(v);
+    }
+
+    @Override
+    public void removeFromPos(int pos) {
+        super.removeFromPos(pos);
     }
 
     @Override

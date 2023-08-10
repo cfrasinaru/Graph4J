@@ -27,11 +27,11 @@ import org.graph4j.generate.RandomGnpGraphGenerator;
  */
 class BronKerboschDemo extends PerformanceDemo {
 
-    private final double probability = 0.8;
+    private final double probability = 0.5;
 
     public BronKerboschDemo() {
-        numVertices = 100;
-        //runJGraphT = true;
+        numVertices = 300;
+        runJGraphT = true;
     }
 
     @Override
@@ -75,5 +75,10 @@ class BronKerboschDemo extends PerformanceDemo {
         for (int i = 0; i < steps; i++) {
             args[i] = 100 * (i + 1);
         }
+    }
+    
+    public static void main(String args[]) {
+        var alg = new BronKerboschDemo();
+        alg.demo();
     }
 }

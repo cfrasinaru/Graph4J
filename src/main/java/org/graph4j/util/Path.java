@@ -17,7 +17,6 @@
 package org.graph4j.util;
 
 import org.graph4j.Graph;
-import org.graph4j.util.CheckArguments;
 
 /**
  * A <i>path</i> is a trail with no duplicate vertices.
@@ -52,12 +51,29 @@ public class Path extends Trail {
             return false;
         }
         try {
-            CheckArguments.noDuplicates(vertices);
+            CheckArguments.noDuplicates(vertices());
             return true;
         } catch (IllegalArgumentException e) {
             System.err.println(e.getMessage());
             return false;
         }
+    }
+
+    /**
+     *
+     * @return {@code true} if the path is induced (there is no chord).
+     */
+    public boolean isInduced() {
+        for (int i = 0; i < numVertices - 2; i++) {
+            int v = vertices[i];
+            for (int j = i + 2; j < numVertices; j++) {
+                int u = vertices[j];
+                if (graph.containsEdge(v, u)) {                    
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**

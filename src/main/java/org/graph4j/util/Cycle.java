@@ -62,6 +62,28 @@ public class Cycle extends Path {
         return true;
     }
 
+    /**
+     *
+     * @return {@code true} if the cycle is induced (there is no chord).
+     */
+    @Override
+    public boolean isInduced() {
+        for (int i = 0; i < numVertices - 2; i++) {
+            int v =  vertices[i];
+            for (int j = i + 2; j < numVertices; j++) {
+                if (i == 0 && j == numVertices - 1) {
+                    continue;
+                }
+                int u =  vertices[j];
+                if (graph.containsEdge(v, u)) {
+                    System.out.println("Graph contains edge " + v + "-" + u);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public boolean isClosed() {
         return true;
@@ -86,7 +108,8 @@ public class Cycle extends Path {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj
+    ) {
         if (this == obj) {
             return true;
         }

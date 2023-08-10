@@ -23,7 +23,7 @@ import org.graph4j.alg.ordering.AcyclicOrientation;
 import org.graph4j.alg.bipartite.BipartitionAlgorithm;
 import org.graph4j.alg.connectivity.BiconnectivityAlgorithm;
 import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;
-import org.graph4j.alg.cycle.CycleDetectionAlgorithm;
+import org.graph4j.alg.cycle.CycleFinder;
 import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
 import org.graph4j.traverse.DFSIterator;
 import org.graph4j.util.CheckArguments;
@@ -42,8 +42,8 @@ public class Graphs {
      * The <i>disjoint union</i> will have all the vertices and the edges of the
      * given graphs. The vertex sets of the graphs must be pairwise disjoint.
      *
-     * @param graphs the graphs to perform disjoint union on
-     * @return a ew graph, representing the disjoint union of the given graphs
+     * @param graphs the graphs to perform disjoint union on.
+     * @return a ew graph, representing the disjoint union of the given graphs.
      */
     public static Graph disjointUnion(Graph... graphs) {
         int n = graphs.length;
@@ -78,8 +78,8 @@ public class Graphs {
      * given graphs. Vertices with the same number are contracted. If the graphs
      * have pairwise distinct vertex sets, union is the same as disjoint union.
      *
-     * @param graphs the graphs to perform union on
-     * @return a new graph, representing the union of the given graphs
+     * @param graphs the graphs to perform union on.
+     * @return a new graph, representing the union of the given graphs.
      */
     public static Graph union(Graph... graphs) {
         Set<Integer> set = new HashSet<>();
@@ -194,12 +194,12 @@ public class Graphs {
     }
 
     /**
-     * @see CycleDetectionAlgorithm
+     * @see CycleFinder
      * @param graph the input graph
      * @return {@code true} if the graph contains at least one cycle.
      */
     public static boolean containsCycle(Graph graph) {
-        return new CycleDetectionAlgorithm(graph).containsCycle();
+        return new CycleFinder(graph).containsCycle();
     }
 
     /**

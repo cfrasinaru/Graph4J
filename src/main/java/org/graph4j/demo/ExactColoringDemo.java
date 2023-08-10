@@ -18,11 +18,8 @@ package org.graph4j.demo;
 
 import org.graph4j.Graphs;
 import org.graph4j.alg.coloring.ChocoColoring;
-import org.graph4j.measures.GraphMeasures;
-import org.graph4j.alg.connectivity.BiconnectivityAlgorithm;
-import org.graph4j.alg.cycle.CycleDetectionAlgorithm;
-import org.graph4j.generate.RandomGnpGraphGenerator;
 import org.graph4j.io.DimacsIO;
+import org.graph4j.measures.GraphMeasures;
 
 /**
  *
@@ -35,18 +32,18 @@ import org.graph4j.io.DimacsIO;
  */
 class ExactColoringDemo extends PerformanceDemo {
 
-    private final double probability = 0.5;
+    private final double probability = 0.1;
     private final int timeLimit = 2 * 60 * 1000;
 
     public ExactColoringDemo() {
-        numVertices = 50;
-        //runJGraphT = true; //very slow
+        numVertices = 200;
+        runJGraphT = true; //very slow
         runOther = true; //gurobi, choco
     }
 
     @Override
     protected void createGraph() {
-        graph = new RandomGnpGraphGenerator(numVertices, probability).createGraph();
+        //graph = new RandomGnpGraphGenerator(numVertices, probability).createGraph();
         //gurobi wins: queen9_9(time), le450_5a(5<8), DSJC125.9(44<46)
         //gurobi wins: mug100_1, 1-FullIns_4, 1-Insertions_4
         //graph4j wins: school1 (time), le450_5b(time), le450_15c(22<23), r1000.5(240<252), queen10_10(11<12)
@@ -56,15 +53,15 @@ class ExactColoringDemo extends PerformanceDemo {
         //String name = "myciel6";
         //String name = "1-Insertions_4";
         //String name = "mug100_1";
-        //String name = "queen9_9";
+        String name = "queen9_9";
         //String name = "school1"; //ok
         //String name = "ash608GPIA"; //nope
         //String name = "school1";
         //String name = "DSJC125.5";
-        //String name = "r1000.1c"; //.5 choco wins
+        //String name = "r1000.5"; //.5 choco wins
         //String name = "wap01a";
         //String name = "le450_5a";
-        //graph = new DimacsIO().read("d:/datasets/coloring/instances/" + name + ".col");
+        graph = new DimacsIO().read("d:/datasets/coloring/instances/" + name + ".col");
 
         System.out.println("n=" + graph.numVertices());
         System.out.println("m=" + graph.numEdges());
@@ -73,14 +70,15 @@ class ExactColoringDemo extends PerformanceDemo {
         System.out.println("maxDegree=" + GraphMeasures.maxDegree(graph));
 
         System.out.println("connected: " + Graphs.isConnected(graph));
+        /*
         System.out.println("2-connected: " + Graphs.isBiconnected(graph));
         var alg = BiconnectivityAlgorithm.getInstance(graph);
         for (var cc : alg.getBlocks()) {
             System.out.println("block:" + cc.size());
         }
         System.out.println("bridgeless: " + Graphs.isBridgeless(graph));
-        System.out.println("cycle:" + new CycleDetectionAlgorithm(graph).findLongCycle());
-        /*
+         */
+ /*
         var bk = MaximalCliqueIterator.getInstance(graph.complement());
         int x = 0;
         while (bk.hasNext()) {
@@ -99,17 +97,28 @@ class ExactColoringDemo extends PerformanceDemo {
     }
 
     @Override
-    protected void testGraph4J() {        
+    protected void testGraph4J() {
         var alg = new org.graph4j.alg.coloring.BacktrackColoring(graph, timeLimit);
         var col = alg.findColoring();
-        System.out.println(col.numUsedColors());        
+        System.out.println(col.numUsedColors());
+        if (alg.isTimeExpired()) {
+            System.out.println("Time expired");
+        }
     }
 
     @Override
     protected void testJGraphT() {
+        /*
         var alg = new org.jgrapht.alg.color.BrownBacktrackColoring(jgrapht);
         var col = alg.getColoring();
         System.out.println(col.getNumberColors());
+         */
+        var alg = new org.graph4j.alg.coloring.GurobiAssignmentColoring(graph, timeLimit);
+        var col = alg.findColoring();
+        System.out.println(col.numUsedColors());
+        if (alg.isTimeExpired()) {
+            System.out.println("Time expired");
+        }
     }
 
     @Override
@@ -120,6 +129,9 @@ class ExactColoringDemo extends PerformanceDemo {
         var alg = new ChocoColoring(graph, timeLimit);
         var col = alg.findColoring();
         System.out.println(col.numUsedColors());
+        if (alg.isTimeExpired()) {
+            System.out.println("Time expired");
+        }
     }
 
     @Override

@@ -16,9 +16,12 @@
  */
 package org.graph4j.alg.coloring;
 
+import java.util.ArrayList;
 import org.graph4j.util.Domain;
 import java.util.Arrays;
-import org.graph4j.Graph;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A node in the backtrack coloring search tree.
@@ -27,9 +30,8 @@ import org.graph4j.Graph;
  */
 public class Node {
 
-    private final Graph graph;
-    private final boolean findAll;
-    final int vertex; //the node was created as the result of vertex = color
+    private final ExactColoringBase alg;
+    final int vertex; //this node was created as the result of vertex = color
     final int color;
     final Node parent;
     Coloring coloring;
@@ -41,18 +43,18 @@ public class Node {
 
     public Node(ExactColoringBase alg, Node parent, int vertex, int color, Domain[] domains, Coloring coloring,
             boolean removeSymmetricalColors) {
-        this.graph = alg.getGraph();
+        this.alg = alg;
         this.parent = parent;
         this.vertex = vertex;
         this.color = color;
         this.domains = domains;
         this.coloring = coloring;
-        this.findAll = alg.getSolutionsLimit() > 1;
         this.removeSymmetricalColors = removeSymmetricalColors;
     }
 
     public void prepare() {
         //find the domain with the minimum size
+        var graph = alg.getGraph();
         int minSize = Integer.MAX_VALUE;
         minDomain = null;
 
@@ -78,7 +80,7 @@ public class Node {
             minDomain = new Domain(minDomain);
             this.domains[graph.indexOf(minDomain.vertex())] = minDomain;
             //remove symmetrical colors from minDomain
-            if (!findAll && removeSymmetricalColors) {
+            if (alg.getSolutionsLimit() == 1 && removeSymmetricalColors) {
                 removeSymmetricalColors();
             }
             //trace();
@@ -86,28 +88,36 @@ public class Node {
     }
 
     private void trace() {
-        var sb = new StringBuilder();
+        List<Node> list = new ArrayList<>();
         var temp = this;
         while (temp != null) {
-            sb.append(temp.minDomain.vertex()).append(" - ");
+            list.add(temp);
             temp = temp.parent;
         }
-        System.out.println(sb.reverse());
+        Collections.reverse(list);
+        var sb = new StringBuilder();
+        for (Node node : list) {
+            sb.append(node.vertex).append("=").append(node.color).append("->").append(node.minDomain.vertex()).append(" - ");
+        }
+        System.out.println(sb.toString() + ": " + minDomain);
     }
 
-    //remove from minDomain all colors that have not been used before
+    //Remove from D=minDomain all colors that have not been used before
     //except one (free color)
+    //AND
+    //Two colors a and b in D are symmetrical
+    //if all other domains containing a, contain also b and vice-versa
+    //In this case, remove one of them from D
+    //if a solution uses a from D, there is another solution 
+    //where a can be replaced with b in the subgraph induced by this node
     private void removeSymmetricalColors() {
         int free = -1;
         int i = 0;
-        int count = 0;
         while (i < minDomain.size()) {
             int c = minDomain.valueAt(i);
             if (!coloring.isColorUsed(c)) {
-                //if (coloring.uncoloredNeighbors(c) == 0) {
                 if (free >= 0) {
                     minDomain.removeAtPos(i);
-                    count++;
                 } else {
                     free = i;
                 }
@@ -117,6 +127,40 @@ public class Node {
         //put the free color so it will be chosen last
         if (free > 0) {
             minDomain.swapPos(0, free);
+        }
+        //second part
+        //System.out.println("=================================================");
+        //System.out.println("minDomain=" + minDomain);
+        //System.out.println("coloring=" + coloring);
+
+        i = 0;
+        nexta:
+        while (i < minDomain.size() - 1) {
+            int a = minDomain.valueAt(i);
+            for (int j = i + 1, k = minDomain.size(); j < k; j++) {
+                int b = minDomain.valueAt(j);
+                //System.out.println("\tChecking if " + a + " is dominated by " + b);
+                for (var dom : domains) {
+                    if (dom == minDomain || dom.size() == 1) {
+                        continue;
+                    }
+                    boolean ok1 = dom.contains(a);
+                    boolean ok2 = dom.contains(b);
+                    if ((ok1 && !ok2) || (ok2 && !ok1)) {
+                        i++;
+                        continue nexta;
+                    }
+                    //System.out.println("\t\t" + dom);
+                }
+                minDomain.removeAtPos(i);
+                //System.out.println("\t -----> OK");
+                i++;
+                break;
+            }
+        }
+
+        if (minDomain.size() == 1) {
+            coloring.setColor(minDomain.vertex(), minDomain.valueAt(0));
         }
     }
 
@@ -151,6 +195,16 @@ public class Node {
      */
     public Node parent() {
         return parent;
+    }
+
+    public FailedState getState() {
+        List<Domain> list = new ArrayList<>();
+        for (int i = 0; i < domains.length; i++) {
+            if (domains[i].size() > 1) {
+                list.add(domains[i]);
+            }
+        }
+        return new FailedState(minDomain.vertex(), list);
     }
 
     @Override

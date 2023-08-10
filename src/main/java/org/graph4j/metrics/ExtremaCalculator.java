@@ -23,7 +23,7 @@ import org.graph4j.traverse.BFSIterator;
 import org.graph4j.util.VertexSet;
 
 /**
- * Calculates radius or diameter or center or periphery of a graph.
+ * Calculates radius or diameter or center or periphery of an unweighted graph.
  *
  * [1] F. W. Takes, W. A. Kosters, "Determining the diameter of small world
  * networks." Proceedings of the 20th ACM international conference on
@@ -38,8 +38,7 @@ import org.graph4j.util.VertexSet;
  * real-world graphs: With an application to the six degrees of separation
  * games. " Theoretical Computer Science, 2015
  * https://www.sciencedirect.com/science/article/pii/S0304397515001644
- * 
- * TODO: special treatment for vertices of degree one and two (?)
+ *
  *
  * @author Cristian Frăsinaru
  */
@@ -64,7 +63,7 @@ public class ExtremaCalculator extends GraphAlgorithm {
     public ExtremaCalculator(Graph graph) {
         super(graph);
     }
-    
+
     /**
      *
      * @return the diameter of the graph.
@@ -179,7 +178,7 @@ public class ExtremaCalculator extends GraphAlgorithm {
                 if (eccUB[wi] > newEccUB) {
                     eccUB[wi] = newEccUB;
                 }
-                
+
                 //removing vertices
                 if (eccLB[wi] == eccUB[wi]
                         || (extremaType == Type.DIAMETER

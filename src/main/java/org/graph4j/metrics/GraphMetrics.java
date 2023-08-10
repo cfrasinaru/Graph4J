@@ -16,14 +16,12 @@
  */
 package org.graph4j.metrics;
 
-import org.graph4j.alg.cycle.CycleDetectionAlgorithm;
+import org.graph4j.alg.cycle.CycleFinder;
 import java.util.Arrays;
 import org.graph4j.util.Cycle;
 import org.graph4j.Graph;
 import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.measures.GraphMeasures;
 import org.graph4j.util.VertexSet;
-import org.graph4j.alg.sp.FloydWarshallShortestPath;
 import org.graph4j.traverse.BFSIterator;
 import org.graph4j.util.CheckArguments;
 
@@ -61,7 +59,7 @@ public class GraphMetrics extends GraphAlgorithm {
         if (girth != null) {
             return girth;
         }
-        Cycle cycle = new CycleDetectionAlgorithm(graph).findShortestCycle();
+        Cycle cycle = new CycleFinder(graph).findShortestCycle();
         girth = cycle != null ? cycle.length() : Integer.MAX_VALUE;
         return girth;
     }
@@ -121,7 +119,7 @@ public class GraphMetrics extends GraphAlgorithm {
      * @param v a vertex number
      * @param u a vertex number
      * @return the distance between v and u, or <code>Integer.MAX_VALUE</code>
-     * if there is no path from v to u
+     * if there is no path from v to u.
      */
     public int distance(int v, int u) {
         if (dist != null) {
@@ -280,4 +278,29 @@ public class GraphMetrics extends GraphAlgorithm {
         return set;
     }
 
+    /**
+     * The <em>average path length</em> is the average distance (number of edges
+     * along the shortest path) for all possible pairs of distinct vertices. It
+     * is computed as the sum of distances d(v,u) between all pairs of distinct
+     * vertices (assuming d(v,u) = 0 if v and u are not connected) normalized by
+     * the total number of paths n*(n-1), where n is the number of vertices in
+     * G.
+     *
+     * @return the average path length.
+     */
+    public double averagePathLength() {
+        if (dist == null) {
+            dist = new DistancesCalculator(graph).calculate();
+        }
+        int n = graph.numVertices();
+        double sum = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (dist[i][j] != Integer.MAX_VALUE) {
+                    sum += dist[i][j];
+                }
+            }
+        }
+        return sum / (n * (n - 1));
+    }
 }

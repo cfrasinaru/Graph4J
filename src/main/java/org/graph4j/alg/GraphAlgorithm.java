@@ -19,12 +19,11 @@ package org.graph4j.alg;
 import org.graph4j.Graph;
 
 /**
- * Accepts any graph as input, directed or not.
+ * Represents an algorithm that accepts any graph as input, directed or not.
  *
  * For example, DFS or BFS traversal algorithms are implemented exactly the
  * same, regardless the fact that the graph is directed or not, by inspecting
- * the adjacency lists of the vertices provided by the {@link Graph} data
- * type.
+ * the adjacency lists of the vertices provided by the {@link Graph} data type.
  *
  * @author Cristian Frăsinaru
  */
@@ -34,12 +33,22 @@ public abstract class GraphAlgorithm {
     protected final boolean directed;
 
     /**
+     * Constructs an algorithm which will be executed on the input graph.
      *
      * @param graph the input graph.
      */
     public GraphAlgorithm(Graph graph) {
         this.graph = graph;
         this.directed = graph.isDirected();
+    }
+
+    /**
+     * Returns the input graph on which the algorithm is executed.
+     *
+     * @return the input graph.
+     */
+    public Graph getGraph() {
+        return graph;
     }
 
 }

@@ -20,14 +20,16 @@ import org.graph4j.Graph;
 import org.graph4j.util.VertexHeap;
 
 /**
- * {@inheritDoc}
+ * Implementation of Dijkstra's algorithm that uses a heap in order to select
+ * the optimal vertex at each step.
  *
- * <p>
- * This implementation uses a heap in order to select the optimal vertex at each
- * step, having a complexity of O(m log n), where m is the number of edges and n
- * the number of vertices.
+ * The complexity of this implmentation is O(m log n), where m is the number of
+ * edges and n the number of vertices.
  *
  * Suitable for sparse graphs.
+ *
+ * <p>
+ * {@inheritDoc}
  *
  * @author Cristian Frăsinaru
  */

@@ -1233,7 +1233,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
     public Graph<V, E> subgraph(EdgeSet edgeSet) {
         int[] subVertices = edgeSet.vertices();
         int n = subVertices.length;
-        int deg = 1 + (edgeSet.size() / n);
+        int deg = 1 + (n > 0 ? edgeSet.size() / n : 0);
         var sub = newInstance(subVertices, n, deg, directed, allowingMultipleEdges, allowingSelfLoops);
         for (int v : subVertices) {
             int vi = indexOf(v);

@@ -16,6 +16,7 @@
  */
 package org.graph4j.alg.sp;
 
+import org.graph4j.Graph;
 import org.graph4j.util.Path;
 
 /**
@@ -23,6 +24,12 @@ import org.graph4j.util.Path;
  * @author Cristian Frăsinaru
  */
 public interface AllPairsShortestPath {
+
+    /**
+     *
+     * @return the input graph.
+     */
+    Graph getGraph();
 
     /**
      * Returns the shortest path between source and target. On the first
@@ -49,4 +56,23 @@ public interface AllPairsShortestPath {
         return findPath(source, target).computeEdgesWeight();
     }
 
+    /**
+     * Returns a matrix containing the weights of the shortest paths for every
+     * pair of vertices.
+     *
+     * @return a matrix containing the weights of the shortest paths for every
+     * pair of vertices.
+     */
+    default double[][] getPathWeights() {
+        //this implementation is not efficient and it usually overridden
+        var g = getGraph();
+        int n = g.numVertices();
+        double[][] weights = new double[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                weights[i][j] = getPathWeight(g.vertexAt(i), g.vertexAt(j));
+            }
+        }
+        return weights;
+    }
 }

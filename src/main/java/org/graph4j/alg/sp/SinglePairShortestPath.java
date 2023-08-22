@@ -30,6 +30,12 @@ import org.graph4j.util.Path;
 public interface SinglePairShortestPath {
 
     /**
+     *
+     * @return the input graph.
+     */
+    Graph getGraph();
+
+    /**
      * Returns the shortest path between source and target.
      *
      * @return the shortest path from the source to the target, or null if no

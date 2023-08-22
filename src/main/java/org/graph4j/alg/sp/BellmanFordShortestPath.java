@@ -25,12 +25,11 @@ import org.graph4j.util.VertexList;
 import org.graph4j.util.CheckArguments;
 
 /**
- * Bellman-Ford-Moore's algorithm finds the minimum cost paths between a vertex
- * and all the other vertices in a graph, with the condition that there are no
- * cycles of negative weight. The cost of a path is the sum of its edges
- * weights.
+ * Bellman-Ford-Moore's algorithm finds the shortest paths between a source
+ * vertex and all the other vertices in a graph. It allows some of the edge
+ * weights to be negative numbers, but no negative-weight cycles may exist.
  *
- * The complexity of this implementation is O(n m), where m is the number of
+ * The complexity of this implementation is O(nm), where m is the number of
  * edges and n the number of vertices.
  *
  * @author Cristian Frăsinaru
@@ -78,6 +77,14 @@ public class BellmanFordShortestPath extends GraphAlgorithm
             compute();
         }
         return cost[graph.indexOf(target)];
+    }
+
+    @Override
+    public double[] getPathWeights() {
+        if (cost == null) {
+            compute();
+        }
+        return cost;
     }
 
     //computes the paths and stores them in the map

@@ -29,6 +29,12 @@ public interface SingleSourceShortestPath {
 
     /**
      *
+     * @return the input graph.
+     */
+    Graph getGraph();
+
+    /**
+     *
      * @return the source of the paths
      */
     int getSource();
@@ -71,6 +77,24 @@ public interface SingleSourceShortestPath {
         //this implementation is not efficient and it usually overridden
         Path path = findPath(target);
         return path != null ? path.computeEdgesWeight() : Double.POSITIVE_INFINITY;
+    }
+
+    /**
+     * Returns an array containing the weights of the shortest paths from the
+     * source to all vertices.
+     *
+     * @return an array containing the weights of the shortest paths from the
+     * source to all vertices.
+     */
+    default double[] getPathWeights() {
+        //this implementation is not efficient and it usually overridden
+        var g = getGraph();
+        int n = g.numVertices();
+        double[] weights = new double[n];
+        for (int i = 0; i < n; i++) {
+            weights[i] = getPathWeight(g.vertexAt(i));
+        }
+        return weights;
     }
 
     /**

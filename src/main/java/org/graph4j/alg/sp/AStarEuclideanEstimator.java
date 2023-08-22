@@ -1,7 +1,8 @@
 package org.graph4j.alg.sp;
 
 /**
- * 
+ * Euclidean distance.
+ *
  * @author Cristian Ivan
  * @author Cristian Frăsinaru
  */
@@ -14,9 +15,9 @@ public class AStarEuclideanEstimator implements AStarEstimator {
     }
 
     @Override
-    public double estimate(int current, int target) {
-        int x1 = current / gridSize;
-        int y1 = current % gridSize;
+    public double estimate(int vertex, int target) {
+        int x1 = vertex / gridSize;
+        int y1 = vertex % gridSize;
 
         int x2 = target / gridSize;
         int y2 = target % gridSize;

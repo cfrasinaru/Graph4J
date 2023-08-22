@@ -23,7 +23,14 @@ import org.graph4j.util.Path;
 import org.graph4j.alg.GraphAlgorithm;
 
 /**
+ * Floyd-Warshall's algorithm finds the shortest paths between all pairs of
+ * vertices in an edge-weighted directed graph. It allows some of the edge
+ * weights to be negative numbers, but no negative-weight cycles may exist.
  *
+ * It has a complexity of O(n^3). It is best suited for dense graphs. In case of
+ * sparse graphs {@link JohnsonShortestPath} algorithm may perform better.
+ *
+ * @see JohnsonShortestPath
  * @author Cristian Frăsinaru
  */
 public class FloydWarshallShortestPath extends GraphAlgorithm
@@ -60,6 +67,18 @@ public class FloydWarshallShortestPath extends GraphAlgorithm
             }
         }
         return cost[graph.indexOf(source)][graph.indexOf(target)];
+    }
+
+    @Override
+    public double[][] getPathWeights() {
+        if (cost == null) {
+            if (directed) {
+                computeAll();
+            } else {
+                computeWeights();
+            }
+        }
+        return cost;
     }
 
     private void initBefore() {

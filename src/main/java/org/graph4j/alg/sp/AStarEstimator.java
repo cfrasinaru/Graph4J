@@ -12,9 +12,9 @@ public interface AStarEstimator {
     /**
      * Estimates the cost to reach the target from the given node.
      *
-     * @param current The current vertex index.
+     * @param vertex The current vertex index.
      * @param target The target vertex index.
      * @return The estimated cost to reach the target.
      */
-    double estimate(int current, int target);
+    double estimate(int vertex, int target);
 }

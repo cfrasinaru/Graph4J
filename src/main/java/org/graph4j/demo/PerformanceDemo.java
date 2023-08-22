@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import org.graph4j.Graph;
 import org.graph4j.util.Tools;
 
@@ -73,6 +74,7 @@ abstract class PerformanceDemo {
     protected int[] args; //arguments: number of vertices, degrees
     protected Map<String, List<Long>> timeMap = new HashMap<>();
     protected Map<String, List<Long>> memoryMap = new HashMap<>();
+    protected Random random = new Random();
 
     public void singleRun(Runnable snippet, String key) {
         run(snippet, true, key);

@@ -88,6 +88,14 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
         return cost[graph.indexOf(target)];
     }
 
+    @Override
+    public double[] getPathWeights() {
+        if (cost == null) {
+            compute(-1);
+        }
+        return cost;
+    }
+
     protected void preCompute() {
     }
 

@@ -17,7 +17,7 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
+import org.graph4j.GraphBuilder;
 import org.graph4j.Graphs;
 import org.graph4j.alg.coloring.BacktrackColoring;
 import org.graph4j.alg.coloring.GurobiAssignmentColoring;
@@ -26,13 +26,11 @@ import org.graph4j.alg.coloring.bw.GurobiBandwithColoring;
 import org.graph4j.alg.coloring.bw.GurobiOptBandwithColoring;
 import org.graph4j.alg.coloring.eq.GurobiAssignmentEquitableColoring;
 import org.graph4j.alg.coloring.eq.GurobiStableModelEquitableColoring;
-import org.graph4j.alg.sp.AStarAlgorithm;
-import org.graph4j.alg.sp.AStarEuclideanEstimator;
+import org.graph4j.alg.sp.FloydWarshallShortestPath;
+import org.graph4j.alg.sp.JohnsonShortestPath;
 import org.graph4j.generate.EdgeWeightsGenerator;
 import org.graph4j.generate.GraphGenerator;
 import org.graph4j.io.DimacsIO;
-import org.graph4j.measures.GraphMeasures;
-import org.graph4j.metrics.GraphMetrics;
 
 /**
  * Driver class for running the comparisons with other libraries.
@@ -42,7 +40,7 @@ import org.graph4j.metrics.GraphMetrics;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        var app = new Main();
+        //var app = new Main();
         //var app = new ExactBandwithColoringDemo();
         //var app = new ExactEquitableColoringDemo();
         //var app = new ExactColoringDemo();        
@@ -64,6 +62,7 @@ public class Main {
         //var app = new ConnectivityDemo();
         //var app = new EulerianCircuitDemo();
         //var app = new BellmanFordDemo();
+        var app = new JohnsonDemo();
         //var app = new FloydWarshallDemo();
         //var app = new BidirectionalDijkstraDemo();
         //var app = new DijkstraDemo2();
@@ -93,12 +92,14 @@ public class Main {
     }
 
     private void test() {
+        /*
         int n = 4;
         var g = GraphGenerator.grid(n, n);
         System.out.println(g);
         EdgeWeightsGenerator.randomDoubles(g, 0, 1);
         var alg = new AStarAlgorithm(g, 0, g.numVertices() - 1, new AStarEuclideanEstimator(n));
         System.out.println(alg.findPath());
+         */
     }
 
     private void test0() {

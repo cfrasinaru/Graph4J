@@ -21,6 +21,7 @@ https://networkit.github.io/index.html
 C++
 BGL https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
 KOALA https://github.com/krzysztof-turowski/koala-networkit
+Lemon https://lemon.cs.elte.hu/trac/lemon
 
 .NET
 https://github.com/YaccConstructor/QuickGraph/tree/master/src/QuickGraph/Algorithms
@@ -139,7 +140,6 @@ Planarity
 
 
 Uniform Cost Search
-Johnson's All-Pairs Shortest Paths
 Dynamic Connected Components (using Disjoint Sets)
 Reverse Cuthill Mckee Ordering
 Smallest Last Vertex Ordering

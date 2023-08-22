@@ -1,4 +1,4 @@
 /**
- * Algorithms related to shortest paths, such as Dijkstra's, Bellman-Ford and Floyd-Warshall.
+ * Algorithms related to shortest paths, such as Dijkstra, Bellman-Ford, Floyd-Warshall, etc.
  */
 package org.graph4j.alg.sp;

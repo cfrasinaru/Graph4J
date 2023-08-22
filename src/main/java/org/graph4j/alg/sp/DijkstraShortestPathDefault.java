@@ -19,14 +19,15 @@ package org.graph4j.alg.sp;
 import org.graph4j.Graph;
 
 /**
- * {@inheritDoc}
+ * Implementation of Dijkstra's algorithm that iterates through the unsolved
+ * vertices in order to select the optimal vertex at each step.
  *
- * <p>
- * This implementation iterates through the unsolved vertices in order to select
- * the optimal vertex at each step, having a complexity of O(n^2), where n is
- * the number of vertices.
+ * The complexity is of O(n^2), where n is the number of vertices.
  *
  * Suitable for dense graphs.
+ *
+ * <p>
+ * {@inheritDoc}
  *
  * @author Cristian Frăsinaru
  */

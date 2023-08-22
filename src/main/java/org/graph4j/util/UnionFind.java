@@ -19,7 +19,18 @@ package org.graph4j.util;
 import java.util.Arrays;
 
 /**
- * The elements of this data structure are graph vertex indices.
+ * A <em>union-find</em> data structure (also called <em>disjoint-set</em> or
+ * <em>merge–find</em>) stores a collection of disjoint (non-overlapping) sets.
+ * The elements of this data structure are graph vertex indices. Initially, all
+ * the vertices are added as singletons (one element sets).
+ *
+ *
+ * <p>
+ * The time complexity of the {@link #union(int, int) } operation is
+ * <em>O(1)</em>, while {@link #find(int)} has a complexity <em>O(a(n))</em>
+ * where <em>a</em> is is the inverse Ackermann function. The inverse Ackermann
+ * function grows extremely slow, so this factor is 4 or less for practical
+ * values of n.
  *
  * @author Cristian Frăsinaru
  */
@@ -30,6 +41,9 @@ public class UnionFind {
     private int numSets;
 
     /**
+     * Creates a union-find data structures having <code>numVertices</code>
+     * singleton sets, each containing one vertex index, from <code>0</code> to
+     * <code>numVertices-1</code>.
      *
      * @param numVertices the number of vertices in the graph.
      */
@@ -41,6 +55,9 @@ public class UnionFind {
     }
 
     /**
+     * Finds the root of the set containing the given vertex index. The root of
+     * a set S is the vertex index r such parent[vi]=r for all vi in S. The
+     * method performs also path compression.
      *
      * @param vi a vertex index.
      * @return the root of the set containing vi.
@@ -65,6 +82,8 @@ public class UnionFind {
     }
 
     /**
+     * Performs the union of the two sets represented by root1 and root2. The
+     * new set is represented by the root of the set containing more elements.
      *
      * @param root1 the root of the first set.
      * @param root2 the root of the second set.
@@ -85,6 +104,7 @@ public class UnionFind {
     }
 
     /**
+     * Returns the number of disjoint sets in the data structure.
      *
      * @return the number of sets.
      */

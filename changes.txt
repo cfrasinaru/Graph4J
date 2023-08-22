@@ -1,4 +1,5 @@
 1.0.6
+	-Johnson's algorithm for determining all pairs shortes paths: JohnsonShortestPath
 	-A* algorithm for determining the shortest path using a distance heursitic: AStarAlgorithm
 	-Iterators over all cliques, with min and max size, DFS or BFS: DFSCliqueIterator, BFSCliqueIterator
 	-ILP (Gurobi) implementation of the stable set model for equitable coloring: GurobiStableModelEquitableColoring

@@ -1,6 +1,8 @@
 package org.graph4j.alg.sp;
 
 /**
+ * Manhattan distance.
+ *
  * @author Cristian Ivan
  * @author Cristian Frăsinaru
  */
@@ -13,9 +15,9 @@ public class AStarManhattanEstimator implements AStarEstimator {
     }
 
     @Override
-    public double estimate(int currentVertex, int target) {
-        int x1 = currentVertex / gridSize;
-        int y1 = currentVertex % gridSize;
+    public double estimate(int vertex, int target) {
+        int x1 = vertex / gridSize;
+        int y1 = vertex % gridSize;
 
         int x2 = target / gridSize;
         int y2 = target % gridSize;

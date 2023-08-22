@@ -9,6 +9,12 @@ import org.graph4j.util.VertexHeap;
 import java.util.Arrays;
 
 /**
+ * A* algorithm finds the shortest path from a specified source vertex to a
+ * specified target vertex. The algorithm is guided by a heuristic function h(v)
+ * that estimates the distance from the vertex v to the target.
+ *
+ * Dijkstra's algorithm can be viewd as a special case of A* where no heuristic
+ * function is available: h(v)=0, for all v.
  *
  * @author Cristian Ivan
  * @author Cristian Frăsinaru

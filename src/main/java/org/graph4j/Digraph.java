@@ -175,7 +175,7 @@ public interface Digraph<V, E> extends Graph<V, E> {
      * @return an iterator over the predecessors of v.
      */
     default PredecessorIterator predecessorIterator(int v) {
-        return predecesorIterator(v, -1);
+        return predecessorIterator(v, -1);
     }
 
     /**
@@ -188,7 +188,7 @@ public interface Digraph<V, E> extends Graph<V, E> {
      * @return an iterator over the successors of v, starting from a specified
      * position in the predecessors adjacency list of v.
      */
-    PredecessorIterator predecesorIterator(int v, int pos);
+    PredecessorIterator predecessorIterator(int v, int pos);
 
     /**
      *

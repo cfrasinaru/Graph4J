@@ -43,6 +43,16 @@ public class VertexHeap implements Iterable<Integer> {
      * @param comparator a comparator for vertices.
      */
     public VertexHeap(Graph graph, IntComparator comparator) {
+        this(graph, true, comparator);
+    }
+
+    /**
+     *
+     * @param graph the graph the vertices of the heap belong to.
+     * @param comparator a comparator for vertices.
+     * @param addAll add all graph vertices in the heap.
+     */
+    public VertexHeap(Graph graph, boolean addAll, IntComparator comparator) {
         if (comparator == null) {
             throw new IllegalArgumentException(
                     "The comparator cannot be null");
@@ -53,8 +63,10 @@ public class VertexHeap implements Iterable<Integer> {
         this.positions = new int[n];
         this.keys[0] = Integer.MIN_VALUE;
         this.comparator = comparator;
-        for (int i = 0; i < n; i++) {
-            add(i);
+        if (addAll) {
+            for (int i = 0; i < n; i++) {
+                add(i);
+            }
         }
     }
 
@@ -89,6 +101,15 @@ public class VertexHeap implements Iterable<Integer> {
     @Override
     public Iterator<Integer> iterator() {
         return new VertexHeapIterator();
+    }
+
+    /**
+     *
+     * @param key a vertex index.
+     * @return {@code true} if the key is contained in the heap.
+     */
+    public boolean contains(int key) {
+        return positions[key] > 0;
     }
 
     /**
@@ -164,12 +185,34 @@ public class VertexHeap implements Iterable<Integer> {
         if (pos <= 1) {
             return false; //is top or does not exist
         }
+        updateAtPos(pos);
+        return true;
+    }
+
+    private void updateAtPos(int pos) {
         int parent = pos >> 1;
         if (compareTo(pos, parent) < 0) {
             siftUp(pos);
         } else {
             siftDown(pos);
         }
+    }
+
+    /**
+     *
+     * @param key the index of a vertex.
+     * @return {@code true} if the heap has changed.
+     */
+    public boolean addOrUpdate(int key) {
+        int pos = positions[key];
+        if (pos == 1) {
+            return false;
+        }
+        if (pos < 1) {
+            add(key);
+            return true;
+        }
+        updateAtPos(pos);
         return true;
     }
 
@@ -181,6 +224,8 @@ public class VertexHeap implements Iterable<Integer> {
         positions[keys[pos1]] = pos1;
     }
 
+    //swapping a node with its parent, and repeating the process on the parent 
+    //until the root is reached or the heap property is satisfied.
     private void siftUp(int pos) {
         int parent = pos >> 1;
         while (parent > 0 && compareTo(pos, parent) < 0) {
@@ -190,13 +235,16 @@ public class VertexHeap implements Iterable<Integer> {
         }
     }
 
+    //moves the value down the tree by successively exchanging the value with the smaller of its two children;
+    //the operation continues until the value reaches a position where it is less than both its children, 
+    //or, failing that, until it reaches a leaf.
     private void siftDown(int pos) {
         if (pos > size >> 1) {
             //is leaf
             return;
         }
-        int leftChildPos = 2 * pos;
-        int rightChildPos = 2 * pos + 1;
+        int leftChildPos = pos << 1;
+        int rightChildPos = (pos << 1) + 1;
         if (compareTo(pos, leftChildPos) <= 0 && compareTo(pos, rightChildPos) <= 0) {
             return;
         }
@@ -213,12 +261,13 @@ public class VertexHeap implements Iterable<Integer> {
     }
 
     private int compareTo(int pos1, int pos2) {
+        /*
         if (pos1 > size) {
             return 1; //??
         }
         if (pos2 > size) {
             return -1;//??
-        }
+        }*/
         return comparator.compareTo(keys[pos1], keys[pos2]);
     }
 
@@ -249,6 +298,7 @@ public class VertexHeap implements Iterable<Integer> {
         }
         sb.append("]");
         return sb.toString();
+
     }
 
     private class VertexHeapIterator implements Iterator<Integer> {

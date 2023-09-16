@@ -21,6 +21,7 @@ import org.graph4j.util.Cycle;
 import org.graph4j.Graph;
 import org.graph4j.util.Path;
 import org.graph4j.alg.GraphAlgorithm;
+import org.graph4j.util.CheckArguments;
 
 /**
  * Floyd-Warshall's algorithm finds the shortest paths between all pairs of
@@ -46,6 +47,8 @@ public class FloydWarshallShortestPath extends GraphAlgorithm
 
     @Override
     public Path findPath(int source, int target) {
+        CheckArguments.graphContainsVertex(graph, source);
+        CheckArguments.graphContainsVertex(graph, target);
         if (before == null) {
             computeAll();
         }
@@ -59,6 +62,8 @@ public class FloydWarshallShortestPath extends GraphAlgorithm
 
     @Override
     public double getPathWeight(int source, int target) {
+        CheckArguments.graphContainsVertex(graph, source);
+        CheckArguments.graphContainsVertex(graph, target);        
         if (cost == null) {
             if (directed) {
                 computeAll();
@@ -84,15 +89,6 @@ public class FloydWarshallShortestPath extends GraphAlgorithm
     private void initBefore() {
         int n = graph.numVertices();
         this.before = new int[n][n];
-        /*
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                before[i][j] = i;
-            }
-        }
-        for (int i = 0; i < n; i++) {
-            before[i][i] = -1;
-        }*/
         for (int i = 0; i < n; i++) {
             Arrays.fill(before[i], -1);
         }

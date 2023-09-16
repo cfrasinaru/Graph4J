@@ -33,9 +33,9 @@ public class VertexSeparatorTest {
     @Test
     public void greedyRandom() {
         var g = GraphGenerator.randomGnp(20, Math.random());
-        var alg = new GreedyVertexSeparator(g);
         int maxShoreSize = 1 + new Random().nextInt(g.numVertices() - 3);
-        var sep = alg.getSeparator(maxShoreSize);
+        var alg = new GreedyVertexSeparator(g, maxShoreSize);
+        var sep = alg.getSeparator();
         var rest = new VertexSet(g, g.vertices());
         rest.removeAll(sep.separator().vertices());
         if (!sep.rightShore().isEmpty()) {

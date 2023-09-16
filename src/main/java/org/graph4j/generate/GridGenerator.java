@@ -31,6 +31,9 @@ import org.graph4j.GraphBuilder;
  * The grid graph is sometimes denoted L(m,n). It has has mn vertices and
  * (m-1)n+(n-1)m=2mn-m-n edges.
  *
+ * <p>
+ * Vertices are numbered from left to right and from top to bottom.
+ *
  * @author Cristian Frăsinaru
  */
 public class GridGenerator extends AbstractGraphGenerator {
@@ -38,7 +41,6 @@ public class GridGenerator extends AbstractGraphGenerator {
     private final int rows, cols;
 
     /**
-     *
      * @param rows the number of rows.
      * @param cols the number of columns.
      */
@@ -84,7 +86,7 @@ public class GridGenerator extends AbstractGraphGenerator {
             }
         }
 
-        //add horizontal lines
+        //add vertical lines
         for (int j = 0; j < cols; j++) {
             for (int i = 0; i < rows - 1; i++) {
                 int v = i * cols + j;

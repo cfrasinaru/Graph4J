@@ -29,7 +29,7 @@ public class SearchNode {
     private final int vertex;
     private final int level;
     private final int order;
-    private final SearchNode parent;
+    private final SearchNode parent;    
 
     /**
      *

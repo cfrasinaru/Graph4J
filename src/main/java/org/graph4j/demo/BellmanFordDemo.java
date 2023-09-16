@@ -28,15 +28,17 @@ import org.graph4j.generate.RandomGnpGraphGenerator;
  */
 class BellmanFordDemo extends PerformanceDemo {
 
+    private final double probability = 0.2;
+
     public BellmanFordDemo() {
-        numVertices = 500;
+        numVertices = 1000;
         runJGraphT = true;
         runAlgs4 = true;
     }
 
     @Override
     protected void createGraph() {
-        graph = new RandomGnpGraphGenerator(numVertices, 0.2).createDigraph();
+        graph = new RandomGnpGraphGenerator(numVertices, probability).createDigraph();
         //EdgeWeightsGenerator.randomIntegers(graph, 1, 1000);
         //graph = new CompleteGraphGenerator(numVertices).createDigraph();
         EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
@@ -76,5 +78,9 @@ class BellmanFordDemo extends PerformanceDemo {
         for (int i = 0; i < steps; i++) {
             args[i] = 500 * (i + 1);
         }
+    }
+    
+    public static void main(String args[]) {
+        new BellmanFordDemo().demo();
     }
 }

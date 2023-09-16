@@ -35,7 +35,7 @@ public class GraphMetricsTest {
         //https://mathworld.wolfram.com/GraphRadius.html
         var g = GraphBuilder.vertexRange(1, 7).addEdges("1-2,2-3,2-4,2-5,4-6,5-7").buildGraph();
         var gm = new GraphMetrics(g);
-        assertArrayEquals(new int[]{3, 2, 3, 3, 3, 4, 4}, gm.eccentricities());
+        assertArrayEquals(new double[]{3, 2, 3, 3, 3, 4, 4}, gm.eccentricities());
         assertEquals(4, gm.diameter());
         assertEquals(2, gm.radius());
         assertEquals(Integer.MAX_VALUE, gm.girth());
@@ -49,7 +49,7 @@ public class GraphMetricsTest {
         //https://cs.stackexchange.com/questions/73698/example-of-pseudo-peripheral-vertex-which-is-not-peripheral-vertex
         var g = GraphBuilder.vertexRange(1, 9).addPath(1, 2, 3, 4, 5, 6, 7).addEdges("8-2,8-6,9-2,9-6").buildGraph();
         var gm = new GraphMetrics(g);
-        assertArrayEquals(new int[]{4, 3, 4, 3, 4, 3, 4, 3, 3}, gm.eccentricities());
+        assertArrayEquals(new double[]{4, 3, 4, 3, 4, 3, 4, 3, 3}, gm.eccentricities());
         assertEquals(4, gm.diameter());
         assertEquals(3, gm.radius());
         assertEquals(4, gm.girth());

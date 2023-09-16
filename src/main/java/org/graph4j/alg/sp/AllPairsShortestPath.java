@@ -20,12 +20,16 @@ import org.graph4j.Graph;
 import org.graph4j.util.Path;
 
 /**
+ * A contract for all-pairs shortest path algorithms.
  *
+ * @see JohnsonShortestPath
+ * @see FloydWarshallShortestPath
  * @author Cristian Frăsinaru
  */
 public interface AllPairsShortestPath {
 
     /**
+     * Returns the input graph on which the algorithm is executed.
      *
      * @return the input graph.
      */
@@ -75,4 +79,18 @@ public interface AllPairsShortestPath {
         }
         return weights;
     }
+
+    /**
+     * Returns the default implementation of this interface.
+     *
+     * @param graph the input graph.
+     * @return the default implementation of this interface.
+     */
+    static AllPairsShortestPath getInstance(Graph graph) {
+        if (!graph.isEdgeWeighted()) {
+            return new BFSAllPairsShortestPath(graph);
+        }
+        return new JohnsonShortestPath(graph);
+    }
+
 }

@@ -20,16 +20,16 @@ import org.graph4j.Graph;
 import org.graph4j.util.Path;
 
 /**
- * Find a shortest path from s to t, for given vertices s and t. If we solve the
- * single-source problem with source vertex s, we solve this problem also.
- * Moreover, all known algorithms for this problem have the same worst-case
- * asymptotic running time as the best single-source algorithms.
+ * Contract for single-pair shortest path algorithms, that is finding a shortest
+ * path from s to t, for given vertices s and t.
  *
+ * @see BidirectionalDijkstra
  * @author Cristian Frăsinaru
  */
 public interface SinglePairShortestPath {
 
     /**
+     * Returns the input graph on which the algorithm is executed.
      *
      * @return the input graph.
      */
@@ -44,18 +44,22 @@ public interface SinglePairShortestPath {
     Path findPath();
 
     /**
+     * Returns the source vertex number.
      *
      * @return the source vertex number.
      */
     int getSource();
 
     /**
+     * Returns the target vertex number.
      *
      * @return the target vertex number.
      */
     int getTarget();
 
     /**
+     * Returns the weight of the shortest path from the source to the target, or
+     * {@link Double#POSITIVE_INFINITY} if no path exists.
      *
      * @return the weight of the shortest path from the source to the target, or
      * {@link Double#POSITIVE_INFINITY} if no path exists.
@@ -74,6 +78,9 @@ public interface SinglePairShortestPath {
      * @return the default implementation of this interface.
      */
     static SinglePairShortestPath getInstance(Graph graph, int source, int target) {
+        if (!graph.isEdgeWeighted()) {
+            return new BFSSinglePairShortestPath(graph, source, target);
+        }
         return new BidirectionalDijkstra(graph, source, target);
     }
 }

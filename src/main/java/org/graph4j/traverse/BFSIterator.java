@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
+import org.graph4j.Digraph;
 import org.graph4j.Graph;
 import org.graph4j.util.CheckArguments;
 
@@ -40,6 +41,7 @@ public class BFSIterator implements Iterator<SearchNode> {
     private int compIndex;
     private int orderNumber;
     private int maxLevel = -1;
+    private boolean reverse = false;
 
     /**
      *
@@ -60,6 +62,21 @@ public class BFSIterator implements Iterator<SearchNode> {
         CheckArguments.graphContainsVertex(graph, start);
         this.graph = graph;
         this.startVertex = start;
+        init();
+    }
+
+    /**
+     *
+     * @param graph the input graph.
+     * @param start the start vertex number.
+     * @param reverse if {@code true} iteration will pe performed on the
+     * reversed graph.
+     */
+    public BFSIterator(Graph graph, int start, boolean reverse) {
+        CheckArguments.graphContainsVertex(graph, start);
+        this.graph = graph;
+        this.startVertex = start;
+        this.reverse = reverse;
         init();
     }
 
@@ -89,8 +106,11 @@ public class BFSIterator implements Iterator<SearchNode> {
         }
         var v = current.vertex();
         numIterations++;
-        //
-        for (var it = graph.neighborIterator(v); it.hasNext();) {
+        //memory aggressive
+        for (var it = (reverse && graph.isDirected()
+                ? ((Digraph) graph).predecessorIterator(v)
+                : graph.neighborIterator(v));
+                it.hasNext();) {
             int u = it.next();
             int j = graph.indexOf(u);
             if (!visited[j]) {

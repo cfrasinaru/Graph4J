@@ -105,6 +105,11 @@ public interface SingleSourceShortestPath {
      * @return the default implementation of this interface.
      */
     static SingleSourceShortestPath getInstance(Graph graph, int source) {
+        //if the graph has no weights on edges, use BFS
+        if (!graph.isEdgeWeighted()) {
+            return new BFSSingleSourceShortestPath(graph, source);
+        }
+        
         //if it has negative cost edges, should use Bellman-Ford-Moore
         boolean negativeCostEdge = false;
         for (var it = graph.edgeIterator(); it.hasNext();) {

@@ -277,10 +277,12 @@ public class Graphs {
      */
     public static Digraph transpose(Digraph digraph) {
         var transpose = GraphBuilder.verticesFrom(digraph).buildDigraph();
+        transpose.setSafeMode(false);
         for (var it = digraph.edgeIterator(); it.hasNext();) {
             Edge e = it.next();
             transpose.addEdge(e.flip());
         }
+        transpose.setSafeMode(true);
         return transpose;
     }
 

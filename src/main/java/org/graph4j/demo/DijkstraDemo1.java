@@ -37,7 +37,7 @@ class DijkstraDemo1 extends PerformanceDemo {
 
     @Override
     protected void createGraph() {
-        int avgDegree = 50;
+        int avgDegree = 10;
         graph = new RandomGnmGraphGenerator(numVertices, avgDegree * numVertices / 2).createDigraph();
         EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
     }

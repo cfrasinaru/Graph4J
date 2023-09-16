@@ -32,7 +32,6 @@ abstract class EdgeCollection { //WORK IN PROGRESS
     protected final Graph graph;
     protected int[][] edges;
     protected int numEdges;
-    //protected BitSet bitset; //which edges of the graph are in this collection
     protected final static int DEFAULT_CAPACITY = 10;
 
     /**
@@ -77,14 +76,6 @@ abstract class EdgeCollection { //WORK IN PROGRESS
         }
     }
 
-    //lazy creation
-    /*
-    private void createBitSet() {
-        this.bitset = new BitSet();
-        for (int[] e : edges()) {
-            //bitset.set(v, true);
-        }
-    }*/
     /**
      *
      * @return {@code true} if this collection has no edges.
@@ -146,7 +137,7 @@ abstract class EdgeCollection { //WORK IN PROGRESS
      * @param u a vertex number.
      * @return true, if the collection changed as a result of this call.
      */
-    public final boolean add(int v, int u) {
+    public boolean add(int v, int u) {
         if (numEdges == edges.length) {
             grow();
         }
@@ -203,10 +194,6 @@ abstract class EdgeCollection { //WORK IN PROGRESS
             edges[i] = edges[i + 1];
         }
         numEdges--;
-        /*
-        if (bitset != null) {
-            bitset.set(edges[pos], false);
-        }*/
     }
 
     /**
@@ -216,17 +203,7 @@ abstract class EdgeCollection { //WORK IN PROGRESS
      * @return {@code true}, if this collection contains the edge vu.
      */
     public boolean contains(int v, int u) {
-        //for smaller sets, just iterate
-        //if (numEdges <= DEFAULT_CAPACITY) {
         return indexOf(v, u) >= 0;
-        //}
-        //for larger sets, create the bitset and use it
-        /*
-        if (bitset == null) {
-            createBitSet();
-        }
-        return bitset.get(v);
-         */
     }
 
     /**
@@ -234,7 +211,7 @@ abstract class EdgeCollection { //WORK IN PROGRESS
      * @return the sum of all weights of the edges in the collection, including
      * duplicates.
      */
-    public double computeEdgesWeight() {
+    public double weight() {
         double weight = 0;
         for (int i = 0; i < numEdges; i++) {
             weight += graph.getEdgeWeight(edges[i][0], edges[i][1]);

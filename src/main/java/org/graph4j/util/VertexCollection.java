@@ -74,6 +74,14 @@ abstract class VertexCollection implements Iterable<Integer> {
         this.numVertices = vertices.length;
     }
 
+    /**
+     *
+     * @return the graph containing the vertices.
+     */
+    public Graph getGraph() {
+        return graph;
+    }
+
     //lazy creation
     private void createBitSet() {
         this.bitset = new BitSet();

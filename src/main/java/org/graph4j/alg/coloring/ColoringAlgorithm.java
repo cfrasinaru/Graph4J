@@ -18,7 +18,6 @@ package org.graph4j.alg.coloring;
 
 import org.graph4j.Graph;
 import org.graph4j.util.Clique;
-import org.graph4j.util.Cycle;
 
 /**
  *
@@ -27,8 +26,9 @@ import org.graph4j.util.Cycle;
 public interface ColoringAlgorithm {
 
     /**
+     * Returns the input graph.
      *
-     * @return the graph to be colored.
+     * @return the input graph.
      */
     Graph getGraph();
 

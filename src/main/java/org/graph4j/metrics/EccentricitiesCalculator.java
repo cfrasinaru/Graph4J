@@ -32,6 +32,7 @@ import org.graph4j.traverse.BFSIterator;
  *
  * @author Cristian Frăsinaru
  */
+@Deprecated
 class EccentricitiesCalculator extends GraphAlgorithm {
 
     private int[] ecc;

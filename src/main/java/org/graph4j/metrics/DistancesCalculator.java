@@ -21,7 +21,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.graph4j.Graph;
 import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.alg.sp.FloydWarshallShortestPath;
 import org.graph4j.traverse.BFSIterator;
 
 /**
@@ -32,6 +31,7 @@ import org.graph4j.traverse.BFSIterator;
  *
  * @author Cristian Frăsinaru
  */
+@Deprecated
 class DistancesCalculator extends GraphAlgorithm {
 
     private int[][] dist;
@@ -41,7 +41,7 @@ class DistancesCalculator extends GraphAlgorithm {
     }
 
     /**
-     * 
+     *
      * @return all the distances.
      */
     public int[][] calculate() {
@@ -84,58 +84,6 @@ class DistancesCalculator extends GraphAlgorithm {
                 dist[vi][ui] = node.level();
             }
         }
-    }
-
-    //uses Floyd-Warshall to compute all pairs shortest paths
-    //complexity O(n^3)
-    @Deprecated
-    private int[][] distancesFW() {
-        int n = graph.numVertices();
-        this.dist = new int[n][n];
-        var alg = new FloydWarshallShortestPath(graph);
-        int n1 = directed ? n : n - 1;
-        for (int i = 0; i < n1; i++) {
-            int v = graph.vertexAt(i);
-            //var alg = new DijkstraShortestPathHeap(graph, v);
-            int from = directed ? 0 : i + 1;
-            for (int j = from; j < n; j++) {
-                int u = graph.vertexAt(j);
-                double d = alg.getPathWeight(v, u);
-                //double d = alg.getPathWeight(u);
-                if (d == Double.POSITIVE_INFINITY) {
-                    dist[i][j] = Integer.MAX_VALUE;
-                } else {
-                    dist[i][j] = (int) d;
-                }
-                if (!directed) {
-                    dist[j][i] = dist[i][j];
-                }
-            }
-        }
-        return dist;
-    }
-
-    //uses BFS from each vertex to compute all pairs shortest paths
-    //complexity O(n(n+m))
-    @Deprecated
-    private int[][] distancesBFS() {
-        int n = graph.numVertices();
-        this.dist = new int[n][n];
-        for (int v : graph.vertices()) {
-            int vi = graph.indexOf(v);
-            Arrays.fill(dist[vi], Integer.MAX_VALUE);
-            var bfs = new BFSIterator(graph, v);
-            while (bfs.hasNext()) {
-                var node = bfs.next();
-                if (node.component() > 0) {
-                    break;
-                }
-                int u = node.vertex();
-                int ui = graph.indexOf(u);
-                dist[vi][ui] = node.level();
-            }
-        }
-        return dist;
     }
 
 }

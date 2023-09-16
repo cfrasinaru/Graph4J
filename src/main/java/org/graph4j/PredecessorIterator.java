@@ -26,7 +26,7 @@ package org.graph4j;
  * @author Cristian Frăsinaru
  * @param <E> the type of edge labels.
  */
-public interface PredecessorIterator<E> {
+public interface PredecessorIterator<E> extends NeighborIterator<E>{
 
     /**
      * Checks if there are more predecessors of the target vertex to iterate
@@ -34,6 +34,7 @@ public interface PredecessorIterator<E> {
      *
      * @return {@code true} if there are more predecessors of the target vertex.
      */
+    @Override
     boolean hasNext();
 
     /**
@@ -41,6 +42,7 @@ public interface PredecessorIterator<E> {
      *
      * @return the next predecessor of the target vertex.
      */
+    @Override
     int next();
 
     /**
@@ -50,6 +52,7 @@ public interface PredecessorIterator<E> {
      * @return {@code true} if the current predecessor is not the first one in
      * the predecessor list.
      */
+    @Override
     boolean hasPrevious();
 
     /**
@@ -57,6 +60,7 @@ public interface PredecessorIterator<E> {
      *
      * @return the previous predecessor of the target vertex.
      */
+    @Override
     int previous();
 
     /**
@@ -66,12 +70,14 @@ public interface PredecessorIterator<E> {
      * @return the position of the target in the adjacency list of the current
      * (source) vertex.
      */
+    @Override
     int adjListPos();
 
     /**
      *
      * @return the current edge;
      */
+    @Override
     Edge edge();
 
     /**
@@ -80,6 +86,7 @@ public interface PredecessorIterator<E> {
      * @return the weight of the edge from the current vertex to the target
      * vertex.
      */
+    @Override
     double getEdgeWeight();
 
     /**
@@ -88,6 +95,7 @@ public interface PredecessorIterator<E> {
      * @param weight the weight to be set for the edge connecting the current
      * vertex to the target vertex
      */
+    @Override
     void setEdgeWeight(double weight);
 
     /**
@@ -96,6 +104,7 @@ public interface PredecessorIterator<E> {
      * @return the label of the edge from the current vertex to the target
      * vertex.
      */
+    @Override
     E getEdgeLabel();
 
     /**
@@ -104,11 +113,13 @@ public interface PredecessorIterator<E> {
      * @param label the label to be set for the edge connecting the current
      * vertex to the target vertex.
      */
+    @Override
     void setEdgeLabel(E label);
 
     /**
      * Removes the current edge, from the current to the target vertex. The
      * current edge becomes the previously one.
      */
+    @Override
     void removeEdge();
 }

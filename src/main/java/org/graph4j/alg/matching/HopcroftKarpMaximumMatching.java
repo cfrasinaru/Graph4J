@@ -35,7 +35,8 @@ import org.graph4j.util.IntArrays;
  *
  * @author Cristian Frăsinaru
  */
-public class HopcroftKarpMaximumMatching extends SimpleGraphAlgorithm {
+public class HopcroftKarpMaximumMatching extends SimpleGraphAlgorithm
+        implements MatchingAlgorithm {
 
     private StableSet leftSide;
     private StableSet rightSide;
@@ -91,6 +92,7 @@ public class HopcroftKarpMaximumMatching extends SimpleGraphAlgorithm {
      *
      * @return the maximum cardinality matching.
      */
+    @Override
     public Matching getMatching() {
         if (matching != null) {
             return matching;

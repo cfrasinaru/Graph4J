@@ -172,7 +172,7 @@ class FordFulkersonMaximumFlow extends DirectedGraphAlgorithm
             }
         }
         //backward edges
-        for (var it = graph.predecesorIterator(v, nextPredPos[vi]); it.hasNext();) {
+        for (var it = graph.predecessorIterator(v, nextPredPos[vi]); it.hasNext();) {
             int u = it.next(); //v <- u
             int ui = graph.indexOf(u);
             nextPredPos[vi]++;

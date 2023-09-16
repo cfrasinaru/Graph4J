@@ -28,6 +28,8 @@ import org.graph4j.util.CheckArguments;
  * are no negative weigthed edges. The cost of a path is the sum of its edges
  * weights.
  *
+ * If the graph contains a negative weighted edge, an exception will be thrown.
+ *
  * @see DijkstraShortestPathDefault
  * @see DijkstraShortestPathHeap
  * @author Cristian Frăsinaru
@@ -70,6 +72,7 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
 
     @Override
     public Path findPath(int target) {
+        CheckArguments.graphContainsVertex(graph, target);
         if (before == null) {
             compute(-1);
         }
@@ -114,8 +117,10 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
         this.solved = new boolean[n];
         this.numSolved = 0;
         Arrays.fill(cost, Double.POSITIVE_INFINITY);
-        Arrays.fill(before, -1);
-        cost[graph.indexOf(source)] = 0;
+        //Arrays.fill(before, -1);
+        int si = graph.indexOf(source);
+        before[si] = -1;
+        cost[si] = 0;
         preCompute();
 
         while (true) {

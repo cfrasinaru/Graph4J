@@ -16,6 +16,7 @@
  */
 package org.graph4j.alg.cut;
 
+import org.graph4j.Graph;
 import org.graph4j.util.VertexSet;
 
 /**
@@ -26,9 +27,19 @@ import org.graph4j.util.VertexSet;
  */
 public class VertexSeparator {
 
+    private final Graph graph;
     private final VertexSet separator;
     private final VertexSet leftShore;
     private final VertexSet rightShore;
+
+    @Deprecated
+    private VertexSeparator(Graph graph) {
+        this.graph = graph;
+        int n = graph.numVertices();
+        leftShore = new VertexSet(graph, 2 * n / 3);
+        separator = new VertexSet(graph);
+        rightShore = new VertexSet(graph, 2 * n / 3);
+    }
 
     /**
      *
@@ -40,6 +51,7 @@ public class VertexSeparator {
         this.separator = separator;
         this.leftShore = leftShore;
         this.rightShore = rightShore;
+        this.graph = separator.getGraph();
     }
 
     /**
@@ -66,9 +78,30 @@ public class VertexSeparator {
         return rightShore;
     }
 
+    public boolean isValid() {
+        for (int v : graph.vertices()) {
+            boolean a = leftShore.contains(v);
+            boolean b = rightShore.contains(v);
+            boolean s = separator.contains(v);
+            if ((a && b) || (a && s) || (b && s) || !(a || b || s)) {
+                return false;
+            }
+        }
+        for (int v : leftShore.vertices()) {
+            for (int u : rightShore.vertices()) {
+                if (graph.containsEdge(v, u)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public String toString() {
-        return leftShore + "\n\t" + separator + "\n" + rightShore;
+        return "Left shore: \t" + leftShore
+                + "\nSeparator: \t" + separator
+                + "\nRight shore: \t" + rightShore;
     }
 
 }

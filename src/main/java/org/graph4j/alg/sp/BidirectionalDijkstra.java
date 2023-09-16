@@ -19,7 +19,6 @@ package org.graph4j.alg.sp;
 import java.util.Arrays;
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
-import org.graph4j.Graphs;
 import org.graph4j.alg.GraphAlgorithm;
 import org.graph4j.util.CheckArguments;
 import org.graph4j.util.Path;
@@ -36,20 +35,9 @@ public class BidirectionalDijkstra extends GraphAlgorithm implements SinglePairS
     private final int source;
     private final int target;
     private final int[] vertices;
-    private final Graph transpose;
     //
-    private double[] costF;
-    private int[] beforeF;
-    private boolean[] solvedF;
-    private VertexHeap heapF;
-    //
-    private double[] costB;
-    private int[] beforeB;
-    private boolean solvedB[];
-    private VertexHeap heapB;
-    //
-    private double bestPath;
-    private int meetingVertex;
+    private Path bestPath;
+    private double bestWeight;
 
     /**
      * Creates an algorithm to find the shortest path between source and target.
@@ -65,11 +53,6 @@ public class BidirectionalDijkstra extends GraphAlgorithm implements SinglePairS
         this.vertices = graph.vertices();
         this.source = source;
         this.target = target;
-        if (graph instanceof Digraph) {
-            this.transpose = Graphs.transpose((Digraph) graph);
-        } else {
-            this.transpose = graph;
-        }
     }
 
     @Override
@@ -87,17 +70,10 @@ public class BidirectionalDijkstra extends GraphAlgorithm implements SinglePairS
         if (source == target) {
             return new Path(graph, new int[]{source});
         }
-        if (beforeF == null) {
+        if (bestPath == null) {
             compute();
         }
-        if (meetingVertex == -1) {
-            return null;
-        }
-        int mi = graph.indexOf(meetingVertex);
-        if (costF[mi] == Double.POSITIVE_INFINITY || costB[mi] == Double.POSITIVE_INFINITY) {
-            return null;
-        }
-        return createPath();
+        return bestPath;
     }
 
     @Override
@@ -105,36 +81,38 @@ public class BidirectionalDijkstra extends GraphAlgorithm implements SinglePairS
         if (source == target) {
             return 0;
         }
-        if (costF == null) {
+        if (bestPath == null) {
             compute();
         }
-        int mi = graph.indexOf(meetingVertex);
-        if (mi == -1) {
-            return Double.POSITIVE_INFINITY;
-        }
-        return costF[mi] + costB[mi];
+        return bestWeight;
     }
 
     private void compute() {
+        this.bestWeight = Double.POSITIVE_INFINITY; //bestPath is null
         int n = vertices.length;
-        this.costF = new double[n];
-        this.costB = new double[n];
-        this.beforeF = new int[n];
-        this.beforeB = new int[n];
-        this.solvedF = new boolean[n];
-        this.solvedB = new boolean[n];
+        double[] costF = new double[n];
+        double[] costB = new double[n];
+        int[] beforeF = new int[n];
+        int[] beforeB = new int[n];
+        boolean[] solvedF = new boolean[n];
+        boolean[] solvedB = new boolean[n];
         Arrays.fill(costF, Double.POSITIVE_INFINITY);
         Arrays.fill(costB, Double.POSITIVE_INFINITY);
-        Arrays.fill(beforeF, -1);
-        Arrays.fill(beforeB, -1);
-        costF[graph.indexOf(source)] = 0;
-        costB[graph.indexOf(target)] = 0;
-        this.heapF = new VertexHeap(graph, (i, j) -> (int) Math.signum(costF[i] - costF[j]));
-        this.heapB = new VertexHeap(graph, (i, j) -> (int) Math.signum(costB[i] - costB[j]));
+        //Arrays.fill(beforeF, -1);
+        //Arrays.fill(beforeB, -1);
+        //
+        int si = graph.indexOf(source);
+        int ti = graph.indexOf(target);
+        costF[si] = 0;
+        costB[ti] = 0;
+        beforeF[si] = -1;
+        beforeB[ti] = -1;
+        VertexHeap heapF = new VertexHeap(graph, false, (i, j) -> (int) Math.signum(costF[i] - costF[j]));
+        VertexHeap heapB = new VertexHeap(graph, false, (i, j) -> (int) Math.signum(costB[i] - costB[j]));
+        heapF.add(si);
+        heapB.add(ti);
 
-        this.bestPath = Double.POSITIVE_INFINITY;
-        this.meetingVertex = -1;
-
+        int meeting = -1;
         while (true) {
             if (heapF.isEmpty() || heapB.isEmpty()) {
                 break;
@@ -147,7 +125,7 @@ public class BidirectionalDijkstra extends GraphAlgorithm implements SinglePairS
             //forward
             int v = vertices[vi];
             for (var it = graph.neighborIterator(v); it.hasNext();) {
-                int u = it.next();
+                int u = it.next(); //v->u
                 int ui = graph.indexOf(u);
                 if (solvedF[ui]) {
                     continue;
@@ -157,22 +135,23 @@ public class BidirectionalDijkstra extends GraphAlgorithm implements SinglePairS
                     throw new IllegalArgumentException(
                             "Negative weighted edges are not permited: " + graph.edge(v, u));
                 }
-                if (costF[ui] > costF[vi] + weight) {
-                    costF[ui] = costF[vi] + weight;
+                double newCostF = costF[vi] + weight;
+                if (costF[ui] > newCostF) {
+                    costF[ui] = newCostF;
                     beforeF[ui] = vi;
-                    heapF.update(ui);
+                    heapF.addOrUpdate(ui);
                 }
-                if (solvedB[ui] && costF[vi] + weight + costB[ui] < bestPath) {
-                    bestPath = costF[vi] + weight + costB[ui];
-                    meetingVertex = ui;
+                if (solvedB[ui] && newCostF + costB[ui] < bestWeight) {
+                    bestWeight = newCostF + costB[ui];
+                    meeting = ui;
                 }
             }
 
             //backward
             int w = vertices[wi];
-            for (var it = transpose.neighborIterator(w); it.hasNext();) {
-                int u = it.next();
-                int ui = transpose.indexOf(u);
+            for (var it = directed ? ((Digraph) graph).predecessorIterator(w) : graph.neighborIterator(w); it.hasNext();) {
+                int u = it.next(); //u->w
+                int ui = graph.indexOf(u);
                 if (solvedB[ui]) {
                     continue;
                 }
@@ -181,38 +160,42 @@ public class BidirectionalDijkstra extends GraphAlgorithm implements SinglePairS
                     throw new IllegalArgumentException(
                             "Negative weighted edges are not permited: " + graph.edge(u, w));
                 }
-                if (costB[ui] > costB[wi] + weight) {
-                    costB[ui] = costB[wi] + weight;
+                double newCostB = costB[wi] + weight;
+                if (costB[ui] > newCostB) {
+                    costB[ui] = newCostB;
                     beforeB[ui] = wi;
-                    heapB.update(ui);
+                    heapB.addOrUpdate(ui);
                 }
-                if (solvedF[ui] && costB[wi] + weight + costF[ui] < bestPath) {
-                    bestPath = costB[wi] + weight + costF[ui];
-                    meetingVertex = ui;
+                if (solvedF[ui] && newCostB + costF[ui] < bestWeight) {
+                    bestWeight = newCostB + costF[ui];
+                    meeting = ui;
                 }
             }
 
             //check termination condition
-            if (costF[vi] + costB[wi] >= bestPath) {
+            if (costF[vi] + costB[wi] >= bestWeight) {
                 break;
             }
         }
-    }
 
-    protected Path createPath() {
+        if (meeting < 0) {
+            return;
+        }
+        assert bestWeight != Double.POSITIVE_INFINITY;
+
+        //compute the path
         //s --- meet --- t
-        int vi = graph.indexOf(meetingVertex);
-        Path path = new Path(graph);
+        int vi = graph.indexOf(meeting);
+        bestPath = new Path(graph);
         while (vi >= 0) {
-            path.add(graph.vertexAt(vi));
+            bestPath.add(graph.vertexAt(vi));
             vi = beforeF[vi];
         }
-        path.reverse();
-        int wi = beforeB[graph.indexOf(meetingVertex)];
+        bestPath.reverse();
+        int wi = beforeB[graph.indexOf(meeting)];
         while (wi >= 0) {
-            path.add(graph.vertexAt(wi));
+            bestPath.add(graph.vertexAt(wi));
             wi = beforeB[wi];
         }
-        return path;
     }
 }

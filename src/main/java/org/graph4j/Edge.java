@@ -26,11 +26,11 @@ package org.graph4j;
  */
 public class Edge<E> implements Comparable<Edge> {
 
-    boolean directed;
-    int source;
-    int target;
-    Double weight;
-    E label;
+    protected boolean directed;
+    protected int source;
+    protected int target;
+    protected Double weight;
+    protected E label;
 
     /**
      *
@@ -136,14 +136,15 @@ public class Edge<E> implements Comparable<Edge> {
      * unweighted graphs.
      */
     public double weight() {
-        //tricy, don't invoke this method if you expect null
+        //tricky, don't invoke this method if you expect null
         if (weight == null) {
             return Graph.DEFAULT_EDGE_WEIGHT;
         }
         return weight;
     }
 
-    void setWeight(Double weight) {
+    //internal use only
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 

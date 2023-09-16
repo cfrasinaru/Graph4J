@@ -33,6 +33,8 @@ class EdgeIteratorImpl<E> implements EdgeIterator<E> {
     private NeighborIterator<E> neighbors;
     private int index = -1; //the current vertex index
     private Edge currentEdge;
+    private boolean directed;
+    private int numVertices;
 
     public EdgeIteratorImpl(Graph graph) {
         this.graph = graph;
@@ -41,6 +43,8 @@ class EdgeIteratorImpl<E> implements EdgeIterator<E> {
             this.index = 0;
             this.neighbors = graph.neighborIterator(graph.vertexAt(0));
         }
+        this.directed = graph.isDirected();
+        this.numVertices = graph.numVertices();
     }
 
     private void checkCurrentEdge() {
@@ -60,12 +64,12 @@ class EdgeIteratorImpl<E> implements EdgeIterator<E> {
             int v = graph.vertexAt(ix);
             while (it.hasNext()) {
                 int u = it.next();
-                if (v <= u || graph.isDirected()) {
+                if (v <= u || directed) {
                     return true;
                 }
             }
             ix++;
-            if (ix == graph.numVertices()) {
+            if (ix == numVertices) {
                 break;
             }
             it = graph.neighborIterator(graph.vertexAt(ix));
@@ -81,13 +85,13 @@ class EdgeIteratorImpl<E> implements EdgeIterator<E> {
             int v = graph.vertexAt(index);
             while (neighbors.hasNext()) {
                 int u = neighbors.next();
-                if (v <= u || graph.isDirected()) {
+                if (v <= u || directed) {
                     nextEdge = neighbors.edge();
                     break over;
                 }
             }
             index++;
-            if (index == graph.numVertices()) {
+            if (index == numVertices) {
                 break;
             }
             neighbors = graph.neighborIterator(graph.vertexAt(index));

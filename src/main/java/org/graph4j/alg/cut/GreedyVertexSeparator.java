@@ -18,17 +18,10 @@ package org.graph4j.alg.cut;
 
 import org.graph4j.Graph;
 import org.graph4j.measures.GraphMeasures;
-import org.graph4j.alg.SimpleGraphAlgorithm;
 import org.graph4j.util.VertexSet;
 
 /**
- * The vertex separator problem (VSP) is to find a partition of V into nonempty
- * three classes A, B, C such that there is no edge between A and B,
- * <code>max(|A|,|B|) &lt;= f(n)</code> and <code>|C|</code> is minimum.
- *
- * C is called <em>separator</em>, A and B are called <em>shores</em>.
- *
- * The value of the parameter f(n) which is more used in literature is 2n/3.
+ * {@inheritDoc}
  *
  * <p>
  * There is no guarantee that the vertex separator created by the greedy
@@ -37,38 +30,30 @@ import org.graph4j.util.VertexSet;
  * @author Cristian Frăsinaru
  *
  */
-public class GreedyVertexSeparator extends SimpleGraphAlgorithm {
+public class GreedyVertexSeparator extends VertexSeparatorBase
+        implements VertexSeparatorAlgorithm {
 
-    private VertexSet leftShore, rightShore, separator;
+    private VertexSeparator solution;
 
     public GreedyVertexSeparator(Graph graph) {
         super(graph);
     }
 
-    /**
-     * Returns the separator computed by the method {@link #getSeparator(int)}.
-     * with the default argument <code>2n/3</code>, where <code>n</code> is the
-     * number of vertices in the graph.
-     *
-     * @return a vertex separator set.
-     */
-    public VertexSeparator getSeparator() {
-        return getSeparator(0);
+    public GreedyVertexSeparator(Graph graph, int maxShoreSize) {
+        super(graph, maxShoreSize);
     }
 
     /**
-     * Computes a vertex separator set, having a specified maximum shore size.
-     * There is no guarantee that the vertex separator returned is of minimum
-     * size or that the right shore does not exceed the maximum shore size. The
-     * right shore may be empty (in case of complete graphs, for example).
+     * Computes and returns a vertex separator set. There is no guarantee that
+     * the vertex separator returned is of minimum size. The right shore may be
+     * empty (in case of complete graphs, for example).
      *
-     * @param maxShoreSize maximum size of the largest shore.
      * @return a vertex separator set.
      */
-    public VertexSeparator getSeparator(int maxShoreSize) {
-        int n = graph.numVertices();
-        if (maxShoreSize <= 0) {
-            maxShoreSize = 2 * n / 3;
+    @Override
+    public VertexSeparator getSeparator() {
+        if (solution != null) {
+            return solution;
         }
         int v = GraphMeasures.minDegreeVertex(graph);
         leftShore = new VertexSet(graph);
@@ -89,13 +74,14 @@ public class GreedyVertexSeparator extends SimpleGraphAlgorithm {
             rightShore.removeAll(separator.vertices());
         }
 
-        //reduce the right shore
-        /*
+        //reduce the right shore, to not exceed the maximum size
         while (rightShore.size() > maxShoreSize) {
             v = rightShore.pop();
             separator.add(v);
-        }*/
-        return new VertexSeparator(separator, leftShore, rightShore);
+        }
+        solution = new VertexSeparator(separator, leftShore, rightShore);
+        assert solution.isValid();
+        return solution;
     }
 
     private int choose(VertexSet sep, VertexSet right) {

@@ -45,29 +45,23 @@ public class RandomGnmBipartiteGenerator extends AbstractBipartiteGenerator {
     }
 
     /**
-     * 
+     *
      * @return a random bipartite directed graph.
      */
     public Digraph createDigraph() {
-        int n1 = last1 - first1 + 1;
-        int n2 = last2 - first2 + 1;
-        var g = GraphBuilder.vertices(vertices)
-                .estimatedAvgDegree(Math.max(n1, n2)).buildDigraph();
+        var g = GraphBuilder.vertices(vertices).buildDigraph();
         addEdges(g, null);
         return g;
     }
 
     @Override
     protected void addEdges(Graph g, Boolean leftToRight) {
+        //in case of graphs, leftToRight is true
         checkMaxEdges(g);
-        boolean safeMode = g.isSafeMode();
         g.setSafeMode(false);
         while (g.numEdges() < numEdges) {
             int v = first1 + random.nextInt(last1 - first1 + 1);
             int u = first2 + random.nextInt(last2 - first2 + 1);
-            if (u == v) {
-                continue;
-            }
             boolean l2r;
             if (leftToRight != null) {
                 l2r = leftToRight;
@@ -75,16 +69,12 @@ public class RandomGnmBipartiteGenerator extends AbstractBipartiteGenerator {
                 l2r = random.nextDouble() < 0.5;
             }
             if (l2r) {
-                if (!g.containsEdge(v, u)) {
-                    g.addEdge(v, u);
-                }
+                g.addEdge(v, u);
             } else {
-                if (!g.containsEdge(u, v)) {
-                    g.addEdge(u, v);
-                }
+                g.addEdge(u, v);
             }
         }
-        g.setSafeMode(safeMode);
+        g.setSafeMode(true);
     }
 
     private void checkMaxEdges(Graph g) {

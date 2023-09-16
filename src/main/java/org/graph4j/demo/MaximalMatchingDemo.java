@@ -16,67 +16,65 @@
  */
 package org.graph4j.demo;
 
+import org.graph4j.alg.matching.GreedyWeightedMatching;
 import org.graph4j.generate.EdgeWeightsGenerator;
 import org.graph4j.generate.GraphGenerator;
-import org.graph4j.metrics.*;
-import org.jgrapht.alg.shortestpath.GraphMeasurer;
 
 /**
  *
  * @author Cristian Frăsinaru
  */
-class GraphMetricsDemo extends PerformanceDemo {
+class MaximalMatchingDemo extends PerformanceDemo {
 
-    private final double probability = 0.1;
+    private final double probability = 0.9;
 
-    public GraphMetricsDemo() {
-        numVertices = 2000;
-        runJGraphT = true; //x20
+    public MaximalMatchingDemo() {
+        numVertices = 1_000_000;
+        runJGraphT = true;
         //runOther = true;
     }
 
     @Override
     protected void createGraph() {
-        graph = GraphGenerator.randomGnp(numVertices, probability);
-        //graph = GraphGenerator.randomTree(numVertices);
-        //graph = GraphGenerator.cycle(numVertices);
-        EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
+        //graph = GraphGenerator.randomGnp(numVertices, probability);
+        graph = GraphGenerator.randomGnm(numVertices, 2 * numVertices);
+        EdgeWeightsGenerator.randomDoubles(graph, -1, 1);
     }
 
     @Override
     protected void testGraph4J() {
-        var alg = new org.graph4j.metrics.GraphMetrics(graph);
-        System.out.println(alg.diameter());
-        System.out.println(alg.radius());
-        //new org.graph4j.metrics.GraphMetrics(graph).eccentricities();
-
+        //var alg = new MaximalCardinalityMatching(graph);
+        var alg = new GreedyWeightedMatching(graph, true);
+        var m = alg.getMatching();
+        System.out.println(m.size() + ": " + m.weight());
     }
 
     @Override
     protected void testJGraphT() {
-        var alg = new GraphMeasurer(jgrapht);
-        System.out.println(alg.getDiameter());   
-        System.out.println(alg.getRadius());
-        //alg.getVertexEccentricityMap();
+        //var alg = new GreedyMaximumCardinalityMatching(jgrapht, true);
+        var alg = new org.jgrapht.alg.matching.GreedyWeightedMatching(jgrapht, true);
+        var m = alg.getMatching();
+        System.out.println(m.getEdges().size() + ": " + m.getWeight());
     }
 
     @Override
     protected void testOther() {
-        System.out.println(new ParallelExtremaCalculator(graph).getDiameter());
+        //var alg = new MaximalCardinalityMatching(graph);
+        var alg = new GreedyWeightedMatching(graph, false);
+        var m = alg.getMatching();
+        System.out.println(m.size() + ": " + m.weight());
     }
-
     
     @Override
     protected void prepareArgs() {
         int steps = 10;
         args = new int[steps];
         for (int i = 0; i < steps; i++) {
-            args[i] = 100 * (i + 1);
+            args[i] = 1000 * (i + 1);
         }
     }
-    
-    public static void main(String args[]) {
-        new GraphMetricsDemo().demo();
-    }
 
+    public static void main(String args[]) {
+        new MaximalMatchingDemo().demo();
+    }
 }

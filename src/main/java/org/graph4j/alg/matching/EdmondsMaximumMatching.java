@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Cristian Frăsinaru and contributors
+ * Copyright (C) 2023 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,42 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.util;
+package org.graph4j.alg.matching;
 
 import org.graph4j.Graph;
-import org.graph4j.Edge;
+import org.graph4j.alg.SimpleGraphAlgorithm;
 
 /**
- * * A set of edges in a graph.
- *
+ * TODO
  * @author Cristian Frăsinaru
  */
-public class EdgeSet extends EdgeCollection { //WORK IN PROGRESS
+public class EdmondsMaximumMatching extends SimpleGraphAlgorithm {
 
-    public EdgeSet(Graph graph) {
+    public EdmondsMaximumMatching(Graph graph) {
         super(graph);
-    }
-
-    public EdgeSet(Graph graph, int initialCapacity) {
-        super(graph, initialCapacity);
-    }
-
-    public EdgeSet(Graph graph, int[][] edges) {
-        super(graph, edges);
-    }
-
-    public EdgeSet(Graph graph, Edge[] edges) {
-        super(graph, edges);
-    }
-
-    @Override
-    public boolean contains(int v, int u) {
-        return super.contains(v, u);
-    }
-
-    @Override
-    protected boolean remove(int v, int u) {
-        return super.remove(v, u);
     }
 
 }

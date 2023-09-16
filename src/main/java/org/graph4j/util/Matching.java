@@ -16,6 +16,7 @@
  */
 package org.graph4j.util;
 
+import java.util.Arrays;
 import org.graph4j.Graph;
 
 /**
@@ -26,12 +27,75 @@ import org.graph4j.Graph;
  */
 public class Matching extends EdgeSet {
 
+    private int mates[];
+    //if vu in matching, mates[vi]=ui, mates[ui]=vi
+
     public Matching(Graph graph) {
         super(graph);
+        createMates();
     }
 
     public Matching(Graph graph, int initialCapacity) {
         super(graph, initialCapacity);
+        createMates();
+    }
+
+    private void createMates() {
+        mates = new int[graph.numVertices()];
+        Arrays.fill(mates, -1);
+    }
+
+    @Override
+    public boolean add(int v, int u) {
+        int vi = graph.indexOf(v);
+        int ui = graph.indexOf(u);
+        if (mates[vi] == ui) {
+            return false;
+        }
+        if (!super.add(v, u)) {
+            return false;
+        }
+        mates[vi] = ui;
+        mates[ui] = vi;
+        return true;
+    }
+
+    @Override
+    protected void removeFromPos(int pos) {
+        int vi = edges[pos][0];
+        int ui = edges[pos][1];
+        mates[vi] = -1;
+        mates[ui] = -1;
+        super.removeFromPos(pos);
+    }
+
+    @Override
+    public boolean contains(int v, int u) {
+        int vi = graph.indexOf(v);
+        int ui = graph.indexOf(u);
+        return mates[vi] == ui;
+    }
+
+    /**
+     * Returns {@code true} if there is an edge in the matching incident to the
+     * given vertex.
+     *
+     * @param v a vertex number.
+     * @return {@code true} if the matching covers the given vertex.
+     */
+    public boolean covers(int v) {
+        return mates[graph.indexOf(v)] >= 0;
+    }
+
+    /**
+     * The <em>mate</em> of a vertex v is a vertex u such that the edge vu
+     * belongs to the matching.
+     *
+     * @param v a vertex number.
+     * @return the mate of v in the matching, or {@code -1} if it has no mate.
+     */
+    public int mate(int v) {
+        return graph.vertexAt(mates[graph.indexOf(v)]);
     }
 
     /**
@@ -53,11 +117,9 @@ public class Matching extends EdgeSet {
     public boolean isValid() {
         int n = graph.numVertices();
         int[] count = new int[n];
-        for (int[] e : edges()) {
-            int v = e[0];
-            int u = e[1];
-            int vi = graph.indexOf(v);
-            int ui = graph.indexOf(u);
+        for (int k = 0; k < numEdges; k++) {
+            int vi = edges[k][0];
+            int ui = edges[k][1];
             count[vi]++;
             count[ui]++;
             if (count[vi] > 1 || count[ui] > 1) {

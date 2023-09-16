@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Cristian Frăsinaru and contributors
+ * Copyright (C) 2023 Cristian Frăsinaru and contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
  */
 package org.graph4j.demo;
 
+import org.graph4j.alg.sp.BFSAllPairsShortestPath;
 import org.graph4j.alg.sp.FloydWarshallShortestPath;
 import org.graph4j.alg.sp.JohnsonShortestPath;
 import org.graph4j.generate.EdgeWeightsGenerator;
@@ -27,13 +28,13 @@ import org.graph4j.generate.RandomGnpGraphGenerator;
  */
 class JohnsonDemo extends PerformanceDemo {
 
-    private final double probability = 0.1;
+    private final double probability = 0.9;
     private final int v;
     private final int u;
 
     public JohnsonDemo() {
-        numVertices = 2000;
-        runJGraphT = true; //8x slower
+        numVertices = 3000;
+        //runJGraphT = true; //up to 100x slower
         runOther = true; //FloydWarshall
         //
         v = random.nextInt(numVertices);
@@ -44,7 +45,7 @@ class JohnsonDemo extends PerformanceDemo {
     protected void createGraph() {
         graph = new RandomGnpGraphGenerator(numVertices, probability).createDigraph();
         //graph = GraphGenerator.complete(numVertices);
-        EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
+        //EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
 
     }
 
@@ -53,8 +54,8 @@ class JohnsonDemo extends PerformanceDemo {
         var alg = new JohnsonShortestPath(graph);
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
-                alg.findPath(i, j);
-                //alg.getPathWeight(i, j);
+                //alg.findPath(i, j);
+                alg.getPathWeight(i, j);
             }
         }
         System.out.println(alg.getPathWeight(v, u));
@@ -75,7 +76,8 @@ class JohnsonDemo extends PerformanceDemo {
 
     @Override
     protected void testOther() {
-        var alg = new FloydWarshallShortestPath(graph);
+        //var alg = new FloydWarshallShortestPath(graph);
+        var alg = new BFSAllPairsShortestPath(graph);
         for (int i = 0; i < numVertices; i++) {
             for (int j = 0; j < numVertices; j++) {
                 alg.findPath(i, j);
@@ -84,6 +86,11 @@ class JohnsonDemo extends PerformanceDemo {
         }
         System.out.println(alg.getPathWeight(v, u));
         System.out.println(alg.findPath(v, u).computeEdgesWeight());
+        /*
+        var alg = new JohnsonShortestPath(graph);
+        double[][] w = alg.getPathWeights();
+        System.out.println(w[graph.indexOf(v)][graph.indexOf(u)]);
+        */
     }
 
     @Override

@@ -17,7 +17,7 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
-import org.graph4j.GraphBuilder;
+import java.util.Arrays;
 import org.graph4j.Graphs;
 import org.graph4j.alg.coloring.BacktrackColoring;
 import org.graph4j.alg.coloring.GurobiAssignmentColoring;
@@ -26,8 +26,8 @@ import org.graph4j.alg.coloring.bw.GurobiBandwithColoring;
 import org.graph4j.alg.coloring.bw.GurobiOptBandwithColoring;
 import org.graph4j.alg.coloring.eq.GurobiAssignmentEquitableColoring;
 import org.graph4j.alg.coloring.eq.GurobiStableModelEquitableColoring;
-import org.graph4j.alg.sp.FloydWarshallShortestPath;
-import org.graph4j.alg.sp.JohnsonShortestPath;
+import org.graph4j.alg.cut.GreedyVertexSeparator;
+import org.graph4j.alg.cut.GurobiVertexSeparator;
 import org.graph4j.generate.EdgeWeightsGenerator;
 import org.graph4j.generate.GraphGenerator;
 import org.graph4j.io.DimacsIO;
@@ -40,7 +40,7 @@ import org.graph4j.io.DimacsIO;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        //var app = new Main();
+        var app = new Main();
         //var app = new ExactBandwithColoringDemo();
         //var app = new ExactEquitableColoringDemo();
         //var app = new ExactColoringDemo();        
@@ -48,6 +48,7 @@ public class Main {
         //var app = new TriangleCounterDemo();
         //var app = new GreedyColoringDemo();
         //var app = new BronKerboschDemo();
+        //var app = new MaximalMatchingDemo();
         //var app = new HopcroftKarpDemo();
         //var app = new PushRelabelDemo();
         //var app = new EdmondsKarpDemo();
@@ -62,9 +63,10 @@ public class Main {
         //var app = new ConnectivityDemo();
         //var app = new EulerianCircuitDemo();
         //var app = new BellmanFordDemo();
-        var app = new JohnsonDemo();
+        //var app = new JohnsonDemo();
         //var app = new FloydWarshallDemo();
         //var app = new BidirectionalDijkstraDemo();
+        //var app = new DijkstraDemo1();
         //var app = new DijkstraDemo2();
 
         //var app = new DFSVisitorDemo();
@@ -92,14 +94,17 @@ public class Main {
     }
 
     private void test() {
-        /*
-        int n = 4;
-        var g = GraphGenerator.grid(n, n);
-        System.out.println(g);
-        EdgeWeightsGenerator.randomDoubles(g, 0, 1);
-        var alg = new AStarAlgorithm(g, 0, g.numVertices() - 1, new AStarEuclideanEstimator(n));
-        System.out.println(alg.findPath());
-         */
+        int n = 100;
+        double p = 0.1;
+        
+        var g = GraphGenerator.randomGnp(n, p);
+        var alg1 = new GreedyVertexSeparator(g);
+        var sep1 = alg1.getSeparator();
+        System.out.println("Greedy: separator size=" + sep1.separator().size() + "\n" + sep1);
+        
+        var alg2 = new GurobiVertexSeparator(g);
+        var sep2 = alg2.getSeparator();
+        System.out.println("Gurobi: separator size=" + sep2.separator().size() + "\n" + sep2);
     }
 
     private void test0() {

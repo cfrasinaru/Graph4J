@@ -1176,9 +1176,15 @@ class GraphImpl<V, E> implements Graph<V, E> {
     @Override
     public Edge[] edges() {
         Edge[] edges = new Edge[(int) numEdges];
-        int i = 0;
-        for (var it = edgeIterator(); it.hasNext();) {
-            edges[i++] = it.next();
+        int k = 0;
+        for (int i = 0; i < numVertices; i++) {
+            int v = vertices[i];
+            for (int pos = 0, deg = degree[i]; pos < deg; pos++) {
+                int u = adjList[i][pos];
+                if (directed || v <= u) {
+                    edges[k++] = edgeAt(i, pos);
+                }
+            }
         }
         return edges;
     }

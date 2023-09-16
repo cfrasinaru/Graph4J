@@ -50,7 +50,7 @@ public abstract class AbstractBipartiteGenerator extends AbstractGraphGenerator 
      *
      * @param first1 the number of first vertex in the left side.
      * @param last1 the number of last vertex in the left side.
-     * @param first2  the number of first vertex in the right side.
+     * @param first2 the number of first vertex in the right side.
      * @param last2 the number of last vertex in the right side.
      */
     public AbstractBipartiteGenerator(int first1, int last1, int first2, int last2) {
@@ -79,11 +79,7 @@ public abstract class AbstractBipartiteGenerator extends AbstractGraphGenerator 
      * @return a bipartite graph.
      */
     public Graph createGraph() {
-        int n1 = last1 - first1 + 1;
-        int n2 = last2 - first2 + 1;
-        var g = GraphBuilder.vertices(vertices)
-                .estimatedAvgDegree(Math.max(n1, n2))
-                .buildGraph();
+        var g = GraphBuilder.vertices(vertices).buildGraph();
         addEdges(g, true);
         return g;
     }
@@ -96,10 +92,7 @@ public abstract class AbstractBipartiteGenerator extends AbstractGraphGenerator 
      * @return a bipartite digraph, with the given edge orientation.
      */
     public Digraph createDigraph(Boolean leftToRight) {
-        int n1 = last1 - first1 + 1;
-        int n2 = last2 - first2 + 1;
-        var g = GraphBuilder.vertices(vertices)
-                .estimatedAvgDegree(Math.max(n1, n2)).buildDigraph();
+        var g = GraphBuilder.vertices(vertices).buildDigraph();
         addEdges(g, leftToRight);
         return g;
     }

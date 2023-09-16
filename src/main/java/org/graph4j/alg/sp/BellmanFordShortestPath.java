@@ -61,6 +61,7 @@ public class BellmanFordShortestPath extends GraphAlgorithm
 
     @Override
     public Path findPath(int target) {
+        CheckArguments.graphContainsVertex(graph, target);
         if (before == null) {
             compute();
         }
@@ -73,6 +74,7 @@ public class BellmanFordShortestPath extends GraphAlgorithm
 
     @Override
     public double getPathWeight(int target) {
+        CheckArguments.graphContainsVertex(graph, target);
         if (cost == null) {
             compute();
         }

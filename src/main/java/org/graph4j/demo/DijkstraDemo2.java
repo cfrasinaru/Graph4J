@@ -19,7 +19,7 @@ package org.graph4j.demo;
 import org.graph4j.alg.sp.DijkstraShortestPathHeap;
 import edu.princeton.cs.algs4.DijkstraSP;
 import org.graph4j.Edge;
-import org.graph4j.generate.EdgeWeightsGenerator;
+import org.graph4j.alg.sp.BFSSingleSourceShortestPath;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 
 /**
@@ -28,20 +28,21 @@ import org.graph4j.generate.RandomGnpGraphGenerator;
  */
 class DijkstraDemo2 extends PerformanceDemo {
 
-    private final double probability = 0.5;
+    private final double probability = 0.1;
 
     public DijkstraDemo2() {
         numVertices = 2000;
         //runJGraphT = true;
         //runJung = true;
         //runAlgs4 = true;
+        runOther = true;
     }
 
     @Override
     protected void createGraph() {
         //graph = new CompleteGenerator(numVertices).createGraph();
         graph = new RandomGnpGraphGenerator(numVertices, probability).createDigraph();
-        EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
+        //EdgeWeightsGenerator.randomDoubles(graph, 0, 1);
     }
 
     @Override
@@ -86,12 +87,29 @@ class DijkstraDemo2 extends PerformanceDemo {
     }
 
     @Override
+    protected void testOther() {
+        for (int v : graph.vertices()) {
+            var alg = new BFSSingleSourceShortestPath(graph, v);
+            for (int i = 1; i < graph.numVertices(); i++) {
+                var p = alg.findPath(i);
+            }
+        }
+                
+    }
+    
+    
+
+    @Override
     protected void prepareArgs() {
         int steps = 10;
         args = new int[steps];
         for (int i = 0; i < steps; i++) {
             args[i] = 100 * (i + 1);
         }
+    }
+    
+    public static void main(String args[]) {
+        new DijkstraDemo2().demo();
     }
 
 }

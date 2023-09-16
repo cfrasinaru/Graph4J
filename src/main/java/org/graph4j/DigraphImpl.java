@@ -193,7 +193,7 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     }
 
     @Override
-    public PredecessorIterator predecesorIterator(int v, int pos) {
+    public PredecessorIterator predecessorIterator(int v, int pos) {
         return new PredecessorIteratorImpl(v, pos);
     }
 

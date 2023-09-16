@@ -37,6 +37,7 @@ public class DijkstraShortestPathHeap extends DijkstraShortestPathBase {
 
     private VertexHeap heap;
 
+    
     public DijkstraShortestPathHeap(Graph graph, int source) {
         super(graph, source);
     }

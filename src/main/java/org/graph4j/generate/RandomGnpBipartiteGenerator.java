@@ -51,17 +51,13 @@ public class RandomGnpBipartiteGenerator extends AbstractBipartiteGenerator {
      * @return a random bipartite directed graph.
      */
     public Digraph createDigraph() {
-        int n1 = last1 - first1 + 1;
-        int n2 = last2 - first2 + 1;
-        var g = GraphBuilder.vertices(vertices)
-                .estimatedAvgDegree(Math.max(n1, n2)).buildDigraph();
+        var g = GraphBuilder.vertices(vertices).buildDigraph();
         addEdges(g, null);
         return g;
     }
 
     @Override
     protected void addEdges(Graph g, Boolean leftToRight) {
-        boolean safeMode = g.isSafeMode();
         g.setSafeMode(false);
         for (int v = first1; v <= last1; v++) {
             for (int u = first2; u <= last2; u++) {
@@ -81,7 +77,7 @@ public class RandomGnpBipartiteGenerator extends AbstractBipartiteGenerator {
                 }
             }
         }
-        g.setSafeMode(safeMode);
+        g.setSafeMode(true);
     }
 
 }

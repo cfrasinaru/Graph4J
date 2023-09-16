@@ -25,6 +25,7 @@ import gurobi.GRBVar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.graph4j.Graph;
+import org.graph4j.generate.GraphGenerator;
 import org.graph4j.util.VertexSet;
 
 /**
@@ -168,5 +169,20 @@ public class GurobiVertexSeparator extends VertexSeparatorBase {
         } catch (GRBException ex) {
             Logger.getLogger(GurobiVertexSeparator.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    //simple test
+    public static void main(String args[]) {
+        int n = 100;
+        double p = 0.1;
+
+        var g = GraphGenerator.randomGnp(n, p);
+        var alg1 = new GreedyVertexSeparator(g);
+        var sep1 = alg1.getSeparator();
+        System.out.println("Greedy: separator size=" + sep1.separator().size() + "\n" + sep1);
+
+        var alg2 = new GurobiVertexSeparator(g);
+        var sep2 = alg2.getSeparator();
+        System.out.println("Gurobi: separator size=" + sep2.separator().size() + "\n" + sep2);
     }
 }

@@ -116,6 +116,9 @@ public abstract class MaximumFlowBase extends DirectedGraphAlgorithm
 
     @Override
     public NetworkFlow getFlow() {
+        if (flowData == null) {
+            compute();
+        }
         NetworkFlow flow = new NetworkFlow(graph, source, sink);
         for (var v : graph.vertices()) {
             int vi = graph.indexOf(v);

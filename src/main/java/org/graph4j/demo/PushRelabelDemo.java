@@ -34,12 +34,15 @@ class PushRelabelDemo extends PerformanceDemo {
     public PushRelabelDemo() {
         numVertices = 2000;
         runJGraphT = true;
-        runAlgs4 = true;
+        //runAlgs4 = true;
+        runOther = true;
     }
 
     @Override
     protected void createGraph() {
         graph = new RandomGnpGraphGenerator(numVertices, probability).createDigraph();
+        //graph = new DimacsIO().read("d:/datasets/coloring/instances/" + "myciel6.col");
+        //graph = Graphs.toDigraph(graph);
         //graph = new GnmRandomGenerator(numVertices, 3*numVertices).createDigraph();
         //graph = new CompleteGenerator(numVertices).createDigraph();
         //EdgeWeightsGenerator.randomIntegers(graph, 0, numVertices - 1);
@@ -49,24 +52,35 @@ class PushRelabelDemo extends PerformanceDemo {
     @Override
     protected void testGraph4J() {
         //((GraphImpl)graph).enableAdjListMatrix(); //not worth it
-        var alg = new PushRelabelMaximumFlow((Digraph) graph, 0, numVertices - 1);
+        int s = graph.vertexAt(0);
+        int t = graph.vertexAt(graph.numVertices() - 1);
+        var alg = new PushRelabelMaximumFlow((Digraph) graph, s, t);
         //var alg = new FordFulkersonMaximumFlow((Digraph) graph, 0, numVertices - 1);
         System.out.println(alg.getValue());
     }
 
     @Override
     protected void testJGraphT() {
+        int s = graph.vertexAt(0);
+        int t = graph.vertexAt(graph.numVertices() - 1);
         var alg = new PushRelabelMFImpl(jgrapht);
-        System.out.println(alg.calculateMaximumFlow(0, numVertices - 1));
+        System.out.println(alg.calculateMaximumFlow(s, t));
     }
 
     @Override
     protected void testAlgs4() {
         //var alg = new FordFulkerson(algs4Net, 0, numVertices - 1);
         //System.out.println(alg.value());
-        var alg = new EdmondsKarpMaximumFlow((Digraph) graph, 0, numVertices - 1);
+    }
+    
+    @Override
+    protected void testOther() {
+        int s = graph.vertexAt(0);
+        int t = graph.vertexAt(graph.numVertices() - 1);
+        var alg = new EdmondsKarpMaximumFlow((Digraph) graph, s, t);
         System.out.println(alg.getValue());
     }
+    
 
     @Override
     protected void prepareArgs() {
@@ -75,5 +89,9 @@ class PushRelabelDemo extends PerformanceDemo {
         for (int i = 0; i < steps; i++) {
             args[i] = 500 * (i + 1);
         }
+    }
+    
+    public static void main(String args[]) {
+        new PushRelabelDemo().demo();
     }
 }

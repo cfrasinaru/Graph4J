@@ -22,12 +22,15 @@ import org.graph4j.util.EdgeSet;
 import org.graph4j.util.VertexSet;
 
 /**
+ * Contract for algorithms that compute a maximum flow in a transportation
+ * network.
  *
  * @author Cristian Frăsinaru
  */
 public interface MaximumFlowAlgorithm {
 
     /**
+     * Returns the flow on the specified edge.
      *
      * @param v a vertex number.
      * @param u a vertex number.
@@ -36,6 +39,7 @@ public interface MaximumFlowAlgorithm {
     double getValue(int v, int u);
 
     /**
+     * Returns the flow on the specified edge.
      *
      * @param e an edge of the network.
      * @return the maximum flow on the given edge.
@@ -45,21 +49,22 @@ public interface MaximumFlowAlgorithm {
     }
 
     /**
+     * Returns the maximum flow of the network.
      *
      * @return the maximum value of the flow.
      */
     double getValue();
 
     /**
+     * Creates a data structure storing the flow value for all edges.
      *
-     * @return the maximum flow for all the edges.
+     * @return a data structure storing the flow value for all edges.
      */
     NetworkFlow getFlow();
 
     /**
      *
-     * @return the partition set of a minimum cut containing the source
-     * vertex.
+     * @return the partition set of a minimum cut containing the source vertex.
      */
     VertexSet getSourcePart();
 
@@ -83,6 +88,7 @@ public interface MaximumFlowAlgorithm {
      * @return the default implementation of this interface.
      */
     static MaximumFlowAlgorithm getInstance(Digraph graph, int source, int sink) {
+        //return new PushRelabelMaximumFlow(graph, source, sink);
         return new EdmondsKarpMaximumFlow(graph, source, sink);
     }
 }

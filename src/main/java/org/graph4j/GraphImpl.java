@@ -440,6 +440,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
     @Override
     public int addEdge(int v, int u, double weight) {
         int pos = addEdge(v, u);
+        if (pos < 0) {
+            return pos;
+        }
         if (edgeWeight == null) {
             initEdgeWeights();
         }
@@ -455,6 +458,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
     @Override
     public int addEdge(int v, int u, E label) {
         int pos = addEdge(v, u);
+        if (pos < 0) {
+            return pos;
+        }
         if (edgeLabel == null) {
             initEdgeLabels();
         }
@@ -473,6 +479,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
     @Override
     public int addEdge(int v, int u, double weight, E label) {
         int pos = addEdge(v, u);
+        if (pos < 0) {
+            return pos;
+        }
         if (edgeWeight == null) {
             initEdgeWeights();
         }

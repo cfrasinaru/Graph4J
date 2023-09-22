@@ -22,9 +22,11 @@ import gurobi.GRBException;
 import gurobi.GRBLinExpr;
 import gurobi.GRBModel;
 import gurobi.GRBVar;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.graph4j.Graph;
+import org.graph4j.alg.connectivity.VertexConnectivityAlgorithm;
 import org.graph4j.generate.GraphGenerator;
 import org.graph4j.util.VertexSet;
 
@@ -89,8 +91,12 @@ public class GurobiVertexSeparator extends VertexSeparatorBase {
         }
     }
 
+    //using greedy to obtain an upper bound for the separator set
+    //vertices with degree <= 1 should be either in A or in B
+    //if there is a solution of size k with v in C and deg(v) <=1, 
+    //then there is also a solution of size k with v in A or B.
     private void createModel() throws GRBException {
-        System.out.println("maxShoreSize=" + maxShoreSize);
+        long t0 = System.currentTimeMillis();
         int n = graph.numVertices();
 
         x = new GRBVar[n]; //for A
@@ -100,12 +106,17 @@ public class GurobiVertexSeparator extends VertexSeparatorBase {
             y[i] = model.addVar(0.0, 1.0, 0.0, GRB.BINARY, "y[" + i + "]");
         }
 
-        //a vertex cannot be both in A and in B
+        //a vertex cannot be both in A and in B        
         for (int i = 0; i < n; i++) {
             GRBLinExpr expr = new GRBLinExpr();
             expr.addTerm(1, x[i]);
             expr.addTerm(1, y[i]);
-            model.addConstr(expr, GRB.LESS_EQUAL, 1, "vertex_" + i);
+            int v = graph.vertexAt(i);
+            if (graph.degree(v) <= 1) {
+                model.addConstr(expr, GRB.EQUAL, 1, "vertex_" + i);
+            } else {
+                model.addConstr(expr, GRB.LESS_EQUAL, 1, "vertex_" + i);
+            }
         }
 
         //there are no edges between A and B
@@ -140,13 +151,63 @@ public class GurobiVertexSeparator extends VertexSeparatorBase {
         }
         model.addConstr(sumB, GRB.LESS_EQUAL, maxShoreSize, "maxShoreSize_B");
 
-        //maximize |A| + |B|
+        //objective |A| + |B|
         GRBLinExpr obj = new GRBLinExpr();
         for (int i = 0; i < n; i++) {
             obj.addTerm(1, x[i]);
             obj.addTerm(1, y[i]);
         }
+
+        //the separator size should be lower than the greedy one
+        //upper bound on separator size = lower bound on objective
+        int greedySepSize = computeGreedySepSize();
+        var lb = n - greedySepSize; //|A*|+|B*|
+        model.addConstr(obj, GRB.GREATER_EQUAL, lb, "lowerBound");
+        System.out.println("greedy separator size used: " + greedySepSize);
+
+        //the separator size should be greater then the minimum vertex cut
+        int ub = computeMinCutSize(lb);
+        model.addConstr(obj, GRB.LESS_EQUAL, n - ub, "upperBound");
+        System.out.println("local minimum cut size used: " + ub);
+
+        //maximize |A| + |B|
         model.setObjective(obj, GRB.MAXIMIZE);
+
+        long t1 = System.currentTimeMillis();
+        System.out.println("Model ready in " + (t1 - t0) + " ms");
+    }
+
+    private int computeGreedySepSize() {
+        var greedyAlg = new GreedyVertexSeparator(graph, maxShoreSize);
+        return greedyAlg.getSeparator().separator().size();
+    }
+
+    private int computeMinCutSize(int lb) {
+        long t0 = System.currentTimeMillis();
+        var minCutAlg = new VertexConnectivityAlgorithm(graph);
+        //var minCutset = minCutAlg.getMinimumCut();
+        //System.out.println("global minimum cut size: " + minCutset.size());
+        //analyze the minCutset
+        /*
+        var g = graph.copy();
+        g.removeVertices(minCutset.vertices());
+        for (var cc : new ConnectivityAlgorithm(g).getConnectedSets()) {
+            System.out.println(cc.size() + " <= " + maxShoreSize + " = " + (cc.size() <= maxShoreSize));
+        }*/
+
+        int n = graph.numVertices();
+        int[] alpha = new int[n];
+        for (int i = 0; i < n; i++) {
+            int v = graph.vertexAt(i);
+            alpha[i] = minCutAlg.countMaximumDisjointPaths(v);
+        }
+        Arrays.sort(alpha);
+        System.out.println(Arrays.toString(alpha));
+        int ub = alpha[lb + 1];
+        //ub = minCutset.size();
+        long t1 = System.currentTimeMillis();
+        System.out.println("MinCut ready in " + (t1 - t0) + " ms");        
+        return ub;
     }
 
     private void createSolution() {

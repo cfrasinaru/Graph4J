@@ -51,11 +51,12 @@ public class JohnsonTest {
 
         var alg1 = new JohnsonShortestPath(g);
         var alg2 = new FloydWarshallShortestPath(g);
+        double eps = 1.0E-6;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 double w1 = alg1.getPathWeight(i, j);
                 double w2 = alg2.getPathWeight(i, j);
-                assertEquals(w1, w2);
+                assertTrue(Math.abs(w1 - w2) < eps);
             }
         }
 

@@ -1,4 +1,7 @@
 1.0.6
+	-VertexConnectivityAlgorithm: maximum vertex disjoint paths, minimum vertex cutset, vertex connectivity number
+	-EdgeConnectivityAlgorithm: maximum edge disjoint paths, minimum edge cutset, edge connectivity number
+	-ILP (Gurobi) implementation for the vertex separator problem: GurobiVertexSeparator	
 	-Johnson's algorithm for determining all pairs shortes paths: JohnsonShortestPath
 	-A* algorithm for determining the shortest path using a distance heursitic: AStarAlgorithm
 	-Iterators over all cliques, with min and max size, DFS or BFS: DFSCliqueIterator, BFSCliqueIterator

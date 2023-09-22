@@ -17,7 +17,6 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import org.graph4j.Graphs;
 import org.graph4j.alg.coloring.BacktrackColoring;
 import org.graph4j.alg.coloring.GurobiAssignmentColoring;
@@ -26,11 +25,13 @@ import org.graph4j.alg.coloring.bw.GurobiBandwithColoring;
 import org.graph4j.alg.coloring.bw.GurobiOptBandwithColoring;
 import org.graph4j.alg.coloring.eq.GurobiAssignmentEquitableColoring;
 import org.graph4j.alg.coloring.eq.GurobiStableModelEquitableColoring;
+import org.graph4j.alg.connectivity.VertexConnectivityAlgorithm;
 import org.graph4j.alg.cut.GreedyVertexSeparator;
 import org.graph4j.alg.cut.GurobiVertexSeparator;
 import org.graph4j.generate.EdgeWeightsGenerator;
 import org.graph4j.generate.GraphGenerator;
 import org.graph4j.io.DimacsIO;
+import org.graph4j.measures.GraphMeasures;
 
 /**
  * Driver class for running the comparisons with other libraries.
@@ -93,18 +94,48 @@ public class Main {
         run(this::test);
     }
 
-    private void test() {
+    private void testQQ() {
         int n = 100;
         double p = 0.1;
-        
-        var g = GraphGenerator.randomGnp(n, p);
+        for (int i = 0; i < 10; i++) {
+            var g = GraphGenerator.randomGnp(n, Math.random());
+            var alg = new VertexConnectivityAlgorithm(g);
+            for (int s : g.vertices()) {
+                for (int t : g.vertices()) {
+                    if (s == t || g.containsEdge(s, t)) {
+                        continue;
+                    }
+                    int x = alg.countMaximumDisjointPaths(s, t);
+                    var y = alg.getMinimumCut(s, t).size();
+                    if (x != y) {
+                        System.out.println("OOPS! " + x + " != " + y);
+                        System.out.println("s=" + s + ", t=" + t);
+                        System.out.println(g);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void test() {
+        int n = 70;
+        double p = 0.2;
+        //var g = GraphGenerator.randomGnp(n, p);
+        var g = new DimacsIO().read("d:/datasets/coloring/instances/" + "queen11_11.col");
+        System.out.println("numVertices = " + g.numVertices());
+        System.out.println("density = " + GraphMeasures.density(g));
         var alg1 = new GreedyVertexSeparator(g);
         var sep1 = alg1.getSeparator();
-        System.out.println("Greedy: separator size=" + sep1.separator().size() + "\n" + sep1);
-        
+        System.out.println("GREEDY: " + sep1.separator().size() + " / " + (sep1.leftShore().size() + sep1.rightShore().size()));
+        System.out.println("Left:\t" + sep1.leftShore().size() + "<= " + alg1.maxShoreSize());
+        System.out.println("Right:\t" + sep1.rightShore().size() + "<= " + alg1.maxShoreSize());
+
         var alg2 = new GurobiVertexSeparator(g);
         var sep2 = alg2.getSeparator();
-        System.out.println("Gurobi: separator size=" + sep2.separator().size() + "\n" + sep2);
+        System.out.println("GUROBY: " + sep2.separator().size() + " / " + (sep2.leftShore().size() + sep2.rightShore().size()));
+        System.out.println("Left:\t" + sep2.leftShore().size() + "<= " + alg2.maxShoreSize());
+        System.out.println("Right:\t" + sep2.rightShore().size() + "<= " + alg2.maxShoreSize());
     }
 
     private void test0() {
@@ -202,7 +233,7 @@ public class Main {
                 assert alg2.isValid(col2);
 
                 if (col1.maxColorNumber() != col2.maxColorNumber()) {
-                    System.out.println("OOPS!\n");
+                    System.out.println("OOPS!/n");
                     System.out.println(col1.maxColorNumber() + ", " + col2.maxColorNumber());
                     System.out.println(col1);
                     System.out.println(col2);
@@ -233,7 +264,7 @@ public class Main {
                 assert alg2.isValid(col2);
 
                 if (col1.maxColorNumber() != col2.maxColorNumber()) {
-                    System.out.println("OOPS!\n");
+                    System.out.println("OOPS!/n");
                     System.out.println(col1.maxColorNumber() + ", " + col2.maxColorNumber());
                     System.out.println(col1);
                     System.out.println(col2);
@@ -263,10 +294,10 @@ public class Main {
                 assert col2.isEquitable();
 
                 if (col1.numUsedColors() != col2.numUsedColors()) {
-                    System.out.println("OOPS!\n");
+                    System.out.println("OOPS!/n");
                     System.out.println(col1.numUsedColors() + ", " + col2.numUsedColors());
-                    System.out.println("col1\n\t" + col1);
-                    System.out.println("col2\n\t" + col2);
+                    System.out.println("col1/n\t" + col1);
+                    System.out.println("col2/n\t" + col2);
                     break;
                 }
             } catch (Exception e) {

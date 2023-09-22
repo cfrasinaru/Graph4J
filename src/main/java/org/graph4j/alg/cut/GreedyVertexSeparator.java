@@ -84,6 +84,7 @@ public class GreedyVertexSeparator extends VertexSeparatorBase
         return solution;
     }
 
+    //heuristic for choosing the vertex that will be moved to leftShore
     private int choose(VertexSet sep, VertexSet right) {
         int minVertex = -1;
         int min = Integer.MAX_VALUE;

@@ -291,30 +291,60 @@ public class GraphBuilder {
     /**
      * Example: "1-2, 2-3, 3-1", "a-b, b-c,c-d", etc.
      *
-     * This method is not type-safe.
+     * "0-1,0-2-0-3" may be written as "0-1,2,3".
      *
      * @param edges a text encoding the edges to be added.
      * @return a reference to this object.
      */
     public GraphBuilder addEdges(String edges) {
         String[] edgeTokens = edges.split(",");
+        int v = -1;
         for (String edgeToken : edgeTokens) {
             String[] edgeVertices = edgeToken.trim().split("-");
+            int u;
             try {
-                String vstr = edgeVertices[0].trim();
-                String ustr = edgeVertices[1].trim();
-                int v, u;
-                try {
-                    v = getVertex(Integer.parseInt(vstr));
-                    u = getVertex(Integer.parseInt(ustr));
-                } catch (NumberFormatException e) {
-                    v = getVertex(vstr);
-                    u = getVertex(ustr);
+                if (edgeVertices.length == 1) {
+                    //v is the previous vertex
+                    String ustr = edgeVertices[0].trim();
+                    try {
+                        u = getVertex(Integer.parseInt(ustr));
+                    } catch (NumberFormatException e) {
+                        u = getVertex(ustr);
+                    }
+                } else {
+                    String vstr = edgeVertices[0].trim();
+                    String ustr = edgeVertices[1].trim();
+                    try {
+                        v = getVertex(Integer.parseInt(vstr));
+                        u = getVertex(Integer.parseInt(ustr));
+                    } catch (NumberFormatException e) {
+                        v = getVertex(vstr);
+                        u = getVertex(ustr);
+                    }
                 }
                 addEdge(v, u);
             } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
                 throw new IllegalArgumentException(
                         "Incorrect format for edges: " + edgeToken);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Builds the graph from the adjacency list. The number of rows is the
+     * number of vertices, for the row with the index i, a[i] represents the
+     * neighbors (successors) of the vertex with the index i in the graph.
+     *
+     * @param a the adjacency list.
+     * @return a reference to this object.
+     */
+    public GraphBuilder adjList(int[][] a) {
+        for (int i = 0; i < a.length; i++) {
+            int v = vertices == null ? i : vertices[i];
+            for (int j = 0; j < a[i].length; j++) {
+                int u = getVertex(a[i][j]);
+                addEdge(v, u);
             }
         }
         return this;

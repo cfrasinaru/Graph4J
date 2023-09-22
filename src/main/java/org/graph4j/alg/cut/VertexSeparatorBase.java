@@ -64,6 +64,15 @@ abstract class VertexSeparatorBase extends SimpleGraphAlgorithm
         this.maxShoreSize = maxShoreSize;
     }
 
+    /**
+     * Returns the mazimum shore size used by the algorithmS.
+     *
+     * @return the maximum shore size.
+     */
+    public int maxShoreSize() {
+        return maxShoreSize;
+    }
+
     @Override
     public abstract VertexSeparator getSeparator();
 

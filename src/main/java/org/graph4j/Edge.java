@@ -76,7 +76,8 @@ public class Edge<E> implements Comparable<Edge> {
      *
      * @param source the source endpoint of the edge.
      * @param target target the target endpoint of the edge.
-     * @param directed {@code true} if the edge has a direction (in case of digraphs).
+     * @param directed {@code true} if the edge has a direction (in case of
+     * digraphs).
      */
     public Edge(int source, int target, boolean directed) {
         this(source, target, directed, null, null);
@@ -86,7 +87,8 @@ public class Edge<E> implements Comparable<Edge> {
      *
      * @param source the source endpoint of the edge.
      * @param target target the target endpoint of the edge.
-     * @param directed {@code true} if the edge has a direction (in case of digraphs).
+     * @param directed {@code true} if the edge has a direction (in case of
+     * digraphs).
      * @param weight the weight of the edge.
      * @param label the label of the edge.
      */

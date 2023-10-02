@@ -1,4 +1,4 @@
-1.0.6
+1.0.6	2023-09-28
 	-VertexConnectivityAlgorithm: maximum vertex disjoint paths, minimum vertex cutset, vertex connectivity number
 	-EdgeConnectivityAlgorithm: maximum edge disjoint paths, minimum edge cutset, edge connectivity number
 	-ILP (Gurobi) implementation for the vertex separator problem: GurobiVertexSeparator	

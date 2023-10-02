@@ -19,7 +19,6 @@ package org.graph4j.alg.coloring;
 import java.util.ArrayList;
 import org.graph4j.util.Domain;
 import java.util.Arrays;
-import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,14 +62,15 @@ public class Node {
             if (coloring.isColorSet(v)) {
                 continue;
             }
-            if (dom.size() < minSize) {
-                minSize = dom.size();
+            int domSize = dom.size();
+            if (domSize < minSize) {
+                minSize = domSize;
                 minDomain = dom;
                 /*
                 if (minSize == 2) {
                     break;
                 }*/
-            } else if (dom.size() == minSize) {
+            } else if (domSize == minSize) {
                 if (graph.degree(minDomain.vertex()) < graph.degree(dom.vertex())) {
                     minDomain = dom;
                 }

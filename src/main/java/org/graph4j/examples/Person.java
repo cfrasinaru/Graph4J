@@ -25,7 +25,7 @@ import java.util.Objects;
  * @see MaximalCliqueExample
  * @author Cristian Frăsinaru
  */
-class Person {
+public class Person {
 
     private final String name;
     private final List<Person> friends = new ArrayList<>();

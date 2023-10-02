@@ -25,6 +25,8 @@ import org.graph4j.alg.connectivity.BiconnectivityAlgorithm;
 import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;
 import org.graph4j.alg.cycle.CycleFinder;
 import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
+import org.graph4j.alg.connectivity.EdgeConnectivityAlgorithm;
+import org.graph4j.alg.connectivity.VertexConnectivityAlgorithm;
 import org.graph4j.traverse.DFSIterator;
 import org.graph4j.util.CheckArguments;
 
@@ -345,5 +347,32 @@ public class Graphs {
         return new AcyclicOrientation(graph).create();
     }
 
+    /**
+     * Computes the edge connectivity number, that is the minimum size of a set
+     * of edges whose removal disconnects the graph. An upper bound of this
+     * number is the maximum degree of vertex.
+     *
+     * @see EdgeConnectivityAlgorithm
+     * @param graph the input graph.
+     * @return the edge connectivity number.
+     */
+    public static int edgeConnectivity(Graph graph) {
+        return new EdgeConnectivityAlgorithm(graph).getConnectivityNumber();
+    }
+
+    /**
+     * Computes the vertex connectivity number, that is the minimum size of a
+     * set of vertices whose removal disconnects the graph. If the graph is
+     * complete, it returns {@code n-1}, where {@code n} is the number of
+     * vertices in the graph.
+     *
+     * @see VertexConnectivityAlgorithm
+     * @param graph the input graph.
+     * @return the vertex connectivity number.
+     */
+    public static int vertexConnectivity(Graph graph) {
+        return new VertexConnectivityAlgorithm(graph).getConnectivityNumber();
+    }
+    
     
 }

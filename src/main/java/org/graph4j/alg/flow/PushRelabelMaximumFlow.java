@@ -76,7 +76,6 @@ public class PushRelabelMaximumFlow extends MaximumFlowBase {
         globalRelabel();
         relabelCount = 0;
         while (!active.isEmpty()) {
-            //if (DEBUG) System.out.println("Active: " + active);            
             int v = active.peek();
             discharge(v);
         }
@@ -84,7 +83,6 @@ public class PushRelabelMaximumFlow extends MaximumFlowBase {
 
     //Try to get rid of the excess in v
     private void discharge(int v) {
-        //if (DEBUG) System.out.println("pushRelabel " + v);        
         int vi = graph.indexOf(v);
         boolean pushed = false;
         int minHeight = 2 * n;
@@ -108,7 +106,6 @@ public class PushRelabelMaximumFlow extends MaximumFlowBase {
             flowData[vi][pos] += f;
             excess[ui] += f;
             excess[vi] -= f;
-            //if (DEBUG) System.out.println("---------->>> Forward push " + v + " -> " + u + ": " + f);            
             if (excess[vi] == 0) {
                 active.poll();
             }
@@ -140,7 +137,6 @@ public class PushRelabelMaximumFlow extends MaximumFlowBase {
             flowData[ui][pos] -= f;
             excess[ui] += f;
             excess[vi] -= f;
-            //if (DEBUG) System.out.println("<-- Backward push " + v + " -> " + u + ": " + f);            
             if (excess[vi] == 0) {
                 active.poll();
             }
@@ -155,7 +151,6 @@ public class PushRelabelMaximumFlow extends MaximumFlowBase {
 
         if (!pushed) {
             //relabel v
-            //if (DEBUG) System.out.println("^^^^^ Relabel " + v + ", its height is now: " + minHeight);            
             int oldHeight = vertexHeight[vi];
             heightCount[oldHeight]--;
             vertexHeight[vi] = minHeight;
@@ -199,7 +194,6 @@ public class PushRelabelMaximumFlow extends MaximumFlowBase {
      * using a backwards breadth-first search.
      */
     private void globalRelabel() {
-        //if (DEBUG) System.out.println("************************ global relabel");        
         boolean[] visited = new boolean[n];
         visited[sinkIndex] = true;
         //all the visited nodes can reach the sink in the residual graph

@@ -18,7 +18,6 @@ package org.graph4j.alg.cut;
 
 import org.graph4j.Graph;
 import org.graph4j.alg.SimpleGraphAlgorithm;
-import org.graph4j.util.VertexSet;
 
 /**
  * The vertex separator problem (VSP) is to find a partition of V into nonempty
@@ -32,11 +31,11 @@ import org.graph4j.util.VertexSet;
  * @author Cristian Frăsinaru
  *
  */
+//https://www.ic.unicamp.br/~cid/Problem-instances/VSP.html
 abstract class VertexSeparatorBase extends SimpleGraphAlgorithm
-        implements VertexSeparatorAlgorithm {
-
+        implements VertexSeparatorAlgorithm {    
     protected final int maxShoreSize;
-    protected VertexSet leftShore, rightShore, separator;
+    protected VertexSeparator solution;
 
     /**
      * Creates an algorithm for computing a vertex separator with the default

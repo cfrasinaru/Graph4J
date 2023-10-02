@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 import org.graph4j.Graph;
 import org.graph4j.alg.connectivity.VertexConnectivityAlgorithm;
 import org.graph4j.generate.GraphGenerator;
-import org.graph4j.util.VertexSet;
 
 /**
  * Guropi ILP model for the Vertex Separator Problem (VSP).
@@ -40,8 +39,6 @@ public class GurobiVertexSeparator extends VertexSeparatorBase {
     protected GRBEnv env;
     protected GRBModel model;
     protected GRBVar x[], y[];
-
-    protected VertexSeparator solution;
 
     public GurobiVertexSeparator(Graph graph) {
         super(graph);
@@ -137,19 +134,21 @@ public class GurobiVertexSeparator extends VertexSeparatorBase {
             }
         }
 
-        //|A| does not exceed maxShoreSize
+        //1 <= |A| <= maxShoreSize
         GRBLinExpr sumA = new GRBLinExpr();
         for (int i = 0; i < n; i++) {
             sumA.addTerm(1, x[i]);
         }
         model.addConstr(sumA, GRB.LESS_EQUAL, maxShoreSize, "maxShoreSize_A");
+        model.addConstr(sumA, GRB.GREATER_EQUAL, 1, "notempty_A");
 
-        //|B| does not exceed maxShoreSize
+        //1 <= |B| <= maxShoreSize
         GRBLinExpr sumB = new GRBLinExpr();
         for (int i = 0; i < n; i++) {
             sumB.addTerm(1, y[i]);
         }
         model.addConstr(sumB, GRB.LESS_EQUAL, maxShoreSize, "maxShoreSize_B");
+        model.addConstr(sumB, GRB.GREATER_EQUAL, 1, "notempty_B");
 
         //objective |A| + |B|
         GRBLinExpr obj = new GRBLinExpr();
@@ -185,8 +184,8 @@ public class GurobiVertexSeparator extends VertexSeparatorBase {
     private int computeMinCutSize(int lb) {
         long t0 = System.currentTimeMillis();
         var minCutAlg = new VertexConnectivityAlgorithm(graph);
-        //var minCutset = minCutAlg.getMinimumCut();
-        //System.out.println("global minimum cut size: " + minCutset.size());
+        var minCutset = minCutAlg.getMinimumCut();
+        System.out.println("global minimum cut size: " + minCutset.size());
         //analyze the minCutset
         /*
         var g = graph.copy();
@@ -194,7 +193,7 @@ public class GurobiVertexSeparator extends VertexSeparatorBase {
         for (var cc : new ConnectivityAlgorithm(g).getConnectedSets()) {
             System.out.println(cc.size() + " <= " + maxShoreSize + " = " + (cc.size() <= maxShoreSize));
         }*/
-
+        /*
         int n = graph.numVertices();
         int[] alpha = new int[n];
         for (int i = 0; i < n; i++) {
@@ -203,30 +202,29 @@ public class GurobiVertexSeparator extends VertexSeparatorBase {
         }
         Arrays.sort(alpha);
         System.out.println(Arrays.toString(alpha));
-        int ub = alpha[lb + 1];
-        //ub = minCutset.size();
+        int ub = alpha[Math.min(lb + 1, alpha.length - 1)];
+        */
+        int ub = minCutset.size();
         long t1 = System.currentTimeMillis();
-        System.out.println("MinCut ready in " + (t1 - t0) + " ms");        
+        System.out.println("MinCut ready in " + (t1 - t0) + " ms");
         return ub;
     }
 
     private void createSolution() {
         try {
-            separator = new VertexSet(graph, graph.vertices());
-            leftShore = new VertexSet(graph);
-            rightShore = new VertexSet(graph);
+            solution = new VertexSeparator(graph, maxShoreSize);
+            solution.separator().addAll(graph.vertices());
             for (int i = 0, n = graph.numVertices(); i < n; i++) {
                 int v = graph.vertexAt(i);
                 if (x[i].get(GRB.DoubleAttr.X) > .00001) {
-                    leftShore.add(v);
-                    separator.remove(v);
+                    solution.leftShore().add(v);
+                    solution.separator().remove(v);
                 } else if (y[i].get(GRB.DoubleAttr.X) > .00001) {
-                    rightShore.add(v);
-                    separator.remove(v);
+                    solution.rightShore().add(v);
+                    solution.separator().remove(v);
                 }
             }
-            solution = new VertexSeparator(separator, leftShore, rightShore);
-            assert solution.isValid();
+            assert solution.isComplete() && solution.isValid();
         } catch (GRBException ex) {
             Logger.getLogger(GurobiVertexSeparator.class.getName()).log(Level.SEVERE, null, ex);
         }

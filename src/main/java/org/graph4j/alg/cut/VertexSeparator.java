@@ -31,14 +31,42 @@ public class VertexSeparator {
     private final VertexSet separator;
     private final VertexSet leftShore;
     private final VertexSet rightShore;
+    private final int maxShoreSize;
 
-    @Deprecated
-    private VertexSeparator(Graph graph) {
+    /**
+     * The default maximum shore size is {@code 2n/3}, where {@code n} is the
+     * number of vertices in the graph.
+     *
+     * @param graph the graph on which the separator is defined.
+     */
+    public VertexSeparator(Graph graph) {
+        this(graph, 2 * graph.numVertices() / 3);
+    }
+
+    /**
+     *
+     * @param graph the graph on which the separator is defined.
+     * @param maxShoreSize the maximum shore size.
+     */
+    public VertexSeparator(Graph graph, int maxShoreSize) {
         this.graph = graph;
-        int n = graph.numVertices();
-        leftShore = new VertexSet(graph, 2 * n / 3);
+        this.maxShoreSize = maxShoreSize;
+        leftShore = new VertexSet(graph, maxShoreSize);
         separator = new VertexSet(graph);
-        rightShore = new VertexSet(graph, 2 * n / 3);
+        rightShore = new VertexSet(graph, maxShoreSize);
+    }
+
+    /**
+     * Copy constructor.
+     *
+     * @param other a vertex separator.
+     */
+    public VertexSeparator(VertexSeparator other) {
+        this.graph = other.graph;
+        this.maxShoreSize = other.maxShoreSize;
+        leftShore = new VertexSet(other.leftShore);
+        separator = new VertexSet(other.separator);
+        rightShore = new VertexSet(other.rightShore);
     }
 
     /**
@@ -47,11 +75,13 @@ public class VertexSeparator {
      * @param leftShore the left shore.
      * @param rightShore the right shore.
      */
+    @Deprecated
     public VertexSeparator(VertexSet separator, VertexSet leftShore, VertexSet rightShore) {
         this.separator = separator;
         this.leftShore = leftShore;
         this.rightShore = rightShore;
         this.graph = separator.getGraph();
+        this.maxShoreSize = 2 * graph.numVertices() / 3; //not good
     }
 
     /**
@@ -78,18 +108,60 @@ public class VertexSeparator {
         return rightShore;
     }
 
+    /**
+     *
+     * @param v a vertex number.
+     * @return {@code true} if v is covered by any of the three sets.
+     */
+    public boolean contains(int v) {
+        return leftShore.contains(v) || rightShore.contains(v) || separator.contains(v);
+    }
+
+    /**
+     *
+     * @return {@code true} if all the vertices of the graph are in one of the
+     * three sets: leftShore, rightShore or separator.
+     */
+    public boolean isComplete() {
+        return leftShore.size() + rightShore.size() + separator.size() == graph.numVertices();
+    }
+
+    /**
+     * It does not test if it is complete, i.e. it contains all vertices of the
+     * graph.
+     *
+     * @return {@code true} if the properties of a vertex separator are
+     * satisfied.
+     */
     public boolean isValid() {
+        if (leftShore.size() == 0) {
+            return false;
+        }
+        if (rightShore.size() == 0) {
+            return false;
+        }
+        if (leftShore.size() > maxShoreSize) {
+            //System.out.println("Left shore size too big: " + leftShore.size() + " > " + maxShoreSize);
+            return false;
+        }
+        if (rightShore.size() > maxShoreSize) {
+            //System.out.println("Right shore size too big: " + rightShore.size() + " > " + maxShoreSize);
+            return false;
+        }
         for (int v : graph.vertices()) {
             boolean a = leftShore.contains(v);
             boolean b = rightShore.contains(v);
             boolean s = separator.contains(v);
-            if ((a && b) || (a && s) || (b && s) || !(a || b || s)) {
+            if ((a && b) || (a && s) || (b && s)) {
+                //!(a || b || s)
+                System.out.println("Duplicate: " + v);
                 return false;
             }
         }
         for (int v : leftShore.vertices()) {
             for (int u : rightShore.vertices()) {
                 if (graph.containsEdge(v, u)) {
+                    System.out.println("Illegal edge " + v + "-" + u);
                     return false;
                 }
             }
@@ -100,7 +172,7 @@ public class VertexSeparator {
     @Override
     public String toString() {
         return "Left shore: \t" + leftShore
-                + "\nSeparator: \t" + separator
+                + "\nSeparator: \t" + separator + ", size=" + separator.size()
                 + "\nRight shore: \t" + rightShore;
     }
 

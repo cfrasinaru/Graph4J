@@ -17,6 +17,7 @@
 package org.graph4j.demo;
 
 import java.io.FileNotFoundException;
+import org.graph4j.GraphBuilder;
 import org.graph4j.Graphs;
 import org.graph4j.alg.coloring.BacktrackColoring;
 import org.graph4j.alg.coloring.GurobiAssignmentColoring;
@@ -25,7 +26,7 @@ import org.graph4j.alg.coloring.bw.GurobiBandwithColoring;
 import org.graph4j.alg.coloring.bw.GurobiOptBandwithColoring;
 import org.graph4j.alg.coloring.eq.GurobiAssignmentEquitableColoring;
 import org.graph4j.alg.coloring.eq.GurobiStableModelEquitableColoring;
-import org.graph4j.alg.connectivity.VertexConnectivityAlgorithm;
+import org.graph4j.alg.cut.BacktrackVertexSeparator;
 import org.graph4j.alg.cut.GreedyVertexSeparator;
 import org.graph4j.alg.cut.GurobiVertexSeparator;
 import org.graph4j.generate.EdgeWeightsGenerator;
@@ -94,31 +95,22 @@ public class Main {
         run(this::test);
     }
 
-    private void testQQ() {
-        int n = 100;
-        double p = 0.1;
-        for (int i = 0; i < 10; i++) {
-            var g = GraphGenerator.randomGnp(n, Math.random());
-            var alg = new VertexConnectivityAlgorithm(g);
-            for (int s : g.vertices()) {
-                for (int t : g.vertices()) {
-                    if (s == t || g.containsEdge(s, t)) {
-                        continue;
-                    }
-                    int x = alg.countMaximumDisjointPaths(s, t);
-                    var y = alg.getMinimumCut(s, t).size();
-                    if (x != y) {
-                        System.out.println("OOPS! " + x + " != " + y);
-                        System.out.println("s=" + s + ", t=" + t);
-                        System.out.println(g);
-                        break;
-                    }
-                }
-            }
-        }
+    private void test() {
+        int n = 50;
+        double p = 0.2;
+        var g = GraphGenerator.randomGnp(n, p);
+        //var g = GraphBuilder.numVertices(5).addEdges("0-1,1-2,2-3,3-4").buildGraph();
+        //var g = GraphBuilder.numVertices(5).addEdges("0-1,0-2,1-2,2-3,2-4,3-4").buildGraph();
+        //var g = GraphBuilder.numVertices(10).addClique(0,1,2,3,4,5).addClique(0,6,7,8,9).buildGraph();
+        var sep1 = new GurobiVertexSeparator(g).getSeparator();
+        System.out.println("GUROBI: " + sep1.separator().size());
+        System.out.println(sep1);
+        System.out.println("=================================================");
+        var alg2 = new BacktrackVertexSeparator(g);
+        System.out.println(alg2.getSeparator());
     }
 
-    private void test() {
+    private void testQQ() {
         int n = 70;
         double p = 0.2;
         //var g = GraphGenerator.randomGnp(n, p);

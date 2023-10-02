@@ -32,7 +32,7 @@ import org.graph4j.util.Path;
  *
  * @author Cristian Frăsinaru
  */
-class ShortestPathExample {
+public class ShortestPathExample {
 
     private final int numLocations = 100;
     private List<Location> locations;

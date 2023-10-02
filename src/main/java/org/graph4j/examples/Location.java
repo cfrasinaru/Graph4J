@@ -28,7 +28,7 @@ import java.util.Objects;
  * @see ShortestPathExample
  * @author Cristian Frăsinaru
  */
-class Location {
+public class Location {
 
     private final String name;
     private final Map<Location, Double> neighbors = new HashMap<>();

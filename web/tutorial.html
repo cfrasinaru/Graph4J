@@ -91,6 +91,10 @@ Graph g = GraphBuilder.numVertices(3).named("K3")
 	.addEdge(0,1).addEdge(1,2).addEdge(0,2)
 	.buildGraph();
 </pre>
+or, in a more concise way:
+<pre>
+Graph g = GraphBuilder.numVertices(3).addEdges("0-1,1-2,0-2").buildGraph();
+</pre>
 By default, the vertices of a graph are primitive integers, starting with 0. However, any non-negative integers can be used as vertices. 
 Once a graph is created, it is by default mutable, other vertices and edges can be added or removed as necessary.
 </p>
@@ -123,7 +127,7 @@ for (int i = 0; i < n; i++) {
   g.addEdge(i, (i + 1) % n);
 }
 </pre>
-Methods like <code>estimatedNumEdges</code> or <code>estimatedAvgDegree</code> are not necessary but may improve the memory allocation process for the graph data structure.
+Methods like <code>estimatedNumEdges</code> or <code>estimatedAvgDegree</code> are not required but may improve the memory allocation process for the graph data structure.
 </p>
 
 
@@ -309,7 +313,7 @@ while (dfs.hasNext()) {
 	int v = node.vertex();
 	SearchNode parent = node.parent(); //the parent of v in the DFS tree
 	int level = node.level(); //the level of v in the DFS tree
-	int order - node.order(); //the visiting time of v
+	int order = node.order(); //the visiting time of v
 	int comp = node.component(); //the connected component of v	
 }
 </pre>

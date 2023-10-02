@@ -49,7 +49,7 @@ public class VertexConnectivityTest {
     @Test
     public void path() {
         int n = 10;
-        var g = GraphGenerator.path(n);        
+        var g = GraphGenerator.path(n);
         var alg = new VertexConnectivityAlgorithm(g);
         assertEquals(1, alg.countMaximumDisjointPaths(0, n - 1));
         assertEquals(1, alg.getMaximumDisjointPaths(0, n - 1).size());
@@ -73,6 +73,22 @@ public class VertexConnectivityTest {
         assertEquals(2, alg.getMaximumDisjointPaths(0, 5).size());
     }
 
-    
+    @Test
+    public void duality() {
+        int n = 20;
+        double p = Math.random();
+        var g = GraphGenerator.randomGnp(n, p);
+        var alg = new VertexConnectivityAlgorithm(g);
+        for (int s : g.vertices()) {
+            for (int t : g.vertices()) {
+                if (s == t || g.containsEdge(s, t)) {
+                    continue;
+                }
+                int x = alg.countMaximumDisjointPaths(s, t);
+                int y = alg.getMinimumCut(s, t).size();
+                assertEquals(x, y);
+            }
+        }
+    }
 
 }

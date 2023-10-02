@@ -33,8 +33,6 @@ import org.graph4j.util.VertexSet;
 public class GreedyVertexSeparator extends VertexSeparatorBase
         implements VertexSeparatorAlgorithm {
 
-    private VertexSeparator solution;
-
     public GreedyVertexSeparator(Graph graph) {
         super(graph);
     }
@@ -55,36 +53,52 @@ public class GreedyVertexSeparator extends VertexSeparatorBase
         if (solution != null) {
             return solution;
         }
-        int v = GraphMeasures.minDegreeVertex(graph);
-        leftShore = new VertexSet(graph);
-        leftShore.add(v);
-        separator = new VertexSet(graph, graph.neighbors(v));
+        solution = new VertexSeparator(graph, maxShoreSize);
+        var leftShore = solution.leftShore();
+        var rightShore = solution.rightShore();
+        var separator = solution.separator();
 
-        rightShore = new VertexSet(graph, graph.vertices());
+        //A=left shore, C=separator, B=right shore
+        //start with the vertex of minimum degree and add it to A
+        int v = GraphMeasures.minDegreeVertex(graph);
+        leftShore.add(v);
+
+        //move all neighbors of v to C
+        separator.addAll(graph.neighbors(v));
+
+        //B contains the rest of the vertices: V - {v} - N(v)
+        rightShore.addAll(graph.vertices());
         rightShore.remove(v);
         rightShore.removeAll(separator.vertices());
 
-        //grow the left shore
+        //grow the left shore A
+        //by moving vertices from C or B to A
         while (leftShore.size() < maxShoreSize && rightShore.size() > maxShoreSize) {
             v = choose(separator, rightShore);
             leftShore.add(v);
-            separator = neighborhood(leftShore);
-            rightShore = new VertexSet(graph, graph.vertices());
+            //
+            separator.clear();
+            separator.addAll(neighborhood(leftShore).vertices());
+            //
+            rightShore.clear();
+            rightShore.addAll(graph.vertices());
             rightShore.removeAll(leftShore.vertices());
             rightShore.removeAll(separator.vertices());
         }
 
-        //reduce the right shore, to not exceed the maximum size
+        //reduce the right shore B, not to exceed the maximum size
+        //by moving vertices from B to C
         while (rightShore.size() > maxShoreSize) {
             v = rightShore.pop();
             separator.add(v);
         }
-        solution = new VertexSeparator(separator, leftShore, rightShore);
-        assert solution.isValid();
+        assert solution.isComplete() && solution.isValid();
         return solution;
     }
 
-    //heuristic for choosing the vertex that will be moved to leftShore
+    //heuristic for choosing a vertex that will be moved to A
+    //chose a vertex u from C or B 
+    //such that it has as few as possible neighbors in B
     private int choose(VertexSet sep, VertexSet right) {
         int minVertex = -1;
         int min = Integer.MAX_VALUE;

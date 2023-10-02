@@ -101,4 +101,22 @@ public class EdgeConnectivityTest {
         assertEquals(5, alg.getMaximumDisjointPaths(0, 11).size());
     }
 
+    @Test
+    public void duality() {
+        int n = 20;
+        double p = Math.random();
+        var g = GraphGenerator.randomGnp(n, p);
+        var alg = new EdgeConnectivityAlgorithm(g);
+        for (int s : g.vertices()) {
+            for (int t : g.vertices()) {
+                if (s == t || g.containsEdge(s, t)) {
+                    continue;
+                }
+                int x = alg.countMaximumDisjointPaths(s, t);
+                int y = alg.getMinimumCut(s, t).size();
+                assertEquals(x, y);
+            }
+        }
+    }
+    
 }

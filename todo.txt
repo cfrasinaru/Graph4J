@@ -23,13 +23,13 @@ C++
 BGL https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
 KOALA https://github.com/krzysztof-turowski/koala-networkit
 Lemon https://lemon.cs.elte.hu/trac/lemon
+iGraph https://igraph.org/c/doc/
+
+Rust
+https://github.com/petgraph/petgraph
 
 .NET
 https://github.com/YaccConstructor/QuickGraph/tree/master/src/QuickGraph/Algorithms
-
-iGraph
-https://igraph.org/c/doc/
-
 
 teexGraph (diameter)
 https://github.com/franktakes/teexgraph

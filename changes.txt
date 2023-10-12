@@ -1,20 +1,17 @@
-1.0.6	2023-09-28
+1.0.6	2023-10-11
+	-Removed all implementations that require external dependencies
 	-VertexConnectivityAlgorithm: maximum vertex disjoint paths, minimum vertex cutset, vertex connectivity number
 	-EdgeConnectivityAlgorithm: maximum edge disjoint paths, minimum edge cutset, edge connectivity number
-	-ILP (Gurobi) implementation for the vertex separator problem: GurobiVertexSeparator	
 	-Johnson's algorithm for determining all pairs shortes paths: JohnsonShortestPath
 	-A* algorithm for determining the shortest path using a distance heursitic: AStarAlgorithm
 	-Iterators over all cliques, with min and max size, DFS or BFS: DFSCliqueIterator, BFSCliqueIterator
-	-ILP (Gurobi) implementation of the stable set model for equitable coloring: GurobiStableModelEquitableColoring
 	
 1.0.5	2023-07-07
 	-Sequential and parallel implementations of Boruvka algorithm for MST: BoruvkaMinimumSpanningTreeDefault/Parallel
-	-CSP (Choco) implementation for vertex coloring: ChocoColoring
 	-Generator for Barabasi-Albert networks: BarabasiALbertGenerator
 	-Generator for Watts-Strogatz networks: WattsStrogatzGenerator
 	-Greedy coloring algorithms for bandwith and equitable coloring
 	-Exact backtracking coloring algoritms for bandwith and equitable coloring
-	-Exact ILP coloring algoritms for bandwith and equitable coloring (using Gurobi)
 	-Generator for grid graphs and digraphs: GridGenerator
 	
 1.0.4	2023-04-27
@@ -23,7 +20,6 @@
 	-Algorithm for counting the number of triangles in a graph: TriangleCounter
 	-Simple greedy heuristic for the vertex separator problem: GreedyVertexSeparator
 	-Parallel implementation of backtrack vertex coloring: ParallelBacktrackColoring
-	-ILP (Gurobi) implementation of the assignment model for vertex coloring: GurobiAssignmentColoring
 	
 1.0.3	2023-04-29
 	- Exact algorithm for vertex coloring: BacktrackColoring
@@ -44,3 +40,10 @@
 	- Algorithm for bridge detection: org.graph4j.alg.connectivity.BridgeDetectionAlgorithm
 	- Bug: Graph.maxVertexNumber() was not correct (should return -1 in case of an empty graph)
 	- Bug: Graph.addVertex() was not correct (due to maxVertexNumber being incorrect)
+
+Moved to Graph4JExt
+	-ILP (Gurobi) implementation for the vertex separator problem: GurobiVertexSeparator	
+	-ILP (Gurobi) implementation of the stable set model for equitable coloring: GurobiStableModelEquitableColoring
+	-CSP (Choco) implementation for vertex coloring: ChocoColoring
+	-Exact ILP coloring algoritms for bandwith and equitable coloring (using Gurobi)
+	-ILP (Gurobi) implementation of the assignment model for vertex coloring: GurobiAssignmentColoring

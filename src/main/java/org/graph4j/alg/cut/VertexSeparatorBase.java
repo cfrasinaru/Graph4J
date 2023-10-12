@@ -32,8 +32,9 @@ import org.graph4j.alg.SimpleGraphAlgorithm;
  *
  */
 //https://www.ic.unicamp.br/~cid/Problem-instances/VSP.html
-abstract class VertexSeparatorBase extends SimpleGraphAlgorithm
-        implements VertexSeparatorAlgorithm {    
+public abstract class VertexSeparatorBase extends SimpleGraphAlgorithm
+        implements VertexSeparatorAlgorithm {
+
     protected final int maxShoreSize;
     protected VertexSeparator solution;
 

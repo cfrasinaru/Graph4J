@@ -27,13 +27,12 @@ import java.util.Set;
 import java.util.StringJoiner;
 import org.graph4j.Graph;
 import org.graph4j.util.VertexSet;
-import org.jgrapht.alg.interfaces.VertexColoringAlgorithm;
 
 /**
  * A coloring of the vertices of a graph. Coloring algorithms will usually
  * produce as solution an object of this type.
  *
- * @see VertexColoringAlgorithm
+ * @see ColoringAlgorithm
  * @author Cristian Frăsinaru
  */
 public class Coloring {

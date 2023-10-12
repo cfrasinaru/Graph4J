@@ -11,71 +11,7 @@
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
     
-    <dependencies>
-        
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-core</artifactId>
-            <version>1.5.1</version>
-        </dependency>       
-                     
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-opt</artifactId>
-            <version>1.5.1</version>
-        </dependency>
-                        
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-api</artifactId>
-            <version>2.1.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-graph-impl</artifactId>
-            <version>2.1.1</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>net.sf.jung</groupId>
-            <artifactId>jung-algorithms</artifactId>
-            <version>2.1.1</version>
-        </dependency>        
-        
-        <!-- Install manually from lib -->
-        <dependency>
-            <groupId>edu.princeton.cs</groupId>
-            <artifactId>algs4</artifactId>
-            <version>1.0.4</version>                          
-        </dependency>
-        
-        <!-- Install manually from lib -->
-        <dependency>
-            <groupId>gurobi</groupId>
-            <artifactId>gurobi</artifactId>
-            <version>9.5</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.choco-solver</groupId>
-            <artifactId>choco-solver</artifactId>
-            <version>4.10.12</version>
-        </dependency>           
-        
-        <dependency>
-            <groupId>com.google.ortools</groupId>
-            <artifactId>ortools-java</artifactId>
-            <version>9.6.2534</version>
-        </dependency>
-        
-        
+    <dependencies>             
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>

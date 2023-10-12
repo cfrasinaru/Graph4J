@@ -27,9 +27,9 @@ import org.graph4j.GraphBuilder;
  *
  * p edge number-of-nodes number-of-edges
  *
- * e edge-source1 edge-target1
+ * e edge-source1 edge-target1 weight
  *
- * e edge-source2 edge-target2
+ * e edge-source2 edge-target2 weight
  *
  * http://prolland.free.fr/works/research/dsat/dimacs.html
  * https://www.diag.uniroma1.it//challenge9/format.shtml#graph

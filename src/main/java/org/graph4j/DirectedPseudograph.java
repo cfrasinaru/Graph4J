@@ -23,7 +23,7 @@ package org.graph4j;
  * @param <V> the type of vertex labels in this graph.
  * @param <E> the type of edge labels in this graph.
  */
-public interface DirectedPseudograph<V, E> extends Pseudograph<V, E> {
+public interface DirectedPseudograph<V, E> extends Pseudograph<V, E>, DirectedMultigraph<V, E> {
 
     /**
      *

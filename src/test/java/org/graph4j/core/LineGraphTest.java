@@ -18,11 +18,8 @@ package org.graph4j.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import org.graph4j.Edge;
 import org.graph4j.Graph;
-import org.graph4j.GraphBuilder;
 import org.graph4j.Graphs;
-import org.graph4j.generate.EdgeWeightsGenerator;
 import org.graph4j.generate.GraphGenerator;
 
 /**

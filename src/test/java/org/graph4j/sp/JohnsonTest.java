@@ -14,12 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg.sp;
+package org.graph4j.sp;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.util.Path;
 import org.graph4j.GraphBuilder;
+import org.graph4j.alg.sp.FloydWarshallShortestPath;
+import org.graph4j.alg.sp.JohnsonShortestPath;
 import org.graph4j.generate.EdgeWeightsGenerator;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 

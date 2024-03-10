@@ -16,11 +16,16 @@
  */
 package org.graph4j;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author Cristian Frăsinaru
  */
-class DirectedPseudographImpl<V, E> extends PseudographImpl<V, E> implements DirectedPseudograph<V, E> {
+class DirectedPseudographImpl<V, E> extends DirectedMultigraphImpl<V, E> implements DirectedPseudograph<V, E> {
+
+    protected Map<Integer, Integer> selfLoops;
 
     protected DirectedPseudographImpl() {
     }
@@ -43,12 +48,14 @@ class DirectedPseudographImpl<V, E> extends PseudographImpl<V, E> implements Dir
 
     @Override
     public DirectedPseudograph<V, E> copy() {
-        return (DirectedPseudograph<V, E>) super.copy();
+        return copy(true, true, true, true, true);
     }
-    
+
     @Override
     public DirectedPseudograph<V, E> copy(boolean vertexWeights, boolean vertexLabels, boolean edges, boolean edgeWeights, boolean edgeLabels) {
-        return (DirectedPseudograph<V, E>) super.copy(vertexWeights, vertexLabels, edges, edgeWeights, edgeLabels);
+        var copy = (DirectedPseudographImpl<V, E>) super.copy(vertexWeights, vertexLabels, edges, edgeWeights, edgeLabels);
+        copy.selfLoops = edges ? new HashMap<>(selfLoops) : new HashMap<>();
+        return copy;
     }
 
     @Override
@@ -60,22 +67,34 @@ class DirectedPseudographImpl<V, E> extends PseudographImpl<V, E> implements Dir
     public DirectedPseudograph<V, E> complement() {
         return (DirectedPseudograph<V, E>) super.complement();
     }
-    
+
     @Override
-    public boolean isComplete() {
-        for (int i = 0; i < numVertices; i++) {
-            int v = vertexAt(i);
-            for (int j = 0; j < numVertices; j++) {
-                if (i == j) {
-                    continue;
-                }
-                int u = vertexAt(j);
-                if (!containsEdge(v, u)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    public int degree(int v) {
+        return super.degree(v) + selfLoops(v);
     }
-    
+
+    @Override
+    public int selfLoops(int v) {
+        return selfLoops.getOrDefault(v, 0);
+    }
+
+    @Override
+    public int addEdge(int v, int u) {
+        int pos = super.addEdge(v, u);
+        if (v == u) {
+            selfLoops.put(v, selfLoops.getOrDefault(v, 0) + 1);
+        }
+        return pos;
+    }
+
+    @Override
+    protected void removeEdgeAt(int vi, int pos) {
+        super.removeEdgeAt(vi, pos);
+        int v = vertices[vi];
+        int u = adjList[vi][pos];
+        if (v == u) {
+            selfLoops.put(v, selfLoops.get(v) - 1);
+        }
+    }
+
 }

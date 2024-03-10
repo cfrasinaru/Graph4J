@@ -64,8 +64,7 @@ public interface BFSVisitor {
 
     /**
      * A cross edge connects two nodes such that they do not have any
-     * relationship between them (ancestor or descendant). Cross edges can
-     * appear only in directed graph traversals.
+     * relationship between them (ancestor or descendant).
      *
      * @param from a node in the BFS tree.
      * @param to a node in the BFS tree.

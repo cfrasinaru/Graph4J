@@ -1,3 +1,8 @@
+1.0.7	2024-03-10
+	-Algorithm for tree isomorphism
+	-Graphs class has new method: isTree
+	-Bug: DirectedPseudograph and DirectedPseudographImpl were not correct
+	
 1.0.6	2023-10-11
 	-Removed all implementations that require external dependencies
 	-VertexConnectivityAlgorithm: maximum vertex disjoint paths, minimum vertex cutset, vertex connectivity number

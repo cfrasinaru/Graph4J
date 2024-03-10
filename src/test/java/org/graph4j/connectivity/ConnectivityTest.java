@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg.connectivity;
+package org.graph4j.connectivity;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
@@ -22,6 +22,8 @@ import org.graph4j.GraphBuilder;
 import org.graph4j.Graphs;
 import org.graph4j.alg.connectivity.TarjanBiconnectivity;
 import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
+import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
+import org.graph4j.alg.connectivity.TarjanBiconnectivity;
 import org.graph4j.generate.CycleGenerator;
 import org.graph4j.generate.GraphGenerator;
 import org.graph4j.generate.PathGenerator;

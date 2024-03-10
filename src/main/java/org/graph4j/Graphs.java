@@ -36,7 +36,7 @@ import org.graph4j.util.CheckArguments;
  * @author Cristian Frăsinaru
  */
 public class Graphs {
-
+    
     private Graphs() {
     }
 
@@ -150,6 +150,18 @@ public class Graphs {
      */
     public static boolean isConnected(Graph graph) {
         return new ConnectivityAlgorithm(graph).isConnected();
+    }
+
+    /**
+     * Determines if the given graph is a tree: connected and having
+     * {@code numVertices - 1} edges.
+     *
+     * @param graph the input graph.
+     * @return {@code true} if the graph is a tree.
+     */
+    public static boolean isTree(Graph graph) {
+        return (graph.numEdges() == graph.numVertices() - 1)
+                && isConnected(graph);
     }
 
     /**
@@ -373,6 +385,5 @@ public class Graphs {
     public static int vertexConnectivity(Graph graph) {
         return new VertexConnectivityAlgorithm(graph).getConnectivityNumber();
     }
-    
     
 }

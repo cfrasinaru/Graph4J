@@ -137,7 +137,7 @@ public class TarjanBiconnectivity extends SimpleGraphAlgorithm
             if (low[vi] >= to.order()) {
                 //u is an articulation point (cut vertex)
                 //u and the vertices on the stack up to u form a block
-                if (biconnected == null && blocks.size() > 0) {
+                if (biconnected == null && !blocks.isEmpty()) {
                     biconnected = false;
                     if (checkOnly) {
                         interrupt();

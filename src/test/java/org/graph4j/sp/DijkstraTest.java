@@ -14,13 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg.sp;
+package org.graph4j.sp;
 
 import org.graph4j.Digraph;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.util.Path;
 import org.graph4j.GraphBuilder;
+import org.graph4j.alg.sp.BellmanFordShortestPath;
+import org.graph4j.alg.sp.BidirectionalDijkstra;
+import org.graph4j.alg.sp.DijkstraShortestPathDefault;
+import org.graph4j.alg.sp.DijkstraShortestPathHeap;
 import org.graph4j.generate.EdgeWeightsGenerator;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 

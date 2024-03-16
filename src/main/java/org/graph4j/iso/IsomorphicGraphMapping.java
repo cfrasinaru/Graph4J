@@ -115,4 +115,17 @@ public class IsomorphicGraphMapping implements GraphMapping{
         return true;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append("{\n");
+        for(int i = 0; i < forwardMap.length; i++) {
+            int g1_vertex = graph1.vertexAt(i);
+            int g2_vertex = forwardMap[i];
+
+            str.append("\t").append(g1_vertex).append(" -> ").append(g2_vertex).append("\n");
+        }
+        str.append("}\n");
+        return str.toString();
+    }
 }

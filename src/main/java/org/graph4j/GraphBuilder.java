@@ -255,10 +255,7 @@ public class GraphBuilder {
      * @return a reference to this object.
      */
     public GraphBuilder addEdge(int v, int u) {
-        getVertex(v);
-        getVertex(u);
-        edges.add(new Edge(v, u));
-        return this;
+        return addEdge(v, u, null);
     }
 
     /**
@@ -269,10 +266,7 @@ public class GraphBuilder {
      * @return a reference to this object.
      */
     public <V> GraphBuilder addEdge(V vLabel, V uLabel) {
-        int v = labelMap.getOrDefault(vLabel, -1);
-        int u = labelMap.getOrDefault(uLabel, -1);
-        edges.add(new Edge(v, u));
-        return this;
+        return addEdge(vLabel, uLabel, null);
     }
 
     /**
@@ -289,8 +283,39 @@ public class GraphBuilder {
     }
 
     /**
-     * Example: "1-2, 2-3, 3-1", "a-b, b-c,c-d", etc.
      *
+     * @param <E> the type of edge label.
+     * @param v a vertex number.
+     * @param u a vertex number.
+     * @param eLabel the label of the newly created edge.
+     * @return a reference to this object.
+     */
+    public <E> GraphBuilder addEdge(int v, int u, E eLabel) {
+        getVertex(v);
+        getVertex(u);
+        edges.add(new Edge(v, u, eLabel));
+        return this;
+    }
+
+    /**
+     *
+     * @param <V> the type of vertex labels.
+     * @param vLabel a labeled vertex.
+     * @param uLabel a labeled vertex.
+     * @param <E> the type of edge label.
+     * @param eLabel the label of the newly created edge.
+     * @return a reference to this object.
+     */
+    public <V, E> GraphBuilder addEdge(V vLabel, V uLabel, E eLabel) {
+        int v = labelMap.getOrDefault(vLabel, -1);
+        int u = labelMap.getOrDefault(uLabel, -1);
+        edges.add(new Edge(v, u, eLabel));
+        return this;
+    }
+
+    /**
+     * Example: "1-2, 2-3, 3-1", "a-b, b-c,c-d", etc.
+     * <p>
      * "0-1,0-2-0-3" may be written as "0-1,2,3".
      *
      * @param edges a text encoding the edges to be added.

@@ -165,4 +165,22 @@ public class BuilderTest {
         assertEquals(4, g.numEdges());
     }
 
+    @Test
+    public void buildLabeledGraph3() {
+        List<City> cities = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            cities.add(new City("City" + i));
+        }
+        Graph<City, String> g = GraphBuilder.labeledVertices(cities)
+                .addEdge(cities.get(4), cities.get(6), "Connection1")
+                .addEdge(cities.get(1), cities.get(2), "Connection2")
+                .buildGraph();
+        g.addEdge(cities.get(4), cities.get(5));
+
+        assertEquals(g.numEdges(), 3);
+        assertEquals(g.getEdgeLabel(4, 6), "Connection1");
+        assertEquals(g.getEdgeLabel(1, 2), "Connection2");
+        assertNotEquals(g.getEdgeLabel(4, 6), g.getEdgeLabel(4, 5));
+    }
+
 }

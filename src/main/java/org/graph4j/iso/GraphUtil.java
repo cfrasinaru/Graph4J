@@ -76,7 +76,6 @@ public class GraphUtil {
      */
     private static void addDirectedEdgesFromUndirectedGraph(Graph g, Digraph dg) {
         for (Edge e : g.edges()) {
-            System.out.println("Edge: " + e);
             int source = e.source();
             int target = e.target();
             double edge_weight = e.weight();

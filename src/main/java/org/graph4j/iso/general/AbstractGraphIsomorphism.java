@@ -48,19 +48,7 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
         return match(false);
     }
 
-
-    /**
-     * Check if the graphs could be isomorphic
-     * {@code @return:} False if surely not isomorphic, true if not sure
-     */
-    protected boolean surelyNotIsomorphic(){
-        if(dg1.numVertices() != dg2.numVertices())
-            return true;
-
-        return dg1.numEdges() != dg2.numEdges();
-    }
-
-    protected List<IsomorphicGraphMapping> match(boolean onlyFirstMapping){
+/*    protected List<IsomorphicGraphMapping> match(boolean onlyFirstMapping){
         List<IsomorphicGraphMapping> mappings = new ArrayList<>();
         matchRecursive(getStateInstance(dg1, dg2), mappings, onlyFirstMapping);
 
@@ -70,7 +58,6 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
     private void matchRecursive(State s, List<IsomorphicGraphMapping> mappings, boolean onlyFirstMapping) {
         if(s.isGoal()){
             mappings.add(s.getMapping());
-//            System.out.println("Goal");
             return;
         }
 
@@ -79,7 +66,6 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
 
         while(s.nextPair()){
             if(s.isFeasiblePair()){
-//                System.out.println("Depth: " + s.getCoreLen());
                 State newS = getNewStateInstance(s);
                 newS.addPair();
                 newS.resetPreviousVertices();
@@ -90,6 +76,49 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
                     return;
             }
         }
+    }*/
+
+    protected List<IsomorphicGraphMapping> match(boolean onlyFirstMapping){
+        return matchIterative(onlyFirstMapping);
+    }
+
+    private List<IsomorphicGraphMapping> matchIterative(boolean onlyFirstMapping){
+        List<IsomorphicGraphMapping> mappings = new ArrayList<>();
+        Deque<State> stack = new ArrayDeque<>();
+
+        // stack for simulating the recursive calls
+        State s = getStateInstance(dg1, dg2);
+
+        while(true){
+            while(s.nextPair()){
+                if(s.isFeasiblePair()){
+                    if(s.isDead()) {
+                        continue;
+                    }
+                    stack.push(s);
+
+                    s = getNewStateInstance(s);
+                    s.addPair();
+
+                    if(s.isGoal()) {
+                        mappings.add(s.getMapping());
+
+                        if(onlyFirstMapping)
+                            return mappings;
+                    }
+
+                    s.resetPreviousVertices();
+                }
+            }
+
+            if(stack.isEmpty())
+                break;
+
+            s.backTrack();
+            s = stack.pop();
+        }
+
+        return mappings;
     }
 
     /**

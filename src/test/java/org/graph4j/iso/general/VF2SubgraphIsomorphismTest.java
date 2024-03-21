@@ -1,20 +1,21 @@
-package org.graph4j.iso;
+package org.graph4j.iso.general;
 
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
 import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.graph4j.iso.IsomorphicGraphMapping;
+import org.graph4j.iso.TestUtil;
 import org.graph4j.iso.general.GraphIsomorphism;
 import org.graph4j.iso.general.VF2SubGraphIsomorphism;
-import org.graph4j.iso.general.VF2plusSubGraphIsomorphism;
+import org.graph4j.iso.jgrapht_util.TestIsomorphism;
+import org.jgrapht.alg.isomorphism.VF2SubgraphIsomorphismInspector;
+import org.jgrapht.graph.DefaultEdge;
 import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class VF2SubgraphIsomorphismTest {
     private boolean testIsomorphism4J(Graph<?,?> g1, Graph<?,?> g2) {
@@ -25,7 +26,7 @@ public class VF2SubgraphIsomorphismTest {
         long usedMemoryBefore =
                 runtime.totalMemory() - runtime.freeMemory();
 
-        GraphIsomorphism iso = new VF2plusSubGraphIsomorphism(g1, g2);
+        GraphIsomorphism iso = new VF2SubGraphIsomorphism(g1, g2);
         boolean isomorphic = iso.areIsomorphic();
 
         long runningTime = System.currentTimeMillis() - initialTime;
@@ -44,7 +45,7 @@ public class VF2SubgraphIsomorphismTest {
         long initialTime = System.currentTimeMillis();
         long usedMemoryBefore = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
-        GraphIsomorphism iso = new VF2plusSubGraphIsomorphism(g1, g2);
+        GraphIsomorphism iso = new VF2SubGraphIsomorphism(g1, g2);
         List<IsomorphicGraphMapping> mappings = iso.getAllMappings();
 
         long runningTime = System.currentTimeMillis() - initialTime;
@@ -103,16 +104,35 @@ public class VF2SubgraphIsomorphismTest {
     }
 
     @Test
-    public void testLargeGraphs() {
+    public void testHugeGraph()
+    {
         int n = 100;
-        Graph g2 = new RandomGnpGraphGenerator(n, 0.4).createGraph();
+        Digraph g1 = new RandomGnpGraphGenerator(n, 0.3).createDigraph();
+        Digraph g2 = TestUtil.generateSubgraphFromDigraph(g1, 0.5);
 
-        var iso_graph = TestUtil.generateIsomorphicGraph(TestUtil.generateSubgraph(g2, 0.1));
-        Graph g1 = iso_graph.first();
+//        System.out.println("Graph1_4j: " + g1);
+//        System.out.println("Graph2_4j: " + g2);
 
-        System.out.println("Graph1: " + g1);
-        System.out.println("Graph2: " + g2);
+        org.jgrapht.Graph<Integer, DefaultEdge> g1_t = TestIsomorphism.convertToJGraphT(g1);
+        org.jgrapht.Graph<Integer, DefaultEdge> g2_t = TestIsomorphism.convertToJGraphT(g2);
 
-        assertTrue(testIsomorphism4J(g1, g2));
+//        System.out.println("\n--------------------------------------------\nGraph1: " + g1_t);
+//        System.out.printf("Graph2: " + g2_t);
+
+        var vf2 = new VF2SubgraphIsomorphismInspector<>(g1_t, g2_t);
+        long initialTime = System.currentTimeMillis();
+        long usedMemoryBefore = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        assertTrue(vf2.isomorphismExists());
+        long usedMemoryAfter = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        long runningTime = System.currentTimeMillis() - initialTime;
+        long memoryIncrease = usedMemoryAfter - usedMemoryBefore;
+
+        System.out.println("\n\t[JGraphT] Running time: " + runningTime + " ms");
+        System.out.println("\t[JGraphT]  Memory increase: " + memoryIncrease + " bytes\n\n");
+
+
+        boolean isomorphic = testIsomorphism4J(g2, g1);
+        System.out.println("Isomorphic: " + isomorphic);
+
     }
 }

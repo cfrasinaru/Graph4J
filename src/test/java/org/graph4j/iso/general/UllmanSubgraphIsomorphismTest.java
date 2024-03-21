@@ -1,7 +1,8 @@
-package org.graph4j.iso;
+package org.graph4j.iso.general;
 
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
+import org.graph4j.iso.IsomorphicGraphMapping;
 import org.graph4j.iso.general.GraphIsomorphism;
 import org.graph4j.iso.general.UllmanSubGraphIsomorphism;
 import org.junit.Test;

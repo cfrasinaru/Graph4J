@@ -7,7 +7,6 @@ import org.graph4j.Edge;
 import org.graph4j.iso.IsomorphicGraphMapping;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 public abstract class AbstractState implements State {
     protected Digraph g1;

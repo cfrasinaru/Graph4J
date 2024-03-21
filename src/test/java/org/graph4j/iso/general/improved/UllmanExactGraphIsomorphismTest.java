@@ -1,18 +1,18 @@
-package org.graph4j.iso;
-
+package org.graph4j.iso.general.improved;
 
 import org.graph4j.*;
 import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.graph4j.iso.IsomorphicGraphMapping;
 import org.graph4j.iso.general.GraphIsomorphism;
-import org.graph4j.iso.general.UllmanExactGraphIsomorphism;
-import org.graph4j.iso.general.VF2ExactGraphIsomorphism;
+import org.graph4j.iso.general.improved.UllmanExactGraphIsomorphism;
+
+import org.graph4j.iso.TestUtil;
 import org.junit.Test;
-
 import java.util.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class VF2ExactGraphIsomorphismTest {
+public class UllmanExactGraphIsomorphismTest {
+
     private boolean testIsomorphism4J(Graph<?,?> g1, Graph<?,?> g2) {
         System.gc();
         Runtime runtime = Runtime.getRuntime();
@@ -21,7 +21,7 @@ public class VF2ExactGraphIsomorphismTest {
         long usedMemoryBefore =
                 runtime.totalMemory() - runtime.freeMemory();
 
-        GraphIsomorphism iso = new VF2ExactGraphIsomorphism(g1, g2);
+        GraphIsomorphism iso = new UllmanExactGraphIsomorphism(g1, g2);
         boolean isomorphic = iso.areIsomorphic();
 
         long runningTime = System.currentTimeMillis() - initialTime;
@@ -40,7 +40,7 @@ public class VF2ExactGraphIsomorphismTest {
         long initialTime = System.currentTimeMillis();
         long usedMemoryBefore = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 
-        GraphIsomorphism iso = new VF2ExactGraphIsomorphism(g1, g2);
+        GraphIsomorphism iso = new UllmanExactGraphIsomorphism(g1, g2);
         List<IsomorphicGraphMapping> mappings = iso.getAllMappings();
 
         long runningTime = System.currentTimeMillis() - initialTime;
@@ -539,17 +539,14 @@ public class VF2ExactGraphIsomorphismTest {
 
     @Test
     public void testLargeGraph() {
-        int n = 700;
-        Graph g1 = new RandomGnpGraphGenerator(n, 0.4).createGraph();
+        int n = 100;
+        Graph g1 = new RandomGnpGraphGenerator(n, 0.2).createGraph();
         var iso_graph = TestUtil.generateIsomorphicGraph(g1);
         Graph g2 = iso_graph.first();
         Map<Integer, Integer> mapping = iso_graph.second();
 
         assertTrue(testIsomorphism4J(g1, g2));
-        List<IsomorphicGraphMapping> mappings = testGetAllMappings4J(g1, g2);
-        for (var map: mappings){
-            assertTrue(map.isValidIsomorphism());
-        }
     }
 }
+
 

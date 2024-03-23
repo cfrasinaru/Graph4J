@@ -78,16 +78,9 @@ public class GraphUtil {
         for (Edge e : g.edges()) {
             int source = e.source();
             int target = e.target();
-            double edge_weight = e.weight();
 
-            dg.addEdge(source, target);
-            dg.addEdge(target, source);
-
-            dg.setEdgeWeight(source, target, edge_weight);
-            dg.setEdgeWeight(target, source, edge_weight);
-
-            dg.setEdgeLabel(source, target, e.label());
-            dg.setEdgeLabel(target, source, e.label());
+            dg.addEdge(source, target, e.weight(), e.label());
+            dg.addEdge(target, source, e.weight(), e.label());
         }
     }
     

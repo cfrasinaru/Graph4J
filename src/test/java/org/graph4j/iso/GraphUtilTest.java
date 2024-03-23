@@ -1,16 +1,18 @@
 package org.graph4j.iso;
 
 import org.graph4j.*;
-import org.junit.jupiter.api.Test;
+import org.graph4j.alg.ordering.VertexOrderings;
+import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.junit.Test;
 
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GraphUtilTest {
+public class GraphUtilTest {
 
     @Test
-    void graphToDigraph() {
+    public void graphToDigraph() {
         Graph g = GraphBuilder.vertices(1, 2, 3, 4).buildGraph();
 
         g.addEdge(1, 2);
@@ -32,7 +34,7 @@ class GraphUtilTest {
     }
 
     @Test
-    void multiGraphToDigraph() {
+    public void multiGraphToDigraph() {
         Graph g = GraphBuilder.vertices(1, 2, 3, 4).buildMultigraph();
 
         g.addEdge(1, 2);
@@ -57,7 +59,7 @@ class GraphUtilTest {
     }
 
     @Test
-    void pseudoGraphToDigraph() {
+    public void pseudoGraphToDigraph() {
         Graph g = GraphBuilder.vertices(1, 2, 3, 4).buildPseudograph();
 
         g.addEdge(1, 2);
@@ -85,5 +87,23 @@ class GraphUtilTest {
         assertTrue(dg.containsEdge(4, 2) && dg.containsEdge(2, 4));
         assertTrue(dg.containsEdge(4, 4));
         assertTrue(((DirectedPseudograph<?, ?>) dg).selfLoops(4) == 2);
+    }
+
+    @Test
+    public void testVertexOrderingsNotCorrectOrder() {
+        Graph g = GraphBuilder.vertices(3, 4, 5).addEdges("3-4, 4-5").buildGraph();
+
+        int[] orderedVertices = VertexOrderings.largestDegreeFirst(g);
+        System.out.println("Largest degree first: " + Arrays.toString(orderedVertices));
+    }
+
+    @Test
+    public void testVertexOrderingsIndexOutOfBounds() {
+        Graph g = GraphBuilder.empty().estimatedNumVertices(3).buildGraph();
+        g.addVertex(42321);
+        g.addVertex(32190);
+
+        int[] orderedVertices = VertexOrderings.largestDegreeFirst(g);
+        System.out.println("Largest degree first: " + Arrays.toString(orderedVertices));
     }
 }

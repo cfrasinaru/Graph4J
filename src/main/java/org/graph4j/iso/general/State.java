@@ -9,7 +9,7 @@ import org.graph4j.iso.IsomorphicGraphMapping;
  * @author Ignat Gabriel-Andrei
  */
 public interface State {
-    int NULL_NODE = -1;
+    int NULL_NODE = -1;     // used to set a node as not mapped
     boolean DEBUG = false;
 
     /**

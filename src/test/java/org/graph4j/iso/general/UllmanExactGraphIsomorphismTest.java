@@ -1,14 +1,12 @@
 package org.graph4j.iso.general;
 
-
 import org.graph4j.*;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 import org.graph4j.iso.IsomorphicGraphMapping;
 import org.graph4j.iso.TestUtil;
+
 import org.junit.Test;
-
 import java.util.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UllmanExactGraphIsomorphismTest {
@@ -548,4 +546,5 @@ public class UllmanExactGraphIsomorphismTest {
         assertTrue(testIsomorphism4J(g1, g2));
     }
 }
+
 

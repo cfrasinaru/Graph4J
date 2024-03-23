@@ -4,17 +4,22 @@ import org.graph4j.*;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 import org.graph4j.iso.IsomorphicGraphMapping;
 import org.graph4j.iso.TestUtil;
-import org.graph4j.iso.jgrapht_util.TestIsomorphism;
-import org.jgrapht.alg.isomorphism.VF2GraphIsomorphismInspector;
-import org.jgrapht.graph.DefaultEdge;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VF2ExactGraphIsomorphismTest {
     private boolean testIsomorphism4J(Graph<?,?> g1, Graph<?,?> g2) {
+        return testIsomorphism4J(g1, g2, false);
+    }
+
+    private boolean testIsomorphism4J(Graph<?,?> g1, Graph<?,?> g2, boolean cache) {
         System.gc();
         Runtime runtime = Runtime.getRuntime();
 
@@ -22,7 +27,7 @@ public class VF2ExactGraphIsomorphismTest {
         long usedMemoryBefore =
                 runtime.totalMemory() - runtime.freeMemory();
 
-        GraphIsomorphism iso = new VF2ExactGraphIsomorphism(g1, g2);
+        GraphIsomorphism iso = new VF2ExactGraphIsomorphism(g1, g2, cache);
         boolean isomorphic = iso.areIsomorphic();
 
         long runningTime = System.currentTimeMillis() - initialTime;
@@ -560,32 +565,9 @@ public class VF2ExactGraphIsomorphismTest {
         Graph g1 = new RandomGnpGraphGenerator(n, 0.3).createGraph();
         Graph g2 = TestUtil.generateIsomorphicGraph(g1).first();
 
-//        System.out.println("Graph1_4j: " + g1);
-//        System.out.println("Graph2_4j: " + g2);
-
-        org.jgrapht.Graph<Integer, DefaultEdge> g1_t = TestIsomorphism.convertToJGraphT(g1);
-        org.jgrapht.Graph<Integer, DefaultEdge> g2_t = TestIsomorphism.convertToJGraphT(g2);
-
-
-        boolean isomorphic = testIsomorphism4J(g2, g1);
+        boolean isomorphic = testIsomorphism4J(g2, g1, true);
         System.out.println("Isomorphic: " + isomorphic);
-
-//        System.out.println("\n--------------------------------------------\nGraph1: " + g1_t);
-//        System.out.printf("Graph2: " + g2_t);
-
-        var vf2 = new VF2GraphIsomorphismInspector<>(g1_t, g2_t);
-        long initialTime = System.currentTimeMillis();
-        System.gc();
-        Runtime runtime = Runtime.getRuntime();
-        long usedMemoryBefore = runtime.totalMemory() - runtime.freeMemory();
-        assertTrue(vf2.isomorphismExists());
-        long usedMemoryAfter = runtime.totalMemory() - runtime.freeMemory();
-        long runningTime = System.currentTimeMillis() - initialTime;
-        long memoryIncrease = usedMemoryAfter - usedMemoryBefore;
-
-        System.out.println("\n\t[JGraphT] Running time: " + runningTime + " ms");
-        System.out.println("\t[JGraphT]  Memory increase: " + memoryIncrease + " bytes\n\n");
-
     }
 }
+
 

@@ -148,10 +148,7 @@ public class TestUtil {
             int v = edge.target();
 
             if (g2.containsVertex(u) && g2.containsVertex(v)) {
-                g2.addEdge(u, v);
-
-                g2.setEdgeWeight(u, v, g1.getEdgeWeight(u, v));
-                g2.setEdgeLabel(u, v, g1.getEdgeLabel(u, v));
+                g2.addEdge(u, v, g1.getEdgeWeight(u, v), g1.getEdgeLabel(u, v));
             }
         }
 

@@ -6,6 +6,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Abstract class for the Ullman's algorithm: exact isomorphism and subgraph isomorphism.
+ *
+ * <p>
+ *     Based on the paper " J.R. Ullmann, An Algorithm for Subgraph Isomorphism, Journal of the Association for Computing Machinery, 1976"
+ * </p>
+ * <p>
+ *     A matrix M is used to store the compatibility between the vertices of the two graphs.
+ * </p>
+ * <p>
+ *     After a pair of vertices is added to the matching, the matrix M is refined, in order to remove the inconsistent pairs, thus reducing the search space.
+ * </p>
+ *
+ * @author Ignat Gabriel-Andrei
+ */
 public abstract class AbstractUllmanState extends AbstractState {
     public static final int COMPATIBLE = 0;     // convention: there is no other value that means compatible
     protected int[][] M;            // compatibility matrix
@@ -15,12 +30,12 @@ public abstract class AbstractUllmanState extends AbstractState {
      * @param g1: the first graph, with the vertices ordered by degree
      * @param g2: the second graph, with the vertices ordered by degree
      */
-    public AbstractUllmanState(Digraph g1, Digraph g2) {
-        this.g1 = g1;
-        this.g2 = g2;
+    public AbstractUllmanState(Digraph g1, Digraph g2, boolean cache) {
+        this.o1 = new OrderedDigraph(g1, cache);
+        this.o2 = new OrderedDigraph(g2, cache);
 
-        this.n1 = g1.numVertices();
-        this.n2 = g2.numVertices();
+        this.n1 = o1.getNumVertices();
+        this.n2 = o2.getNumVertices();
 
         this.core_len = 0;
 
@@ -37,15 +52,16 @@ public abstract class AbstractUllmanState extends AbstractState {
             for(int j = 0; j < n2; j++){
                 this.M[i][j] = NULL_NODE;
 
-                int x = g1.vertexAt(i);
-                int y = g2.vertexAt(j);
-
-                if (exactOrSubgraphIsomorphismCompatibilityCheck(x, y) &&
-                        compatibleVertices(x, y)) {
+                if (exactOrSubgraphIsomorphismCompatibilityCheck(i, j) &&
+                        compatibleVertices(i, j)) {
                     this.M[i][j] = COMPATIBLE;
                 }
             }
         }
+    }
+
+    public AbstractUllmanState(Digraph g1, Digraph g2) {
+        this(g1, g2, false);
     }
 
     /**
@@ -53,8 +69,8 @@ public abstract class AbstractUllmanState extends AbstractState {
      * @param s: the state to be copied
      */
     public AbstractUllmanState(AbstractUllmanState s) {
-        this.g1 = s.g1;
-        this.g2 = s.g2;
+        this.o1 = s.o1;
+        this.o2 = s.o2;
 
         this.n1 = s.n1;
         this.n2 = s.n2;
@@ -70,9 +86,7 @@ public abstract class AbstractUllmanState extends AbstractState {
     }
 
     /**
-     * Compatibility function for the 2 cases:
-     * - exact isomorphism
-     * - subgraph isomorphism
+     * Compatibility function for the 2 cases: exact and subgraph isomorphism
      */
     public abstract boolean exactOrSubgraphIsomorphismCompatibilityCheck(int v1, int v2);
 
@@ -99,16 +113,8 @@ public abstract class AbstractUllmanState extends AbstractState {
             prev_2++;
 
         if (prev_2 < n2){
-            if (DEBUG)
-                showLog(
-                        "nextPair", "next candidate pair: (" + g1.vertexAt(prev_1) + ", "
-                                + g2.vertexAt(prev_2) + ")");
-
             return true;
         }
-
-        if (DEBUG)
-            showLog("nextPair", "no more candidate pairs");
 
         // not found
         prev_1 = prev_2 = NULL_NODE;
@@ -119,8 +125,6 @@ public abstract class AbstractUllmanState extends AbstractState {
      * Feasible pair: vertices are compatible
      */
     public boolean isFeasiblePair(){
-        assert(prev_1 < n1 && prev_2 < n2);
-
         return M[prev_1][prev_2] == COMPATIBLE;
     }
 
@@ -128,14 +132,6 @@ public abstract class AbstractUllmanState extends AbstractState {
      * Adds the pair (prev_1, prev_2) to the matching
      */
     public void addPair(){
-        assert(prev_1 < n1 && prev_2 < n2);
-        assert(core_len < n1 && core_len < n2);
-
-        if (DEBUG)
-            showLog(
-                    "addPair",
-                    "(" + g1.vertexAt(prev_1) + ", " + g2.vertexAt(prev_2) + ") added");
-
         // add the pair to the matching
         core_1[prev_1] = prev_2;
         core_2[prev_2] = prev_1;
@@ -196,17 +192,19 @@ public abstract class AbstractUllmanState extends AbstractState {
     public abstract boolean isDead();
 
     /**
+     * For every neighbour of i, there must be at least one candidate that is neighbour of j
+     * If this condition is not respected, then j is eliminated as a candidate for i
+     *
      * @param i: node from g1
-     * @param j: node from g2
+     * @param j: node from g2, some candidate for i
+     *
+     * @return true if the condition is respected, false otherwise
      */
-    boolean existsCandidateNeighbourInSecondGraph(int i, int j){
+    protected boolean existsCandidateNeighbourInSecondGraph(int i, int j){
         // for every neighbour of i, there must be at least one candidate neighbour of j
         for (int k = 0 ; k < n1 ; k++){
-            int x = g1.vertexAt(i);
-            int y = g2.vertexAt(j);
-            int u = g1.vertexAt(k);
-            boolean edge_ik = g1.containsEdge(x, u);
-            boolean edge_ki = g1.containsEdge(u, x);
+            boolean edge_ik = o1.containsEdge(i, k);
+            boolean edge_ki = o1.containsEdge(k, i);
 
             // if k is not neighbor of i, continue
             if (!edge_ik && !edge_ki)
@@ -214,10 +212,8 @@ public abstract class AbstractUllmanState extends AbstractState {
 
             boolean found = false;
             for (int l : getCandidates(k)){
-                int v = g2.vertexAt(l);
-
-                boolean edge_jl = g2.containsEdge(y, v);
-                boolean edge_lj = g2.containsEdge(v, y);
+                boolean edge_jl = o2.containsEdge(j, l);
+                boolean edge_lj = o2.containsEdge(l, j);
 
                 // if edge i->k exists in g1, then must exist at least one edge j->l in g2
                 // same for edge k->i and l->j
@@ -225,11 +221,11 @@ public abstract class AbstractUllmanState extends AbstractState {
                     continue;
 
                 // if the edges i->k and j->l exist, they must be compatible
-                if (edge_ik && !compatibleEdges(g1.edge(x, u), g2.edge(y, v)))
+                if (edge_ik && !compatibleEdges(i, k, j, l))
                     continue;
 
                 // if the edges k->i and l->j exist, they must be compatible
-                if (edge_ki && !compatibleEdges(g1.edge(u, x), g2.edge(v, y)))
+                if (edge_ki && !compatibleEdges(k, i, l, j))
                     continue;
 
                 // found a candidate neighbour of j, that respects the conditions
@@ -245,7 +241,7 @@ public abstract class AbstractUllmanState extends AbstractState {
         return true;
     }
 
-    List<Integer> getCandidates(int i){
+    protected List<Integer> getCandidates(int i){
         List<Integer> candidates = new ArrayList<>();
         if (i < core_len) {
             candidates.add(core_1[i]);
@@ -258,3 +254,4 @@ public abstract class AbstractUllmanState extends AbstractState {
         return candidates;
     }
 }
+

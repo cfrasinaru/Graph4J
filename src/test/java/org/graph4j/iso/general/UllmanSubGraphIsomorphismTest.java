@@ -3,15 +3,12 @@ package org.graph4j.iso.general;
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
 import org.graph4j.iso.IsomorphicGraphMapping;
-import org.graph4j.iso.general.GraphIsomorphism;
-import org.graph4j.iso.general.UllmanSubGraphIsomorphism;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
 
-public class UllmanSubgraphIsomorphismTest {
+public class UllmanSubGraphIsomorphismTest {
     private boolean testIsomorphism4J(Graph<?,?> g1, Graph<?,?> g2) {
         System.gc();
         Runtime runtime = Runtime.getRuntime();
@@ -72,3 +69,4 @@ public class UllmanSubgraphIsomorphismTest {
     }
 
 }
+

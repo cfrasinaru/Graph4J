@@ -40,6 +40,10 @@ public class GraphUtil {
      */
     private static Digraph getDirectedPseudoGraphFromPseudograph(Pseudograph<?,?> g) {
         DirectedPseudograph dp = GraphBuilder.verticesFrom(g).buildDirectedPseudograph();
+
+        for (int v : g.vertices())
+            dp.setVertexLabel(v, g.getVertexLabel(v));
+
         addDirectedEdgesFromUndirectedGraph(g, dp);
 
         return dp;
@@ -52,6 +56,10 @@ public class GraphUtil {
      */
     private static DirectedMultigraph<?,?> getDirectedMultigraphFromMultigraph(Multigraph g){
         DirectedMultigraph dm = GraphBuilder.verticesFrom(g).buildDirectedMultigraph();
+
+        for (int v : g.vertices())
+            dm.setVertexLabel(v, g.getVertexLabel(v));
+
         addDirectedEdgesFromUndirectedGraph(g, dm);
 
         return dm;
@@ -64,6 +72,10 @@ public class GraphUtil {
      */
     private static Digraph<?,?> getDigraphFromGraph(Graph g) {
         Digraph dg = GraphBuilder.verticesFrom(g).buildDigraph();
+
+        for (int v : g.vertices())
+            dg.setVertexLabel(v, g.getVertexLabel(v));
+
         addDirectedEdgesFromUndirectedGraph(g, dg);
 
         return dg;

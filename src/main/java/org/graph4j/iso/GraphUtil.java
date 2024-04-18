@@ -1,6 +1,6 @@
 package org.graph4j.iso;
 
-import org.graph4j.Graph;
+import org.graph4j.*;
 import org.graph4j.traverse.BFSIterator;
 import org.graph4j.traverse.SearchNode;
 
@@ -12,8 +12,88 @@ import java.util.List;
  *
  * @author Ignat Gabriel-Andrei
  */
-class GraphUtil {
+public class GraphUtil {
+
     private GraphUtil() {
+    }
+
+    /**
+     * Convert an undirected graph into a directed one
+     * @param g: undirected or directed graph
+     * @return the converted digraph
+     */
+    public static Digraph convertToDigraph(Graph g) {
+        if (g instanceof Digraph dg)
+            return dg;
+        else if (g instanceof Pseudograph<?,?> p)
+            return getDirectedPseudoGraphFromPseudograph(p);
+        else if (g instanceof Multigraph<?,?> m)
+            return getDirectedMultigraphFromMultigraph(m);
+        else
+            return getDigraphFromGraph(g);
+    }
+
+    /**
+     *
+     * @param g: pseudo graph, allowing both self loops and multiple edges
+     * @return directed pseudo graph
+     */
+    private static Digraph getDirectedPseudoGraphFromPseudograph(Pseudograph<?,?> g) {
+        DirectedPseudograph dp = GraphBuilder.verticesFrom(g).buildDirectedPseudograph();
+
+        for (int v : g.vertices())
+            dp.setVertexLabel(v, g.getVertexLabel(v));
+
+        addDirectedEdgesFromUndirectedGraph(g, dp);
+
+        return dp;
+    }
+
+    /**
+     *
+     * @param g: multi graph, allowing only multiple edges
+     * @return directed multi graph
+     */
+    private static DirectedMultigraph<?,?> getDirectedMultigraphFromMultigraph(Multigraph g){
+        DirectedMultigraph dm = GraphBuilder.verticesFrom(g).buildDirectedMultigraph();
+
+        for (int v : g.vertices())
+            dm.setVertexLabel(v, g.getVertexLabel(v));
+
+        addDirectedEdgesFromUndirectedGraph(g, dm);
+
+        return dm;
+    }
+
+    /**
+     *
+     * @param g: simple undirected graph, not allowing self loops or multiple edges
+     * @return simple directed graph
+     */
+    private static Digraph<?,?> getDigraphFromGraph(Graph g) {
+        Digraph dg = GraphBuilder.verticesFrom(g).buildDigraph();
+
+        for (int v : g.vertices())
+            dg.setVertexLabel(v, g.getVertexLabel(v));
+
+        addDirectedEdgesFromUndirectedGraph(g, dg);
+
+        return dg;
+    }
+
+    /**
+     * For every edge in the undirected graph g, add 2 edges in the digraph dg
+     * @param g: undirected graph
+     * @param dg: digraph
+     */
+    private static void addDirectedEdgesFromUndirectedGraph(Graph g, Digraph dg) {
+        for (Edge e : g.edges()) {
+            int source = e.source();
+            int target = e.target();
+
+            dg.addEdge(source, target, e.weight(), e.label());
+            dg.addEdge(target, source, e.weight(), e.label());
+        }
     }
     
     /**

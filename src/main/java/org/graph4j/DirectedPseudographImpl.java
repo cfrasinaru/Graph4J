@@ -33,6 +33,7 @@ class DirectedPseudographImpl<V, E> extends DirectedMultigraphImpl<V, E> impleme
     protected DirectedPseudographImpl(int[] vertices, int maxVertices, int avgDegree,
             boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
         super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
+        selfLoops = new HashMap<>();
     }
 
     @Override

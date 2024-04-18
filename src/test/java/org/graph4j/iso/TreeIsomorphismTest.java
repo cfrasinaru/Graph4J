@@ -16,7 +16,7 @@
  */
 package org.graph4j.iso;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.graph4j.GraphBuilder;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;

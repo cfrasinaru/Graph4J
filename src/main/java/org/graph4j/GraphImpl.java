@@ -303,7 +303,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
         return v;
     }
 
-    //the main addVertex
+    //the main addLabeledVertex
     @Override
     public int addVertex(int v) {
         if (vertexIndex == null) {
@@ -426,11 +426,11 @@ class GraphImpl<V, E> implements Graph<V, E> {
             if (edgeLabel != null || e.label != null) {
                 return addEdge(e.source, e.target, e.weight, e.label);
             } else {
-                return addEdge(e.source, e.target, e.weight);
+                return addWeightedEdge(e.source, e.target, e.weight);
             }
         } else {
             if (edgeLabel != null || e.label != null) {
-                return addEdge(e.source, e.target, e.label);
+                return addLabeledEdge(e.source, e.target, e.label);
             } else {
                 return addEdge(e.source, e.target);
             }
@@ -438,7 +438,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     @Override
-    public int addEdge(int v, int u, double weight) {
+    public int addWeightedEdge(int v, int u, double weight) {
         int pos = addEdge(v, u);
         if (pos < 0) {
             return pos;
@@ -456,7 +456,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     @Override
-    public int addEdge(int v, int u, E label) {
+    public int addLabeledEdge(int v, int u, E label) {
         int pos = addEdge(v, u);
         if (pos < 0) {
             return pos;
@@ -502,7 +502,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
         return pos;
     }
 
-    //the main addEdge method
+    //the main addLabeledEdge method
     @Override
     public int addEdge(int v, int u) {
         if (safeMode) {
@@ -896,14 +896,14 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     @Override
-    public int addVertex(int v, double weight) {
+    public int addWeightedVertex(int v, double weight) {
         int vi = addVertex(v);
         setVertexWeight(v, weight);
         return vi;
     }
 
     @Override
-    public int addVertex(double weight) {
+    public int addWeightedVertex(double weight) {
         int v = addVertex();
         setVertexWeight(v, weight);
         return v;
@@ -996,14 +996,14 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     @Override
-    public int addVertex(int v, V label) {
+    public int addLabeledVertex(int v, V label) {
         int vi = addVertex(v);
         setVertexLabel(v, label);
         return vi;
     }
 
     @Override
-    public int addVertex(V label) {
+    public int addLabeledVertex(V label) {
         int v = addVertex();
         setVertexLabel(v, label);
         return v;
@@ -1229,11 +1229,11 @@ class GraphImpl<V, E> implements Graph<V, E> {
                         if (edgeLabel != null) {
                             sub.addEdge(v, u, edgeWeight[vi][j], edgeLabel[vi][j]);
                         } else {
-                            sub.addEdge(v, u, edgeWeight[vi][j]);
+                            sub.addWeightedEdge(v, u, edgeWeight[vi][j]);
                         }
                     } else {
                         if (edgeLabel != null) {
-                            sub.addEdge(v, u, edgeLabel[vi][j]);
+                            sub.addLabeledEdge(v, u, edgeLabel[vi][j]);
                         } else {
                             sub.addEdge(v, u);
                         }
@@ -1268,11 +1268,11 @@ class GraphImpl<V, E> implements Graph<V, E> {
                 if (edgeLabel != null) {
                     sub.addEdge(v, u, edgeWeight[vi][j], edgeLabel[vi][j]);
                 } else {
-                    sub.addEdge(v, u, edgeWeight[vi][j]);
+                    sub.addWeightedEdge(v, u, edgeWeight[vi][j]);
                 }
             } else {
                 if (edgeLabel != null) {
-                    sub.addEdge(v, u, edgeLabel[vi][j]);
+                    sub.addLabeledEdge(v, u, edgeLabel[vi][j]);
                 } else {
                     sub.addEdge(v, u);
                 }

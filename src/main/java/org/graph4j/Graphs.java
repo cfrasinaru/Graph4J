@@ -36,8 +36,26 @@ import org.graph4j.util.CheckArguments;
  * @author Cristian Frăsinaru
  */
 public class Graphs {
-    
+
     private Graphs() {
+    }
+
+    /**
+     * Convenience method for obtaining the support graph of a digraph,
+     * multigraph or pseudograph. If the input graph is a simple, undirected
+     * graph, it returns the graph itself.
+     *
+     * @param graph a reference to a digraph, multigraph or pseudograph.
+     * @return the support graph.
+     */
+    public static Graph supportGraph(Graph graph) {
+        if (graph instanceof Digraph) {
+            return ((Digraph) graph).supportGraph();
+        } else if (graph instanceof Multigraph) {
+            return ((Multigraph) graph).supportGraph();
+        } else {
+            return graph;
+        }
     }
 
     /**
@@ -385,5 +403,36 @@ public class Graphs {
     public static int vertexConnectivity(Graph graph) {
         return new VertexConnectivityAlgorithm(graph).getConnectivityNumber();
     }
-    
+
+    /**
+     * Checks if an undirected graph has Ore's property:
+     * <code>deg(v) + deg(u) &gt;= |V(G)|</code>, for every pair of distinct
+     * non-adjacent vertices v and u. If a graph has Ore's property, then it is
+     * Hamiltonian. If the input graph is a multigraph or pseudograph, it checks
+     * the property on its support graph.
+     *
+     * @param graph the input graph.
+     * @return {@code true} if the graph has Ore's property, false otherwise.
+     */
+    public static boolean hasOreProperty(Graph graph) {
+        CheckArguments.graphUndirected(graph);
+        graph = supportGraph(graph);
+        int n = graph.numVertices();
+        if (n < 3) {
+            return false;
+        }
+        int[] vertices = graph.vertices();
+        int[] deg = graph.degrees();
+        for (int i = 0; i < n - 1; i++) {
+            int v = vertices[i];
+            for (int j = i + 1; j < n; j++) {
+                int u = vertices[j];
+                if (deg[i] + deg[j] < n && !graph.containsEdge(v, u)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }

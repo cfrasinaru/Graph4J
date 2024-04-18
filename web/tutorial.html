@@ -15,7 +15,7 @@
 <h1><a href="index.html">Graph4J</a> Tutorial</h1>
 <hr/>
 <h3>Graph4J - A computationally efficient Java library for graph algorithms</h3>
-Copyright &#169; 2023 Cristian Frăsinaru and contributors.
+Copyright &#169; 2023-2024 Cristian Frăsinaru and contributors.
 <hr/>
 
 <ol>
@@ -55,16 +55,19 @@ that drastically reduces both the required memory of the graph objects and the r
 <a name="install"> <h2> 2. Installation </h2> </a>
 <!--------------------------------------------------------------------->
 <p>
-In order to use Graph4J you have to download the .jar file and add it to the project's classpath. <br/>
-If you are using Maven, you should add the following dependency to the pom.xml, and <b>manually install the downloaded jar</b>, 
-since the library is not yet registered in a publicly available Maven repository.
+In order to use Graph4J you have two options:
+<ol>
+<li> <a href="download.html">Download</a> the .jar file and add it to the project's classpath. <br>
+<li> Add the following dependency to the pom.xml of a Maven project:
+<!-- and <b>manually install the downloaded jar</b>, since the library is not yet registered in a publicly available Maven repository. -->
 <pre>
   &lt;dependency&gt;
     &lt;groupId&gt;org.graph4j&lt;/groupId&gt;
     &lt;artifactId&gt;graph4j&lt;/artifactId&gt;
-    &lt;version&gt;1.0.0&lt;/version&gt;                          
+    &lt;version&gt;1.0.7&lt;/version&gt;                          
   &lt;/dependency&gt;
 </pre>
+</ol>
 </p>
 
 <!--------------------------------------------------------------------->
@@ -371,7 +374,6 @@ Examples of using Graph4J API can be found in the package <a href="https://githu
 
 <p>
 <hr/>
-<!-- Copyright &#169; 2023 Cristian Frasinaru and contributors. -->
 
 </body>
 </html>

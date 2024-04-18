@@ -16,6 +16,7 @@
  */
 package org.graph4j.util;
 
+import org.graph4j.Digraph;
 import org.graph4j.Edge;
 import org.graph4j.Graph;
 
@@ -46,6 +47,16 @@ public class CheckArguments {
         }
     }
 
+    /**
+     *
+     * @param graph the graph this check is performed on.
+     */
+    public static void graphUndirected(Graph graph) {
+        if (graph instanceof Digraph) {
+            throw new IllegalArgumentException("Graph must be undirected.");
+        }
+    }
+    
     /**
      *
      * @param n a number.

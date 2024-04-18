@@ -32,33 +32,33 @@ public class MSTBoruvkaTest {
                 .numVertices(12)
                 .buildGraph();
 
-        graph.addEdge(0, 1, 13.0);//for node A
-        graph.addEdge(0, 2, 6.0);
+        graph.addWeightedEdge(0, 1, 13.0);//for node A
+        graph.addWeightedEdge(0, 2, 6.0);
 
-        graph.addEdge(1, 2, 7.0);//for node B
-        graph.addEdge(1, 3, 1.0);
+        graph.addWeightedEdge(1, 2, 7.0);//for node B
+        graph.addWeightedEdge(1, 3, 1.0);
 
-        graph.addEdge(2, 3, 14.0);//..etc
-        graph.addEdge(2, 4, 8.0);
-        graph.addEdge(2, 7, 20.0);
+        graph.addWeightedEdge(2, 3, 14.0);//..etc
+        graph.addWeightedEdge(2, 4, 8.0);
+        graph.addWeightedEdge(2, 7, 20.0);
 
-        graph.addEdge(3, 4, 9.0);
-        graph.addEdge(3, 5, 3.0);
+        graph.addWeightedEdge(3, 4, 9.0);
+        graph.addWeightedEdge(3, 5, 3.0);
 
-        graph.addEdge(4, 9, 18.0);
+        graph.addWeightedEdge(4, 9, 18.0);
 
-        graph.addEdge(6, 7, 15.0);
-        graph.addEdge(6, 10, 10.0);
-        graph.addEdge(6, 9, 19.0);
-        graph.addEdge(6, 8, 5.0);
+        graph.addWeightedEdge(6, 7, 15.0);
+        graph.addWeightedEdge(6, 10, 10.0);
+        graph.addWeightedEdge(6, 9, 19.0);
+        graph.addWeightedEdge(6, 8, 5.0);
 
-        graph.addEdge(7, 9, 17.0);
+        graph.addWeightedEdge(7, 9, 17.0);
 
-        graph.addEdge(9, 10, 16.0);
-        graph.addEdge(9, 11, 4.0);
+        graph.addWeightedEdge(9, 10, 16.0);
+        graph.addWeightedEdge(9, 11, 4.0);
 
-        graph.addEdge(8, 10, 11.0);
-        graph.addEdge(10, 11, 12.0);
+        graph.addWeightedEdge(8, 10, 11.0);
+        graph.addWeightedEdge(10, 11, 12.0);
 
         var mst = new BoruvkaMinimumSpanningTreeDefault(graph);
 

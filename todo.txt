@@ -97,10 +97,7 @@ https://github.com/kevin-wayne/algs4/blob/master/src/main/java/edu/princeton/cs/
 
 Hungarian algorithm ( Kuhn Munkres Minimal Weight Bipartite Perfect Matching)
 https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/matching/KuhnMunkresMinimalWeightBipartitePerfectMatching.java
-
-https://en.wikipedia.org/wiki/Hungarian_algorithm
 https://github.com/KevinStern/software-and-algorithms/blob/master/src/main/java/blogspot/software_and_algorithms/stern_library/optimization/HungarianAlgorithm.java
-
 
 Jonker-Volgenant Algorithm for Linear Assignment Problem
 R. Jonker and A. Volgenant, "A shortest augmenting path algorithm for dense and spare linear assignment problems"
@@ -138,7 +135,7 @@ graph generation for several graph families (cliques, paths, cycles, fans, wheel
 -partite, regular trees) and random graphs models (Erdős–Rényi, Barabási–Albert, Watts–Strogatz),
 
 Planarity
-
+https://cs.brown.edu/people/rtamassi/gdhandbook/
 
 Uniform Cost Search
 Dynamic Connected Components (using Disjoint Sets)

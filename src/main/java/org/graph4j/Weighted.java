@@ -29,7 +29,12 @@ interface Weighted {
      * @param weight the weight to be set for vertex v.
      * @return the index of the added vertex.
      */
-    int addVertex(int v, double weight);
+    int addWeightedVertex(int v, double weight);
+
+    @Deprecated
+    default int addVertex(int v, double weight) {
+        return addWeightedVertex(v, weight);
+    }
 
     /**
      * Adds a new vertex to the graph having the number equal to the maximum
@@ -38,7 +43,12 @@ interface Weighted {
      * @param weight the weight to be set for the added vertex.
      * @return the number of the added vertex.
      */
-    int addVertex(double weight);
+    int addWeightedVertex(double weight);
+
+    @Deprecated
+    default int addVertex(double weight) {
+        return addWeightedVertex(weight);
+    }
 
     /**
      * Adds a new weighted edge to the graph. The endpoints of the edge are
@@ -49,7 +59,12 @@ interface Weighted {
      * @param weight the weigth to be set for the edge vu.
      * @return the position of u in the adjacency list of v.
      */
-    int addEdge(int v, int u, double weight);
+    int addWeightedEdge(int v, int u, double weight);
+
+    @Deprecated
+    default int addEdge(int v, int u, double weight) {
+        return addWeightedEdge(v, u, weight);
+    }
 
     /**
      * Sets the weight of a vertex.

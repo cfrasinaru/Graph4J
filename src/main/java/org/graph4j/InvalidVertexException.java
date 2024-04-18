@@ -23,15 +23,23 @@ package org.graph4j;
 public class InvalidVertexException extends RuntimeException {
 
     /**
-     * 
+     *
      * @param v a vertex number
      */
     public InvalidVertexException(int v) {
-        super("Invalid vertex: " + v);
+        super("Invalid vertex number: " + v);
     }
 
     /**
-     * 
+     *
+     * @param vLabel a vertex label
+     */
+    public InvalidVertexException(Object vLabel) {
+        super("Invalid vertex label: " + vLabel);
+    }
+
+    /**
+     *
      * @param v a vertex number
      * @param msg a message
      */

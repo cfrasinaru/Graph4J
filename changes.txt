@@ -1,7 +1,12 @@
+1.0.8
+	-Generator for random Hamiltonian graphs and digraphs
+	-Generator for random graphs that have Ore's property: RandomOreGraphGenerator
+	-Palmer's algorithm for finding a Hamiltonian cycle in a graph that satisfies Ore's condition: PalmerHamiltonianCycle 
+	-Graphs class has a new method: hasOreProperty	
+	
 1.0.7	2024-03-10
 	-Algorithm for tree isomorphism
-	-Graphs class has new method: isTree
-	-Bug: DirectedPseudograph and DirectedPseudographImpl were not correct
+	-Graphs class has a new method: isTree
 	
 1.0.6	2023-10-11
 	-Removed all implementations that require external dependencies

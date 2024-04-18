@@ -101,7 +101,6 @@ class Node {
         for (Node node : list) {
             sb.append(node.vertex).append("=").append(node.value).append("->").append(node.minDomain.vertex()).append(" - ");
         }
-        System.out.println(sb.toString() + ": " + minDomain);
     }
 
     /**

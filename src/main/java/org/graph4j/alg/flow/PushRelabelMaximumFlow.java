@@ -183,7 +183,6 @@ public class PushRelabelMaximumFlow extends MaximumFlowBase {
                 heightCount[vertexHeight[i]]--;
                 vertexHeight[i] = Math.max(vertexHeight[i], n + 1);
                 heightCount[vertexHeight[i]]++;
-                System.out.println("Gap relabeled");
             }
         }
     }

@@ -144,15 +144,4 @@ class IntArrayHeap {
         return IntArrays.toString(heap, 1, size);
     }
 
-    public static void main(String args[]) {
-        var heap = new IntArrayHeap(100, (a, b) ->  b - a);
-        //var heap = new IntArrayHeap(100);
-        //for (int i = 9; i >= 0; i--) {
-        for (int i = 10; i <= 19; i++) {
-            heap.add(i);
-        }
-        while (!heap.isEmpty()) {
-            System.out.println(heap.poll());
-        }
-    }
 }

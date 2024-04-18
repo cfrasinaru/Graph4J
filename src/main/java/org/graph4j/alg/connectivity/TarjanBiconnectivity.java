@@ -25,6 +25,7 @@ import org.graph4j.util.VertexStack;
 import org.graph4j.traverse.DFSVisitor;
 import org.graph4j.traverse.DFSTraverser;
 import org.graph4j.traverse.SearchNode;
+import org.graph4j.util.Block;
 
 /**
  * The algorithm for computing biconnected components in a connected undirected
@@ -39,8 +40,9 @@ public class TarjanBiconnectivity extends SimpleGraphAlgorithm
         implements BiconnectivityAlgorithm {
 
     private Boolean biconnected;
-    private List<VertexSet> blocks;
+    private List<Block> blocks;
     private VertexSet cutVertices;
+    private int[] lowpoints;
 
     public TarjanBiconnectivity(Graph graph) {
         super(graph);
@@ -67,7 +69,7 @@ public class TarjanBiconnectivity extends SimpleGraphAlgorithm
     }
 
     @Override
-    public List<VertexSet> getBlocks() {
+    public List<Block> getBlocks() {
         if (blocks != null) {
             return blocks;
         }
@@ -75,9 +77,26 @@ public class TarjanBiconnectivity extends SimpleGraphAlgorithm
         return blocks;
     }
 
+    /**
+     * The <em>lowpoint</em> of a vertex is the parent with the smallest
+     * visiting time that can be reached from the vertex or its descendants
+     * during a DFS traversal of the graph. The lowpoints are used to identify
+     * articulation points and they are computed during the DFS traversal.
+     *
+     * @return the lowpoints of the vertices.
+     */
+    /*
+    public int[] getLowpoints() {
+        if (lowpoints != null) {
+            return lowpoints;
+        }
+        compute(false);
+        return lowpoints;
+    }*/
     private void compute(boolean checkOnly) {
         this.blocks = new ArrayList<>();
         this.cutVertices = new VertexSet(graph);
+        this.lowpoints = new int[graph.numVertices()];;
         var dfs = new DFSTraverser(graph);
         dfs.traverse(new Visitor(checkOnly));
         if (biconnected == null) {
@@ -91,12 +110,10 @@ public class TarjanBiconnectivity extends SimpleGraphAlgorithm
     private class Visitor implements DFSVisitor {
 
         private final boolean checkOnly;
-        private final int[] low;
         private final VertexStack stack;
 
         public Visitor(boolean checkOnly) {
             this.checkOnly = checkOnly;
-            this.low = new int[graph.numVertices()];
             this.stack = new VertexStack(graph);
         }
 
@@ -104,7 +121,7 @@ public class TarjanBiconnectivity extends SimpleGraphAlgorithm
         public void startVertex(SearchNode node) {
             int v = node.vertex();
             //by default, the lowpoint is the dfs visit time (order)
-            low[graph.indexOf(v)] = node.order();
+            lowpoints[graph.indexOf(v)] = node.order();
             stack.push(v);
         }
 
@@ -121,7 +138,7 @@ public class TarjanBiconnectivity extends SimpleGraphAlgorithm
         public void backEdge(SearchNode from, SearchNode to) {
             //change the lowpoint of v=from.vertex
             int vi = graph.indexOf(from.vertex());
-            low[vi] = Math.min(low[vi], to.order());
+            lowpoints[vi] = Math.min(lowpoints[vi], to.order());
         }
 
         @Override
@@ -132,9 +149,9 @@ public class TarjanBiconnectivity extends SimpleGraphAlgorithm
             int ui = graph.indexOf(u);
             //going up v -> u
             //the lowpoint of u is atleast the lowpoint of v 
-            low[ui] = Math.min(low[ui], low[vi]);
+            lowpoints[ui] = Math.min(lowpoints[ui], lowpoints[vi]);
             //
-            if (low[vi] >= to.order()) {
+            if (lowpoints[vi] >= to.order()) {
                 //u is an articulation point (cut vertex)
                 //u and the vertices on the stack up to u form a block
                 if (biconnected == null && !blocks.isEmpty()) {
@@ -152,8 +169,8 @@ public class TarjanBiconnectivity extends SimpleGraphAlgorithm
 
         private void createBlock(SearchNode node) {
             int u = node.vertex();
-            //u is an articulation point
-            var block = new VertexSet(graph);
+            //u is an articulation point or the root
+            var block = new Block(graph);
             int w;
             do {
                 w = stack.pop();

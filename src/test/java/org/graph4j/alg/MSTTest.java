@@ -51,8 +51,8 @@ public class MSTTest {
     @Test
     public void primForrest() {
         Graph g = GraphBuilder.vertexRange(1, 4).buildGraph();
-        g.addEdge(1, 2, 3);
-        g.addEdge(3, 4, 4);
+        g.addWeightedEdge(1, 2, 3);
+        g.addWeightedEdge(3, 4, 4);
         var alg = new PrimMinimumSpanningTreeHeap(g);
         assertEquals(7, alg.getWeight());
         assertEquals(2, alg.getTree().numEdges());

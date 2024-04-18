@@ -16,7 +16,9 @@
  */
 package org.graph4j.generate;
 
+import java.util.Random;
 import java.util.stream.IntStream;
+import org.graph4j.Graph;
 import org.graph4j.util.CheckArguments;
 
 /**
@@ -48,6 +50,27 @@ public abstract class AbstractGraphGenerator {
     public AbstractGraphGenerator(int firstVertex, int lastVertex) {
         CheckArguments.vertexRange(firstVertex, lastVertex);
         this.vertices = IntStream.rangeClosed(firstVertex, lastVertex).toArray();
+    }
+
+    protected void addRandomEdges(Graph g, double edgeProbability) {
+        int n = g.numVertices();
+        boolean directed = g.isDirected();
+        boolean allowsSelfLoops = g.isAllowingSelfLoops();      
+        var random = new Random();
+        int n1 = directed ? n : n - 1;
+        for (int i = 0; i < n1; i++) {
+            int v = vertices[i];
+            int from = directed ? 0 : i + 1;
+            for (int j = from; j < n; j++) {
+                if (!allowsSelfLoops && i == j) {
+                    continue;
+                }
+                int u = vertices[j];
+                if (random.nextDouble() < edgeProbability) {
+                    g.addEdge(v, u);
+                }
+            }
+        }
     }
 
 }

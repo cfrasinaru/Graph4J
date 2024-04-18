@@ -71,7 +71,7 @@ public class JohnsonShortestPath extends GraphAlgorithm
         //Add a new auxiliary node connected to all vertices, with weight 0        
         int newNode = auxGraph.addVertex();
         for (int v : graph.vertices()) {
-            auxGraph.addEdge(newNode, v, 0.0);            
+            auxGraph.addWeightedEdge(newNode, v, 0.0);            
         }
         //Use Bellman–Ford algorithm O(nm) from the auxiliary node
         //to find for each vertex the shortest path to it h(v)

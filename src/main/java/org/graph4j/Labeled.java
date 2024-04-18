@@ -32,7 +32,12 @@ interface Labeled<V, E> {
      * @param label a vertex label.
      * @return the index of the added vertex.
      */
-    int addVertex(int v, V label);
+    int addLabeledVertex(int v, V label);
+
+    @Deprecated
+    default int addVertex(int v, V label) {
+        return addLabeledVertex(v, label);
+    }
 
     /**
      * Adds a new vertex to the graph having the number equal to the maximum
@@ -41,7 +46,12 @@ interface Labeled<V, E> {
      * @param label a vertex label.
      * @return the number of the added vertex.
      */
-    int addVertex(V label);
+    int addLabeledVertex(V label);
+
+    @Deprecated
+    default int addVertex(V label) {
+        return addLabeledVertex(label);
+    }
 
     /**
      * Adds a new labeled edge to the graph. The endpoints of the edge are
@@ -52,7 +62,12 @@ interface Labeled<V, E> {
      * @param label an edge label.
      * @return the position of u in the adjacency list of v.
      */
-    int addEdge(int v, int u, E label);
+    int addLabeledEdge(int v, int u, E label);
+
+    @Deprecated
+    default int addEdge(int v, int u, E label) {
+        return addLabeledEdge(v, u, label);
+    }
 
     /**
      * Adds a new labeled edge to the graph. The endpoints of the edge are
@@ -63,10 +78,15 @@ interface Labeled<V, E> {
      * @param edgeLabel an edge label.
      * @return the position of u in the adjacency list of v.
      */
-    default int addEdge(V vLabel, V uLabel, E edgeLabel) {
+    default int addLabeledEdge(V vLabel, V uLabel, E edgeLabel) {
         int v = findVertex(vLabel);
         int u = findVertex(uLabel);
-        return Labeled.this.addEdge(v, u, edgeLabel);
+        return Labeled.this.addLabeledEdge(v, u, edgeLabel);
+    }
+
+    @Deprecated
+    default int addEdge(V vLabel, V uLabel, E edgeLabel) {
+        return addLabeledEdge(vLabel, uLabel, edgeLabel);
     }
 
     /**

@@ -106,7 +106,7 @@ public class TarjanStrongConnectivity
             int scu = vertexComp[graph.indexOf(u)];
             if (scu != scv) {
                 if (!condensation.containsEdge(scv, scu)) {
-                    condensation.addEdge(scv, scu, 1);
+                    condensation.addWeightedEdge(scv, scu, 1);
                 } else {
                     condensation.setEdgeLabel(scv, scu, 1 + condensation.getEdgeLabel(scv, scu));
                 }

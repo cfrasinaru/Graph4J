@@ -208,14 +208,11 @@ public abstract class BacktrackColoringBase extends ExactColoringBase {
         if (parent == null) {
             return;
         }
-        System.out.println("FAILED " + node);
-        System.out.println("PARENT " + parent);
         int v = node.vertex;
         int color = node.color;
         assert v == parent.minDomain.vertex();
         //v is the pivot of node.parent
         //check all the colors in the domain of v
-        //System.out.println("propagate failure " + v + " = " + color + " up  to \n\t" + parent);
         int i = 0;
         Domain vDomain = parent.domain(graph.indexOf(v));
         if (vDomain.size() <= 1) {
@@ -232,16 +229,13 @@ public abstract class BacktrackColoringBase extends ExactColoringBase {
                     continue;
                 }
                 Domain uDomain = parent.domain(graph.indexOf(u));
-                System.out.println("Checking for colors " + other + "," + color + "\n\t" + vDomain + "\n\t" + uDomain);
                 if (uDomain.contains(other) && !uDomain.contains(color)) {
-                    System.out.println("\tNOPE");
                     i++;
                     continue nextColor;
                 }
             }
             //remove other from v's domain
             vDomain.removeAtPos(i);
-            System.out.println("\tRemoved some stuff!");
         }
     }
 

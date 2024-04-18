@@ -74,7 +74,6 @@ public class GridGenerator extends AbstractGraphGenerator {
     }
 
     private void addEdges(Graph g) {
-        boolean safeMode = g.isSafeMode();
         g.setSafeMode(false);
 
         //add horizontal lines
@@ -95,7 +94,7 @@ public class GridGenerator extends AbstractGraphGenerator {
             }
         }
 
-        g.setSafeMode(safeMode);
+        g.setSafeMode(true);
     }
 
 }

@@ -95,7 +95,8 @@ public class Matching extends EdgeSet {
      * @return the mate of v in the matching, or {@code -1} if it has no mate.
      */
     public int mate(int v) {
-        return graph.vertexAt(mates[graph.indexOf(v)]);
+        int mateIdx = mates[graph.indexOf(v)];
+        return mateIdx < 0 ? -1 : graph.vertexAt(mateIdx);
     }
 
     /**

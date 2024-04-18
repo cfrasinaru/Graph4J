@@ -54,10 +54,10 @@ public class IteratorTest {
     @Test
     public void predecessorIterator() {
         var g = GraphBuilder.numVertices(5).buildDigraph();
-        g.addEdge(0, 4, 0);
-        g.addEdge(1, 4, 10);
-        g.addEdge(2, 4, 20);
-        g.addEdge(3, 4, 30);
+        g.addWeightedEdge(0, 4, 0);
+        g.addWeightedEdge(1, 4, 10);
+        g.addWeightedEdge(2, 4, 20);
+        g.addWeightedEdge(3, 4, 30);
         int w = 0;
         for (var it = g.predecessorIterator(4); it.hasNext();) {
             it.next();

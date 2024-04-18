@@ -84,7 +84,7 @@ public class VertexOrderings {
         int n = deg.length;
         return IntStream.of(graph.vertices())
                 .boxed()
-                .sorted((i, j) -> n * (deg[j] - deg[i]) + (i - j))
+                .sorted((v, u) -> n * (deg[graph.indexOf(u)] - deg[graph.indexOf(v)]) + (v - u))
                 .mapToInt(Integer::intValue)
                 .toArray();
     }
@@ -103,7 +103,7 @@ public class VertexOrderings {
         int n = deg.length;
         return IntStream.of(graph.vertices())
                 .boxed()
-                .sorted((i, j) -> n * (deg[i] - deg[j]) + (i - j))
+                .sorted((v, u) -> n * (deg[graph.indexOf(v)] - deg[graph.indexOf(u)]) + (v - u))
                 .mapToInt(Integer::intValue)
                 .toArray();
     }

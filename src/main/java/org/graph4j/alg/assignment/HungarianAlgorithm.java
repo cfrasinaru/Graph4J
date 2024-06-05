@@ -1,8 +1,6 @@
 package org.graph4j.alg.assignment;
 
 
-import org.graph4j.Edge;
-import org.graph4j.EdgeIterator;
 import org.graph4j.Graph;
 import org.graph4j.alg.UndirectedGraphAlgorithm;
 import org.graph4j.alg.bipartite.BipartitionAlgorithm;
@@ -224,6 +222,25 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
         }
     }
 
+    /**
+     * This algorithm performs better on dense graphs in terms of speed of execution,
+     * however it consumes more memory.
+     * Setting this fields forgoes the recommended density and
+     * forcefully uses the given density-specific implementation.
+     *
+     * @param isDense marks whether the graph is dense or not
+     */
+    public void setDensity(boolean isDense) {
+        this.isDense = isDense;
+    }
+
+    /**
+     * Calls the algorithm to determine the lowest cost assignment possible for the
+     * given problem. If {@code setDensity} was not called, will deduce the appropriate
+     * implementation to use.
+     *
+     * @return the matching that represents the lowest cost assignment possible
+     */
     public Matching getMatching() {
         if (matching == null) {
             compute();

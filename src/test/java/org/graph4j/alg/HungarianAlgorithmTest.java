@@ -6,6 +6,14 @@ import org.graph4j.alg.assignment.HungarianAlgorithm;
 import org.graph4j.util.Matching;
 import org.junit.jupiter.api.Test;
 
+
+/**
+ * Testing class for the Hungarian algorithm.
+ * Uses the test present on <a href="https://en.wikipedia.org/wiki/Hungarian_algorithm">wikipedia</a>
+ *
+ * @author Chirvasa Matei
+ * @author Prodan Sabina
+ */
 public class HungarianAlgorithmTest {
 
     @Test

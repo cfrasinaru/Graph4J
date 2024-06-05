@@ -79,19 +79,19 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
     private void computeSparse() {
         final double INF = Double.MAX_VALUE;
 
-        int[] leftSideVertices = leftSide.vertices();
-        int[] rightSideVertices = rightSide.vertices();
+        int[] workerVertices = leftSide.vertices();
+        int[] taskVertices = rightSide.vertices();
 
-        int[] taskAssignment = new int[leftSide.size() + 1];
+        int[] taskAssignment = new int[workerVertices.length + 1];
         Arrays.fill(taskAssignment, -1);
-        double[] johnsonPotentials = new double[leftSide.size() + 1];
+        double[] johnsonPotentials = new double[workerVertices.length + 1];
 
-        double[] distances = new double[leftSide.size() + 1];
-        boolean[] visited = new boolean[leftSide.size() + 1];
-        int[] previousWorker = new int[leftSide.size() + 1];
+        double[] distances = new double[workerVertices.length + 1];
+        boolean[] visited = new boolean[workerVertices.length + 1];
+        int[] previousWorker = new int[workerVertices.length + 1];
 
         for (int taskIndex = 0; taskIndex < rightSide.size(); ++taskIndex) {
-            int currentWorker = leftSide.size();
+            int currentWorker = workerVertices.length;
             taskAssignment[currentWorker] = taskIndex;
 
             Arrays.fill(distances, INF);
@@ -103,13 +103,13 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
                 visited[currentWorker] = true;
                 int nextWorker = -1;
 
-                for (int workerIndex = 0; workerIndex < leftSide.size(); ++workerIndex) {
+                for (int workerIndex = 0; workerIndex < workerVertices.length; ++workerIndex) {
                     if (visited[workerIndex]) {
                         continue;
                     }
-                    double assignmentCost = graph.getEdgeWeight(rightSideVertices[taskAssignment[currentWorker]], leftSideVertices[workerIndex]) - johnsonPotentials[workerIndex];
-                    if (currentWorker != leftSide.size()) {
-                        assignmentCost -= graph.getEdgeWeight(rightSideVertices[taskAssignment[currentWorker]], leftSideVertices[currentWorker]) - johnsonPotentials[currentWorker];
+                    double assignmentCost = graph.getEdgeWeight(taskVertices[taskAssignment[currentWorker]], workerVertices[workerIndex]) - johnsonPotentials[workerIndex];
+                    if (currentWorker != workerVertices.length) {
+                        assignmentCost -= graph.getEdgeWeight(taskVertices[taskAssignment[currentWorker]], workerVertices[currentWorker]) - johnsonPotentials[currentWorker];
                     }
                     if (distances[workerIndex] > distances[currentWorker] + assignmentCost) {
                         distances[workerIndex] = distances[currentWorker] + assignmentCost;
@@ -125,10 +125,10 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
             updateDistancesAndPotentials(taskAssignment, johnsonPotentials, distances, previousWorker, currentWorker);
         }
 
-        matching = new Matching(graph, taskAssignment.length);
-        for (int index : leftSide) {
-            if (taskAssignment[index] != -1) {
-                matching.add(index, rightSide.vertices()[taskAssignment[index]]);
+        matching = new Matching(graph, taskVertices.length);
+        for (int worker : workerVertices) {
+            if (taskAssignment[worker] != -1) {
+                matching.add(worker, taskVertices[taskAssignment[worker]]);
             }
         }
     }
@@ -142,29 +142,25 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
         // cache costs into a matrix to increase efficiency
         double[][] costs = new double[workerVertices.length][taskVertices.length];
         Arrays.stream(costs).forEach(a -> Arrays.fill(a, INF));
-        for (EdgeIterator it = graph.edgeIterator(); it.hasNext(); ) {
-            Edge edge = it.next();
-            int worker = edge.source();
-            int task = edge.target();
-            if (task < worker) {
-                int aux = worker;
-                worker = task;
-                task = aux;
+        for (int i = 0; i < taskVertices.length; ++i) {
+            for (int j = 0; j < workerVertices.length; ++j) {
+                // access edges by index in leftSide and rightSide to account for complicated graphs
+                costs[i][j] = graph.getEdgeWeight(taskVertices[i], workerVertices[j]);
             }
-            costs[task - taskVertices.length][worker] = edge.weight();
         }
-        // adding a surplus worker for convenience
-        int[] taskAssignment = new int[leftSide.size() + 1];
-        Arrays.fill(taskAssignment, -1);
-        double[] johnsonPotentials = new double[leftSide.size() + 1];
 
-        double[] distances = new double[leftSide.size() + 1];
-        boolean[] visited = new boolean[leftSide.size() + 1];
-        int[] previousWorker = new int[leftSide.size() + 1];
+        // adding a surplus worker for convenience
+        int[] taskAssignment = new int[workerVertices.length + 1];
+        Arrays.fill(taskAssignment, -1);
+        double[] johnsonPotentials = new double[workerVertices.length + 1];
+
+        double[] distances = new double[workerVertices.length + 1];
+        boolean[] visited = new boolean[workerVertices.length + 1];
+        int[] previousWorker = new int[workerVertices.length + 1];
 
         // assign the indexed task to a worker using Dijkstra with potentials
         for (int taskIndex = 0; taskIndex < rightSide.size(); ++taskIndex) {
-            int currentWorker = leftSide.size(); // the surplus worker
+            int currentWorker = workerVertices.length; // the surplus worker
             taskAssignment[currentWorker] = taskIndex; // assign surplus worker to the current task
 
             Arrays.fill(distances, INF); // johnson reduced distances
@@ -177,14 +173,14 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
                 int nextWorker = -1; // next unvisited worker with minimum distance
 
                 // consider extending the shortest path by currentWorker -> taskAssignment[currentWorker] -> workerIndex
-                for (int workerIndex = 0; workerIndex < leftSide.size(); ++workerIndex) {
+                for (int workerIndex = 0; workerIndex < workerVertices.length; ++workerIndex) {
                     if (visited[workerIndex]) {
                         continue;
                     }
                     // sum of reduced edge weights by following currentWorker -> taskAssignment[currentWorker] -> workerIndex
-                    double assignmentCost = costs[taskVertices[taskAssignment[currentWorker]] - taskVertices.length][workerVertices[workerIndex]] - johnsonPotentials[workerIndex];
-                    if (currentWorker != leftSide.size()) {
-                        assignmentCost -= costs[taskVertices[taskAssignment[currentWorker]] - taskVertices.length][workerVertices[currentWorker]] - johnsonPotentials[currentWorker];
+                    double assignmentCost = costs[taskAssignment[currentWorker]][workerIndex] - johnsonPotentials[workerIndex];
+                    if (currentWorker != workerVertices.length) {
+                        assignmentCost -= costs[taskAssignment[currentWorker]][currentWorker] - johnsonPotentials[currentWorker];
                     }
                     if (distances[workerIndex] > distances[currentWorker] + assignmentCost) {
                         distances[workerIndex] = distances[currentWorker] + assignmentCost;
@@ -200,10 +196,10 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
             updateDistancesAndPotentials(taskAssignment, johnsonPotentials, distances, previousWorker, currentWorker);
         }
 
-        matching = new Matching(graph, taskAssignment.length);
-        for (int index : leftSide) {
-            if (taskAssignment[index] != -1) {
-                matching.add(index, rightSide.vertices()[taskAssignment[index]]);
+        matching = new Matching(graph, taskVertices.length);
+        for (int worker : workerVertices) {
+            if (taskAssignment[worker] != -1) {
+                matching.add(worker, taskVertices[taskAssignment[worker]]);
             }
         }
     }

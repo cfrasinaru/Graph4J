@@ -22,8 +22,8 @@ import java.util.Arrays;
  */
 public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
 
-    private final StableSet leftSide;
-    private final StableSet rightSide;
+    private final StableSet workerSide;
+    private final StableSet taskSide;
     private Matching matching;
     private Boolean isDense;
 
@@ -38,8 +38,16 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
         if (!alg.isBipartite()) {
             throw new IllegalArgumentException("The graph is not bipartite");
         }
-        this.leftSide = alg.getLeftSide();
-        this.rightSide = alg.getRightSide();
+        StableSet leftSide = alg.getLeftSide(), rightSide = alg.getRightSide();
+        // algorithm requires that there be more workers than tasks when assigning
+        if (leftSide.size() < rightSide.size()) {
+            this.workerSide = rightSide;
+            this.taskSide = leftSide;
+        }
+        else {
+            this.workerSide = leftSide;
+            this.taskSide = rightSide;
+        }
     }
 
 
@@ -58,9 +66,16 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
         if (!rightSide.isValid()) {
             throw new IllegalArgumentException("The right side is not a stable set.");
         }
-        this.leftSide = leftSide;
-        this.rightSide = rightSide;
-        int[] vertices = IntArrays.union(leftSide.vertices(), rightSide.vertices());
+        // algorithm requires that there be more workers than tasks when assigning
+        if (leftSide.size() < rightSide.size()) {
+            this.workerSide = rightSide;
+            this.taskSide = leftSide;
+        }
+        else {
+            this.workerSide = leftSide;
+            this.taskSide = rightSide;
+        }
+        int[] vertices = IntArrays.union(workerSide.vertices(), rightSide.vertices());
         if (!IntArrays.sameValues(vertices, graph.vertices())) {
             throw new IllegalArgumentException("Invalid bipartition");
         }
@@ -68,7 +83,6 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
 
     private boolean isDense() {
         if (isDense == null) {
-            // constant for density may need adjustment
             isDense = ((double) graph.numEdges() / ((long) graph.numVertices() * (graph.numVertices() - 1))) > 0.1;
         }
         return isDense;
@@ -77,8 +91,8 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
     private void computeSparse() {
         final double INF = Double.MAX_VALUE;
 
-        int[] workerVertices = leftSide.vertices();
-        int[] taskVertices = rightSide.vertices();
+        int[] workerVertices = workerSide.vertices();
+        int[] taskVertices = taskSide.vertices();
 
         int[] taskAssignment = new int[workerVertices.length + 1];
         Arrays.fill(taskAssignment, -1);
@@ -88,7 +102,7 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
         boolean[] visited = new boolean[workerVertices.length + 1];
         int[] previousWorker = new int[workerVertices.length + 1];
 
-        for (int taskIndex = 0; taskIndex < rightSide.size(); ++taskIndex) {
+        for (int taskIndex = 0; taskIndex < taskVertices.length; ++taskIndex) {
             int currentWorker = workerVertices.length;
             taskAssignment[currentWorker] = taskIndex;
 
@@ -123,10 +137,14 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
             updateDistancesAndPotentials(taskAssignment, johnsonPotentials, distances, previousWorker, currentWorker);
         }
 
+        produceMatching(workerVertices, taskVertices, taskAssignment);
+    }
+
+    private void produceMatching(int[] workerVertices, int[] taskVertices, int[] taskAssignment) {
         matching = new Matching(graph, taskVertices.length);
-        for (int worker : workerVertices) {
-            if (taskAssignment[worker] != -1) {
-                matching.add(worker, taskVertices[taskAssignment[worker]]);
+        for (int i = 0; i < workerVertices.length; ++i) {
+            if (taskAssignment[i] != -1) {
+                matching.add(workerVertices[i], taskVertices[taskAssignment[i]]);
             }
         }
     }
@@ -134,11 +152,11 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
     private void computeDense() {
         final double INF = Double.MAX_VALUE;
 
-        int[] workerVertices = leftSide.vertices();
-        int[] taskVertices = rightSide.vertices();
+        int[] workerVertices = workerSide.vertices();
+        int[] taskVertices = taskSide.vertices();
 
         // cache costs into a matrix to increase efficiency
-        double[][] costs = new double[workerVertices.length][taskVertices.length];
+        double[][] costs = new double[taskVertices.length][workerVertices.length];
         Arrays.stream(costs).forEach(a -> Arrays.fill(a, INF));
         for (int i = 0; i < taskVertices.length; ++i) {
             for (int j = 0; j < workerVertices.length; ++j) {
@@ -157,7 +175,7 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
         int[] previousWorker = new int[workerVertices.length + 1];
 
         // assign the indexed task to a worker using Dijkstra with potentials
-        for (int taskIndex = 0; taskIndex < rightSide.size(); ++taskIndex) {
+        for (int taskIndex = 0; taskIndex < taskVertices.length; ++taskIndex) {
             int currentWorker = workerVertices.length; // the surplus worker
             taskAssignment[currentWorker] = taskIndex; // assign surplus worker to the current task
 
@@ -194,20 +212,15 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
             updateDistancesAndPotentials(taskAssignment, johnsonPotentials, distances, previousWorker, currentWorker);
         }
 
-        matching = new Matching(graph, taskVertices.length);
-        for (int worker : workerVertices) {
-            if (taskAssignment[worker] != -1) {
-                matching.add(worker, taskVertices[taskAssignment[worker]]);
-            }
-        }
+        produceMatching(workerVertices, taskVertices, taskAssignment);
     }
 
     private void updateDistancesAndPotentials(int[] taskAssignment, double[] johnsonPotentials, double[] distances, int[] previousWorker, int currentWorker) {
-        for (int workerIndex = 0; workerIndex < leftSide.size(); ++workerIndex) {
+        for (int workerIndex = 0; workerIndex < workerSide.size(); ++workerIndex) {
             distances[workerIndex] = Double.min(distances[workerIndex], distances[currentWorker]);
             johnsonPotentials[workerIndex] += distances[workerIndex];
         }
-        for (int workerIndex = 0; workerIndex != leftSide.size(); currentWorker = workerIndex) {
+        for (int workerIndex = 0; workerIndex != workerSide.size(); currentWorker = workerIndex) {
             workerIndex = previousWorker[currentWorker];
             taskAssignment[currentWorker] = taskAssignment[workerIndex];
         }
@@ -230,7 +243,7 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
      *
      * @param isDense marks whether the graph is dense or not
      */
-    public void setDensity(boolean isDense) {
+    public void setDense(boolean isDense) {
         this.isDense = isDense;
     }
 

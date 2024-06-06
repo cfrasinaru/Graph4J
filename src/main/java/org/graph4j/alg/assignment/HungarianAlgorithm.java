@@ -14,7 +14,7 @@ import java.util.Arrays;
  * The Hungarian Algorithm, also known as the Kuhn-Munkres algorithm,
  * is a combinatorial optimization algorithm used to solve the assignment problem
  * <br>
- * The algorithm finds a perfect matching and a maximum potential such that the
+ * The algorithm finds a matching and a maximum potential such that the
  * matching cost is equal to the potential value.
  *
  * @author Chirvasa Matei
@@ -50,13 +50,16 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
         }
     }
 
-
     /**
      * Instantiates a new Hungarian algorithm.
+     * <br>
+     * If |leftSide| = |rightSide|, the former will represent the worker set,
+     * and the latter the tasks.
+     * Otherwise, the side with more elements will make up the workers.
      *
      * @param graph     the input graph, on which the bipartitions were built
-     * @param leftSide  the left side of the bipartition, which will be assumed to be workers
-     * @param rightSide the right side of the bipartition, which will be assumed to be tasks
+     * @param leftSide  the left side of the bipartition
+     * @param rightSide the right side of the bipartition
      */
     public HungarianAlgorithm(Graph graph, StableSet leftSide, StableSet rightSide) {
         super(graph);
@@ -237,9 +240,10 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
 
     /**
      * This algorithm performs better on dense graphs in terms of speed of execution,
-     * however it consumes more memory.
-     * Setting this fields forgoes the recommended density and
-     * forcefully uses the given density-specific implementation.
+     * however it consumes more memory. More precisely, the costs of the edges
+     * will be cached, in a 2-dimensional array of doubles, of size |workers| * |tasks| <br>
+     * Setting this fields before computation occurs forgoes the
+     * recommended implementation in favor of the selected one.
      *
      * @param isDense marks whether the graph is dense or not
      */

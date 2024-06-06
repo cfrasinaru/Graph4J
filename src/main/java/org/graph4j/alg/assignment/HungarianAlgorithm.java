@@ -253,7 +253,7 @@ public class HungarianAlgorithm extends UndirectedGraphAlgorithm {
 
     /**
      * Calls the algorithm to determine the lowest cost assignment possible for the
-     * given problem. If {@code setDensity} was not called, will deduce the appropriate
+     * given problem. If {@code setDense} was not called, will deduce the appropriate
      * implementation to use.
      *
      * @return the matching that represents the lowest cost assignment possible

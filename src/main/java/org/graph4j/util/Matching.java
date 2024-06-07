@@ -119,8 +119,8 @@ public class Matching extends EdgeSet {
         int n = graph.numVertices();
         int[] count = new int[n];
         for (int k = 0; k < numEdges; k++) {
-            int vi = edges[k][0];
-            int ui = edges[k][1];
+            int vi = graph.indexOf(edges[k][0]);
+            int ui = graph.indexOf(edges[k][1]);
             count[vi]++;
             count[ui]++;
             if (count[vi] > 1 || count[ui] > 1) {

@@ -3,6 +3,7 @@ package org.graph4j.iso.general;
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
+import org.graph4j.generate.BarabasiAlbertGenerator;
 import org.graph4j.generate.RandomGnpGraphGenerator;
 import org.graph4j.iso.IsomorphicGraphMapping;
 import org.graph4j.iso.TestUtil;
@@ -79,6 +80,26 @@ public class VF2SubGraphIsomorphismTest {
 
         boolean isomorphic = testIsomorphism4J(g2, g1);
         System.out.println("Isomorphic: " + isomorphic);
+    }
+
+    @Test
+    public void testBarabasiGraph() {
+        int n = 60;
+        int avgDegree = 5;
+        Graph g1 = new BarabasiAlbertGenerator((int) (0.4 * n), avgDegree, n).createGraph();
+        Graph g2 = TestUtil.generateSubgraph(g1, 0.3);
+
+        System.out.println("Graph1: " + g1);
+        System.out.println("Graph2: " + g2);
+
+        boolean isomorphic = testIsomorphism4J(g2, g1);
+        System.out.println("Isomorphic: " + isomorphic);
+
+        List<IsomorphicGraphMapping> maps = testGetAllMappings4J(g2, g1);
+
+        for (var map : maps) {
+            System.out.println("Mapping: " + map);
+        }
     }
 }
 

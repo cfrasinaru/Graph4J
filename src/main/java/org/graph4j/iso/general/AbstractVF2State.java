@@ -135,7 +135,7 @@ public abstract class AbstractVF2State extends AbstractState {
                 prev_2 = 0;
             }
         }
-        // else, check the rest of the vertices(new vertices)
+        // else, check the unmapped vertices
         else {
             while (prev_1 < n1 && core_1[prev_1] != NULL_NODE) {
                 prev_1++;

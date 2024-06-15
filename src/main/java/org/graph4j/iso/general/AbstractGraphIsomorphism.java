@@ -122,18 +122,18 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
 
                 // if the pair is feasible, we continue, otherwise we truncate the branch
                 if(s.isFeasiblePair()){
-
-                    // if the state is dead, we continue with the next pair
-                    if(s.isDead()) {
-                        continue;
-                    }
-
-                    // else we add the pair to the mapping
+                    // add to stack the current state for restoring it later
                     stack.push(s);
 
                     // just like in the recursive approach, we create a copy of the current state and then we add the pair
                     s = getNewStateInstance(s);
                     s.addPair();
+                    s.resetPreviousVertices();
+
+                    // if the state is dead, we return to the previous state and continue with another candidate pair
+                    if(s.isDead()) {
+                        break;
+                    }
 
                     // if this state is a goal(complete solution), we add the mapping to the list
                     if(s.isGoal()) {
@@ -143,8 +143,6 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
                         if(onlyFirstMapping)
                             return mappings;
                     }
-
-                    s.resetPreviousVertices();
                 }
             }
 
@@ -170,33 +168,33 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
     protected abstract State getNewStateInstance(State s);
 
 
-    /*    protected List<IsomorphicGraphMapping> match(boolean onlyFirstMapping){
-            List<IsomorphicGraphMapping> mappings = new ArrayList<>();
-            matchRecursive(getStateInstance(dg1, dg2), mappings, onlyFirstMapping);
+//    protected List<IsomorphicGraphMapping> match(boolean onlyFirstMapping){
+//        List<IsomorphicGraphMapping> mappings = new ArrayList<>();
+//        matchRecursive(getStateInstance(dg1, dg2, cache), mappings, onlyFirstMapping, 0);
+//
+//        return mappings;
+//    }
 
-            return mappings;
+    private void matchRecursive(State s, List<IsomorphicGraphMapping> mappings, boolean onlyFirstMapping, int level) {
+        if(s.isGoal()){
+            mappings.add(s.getMapping());
+            return;
         }
 
-        private void matchRecursive(State s, List<IsomorphicGraphMapping> mappings, boolean onlyFirstMapping) {
-            if(s.isGoal()){
-                mappings.add(s.getMapping());
-                return;
+        if (s.isDead())
+            return;
+
+        while(s.nextPair()){
+            if(s.isFeasiblePair()){
+                State newS = getNewStateInstance(s);
+                newS.addPair();
+                newS.resetPreviousVertices();
+
+                matchRecursive(newS, mappings, onlyFirstMapping, level + 1);
+                newS.backTrack();
+                if(onlyFirstMapping && !mappings.isEmpty())
+                    return;
             }
-
-            if (s.isDead())
-                return;
-
-            while(s.nextPair()){
-                if(s.isFeasiblePair()){
-                    State newS = getNewStateInstance(s);
-                    newS.addPair();
-                    newS.resetPreviousVertices();
-
-                    matchRecursive(newS, mappings, onlyFirstMapping);
-                    newS.backTrack();
-                    if(onlyFirstMapping && !mappings.isEmpty())
-                        return;
-                }
-            }
-        }*/
+        }
+    }
 }

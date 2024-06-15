@@ -2,7 +2,11 @@ package org.graph4j.iso.general;
 
 import org.graph4j.DirectedMultigraph;
 import org.graph4j.DirectedPseudograph;
+import org.graph4j.Edge;
 import org.graph4j.iso.IsomorphicGraphMapping;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract class for the state of the search algorithm.
@@ -80,9 +84,39 @@ public abstract class AbstractState implements State {
             }
         }
 
-        if (o1.getGraph() instanceof DirectedPseudograph ps1 &&
-                o2.getGraph() instanceof DirectedPseudograph ps2){
-            return ps1.selfLoops(node_1) == ps2.selfLoops(node_2);
+        if (o1.getGraph() instanceof DirectedPseudograph ps1 && o2.getGraph() instanceof DirectedPseudograph ps2){
+            if (ps1.selfLoops(node_1) != ps2.selfLoops(node_2)) {
+                return false;
+            }
+
+            // L1 = list of all labels of self loops of vertex node_1
+            // L2 = list of all labels of self loops of vertex node_2
+
+            List<Object> labels1 = new ArrayList<>();
+            List<Object> labels2 = new ArrayList<>();
+
+            for (Edge e : ps1.outgoingEdgesFrom(node_1)) {
+                if (e != null && e.target() == node_1) {
+                    labels1.add(e.label());
+                }
+            }
+            for (Edge e : ps2.outgoingEdgesFrom(node_2)) {
+                if (e != null && e.target() == node_2) {
+                    labels2.add(e.label());
+                }
+            }
+
+            if (labels1.size() != labels2.size()) {
+                return false;
+            }
+
+            for (Object label : labels1) {
+                boolean removed = labels2.remove(label);
+                if (!removed) {
+                    return false;
+                }
+            }
+            return true;
         }
         return true;
     }
@@ -103,15 +137,44 @@ public abstract class AbstractState implements State {
         int u2 = o2.getVertexNumber(i2);
         int v2 = o2.getVertexNumber(j2);
 
-        if (o1.getGraph() instanceof DirectedMultigraph mg1 &&
-                o2.getGraph() instanceof DirectedMultigraph mg2){
-            return mg1.multiplicity(u1, v1) == mg2.multiplicity(u2, v2);
-        }
+        if (o1.getGraph() instanceof DirectedMultigraph mg1 && o2.getGraph() instanceof DirectedMultigraph mg2){
+            if (mg1.multiplicity(u1, v1) != mg2.multiplicity(u2, v2)) {
+                return false;
+            }
+            // L1 = list of all labels of edge (u1, v1)
+            // L2 = list of all labels of edge (u2, v2)
+            // every label from L1 must be in L2 and vice versa
 
-        // semantic equivalence
-        if (o1.getGraph().getEdgeLabel(u1, v1) != null && o2.getGraph().getEdgeLabel(u2, v2) != null) {
+            List<Object> labels1 = new ArrayList<>();
+            List<Object> labels2 = new ArrayList<>();
+
+            for (Edge e : mg1.outgoingEdgesFrom(u1)) {
+                if (e != null && e.target() == v1) {
+                    labels1.add(e.label());
+                }
+            }
+            for (Edge e : mg2.outgoingEdgesFrom(u2)) {
+                if (e != null && e.target() == v2) {
+                    labels2.add(e.label());
+                }
+            }
+
+            if (labels1.size() != labels2.size()) {
+                return false;
+            }
+
+            for (Object label : labels1) {
+                boolean removed = labels2.remove(label);
+                if (!removed) {
+                    return false;
+                }
+            }
+            return true;
+        } else // not multi edges
+            if (o1.getGraph().getEdgeLabel(u1, v1) != null && o2.getGraph().getEdgeLabel(u2, v2) != null) {
             return o1.getGraph().getEdgeLabel(u1, v1).equals(o2.getGraph().getEdgeLabel(u2, v2));
         }
+
         return true;
     }
 }

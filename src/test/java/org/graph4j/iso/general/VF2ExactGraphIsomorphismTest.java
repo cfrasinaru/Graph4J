@@ -6,10 +6,7 @@ import org.graph4j.iso.IsomorphicGraphMapping;
 import org.graph4j.iso.TestUtil;
 import org.junit.Test;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -517,6 +514,138 @@ public class VF2ExactGraphIsomorphismTest {
 
         assertTrue(testIsomorphism4J(g1, g2));
 
+        List<IsomorphicGraphMapping> mapping_list = testGetAllMappings4J(g1, g2);
+        System.out.println("All mappings: ");
+        for (var m : mapping_list) {
+            System.out.println(m);
+            assertTrue(m.isValidIsomorphism());
+        }
+    }
+
+    @Test
+    public void testLabeledMultigraph() {
+        Multigraph g1 = GraphBuilder.vertices(0, 1, 2, 3, 4, 5).buildMultigraph();
+        Multigraph g2 = GraphBuilder.vertices(0, 1, 2, 3, 4, 5).buildMultigraph();
+
+        g1.addEdge(0, 1, "b");
+        g1.addEdge(0, 1, "a");
+        g1.addEdge(0, 1);
+        g1.addEdge(0, 2);
+        g1.addEdge(0, 2, "f");
+
+        g2.addEdge(5, 3, "a");
+        g2.addEdge(5, 3, "b");
+        g2.addEdge(5, 3);
+        g2.addEdge(5, 4);
+        g2.addEdge(5, 4, "f");
+
+        assertTrue(testIsomorphism4J(g1, g2));
+        List<IsomorphicGraphMapping> mapping_list = testGetAllMappings4J(g1, g2);
+        System.out.println("All mappings: ");
+        for (var m : mapping_list) {
+            System.out.println(m);
+            assertTrue(m.isValidIsomorphism());
+        }
+    }
+
+    @Test
+    public void testLabeledDirectedMultigraph() {
+        DirectedMultigraph g1 = GraphBuilder.vertices(0, 1, 2, 3, 4, 5).buildDirectedMultigraph();
+        DirectedMultigraph g2 = GraphBuilder.vertices(0, 1, 2, 3, 4, 5).buildDirectedMultigraph();
+
+        g1.addEdge(0, 1, "b");
+        g1.addEdge(0, 1, "a");
+        g1.addEdge(0, 1);
+        g1.addEdge(0, 2);
+        g1.addEdge(0, 2, "f");
+
+        g2.addEdge(5, 3, "a");
+        g2.addEdge(5, 3, "b");
+        g2.addEdge(5, 3);
+        g2.addEdge(5, 4, "f");
+        g2.addEdge(5, 4);
+
+//        System.out.println("g1: " + g1);
+//        System.out.println("g2: " + g2);
+//
+//        System.out.println("g1 edge label of (0, 1): " + g1.getEdgeLabel(0, 1));
+//        System.out.println("g2 edge label of (0, 1): " + g2.getEdgeLabel(5, 3));
+//        System.out.println("g1 edges: " + Arrays.toString(g1.edges()));
+//        System.out.println("g1 neighbors of 0: " + Arrays.toString(g1.neighbors(0)));
+//        for (var e : g1.outgoingEdgesFrom(0)) {
+//            if (e == null)
+//                continue;
+//
+//            int u = e.source();
+//            int v = e.target();
+//
+//            System.out.println("Edge: (" + u + ", " + v + ", " + e.label() + ")");
+//            if (v == 1) {
+//                System.out.println("Edge from 0 to 1");
+//            }
+//        }
+
+        assertTrue(testIsomorphism4J(g1, g2));
+        List<IsomorphicGraphMapping> mapping_list = testGetAllMappings4J(g1, g2);
+        System.out.println("All mappings: ");
+        for (var m : mapping_list) {
+            System.out.println(m);
+            assertTrue(m.isValidIsomorphism());
+        }
+    }
+
+    @Test
+    public void testLabeledDirectedPseudoGraph() {
+        DirectedPseudograph g1 = GraphBuilder.vertices(0, 1, 2, 3, 4, 5).buildDirectedPseudograph();
+        DirectedPseudograph g2 = GraphBuilder.vertices(0, 1, 2, 3, 4, 5).buildDirectedPseudograph();
+
+        g1.addEdge(0, 0);
+        g1.addEdge(0, 0, "d");
+        g1.addEdge(0, 0, "c");
+        g1.addEdge(0, 1, "a");
+        g1.addEdge(0, 1, "b");
+        g1.addEdge(0, 1);
+        g1.addEdge(0, 2);
+
+        g2.addEdge(5, 5);
+        g2.addEdge(5, 5, "c");
+        g2.addEdge(5, 5, "d");
+        g2.addEdge(5, 1, "a");
+        g2.addEdge(5, 1, "b");
+        g2.addEdge(5, 1);
+        g2.addEdge(5, 4);
+
+        assertTrue(testIsomorphism4J(g1, g2));
+        List<IsomorphicGraphMapping> mapping_list = testGetAllMappings4J(g1, g2);
+        System.out.println("All mappings: ");
+        for (var m : mapping_list) {
+            System.out.println(m);
+            assertTrue(m.isValidIsomorphism());
+        }
+    }
+
+    @Test
+    public void testLabeledPseudoGraph() {
+        Pseudograph g1 = GraphBuilder.vertices(0, 1, 2, 3, 4, 5).buildPseudograph();
+        Pseudograph g2 = GraphBuilder.vertices(0, 1, 2, 3, 4, 5).buildPseudograph();
+
+        g1.addEdge(0, 0);
+        g1.addEdge(0, 0, "d");
+        g1.addEdge(0, 0, "c");
+        g1.addEdge(0, 1, "a");
+        g1.addEdge(0, 1, "b");
+        g1.addEdge(0, 1);
+        g1.addEdge(0, 2);
+
+        g2.addEdge(5, 5);
+        g2.addEdge(5, 5, "c");
+        g2.addEdge(5, 5, "d");
+        g2.addEdge(5, 3, "a");
+        g2.addEdge(5, 3, "b");
+        g2.addEdge(5, 3);
+        g2.addEdge(5, 4);
+
+        assertTrue(testIsomorphism4J(g1, g2));
         List<IsomorphicGraphMapping> mapping_list = testGetAllMappings4J(g1, g2);
         System.out.println("All mappings: ");
         for (var m : mapping_list) {

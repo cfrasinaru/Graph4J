@@ -63,7 +63,7 @@ public class DimacsIO {
                     }
                     if (v != u) {
                         if (d > 0) {
-                            graph.addEdge(v, u, d);
+                            graph.addWeightedEdge(v, u, d);
                         } else {
                             graph.addEdge(v, u);
                         }
@@ -71,7 +71,7 @@ public class DimacsIO {
                 }
             }
         } catch (IOException ex) {
-            System.out.println(ex);
+            System.err.println(ex);
         }
         return graph;
     }

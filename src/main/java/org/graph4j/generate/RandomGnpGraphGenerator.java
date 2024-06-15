@@ -16,7 +16,6 @@
  */
 package org.graph4j.generate;
 
-import java.util.Random;
 import org.graph4j.Digraph;
 import org.graph4j.DirectedMultigraph;
 import org.graph4j.DirectedPseudograph;
@@ -38,7 +37,6 @@ import org.graph4j.util.CheckArguments;
 public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
 
     private final double edgeProbability;
-    private final Random random;
 
     /**
      *
@@ -59,7 +57,6 @@ public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
         super(firstVertex, lastVertex);
         CheckArguments.probability(edgeProbability);
         this.edgeProbability = edgeProbability;
-        this.random = new Random();
     }
 
     private GraphBuilder builder() {
@@ -72,7 +69,7 @@ public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
      */
     public Graph createGraph() {
         var g = builder().buildGraph();
-        createEdges(g, false, false);
+        createEdges(g);
         return g;
     }
 
@@ -82,7 +79,7 @@ public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
      */
     public Digraph createDigraph() {
         var g = builder().buildDigraph();
-        createEdges(g, true, false);
+        createEdges(g);
         return g;
     }
 
@@ -92,7 +89,7 @@ public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
      */
     public Multigraph createMultiGraph() {
         var g = builder().buildMultigraph();
-        createEdges(g, false, false);
+        createEdges(g);
         return g;
     }
 
@@ -102,7 +99,7 @@ public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
      */
     public DirectedMultigraph createDirectedMultigraph() {
         var g = builder().buildDirectedMultigraph();
-        createEdges(g, true, false);
+        createEdges(g);
         return g;
     }
 
@@ -112,7 +109,7 @@ public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
      */
     public Pseudograph createPseudograph() {
         var g = builder().buildPseudograph();
-        createEdges(g, false, true);
+        createEdges(g);
         return g;
     }
 
@@ -122,35 +119,14 @@ public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
      */
     public DirectedPseudograph createDirectedPseudograph() {
         var g = builder().buildDirectedPseudograph();
-        createEdges(g, true, true);
+        createEdges(g);
         return g;
     }
 
-    /**
-     *
-     * @param g
-     * @param directed
-     * @param allowsSelfLoops
-     */
-    private void createEdges(Graph g, boolean directed, boolean allowsSelfLoops) {
-        boolean safeMode = g.isSafeMode();
+    private void createEdges(Graph g) {
         g.setSafeMode(false);
-        int n = vertices.length;
-        int n1 = directed ? n : n - 1;
-        for (int i = 0; i < n1; i++) {
-            int v = vertices[i];
-            int from = directed ? 0 : i + 1;
-            for (int j = from; j < n; j++) {
-                if (!allowsSelfLoops && i == j) {
-                    continue;
-                }
-                int u = vertices[j];
-                if (random.nextDouble() < edgeProbability) {
-                    g.addEdge(v, u);
-                }
-            }
-        }
-        g.setSafeMode(safeMode);
+        addRandomEdges(g, edgeProbability);
+        g.setSafeMode(true);
     }
 
 }

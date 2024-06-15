@@ -99,7 +99,6 @@ public class Node {
         for (Node node : list) {
             sb.append(node.vertex).append("=").append(node.color).append("->").append(node.minDomain.vertex()).append(" - ");
         }
-        System.out.println(sb.toString() + ": " + minDomain);
     }
 
     //Remove from D=minDomain all colors that have not been used before
@@ -129,17 +128,12 @@ public class Node {
             minDomain.swapPos(0, free);
         }
         //second part
-        //System.out.println("=================================================");
-        //System.out.println("minDomain=" + minDomain);
-        //System.out.println("coloring=" + coloring);
-
         i = 0;
         nexta:
         while (i < minDomain.size() - 1) {
             int a = minDomain.valueAt(i);
             for (int j = i + 1, k = minDomain.size(); j < k; j++) {
                 int b = minDomain.valueAt(j);
-                //System.out.println("\tChecking if " + a + " is dominated by " + b);
                 for (var dom : domains) {
                     if (dom == minDomain || dom.size() == 1) {
                         continue;
@@ -150,10 +144,8 @@ public class Node {
                         i++;
                         continue nexta;
                     }
-                    //System.out.println("\t\t" + dom);
                 }
                 minDomain.removeAtPos(i);
-                //System.out.println("\t -----> OK");
                 i++;
                 break;
             }

@@ -86,7 +86,7 @@ public class ShortestPathExample {
         //the vertex number will be the index of the location in the list
         //each vertex is labeled with its location object
         for (int i = 0; i < numLocations; i++) {
-            graph.addVertex(i, locations.get(i));
+            graph.addLabeledVertex(i, locations.get(i));
         }
 
         //create the edges of the graph
@@ -101,7 +101,7 @@ public class ShortestPathExample {
                     //get the length of the road between the two locations
                     double length = neighborMap.get(neighbor);
                     //add a weighted edge in the graph
-                    graph.addEdge(v, u, length);
+                    graph.addWeightedEdge(v, u, length);
                 }
             }
         }

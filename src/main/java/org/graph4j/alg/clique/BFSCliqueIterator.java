@@ -125,7 +125,6 @@ public class BFSCliqueIterator extends SimpleGraphAlgorithm
         public Node(Clique clique, VertexSet cand) {
             this.clique = clique;
             this.cand = cand;
-            //System.out.println("created node clique=" + clique + ", cand = " + cand);
         }
     }
 }

@@ -37,9 +37,9 @@ public class JohnsonTest {
     @Test
     public void simple() {
         var g = GraphBuilder.numVertices(3).buildDigraph();
-        g.addEdge(0, 1, 3);
-        g.addEdge(0, 2, 2);
-        g.addEdge(1, 2, -2);
+        g.addWeightedEdge(0, 1, 3);
+        g.addWeightedEdge(0, 2, 2);
+        g.addWeightedEdge(1, 2, -2);
 
         var alg = new JohnsonShortestPath(g);
         assertEquals(1, alg.getPathWeight(0, 2));

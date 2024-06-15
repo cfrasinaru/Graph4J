@@ -70,7 +70,7 @@ abstract class VertexCollection implements Iterable<Integer> {
     public VertexCollection(Graph graph, int[] vertices) {
         //CheckArguments.graphContainsVertices(graph, vertices);
         this.graph = graph;
-        this.vertices = vertices;
+        this.vertices = IntArrays.copyOf(vertices);
         this.numVertices = vertices.length;
     }
 

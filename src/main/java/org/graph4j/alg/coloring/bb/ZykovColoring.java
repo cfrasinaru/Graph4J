@@ -214,11 +214,6 @@ class ZykovColoring extends ExactColoringBase {
                     stack.push(newNode);
                 }
             }
-            /*
-            if (contains4Clique(g, bestv, bestu)) {
-                if (debug) System.out.println("4 clique detected");
-                node.coloring = null;
-            } */
         }
         if (best == null) {
             return null;

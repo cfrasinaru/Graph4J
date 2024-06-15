@@ -61,7 +61,6 @@ public class CompleteGraphGenerator extends AbstractGraphGenerator {
     }
 
     private void addEdges(Graph g, boolean directed) {
-        boolean safeMode = g.isSafeMode();
         g.setSafeMode(false);
         int n = vertices.length;
         if (directed) {
@@ -79,7 +78,7 @@ public class CompleteGraphGenerator extends AbstractGraphGenerator {
                 }
             }
         }
-        g.setSafeMode(safeMode);
+        g.setSafeMode(true);
     }
 
 }

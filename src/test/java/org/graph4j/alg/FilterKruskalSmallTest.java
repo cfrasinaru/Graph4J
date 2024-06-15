@@ -17,14 +17,14 @@ public class FilterKruskalSmallTest {
     public void smallGraphThatIsNotTree() {
         // for so few edges, it goes for the version without partitioning
         Graph graph = GraphBuilder.vertexRange(0, 5).buildGraph();
-        graph.addEdge(0, 1, 5.1);
-        graph.addEdge(0, 2, 1.7);
-        graph.addEdge(0, 3, 2.5);
-        graph.addEdge(0, 4, 0.2);
-        graph.addEdge(1, 2, 1.1);
-        graph.addEdge(1, 3, 22.6);
-        graph.addEdge(2, 5, 10.3);
-        graph.addEdge(3, 5, 3);
+        graph.addWeightedEdge(0, 1, 5.1);
+        graph.addWeightedEdge(0, 2, 1.7);
+        graph.addWeightedEdge(0, 3, 2.5);
+        graph.addWeightedEdge(0, 4, 0.2);
+        graph.addWeightedEdge(1, 2, 1.1);
+        graph.addWeightedEdge(1, 3, 22.6);
+        graph.addWeightedEdge(2, 5, 10.3);
+        graph.addWeightedEdge(3, 5, 3);
 
         ParallelFilterKruskal filterKruskal = new ParallelFilterKruskal(graph);
         assertEquals(5, filterKruskal.getEdges().size());
@@ -42,11 +42,11 @@ public class FilterKruskalSmallTest {
     public void smallTree() {
         // for so few edges, it goes for the version without partitioning
         Graph graph = GraphBuilder.vertexRange(0, 5).buildGraph();
-        graph.addEdge(0, 4, 0.2);
-        graph.addEdge(1, 2, 1.1);
-        graph.addEdge(0, 2, 1.7);
-        graph.addEdge(0, 3, 2.5);
-        graph.addEdge(3, 5, 3);
+        graph.addWeightedEdge(0, 4, 0.2);
+        graph.addWeightedEdge(1, 2, 1.1);
+        graph.addWeightedEdge(0, 2, 1.7);
+        graph.addWeightedEdge(0, 3, 2.5);
+        graph.addWeightedEdge(3, 5, 3);
 
         ParallelFilterKruskal filterKruskal = new ParallelFilterKruskal(graph);
         assertEquals(5, filterKruskal.getEdges().size());
@@ -103,13 +103,13 @@ public class FilterKruskalSmallTest {
     public void smallCycleGraph() {
         //some edges have the same weight, others do not
         Graph graph = GraphBuilder.vertexRange(0, 6).buildGraph();
-        graph.addEdge(0, 1, 50);
-        graph.addEdge(1, 2, 10);
-        graph.addEdge(2, 3, 20);
-        graph.addEdge(3, 4, 10);
-        graph.addEdge(4, 5, 20);
-        graph.addEdge(5, 6, 30);
-        graph.addEdge(6, 0, 25.2);
+        graph.addWeightedEdge(0, 1, 50);
+        graph.addWeightedEdge(1, 2, 10);
+        graph.addWeightedEdge(2, 3, 20);
+        graph.addWeightedEdge(3, 4, 10);
+        graph.addWeightedEdge(4, 5, 20);
+        graph.addWeightedEdge(5, 6, 30);
+        graph.addWeightedEdge(6, 0, 25.2);
 
         ParallelFilterKruskal filterKruskal = new ParallelFilterKruskal(graph);
         assertEquals(6, filterKruskal.getEdges().size());

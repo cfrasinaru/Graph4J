@@ -42,9 +42,9 @@ public class SimpleTest {
             assertEquals(String.valueOf((char) ('a' + v)), g.getVertexLabel(v));
         }
 
-        g.addEdge(0, 1, "01");
-        g.addEdge(0, 2, "02");
-        g.addEdge(1, 2, "12");
+        g.addLabeledEdge(0, 1, "01");
+        g.addLabeledEdge(0, 2, "02");
+        g.addLabeledEdge(1, 2, "12");
         for (Edge e : g.edges()) {
             assertEquals(e.source() + "" + e.target(), g.getEdgeLabel(e.source(), e.target()));
         }

@@ -203,6 +203,10 @@ public class GraphMetrics extends GraphAlgorithm {
      * path", that is the greatest distance between any two vertices. A
      * disconnected graph has infinite diameter.
      *
+     * If the graph is weighted, the algorithm will take into consideration the
+     * weight of the edges, in order to compute the diameter.
+     *
+     *
      * @return the diameter of the graph
      */
     public double diameter() {
@@ -269,6 +273,10 @@ public class GraphMetrics extends GraphAlgorithm {
      * The <i>radius</i> of a graph is the minimum eccentricity of vertices. A
      * disconnected graph has infinite radius.
      *
+     * If the graph is weighted, the algorithm will take into consideration the
+     * weight of the edges, in order to compute the radius.
+     *
+     *
      * @return the radius of the graph, or <code>Double.POSITIVE_INFINITY</code>
      * if the graph is disconnected.
      */
@@ -294,6 +302,9 @@ public class GraphMetrics extends GraphAlgorithm {
      * The <i>center</i> of a graph is the set of vertices having eccentricities
      * equal to the graph radius (the set of central points).
      *
+     * If the graph is weighted, the algorithm will take into consideration the
+     * weight of the edges, in order to compute the center.
+     *
      * @return the graph center.
      */
     public VertexSet center() {
@@ -318,6 +329,9 @@ public class GraphMetrics extends GraphAlgorithm {
     /**
      * The <i>periphery</i> of a graph is the set of vertices having
      * eccentricities equal to the graph diameter.
+     *
+     * If the graph is weighted, the algorithm will take into consideration the
+     * weight of the edges, in order to compute the periphery.
      *
      * @return the graph periphery.
      */

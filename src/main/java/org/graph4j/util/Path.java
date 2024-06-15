@@ -16,6 +16,7 @@
  */
 package org.graph4j.util;
 
+import java.util.NoSuchElementException;
 import org.graph4j.Graph;
 
 /**
@@ -45,6 +46,20 @@ public class Path extends Trail {
         super(graph, vertices);
     }
 
+    public int firstVertex() {
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return vertices[0];
+    }
+
+    public int lastVertex() {
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return vertices[numVertices - 1];
+    }
+
     @Override
     public boolean isValid() {
         if (!super.isValid()) {
@@ -68,7 +83,7 @@ public class Path extends Trail {
             int v = vertices[i];
             for (int j = i + 2; j < numVertices; j++) {
                 int u = vertices[j];
-                if (graph.containsEdge(v, u)) {                    
+                if (graph.containsEdge(v, u)) {
                     return false;
                 }
             }

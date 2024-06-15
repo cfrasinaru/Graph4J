@@ -189,6 +189,23 @@ public class GraphBuilder {
     }
 
     /**
+     * Utility method for creating a new graph based on the string
+     * representation of its edge set, for example: "1-2, 2-3, 3-1", "a-b, b-c,
+     * c-d", etc. "0-1,0-2-0-3" may be written as "0-1,2,3".
+     *
+     * Useful for creating small graphs for testing purposes.
+     *
+     * @param edges a text representation of the edges of the graph.
+     * @return a new a {@link GraphBuilder}.
+     */
+    public static GraphBuilder edges(String edges) {
+        var builder = new GraphBuilder();
+        builder.vertices = new int[0];
+        builder.addEdges(edges);
+        return builder;
+    }
+
+    /**
      * This property can be specified in order to optimize the memory
      * allocation. No vertex will be added to the graph as a result of this
      * invocation.
@@ -197,8 +214,8 @@ public class GraphBuilder {
      * @return a reference to this object.
      */
     public GraphBuilder estimatedNumVertices(int numVertices) {
-        if (numVertices <= 0) {
-            throw new IllegalArgumentException("Maximum number of vertices must be positive.");
+        if (numVertices < 0) {
+            throw new IllegalArgumentException("Maximum number of vertices must be non-negative.");
         }
         this.maxVertices = numVertices;
         return this;
@@ -289,11 +306,12 @@ public class GraphBuilder {
     }
 
     /**
-     * Example: "1-2, 2-3, 3-1", "a-b, b-c,c-d", etc.
+     * Adds to the graph a set of edges represented as a string, for example:
+     * "1-2, 2-3, 3-1", "a-b, b-c, c-d", etc.
      *
      * "0-1,0-2-0-3" may be written as "0-1,2,3".
      *
-     * @param edges a text encoding the edges to be added.
+     * @param edges a text representation of the edges to be added.
      * @return a reference to this object.
      */
     public GraphBuilder addEdges(String edges) {

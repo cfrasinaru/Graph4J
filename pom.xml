@@ -1,10 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
     <modelVersion>4.0.0</modelVersion>
-    <groupId>ro.uaic.info.graph</groupId>
-    <artifactId>Graph4J</artifactId>
+    <groupId>org.graph4j</groupId>
+    <artifactId>graph4j</artifactId>
     <version>1.0.7</version>
     <packaging>jar</packaging>
+
+    <name>Graph4J</name>
+    <description>A computationally efficient Java library for graph algorithms</description>
+    <url>https://github.com/cfrasinaru/Graph4J</url>
+    
+    <developers>
+        <developer>
+            <id>cfrasinaru</id>
+            <name>Cristian Frasinaru</name>
+            <organization>Ecosoft</organization>
+            <email>cfrasinaru@ecosoftware.ro</email>
+            <organizationUrl>http://www.ecosoftware.ro</organizationUrl>        
+        </developer>
+    </developers>    
+            
+    <licenses>
+        <license>
+            <name>GNU General Public License</name>
+            <url>http://www.gnu.org/licenses/</url>
+        </license>
+    </licenses>
+            
+    <scm>
+        <connection>scm:git:git://github.com/cfrasinaru/Graph4J.git</connection>
+        <developerConnection>scm:git:ssh://github.com/cfrasinaru/Graph4J.git</developerConnection>
+        <url>https://github.com/cfrasinaru/Graph4J</url>
+    </scm>
+                
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
@@ -32,22 +61,57 @@
             <version>5.6.0</version>
             <scope>test</scope>
         </dependency>
-        
+                        
     </dependencies>
 
         
     <build>
         <finalName>graph4j-${version}</finalName>
         <plugins>
+            
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
+            
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
+            
+            <!-- javadoc.jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- sources.jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>  
+                                                    
         </plugins>
     </build>
-    <name>Graph4J</name>
+    
 </project>

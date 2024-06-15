@@ -16,7 +16,7 @@
  */
 package org.graph4j;
 
-import java.util.BitSet;
+import java.util.Objects;
 import org.graph4j.util.EdgeSet;
 import org.graph4j.util.VertexSet;
 
@@ -172,6 +172,8 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     Edge[] edges();
 
     /**
+     * Returns an array containing the edges formed by v with its neighbors
+     * (successors).
      *
      * @param v a vertex number;
      * @return the edges formed by v with its neighbors (successors).
@@ -270,6 +272,7 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     NeighborIterator<E> neighborIterator(int v, int pos);
 
     /**
+     * Returns the first position of u in the neighbor list of v.
      *
      * @param v a vertex number.
      * @param u a vertex number;
@@ -329,7 +332,7 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     int[] degrees();
 
     /**
-     * Adds a new edge to the graph.The endpoints of the edge are identified
+     * Adds a new edge to the graph. The endpoints of the edge are identified
      * using their vertex numbers.
      *
      * @param v a vertex number.
@@ -340,6 +343,8 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     int addEdge(int v, int u);
 
     /**
+     * Adds a new labeled, weighted, edge to the graph. The endpoints of the
+     * edge are identified using their vertex numbers.
      *
      * @param v a vertex number.
      * @param u a vertex number.
@@ -377,8 +382,24 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * the edge is already in the graph or vLabel and uLabel are the same.
      */
     default int addEdge(V vLabel, V uLabel) {
+        Objects.requireNonNull(vLabel);
+        Objects.requireNonNull(uLabel);
+        if (!isVertexLabeled()) {
+            if (vLabel instanceof Integer && uLabel instanceof Integer) {
+                int v = (Integer) vLabel;
+                int u = (Integer) uLabel;
+                return addEdge(v, u);
+            }
+            throw new IllegalArgumentException("The graph has no labeled vertices.");
+        }
         int v = findVertex(vLabel);
+        if (v == -1) {
+            throw new InvalidVertexException(vLabel);
+        }
         int u = findVertex(uLabel);
+        if (u == -1) {
+            throw new InvalidVertexException(vLabel);
+        }
         return Graph.this.addEdge(v, u);
     }
 
@@ -615,17 +636,27 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     /**
      * Convenience method for testing if this graph is actually a multigraph.
      *
-     * @return true, if this is an instance of {@link Multigraph}.
+     * @return {@code true}, if this is an instance of {@link Multigraph}.
      */
     boolean isAllowingMultipleEdges();
 
     /**
      * Convenience method for testing if this graph is actually a pseudograph.
      *
-     * @return true, if this is an instance of {@link Pseudograph}.
+     * @return {@code true}, if this is an instance of {@link Pseudograph}.
      */
     boolean isAllowingSelfLoops();
 
+    /**
+     * Convenience method for testing if the graph does not contain multiple
+     * edges or self loops.
+     *
+     * @return {@code true}, if this is an instance of {@link Pseudograph}.
+     */
+    default boolean isSimple() {
+        return !isAllowingMultipleEdges() && !isAllowingSelfLoops();
+    }
+    
     /**
      * In safe mode, various checks are performed in order to respect the graph
      * constraints and to prevent illegal method invocations.

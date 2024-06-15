@@ -76,7 +76,6 @@ public class Cycle extends Path {
                 }
                 int u =  vertices[j];
                 if (graph.containsEdge(v, u)) {
-                    System.out.println("Graph contains edge " + v + "-" + u);
                     return false;
                 }
             }

@@ -161,7 +161,7 @@ public class MaximalCardinalityMatching extends GraphAlgorithm
     private Edge[] edgesSortedByDegree() {
         int n = graph.numVertices();
         Edge[] edges = graph.edges();
-        List<Edge>[] buckets = new ArrayList[2 * n - 2];
+        List<Edge>[] buckets = new ArrayList[2 * n - 1];
         for (Edge e : edges) {
             int i = graph.degree(e.source()) + graph.degree(e.target());
             if (buckets[i] == null) {

@@ -45,9 +45,7 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
     private long timeLimit;
     private long startTime;
     private boolean timeExpired;
-    private boolean outputEnabled = false;
-
-    VertexSeparator solution;
+    private VertexSeparator solution;
 
     private List<Worker> workers;
     private long nodesExplored;
@@ -99,9 +97,6 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
         }
         vertexConnectivity = Graphs.vertexConnectivity(graph);
         greedySepSize = new GreedyVertexSeparator(graph, maxShoreSize).getSeparator().separator().size();
-        System.out.println("maxShoreSize=" + maxShoreSize);
-        System.out.println("vertexConnectivity=" + vertexConnectivity);
-        System.out.println("greedySepSize=" + greedySepSize);
 
         int[] values = {SEP, RIGHT, LEFT}; //reverse order for poll
         VertexSeparator sep = new VertexSeparator(graph, maxShoreSize);
@@ -203,9 +198,6 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
             return 0;
         }
         if (dom.size() == 1) {
-            if (outputEnabled) {
-                System.out.println("REMOVE VALUE FAILURE 1");
-            }
             return FAILURE;
         }
         if (node.parent != null && dom == node.parent.domains[ui]) {
@@ -239,7 +231,6 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
     //if the size of separator is maximum, remove SEP from all domains
     private int checkCapacity(int v, int value, Node node) {
         if (value == LEFT && node.separator.leftShore().size() == maxShoreSize) {
-            //System.out.println("------------------->> LEFT is full BEFORE :\n" + node);
             for (int u : graph.vertices()) {
                 if (u == v || node.separator.contains(u)) {
                     continue;
@@ -254,11 +245,9 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
                     node.separator.separator().add(u);
                 }
             }
-            //System.out.println("------------------->> LEFT is full AFTER:\n" + node);
             return POTENTIAL_SOLUTION;
         }
         if (value == RIGHT && node.separator.rightShore().size() == maxShoreSize) {
-            //System.out.println("------------------->> RIGHT is full: " + node);
             for (int u : graph.vertices()) {
                 if (u == v || node.separator.contains(u)) {
                     continue;
@@ -276,8 +265,6 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
             return POTENTIAL_SOLUTION;
         }
         if (value == SEP && node.separator.separator().size() == minSepSize - 1) {
-            //|| node.separator.separator().size() > greedySepSize)
-            //System.out.println("------------------->> SEP is full: " + node);
             //process the left shore
             for (int u : node.separator.leftShore().vertices()) {
                 for (var it = graph.neighborIterator(u); it.hasNext();) {
@@ -387,9 +374,6 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
                 int v, value;
                 synchronized (graph) {
                     node = nodeStack.peek();
-                    if (outputEnabled) {
-                        //System.out.println("PEEK: \n" + node);
-                    }
                     if (node == null) {
                         node = findNode();
                         if (node == null) {
@@ -397,14 +381,8 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
                         }
                     }
                     if (node.separator.isComplete()) {
-                        if (outputEnabled) {
-                            //System.out.println("COMPLETE" + node.separator);
-                        }
                         nodeStack.pop();
                         if (!node.separator.isValid()) {
-                            if (outputEnabled) {
-                                System.out.println("COMPLETE and NOT VALID!");
-                            }
                             continue;
                         }
                         //found a solution
@@ -412,9 +390,6 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
                         if (sepSize < minSepSize) {
                             minSepSize = sepSize;
                             solution = node.separator;
-                            System.out.println("-------------------------------------------");
-                            System.out.println("SOLUTION: " + solution + "\n\tSIZE: " + solution.separator().size());
-                            System.out.println("-------------------------------------------");
                             if (minSepSize == vertexConnectivity) {
                                 break;
                             }
@@ -440,7 +415,6 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
                     //pick a value in the node's domain
                     v = node.minDomain.vertex();
                     value = node.minDomain.poll();
-                    //System.out.println("Decision: " + v + "=" + value);
                 }
 
                 //create the new domains (lazy)

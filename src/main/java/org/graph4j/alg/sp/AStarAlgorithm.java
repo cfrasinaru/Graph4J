@@ -98,7 +98,6 @@ public class AStarAlgorithm extends GraphAlgorithm implements SinglePairShortest
         while (true) {
             int vi = heap.poll();
             solved[vi] = true;
-            System.out.println("Solved " + vi + ", cost=" + cost[vi]);
             numSolved++;
             int v = vertices[vi];
             if (v == target || numSolved == n) {

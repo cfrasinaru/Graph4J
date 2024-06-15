@@ -141,7 +141,6 @@ public class MaximalCliqueFinder extends SimpleGraphAlgorithm {
                 return null;
             }
             Clique clique = alg.next();
-            System.out.println(clique);
             if (maxClique == null || clique.size() > maxClique.size()) {
                 maxClique = clique;
             }

@@ -16,9 +16,8 @@
  */
 package org.graph4j.alg;
 
-import org.graph4j.Digraph;
 import org.graph4j.Graph;
-import org.graph4j.Multigraph;
+import org.graph4j.Graphs;
 import org.graph4j.util.CheckArguments;
 
 /**
@@ -40,24 +39,15 @@ public abstract class SimpleGraphAlgorithm {
      */
     public SimpleGraphAlgorithm(Graph graph) {
         CheckArguments.graphNotEmpty(graph);
-        if (graph instanceof Digraph) {
-            Digraph digraph = (Digraph) graph;
-            this.graph = digraph.supportGraph();
-        } else if (graph instanceof Multigraph) {
-            Multigraph multigraph = (Multigraph) graph;
-            this.graph = multigraph.supportGraph();
-        } else {
-            this.graph = graph;
-        }
+        this.graph = Graphs.supportGraph(graph);
     }
 
     /**
-     * 
+     *
      * @return the input graph.
      */
     public Graph getGraph() {
         return graph;
     }
 
-    
 }

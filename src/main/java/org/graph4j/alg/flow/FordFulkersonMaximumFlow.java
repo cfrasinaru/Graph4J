@@ -254,7 +254,6 @@ class FordFulkersonMaximumFlow extends DirectedGraphAlgorithm
                 } while (ui != si);
             }
         } while (found);
-        //System.out.println("FF aug=" + aug);
     }
 
     //Returns the first position of u in the neighbor list of v.

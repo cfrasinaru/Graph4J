@@ -61,7 +61,7 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
             int vi = graph.indexOf(v);
             int av = vi;
             int bv = n + vi;
-            network.addEdge(av, bv, 1.0);
+            network.addWeightedEdge(av, bv, 1.0);
             for (var it = graph.neighborIterator(v); it.hasNext();) {
                 int wi = graph.indexOf(it.next());
                 if (vi > wi) {
@@ -69,8 +69,8 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
                 }
                 int aw = wi;
                 int bw = n + wi;
-                network.addEdge(bv, aw, Double.POSITIVE_INFINITY);
-                network.addEdge(bw, av, Double.POSITIVE_INFINITY);
+                network.addWeightedEdge(bv, aw, Double.POSITIVE_INFINITY);
+                network.addWeightedEdge(bw, av, Double.POSITIVE_INFINITY);
             }
         }
     }

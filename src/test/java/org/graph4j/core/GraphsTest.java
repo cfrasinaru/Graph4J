@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
 import org.graph4j.Graphs;
 import org.graph4j.generate.GraphGenerator;
+import org.graph4j.generate.RandomOreGraphGenerator;
 
 /**
  *
@@ -53,4 +54,12 @@ public class GraphsTest {
         g.removeEdge(0, 1);
         assertFalse(Graphs.isRegular(g));
     }
+    
+    @Test
+    public void hasOreProperty() {
+        int n = 10;
+        var g = new RandomOreGraphGenerator(n).createGraph();
+        assertTrue(Graphs.hasOreProperty(g));
+    }
+    
 }

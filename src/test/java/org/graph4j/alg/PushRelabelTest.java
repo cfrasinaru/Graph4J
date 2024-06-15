@@ -34,11 +34,11 @@ public class PushRelabelTest {
     public void simple1() {
         //0->1->2->3->4->5
         var g = GraphBuilder.numVertices(6).buildDigraph();
-        g.addEdge(0, 1, 5);
-        g.addEdge(1, 2, 4);
-        g.addEdge(2, 3, 3);
-        g.addEdge(3, 4, 2);
-        g.addEdge(4, 5, 1);
+        g.addWeightedEdge(0, 1, 5);
+        g.addWeightedEdge(1, 2, 4);
+        g.addWeightedEdge(2, 3, 3);
+        g.addWeightedEdge(3, 4, 2);
+        g.addWeightedEdge(4, 5, 1);
         var alg = new PushRelabelMaximumFlow(g, 0, 5);
         assertEquals(1, alg.getValue());
     }
@@ -47,11 +47,11 @@ public class PushRelabelTest {
     public void simple2() {
         //0->1->2->3->4->5
         var g = GraphBuilder.numVertices(6).buildDigraph();
-        g.addEdge(0, 1, 5);
-        g.addEdge(1, 2, 5);
-        g.addEdge(2, 3, 5);
-        g.addEdge(3, 4, 5);
-        g.addEdge(4, 5, 2);
+        g.addWeightedEdge(0, 1, 5);
+        g.addWeightedEdge(1, 2, 5);
+        g.addWeightedEdge(2, 3, 5);
+        g.addWeightedEdge(3, 4, 5);
+        g.addWeightedEdge(4, 5, 2);
         var alg = new PushRelabelMaximumFlow(g, 0, 5);
         assertEquals(2, alg.getValue());
     }
@@ -62,14 +62,14 @@ public class PushRelabelTest {
         var g = GraphBuilder.numVertices(6).buildDigraph();
         int s = 0;
         int t = 5;
-        g.addEdge(s, 1, 9);
-        g.addEdge(s, 4, 8);
-        g.addEdge(1, 2, 10);
-        g.addEdge(1, 3, 5);
-        g.addEdge(2, t, 7);
-        g.addEdge(3, t, 6);
-        g.addEdge(4, 1, 2);
-        g.addEdge(4, 3, 5);
+        g.addWeightedEdge(s, 1, 9);
+        g.addWeightedEdge(s, 4, 8);
+        g.addWeightedEdge(1, 2, 10);
+        g.addWeightedEdge(1, 3, 5);
+        g.addWeightedEdge(2, t, 7);
+        g.addWeightedEdge(3, t, 6);
+        g.addWeightedEdge(4, 1, 2);
+        g.addWeightedEdge(4, 3, 5);
         var alg = new PushRelabelMaximumFlow(g, s, t);
         assertEquals(13, alg.getValue());
         assertEquals(13, alg.getFlow().value());
@@ -82,20 +82,20 @@ public class PushRelabelTest {
         //[0->3=3.0, 0->4=0.0, 1->0=4.0, 1->4=4.0, 2->0=1.0, 2->1=2.0, 2->3=4.0, 
         // 2->4=0.0, 3->0=2.0, 3->2=2.0, 4->0=1.0, 4->1=0.0, 4->2=0.0, 4->3=1.0]
         var g = GraphBuilder.numVertices(5).buildDigraph();
-        g.addEdge(0, 3, 3);
-        g.addEdge(0, 4, 0);
-        g.addEdge(1, 0, 4);
-        g.addEdge(1, 4, 4);
-        g.addEdge(2, 0, 1);
-        g.addEdge(2, 1, 2);
-        g.addEdge(2, 3, 4);
-        g.addEdge(2, 4, 0);
-        g.addEdge(3, 0, 2);
-        g.addEdge(3, 2, 2);
-        g.addEdge(4, 0, 1);
-        g.addEdge(4, 1, 0);
-        g.addEdge(4, 2, 0);
-        g.addEdge(4, 3, 1);
+        g.addWeightedEdge(0, 3, 3);
+        g.addWeightedEdge(0, 4, 0);
+        g.addWeightedEdge(1, 0, 4);
+        g.addWeightedEdge(1, 4, 4);
+        g.addWeightedEdge(2, 0, 1);
+        g.addWeightedEdge(2, 1, 2);
+        g.addWeightedEdge(2, 3, 4);
+        g.addWeightedEdge(2, 4, 0);
+        g.addWeightedEdge(3, 0, 2);
+        g.addWeightedEdge(3, 2, 2);
+        g.addWeightedEdge(4, 0, 1);
+        g.addWeightedEdge(4, 1, 0);
+        g.addWeightedEdge(4, 2, 0);
+        g.addWeightedEdge(4, 3, 1);
 
         var alg = new PushRelabelMaximumFlow(g, 0, 4);
         assertEquals(2, alg.getValue());

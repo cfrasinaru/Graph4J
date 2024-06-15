@@ -19,8 +19,11 @@ package org.graph4j.util;
 import java.util.Objects;
 
 /**
+ * Utility class describing a generic pair of values.
  *
  * @author Cristian Frăsinaru
+ * @param <K>
+ * @param <V>
  */
 public class Pair<K, V> {
 

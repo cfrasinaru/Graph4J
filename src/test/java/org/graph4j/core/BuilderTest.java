@@ -112,8 +112,8 @@ public class BuilderTest {
         assertEquals(3.0, g.getVertexWeight(3));
         assertEquals(5.0, g.getEdgeWeight(2, 3));
 
-        g.addVertex(999, 999.0);
-        g.addEdge(999, 0, 999.0);
+        g.addWeightedVertex(999, 999.0);
+        g.addWeightedEdge(999, 0, 999.0);
         assertEquals(999, g.getVertexWeight(999));
         assertEquals(999, g.getEdgeWeight(0, 999));
     }
@@ -137,12 +137,12 @@ public class BuilderTest {
     @Test
     public void buildLabeledGraph1() {
         Graph<String, String> g = GraphBuilder.labeledVertices("a", "b", "c").buildDigraph();
-        g.addVertex("d");
+        g.addLabeledVertex("d");
         int v = g.findVertex("a");
         int u = g.findVertex("b");
         g.addEdge(v, u);
         g.addEdge("b", "c");
-        g.addEdge("c", "d", "Hello");
+        g.addLabeledEdge("c", "d", "Hello");
 
         assertEquals(4, g.numVertices());
         assertEquals(3, g.numEdges());

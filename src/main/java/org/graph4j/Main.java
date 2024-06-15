@@ -17,7 +17,8 @@
 package org.graph4j;
 
 import java.io.FileNotFoundException;
-import org.graph4j.generate.GraphGenerator;
+import org.graph4j.generate.RandomGnpHamiltonianGenerator;
+import org.graph4j.hamiltonian.BacktrackLongestPathAlgoritm;
 
 /**
  *
@@ -35,13 +36,45 @@ class Main {
     }
 
     private void test() {
-        int n = 20;
+        int n = 30;
         double p = 0.2;
-        var g = GraphGenerator.randomGnp(n, p);
+        //var g = new RandomGnpGraphGenerator(n, p).createGraph();
+        var g = new RandomGnpHamiltonianGenerator(n, p).createGraph();
+        //var g = GraphBuilder.numVertices(n).buildGraph();
+        var path = new BacktrackLongestPathAlgoritm(g).getLongestPath(0, n-1);
+        System.out.println(path);
+        System.out.println(path.isHamiltonian());
+
         //var g = new DimacsIO().read("d:/datasets/coloring/instances/" + "queen8_8.col");
         //var g = GraphBuilder.numVertices(5).addEdges("0-1,1-2,2-3,3-4").buildGraph();
         //var g = GraphBuilder.numVertices(5).addEdges("0-1,0-2,1-2,2-3,2-4,3-4").buildGraph();
         //var g = GraphBuilder.numVertices(10).addClique(0,1,2,3,4,5).addClique(0,6,7,8,9).buildGraph();
+        //var g = GraphBuilder.numVertices(10).addEdges("0-1,1-2,2-3,3-0,3-4,4-1,2-5,5-6,6-7,7-5,5-8,8-9,9-5").buildGraph();
+        //var g = GraphGenerator.complete(5);
+        //var g = GraphGenerator.empty(5);
+        /*
+        var alg = BiconnectivityAlgorithm.getInstance(g);
+        System.out.println(alg.getBlocks());
+        System.out.println(alg.getCutVertices());
+        System.out.println(alg.computeBlockGraph());
+        System.out.println(alg.computeBlockCutTree());
+         */
+        /*
+        int n = 100;
+        for (int i = 0; i < 100; i++) {
+            var g = new RandomOreGraphGenerator(n).createGraph();
+            System.out.println(GraphMeasures.density(g));
+            if (!Graphs.hasOreProperty(g)) {
+                System.err.println("Oops - Ore property!");
+                break;
+            }
+            var alg = new PalmerHamiltonianCycle(g);
+            var c = alg.findCycle();
+            if (!c.isValid()) {
+                System.err.println("Not a cycle!");
+                break;
+            }
+        }*/
     }
 
     protected void run(Runnable snippet) {

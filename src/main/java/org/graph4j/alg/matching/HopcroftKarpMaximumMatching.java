@@ -18,14 +18,14 @@ package org.graph4j.alg.matching;
 
 import java.util.Arrays;
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
-import org.graph4j.alg.bipartite.BipartitionAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
+import org.graph4j.support.BipartiteGraphSupport;
+import org.graph4j.exceptions.NotBipartiteException;
 import org.graph4j.util.Matching;
 import org.graph4j.util.StableSet;
 import org.graph4j.util.VertexQueue;
 import org.graph4j.util.VertexSet;
 import org.graph4j.util.VertexStack;
-import org.graph4j.util.IntArrays;
 
 /**
  * Computes the maximum cardinality matching in a bipartite graph.
@@ -52,21 +52,25 @@ public class HopcroftKarpMaximumMatching extends SimpleGraphAlgorithm
     private static final int FREE = -1;
 
     /**
-     * If the graph is not bipartite, an exception is thrown.
+     * Creates an algorithm for determining a maximum matching in a bipartite
+     * graph. If the graph is not bipartite, an exception is thrown.
      *
      * @param graph the input graph.
+     * @throws NotBipartiteException if the graph is not bipartite.
      */
     public HopcroftKarpMaximumMatching(Graph graph) {
         super(graph);
-        var alg = BipartitionAlgorithm.getInstance(graph);
+        var alg = new BipartiteGraphSupport(graph);
         if (!alg.isBipartite()) {
-            throw new IllegalArgumentException("The graph is not bipartite");
+            throw new NotBipartiteException();
         }
         this.leftSide = alg.getLeftSide();
         this.rightSide = alg.getRightSide();
     }
 
     /**
+     * Creates an algorithm for determining a maximum matching in a bipartite
+     * graph. The bipartition is assumed to be valid.
      *
      * @param graph the input bipartite graph.
      * @param leftSide the left side of the bipartite graph.
@@ -76,6 +80,7 @@ public class HopcroftKarpMaximumMatching extends SimpleGraphAlgorithm
         super(graph);
         this.leftSide = leftSide;
         this.rightSide = rightSide;
+        /*
         if (!leftSide.isValid()) {
             throw new IllegalArgumentException("The left side is not a stable set.");
         }
@@ -83,9 +88,9 @@ public class HopcroftKarpMaximumMatching extends SimpleGraphAlgorithm
             throw new IllegalArgumentException("The right side is not a stable set.");
         }
         int[] vertices = IntArrays.union(leftSide.vertices(), rightSide.vertices());
-        if (!IntArrays.sameValues(vertices, graph.vertices())) {
+        if (!IntArrays.haveSameValues(vertices, graph.vertices())) {
             throw new IllegalArgumentException("Invalid bipartition");
-        }
+        }*/
     }
 
     /**
@@ -114,7 +119,7 @@ public class HopcroftKarpMaximumMatching extends SimpleGraphAlgorithm
      *
      * @return the maximum stable set.
      */
-    public VertexSet getMaximumStableSet() {
+    public StableSet getMaximumStableSet() {
         if (maxStable != null) {
             return maxStable;
         }

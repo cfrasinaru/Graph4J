@@ -20,13 +20,13 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.Graph;
-import org.graph4j.Graphs;
-import org.graph4j.generate.CompleteTreeGenerator;
-import org.graph4j.generate.RandomGnmGraphGenerator;
-import org.graph4j.generate.RandomGnpGraphGenerator;
-import org.graph4j.generate.GraphGenerator;
-import org.graph4j.generate.RandomTreeGenerator;
-import org.graph4j.generate.RegularGraphGenerator;
+import org.graph4j.GraphTests;
+import org.graph4j.generators.CompleteTreeGenerator;
+import org.graph4j.generators.RandomGnmGraphGenerator;
+import org.graph4j.generators.RandomGnpGraphGenerator;
+import org.graph4j.generators.GraphGenerator;
+import org.graph4j.generators.RandomTreeGenerator;
+import org.graph4j.generators.RegularGraphGenerator;
 
 /**
  *
@@ -109,10 +109,10 @@ public class GraphGeneratorTest {
     @Test
     public void randomTree() {
         int n = 10;
-        var g = new RandomTreeGenerator(n).create();
+        var g = new RandomTreeGenerator(n).createTree();
         assertEquals(n - 1, g.numEdges());
-        assertTrue(Graphs.isConnected(g));
-        assertFalse(Graphs.containsCycle(g));
+        assertTrue(GraphTests.isConnected(g));
+        assertTrue(GraphTests.isAcyclic(g));
     }
 
     @Test
@@ -122,8 +122,8 @@ public class GraphGeneratorTest {
         var g = new CompleteTreeGenerator(numLevels, degree).create();
         assertEquals(n, g.numVertices());
         assertEquals(n - 1, g.numEdges());
-        assertTrue(Graphs.isConnected(g));
-        assertFalse(Graphs.containsCycle(g));
+        assertTrue(GraphTests.isConnected(g));
+        assertTrue(GraphTests.isAcyclic(g));
     }
 
     @Test

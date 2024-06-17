@@ -18,7 +18,7 @@ package org.graph4j.alg.coloring;
 
 import org.graph4j.Graph;
 import org.graph4j.measures.GraphMeasures;
-import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
 import org.graph4j.util.StableSet;
 import org.graph4j.util.VertexSet;
 

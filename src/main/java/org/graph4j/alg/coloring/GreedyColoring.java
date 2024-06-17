@@ -17,7 +17,8 @@
 package org.graph4j.alg.coloring;
 
 import org.graph4j.Graph;
-import org.graph4j.util.IntArrays;
+import org.graph4j.ordering.InvalidVertexOrdering;
+import org.graph4j.util.Validator;
 
 /**
  * {@inheritDoc}
@@ -44,17 +45,31 @@ public class GreedyColoring extends GreedyColoringBase {
     }
 
     /**
-     * The vertices will be colored in a specified order.
+     * Creates a greedy algorithm that will color the vertices of the graph in
+     * the specified order. Checks if the ordering is valid.
      *
      * @param graph the input graph.
      * @param vertexOrdering an ordering of the graph vertices.
+     * @throws InvalidVertexOrdering if the ordering is invalid.
      */
     public GreedyColoring(Graph graph, int[] vertexOrdering) {
+        this(graph, vertexOrdering, true);
+    }
+
+    /**
+     * Creates a greedy algorithm that will color the vertices of the graph in
+     * the specified order.Validation of the ordering is optional.
+     *
+     * @param graph the input graph.
+     * @param vertexOrdering an ordering of the graph vertices.
+     * @param validateOrdering {@code true} if the order should be validate,
+     * {@code false} otherwise.
+     * @throws InvalidVertexOrdering if the ordering is invalid.
+     */
+    public GreedyColoring(Graph graph, int[] vertexOrdering, boolean validateOrdering) {
         super(graph);
-        if (!IntArrays.sameValues(graph.vertices(), vertexOrdering)) {
-            throw new IllegalArgumentException(
-                    "The ordering is invalid - it must contain the vertices "
-                    + "of the graph in any given order.");
+        if (validateOrdering) {
+            Validator.checkVertexOrdering(graph, vertexOrdering);
         }
         this.vertexOrdering = vertexOrdering;
     }

@@ -18,12 +18,13 @@ package org.graph4j.alg.connectivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.graph4j.Digraph;
 import org.graph4j.Graph;
-import org.graph4j.GraphBuilder;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.alg.flow.MaximumFlowAlgorithm;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.Network;
+import static org.graph4j.Network.FLOW;
+import org.graph4j.NetworkBuilder;
+import org.graph4j.flow.MaximumFlowAlgorithm;
+import org.graph4j.util.Validator;
 import org.graph4j.util.EdgeSet;
 import org.graph4j.util.Path;
 import org.graph4j.util.VertexQueue;
@@ -38,7 +39,7 @@ import org.graph4j.util.VertexSet;
  */
 public class VertexConnectivityAlgorithm extends GraphAlgorithm {
 
-    private Digraph network;
+    private Network network;
 
     /**
      * Creates an algorithm for determining the vertex connectivity of a graph.
@@ -52,7 +53,7 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
 
     private void createNetwork() {
         int n = graph.numVertices();
-        network = GraphBuilder.numVertices(2 * n).buildDigraph();
+        network = NetworkBuilder.numVertices(2 * n).buildNetwork();
         network.setSafeMode(false);
         //0..n-1 are a vertices
         //n..2n-1 are b vertices
@@ -61,7 +62,7 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
             int vi = graph.indexOf(v);
             int av = vi;
             int bv = n + vi;
-            network.addWeightedEdge(av, bv, 1.0);
+            network.addEdge(av, bv, 1.0);
             for (var it = graph.neighborIterator(v); it.hasNext();) {
                 int wi = graph.indexOf(it.next());
                 if (vi > wi) {
@@ -69,8 +70,8 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
                 }
                 int aw = wi;
                 int bw = n + wi;
-                network.addWeightedEdge(bv, aw, Double.POSITIVE_INFINITY);
-                network.addWeightedEdge(bw, av, Double.POSITIVE_INFINITY);
+                network.addEdge(bv, aw, Double.POSITIVE_INFINITY);
+                network.addEdge(bw, av, Double.POSITIVE_INFINITY);
             }
         }
     }
@@ -87,14 +88,17 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
      * source and the target.
      */
     public int countMaximumDisjointPaths(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         if (source == target) {
             return 0;
         }
         int bs = graph.indexOf(source) + graph.numVertices();
         int at = graph.indexOf(target);
-        return (int) MaximumFlowAlgorithm.getInstance(network, bs, at).getValue();
+        network.setSource(bs);
+        network.setSink(at);
+        network.resetEdgeData(FLOW, 0);
+        return (int) MaximumFlowAlgorithm.getInstance(network).getMaximumFlowValue();
     }
 
     /**
@@ -109,7 +113,7 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
      * source and some other vertex of the graph.
      */
     public int countMaximumDisjointPaths(int source) {
-        CheckArguments.graphContainsVertex(graph, source);
+        Validator.containsVertex(graph, source);
         int minSize = Integer.MAX_VALUE;
         for (int t : graph.vertices()) {
             if (source == t || graph.containsEdge(source, t)) {
@@ -133,8 +137,8 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
      * and the target.
      */
     public List<Path> getMaximumDisjointPaths(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         List<Path> allPaths = new ArrayList<>();
         if (source == target) {
             return allPaths;
@@ -143,8 +147,11 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
         int n = graph.numVertices();
         int bs = graph.indexOf(source) + n;
         int at = graph.indexOf(target);
-        var maxFlowAlg = MaximumFlowAlgorithm.getInstance(network, bs, at);
-        int flowValue = (int) maxFlowAlg.getValue();
+        network.setSource(bs);
+        network.setSink(at);
+        network.resetEdgeData(FLOW, 0);
+        var maxFlowAlg = MaximumFlowAlgorithm.getInstance(network);
+        int flowValue = (int) maxFlowAlg.getMaximumFlowValue();
 
         //the maximum flow can be expressed as a sum of flows of value 1
         //each of these flows corresponds to a path from source to target
@@ -155,7 +162,7 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
             sat[vi] = new VertexQueue(network);
             for (var it = network.successorIterator(vi); it.hasNext();) {
                 int ui = it.next();
-                if (maxFlowAlg.getValue(vi, ui) == 1) {
+                if (maxFlowAlg.getFlowValue(vi, ui) == 1) {
                     sat[vi].add(ui);
                 }
             }
@@ -188,18 +195,21 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
      * source and the target.
      */
     public VertexSet getMinimumCut(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         if (source == target || graph.containsEdge(source, target)) {
             return null;
         }
         int bs = graph.indexOf(source) + graph.numVertices();
         int at = graph.indexOf(target);
-        var alg = MaximumFlowAlgorithm.getInstance(network, bs, at);
-        EdgeSet edgeCut = alg.getCutEdges();
+        network.setSource(bs);
+        network.setSink(at);
+        network.resetEdgeData(FLOW, 0);
+        var alg = MaximumFlowAlgorithm.getInstance(network);
+        EdgeSet edgeCut = alg.getMinimumCutEdges();
         VertexSet vertexCut = new VertexSet(graph, edgeCut.size());
-        for (int[] e : edgeCut.edges()) {
-            vertexCut.add(Math.min(e[0], e[1]));
+        for (var e : edgeCut) {
+            vertexCut.add(Math.min(e.source(), e.target()));
         }
         return vertexCut;
     }
@@ -214,7 +224,7 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
      * source from some part of the graph or {@code null} if no such set exists.
      */
     public VertexSet getMinimumCut(int source) {
-        CheckArguments.graphContainsVertex(graph, source);
+        Validator.containsVertex(graph, source);
         VertexSet minCut = null;
         for (int t : graph.vertices()) {
             if (source == t || graph.containsEdge(source, t)) {

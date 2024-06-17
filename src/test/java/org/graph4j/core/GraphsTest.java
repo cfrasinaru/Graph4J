@@ -19,9 +19,10 @@ package org.graph4j.core;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
-import org.graph4j.Graphs;
-import org.graph4j.generate.GraphGenerator;
-import org.graph4j.generate.RandomOreGraphGenerator;
+import org.graph4j.GraphTests;
+import org.graph4j.generators.GraphGenerator;
+import org.graph4j.generators.RandomOreGraphGenerator;
+import org.graph4j.route.PathFinder;
 
 /**
  *
@@ -32,34 +33,36 @@ public class GraphsTest {
     @Test
     public void hasPath() {
         var g = GraphBuilder.numVertices(7).addEdges("0-1,1-2,3-4,3-5").buildGraph();
-        assertTrue(Graphs.hasPath(g, 0, 2));
-        assertTrue(Graphs.hasPath(g, 3, 5));
-        assertFalse(Graphs.hasPath(g, 0, 3));
+        var finder = new PathFinder(g);
+        assertTrue(finder.hasPath(0, 2));
+        assertTrue(finder.hasPath(3, 5));
+        assertFalse(finder.hasPath(0, 3));
     }
 
     @Test
     public void hasDirectedPath() {
         var g = GraphBuilder.numVertices(7).addEdges("0-1,1-2,5-4,4-3,3-2").buildDigraph();
-        assertTrue(Graphs.hasPath(g, 0, 2));
-        assertTrue(Graphs.hasPath(g, 5, 2));
-        assertFalse(Graphs.hasPath(g, 2, 5));
-        assertFalse(Graphs.hasPath(g, 0, 3));
+        var finder = new PathFinder(g);
+        assertTrue(finder.hasPath(0, 2));
+        assertTrue(finder.hasPath(5, 2));
+        assertFalse(finder.hasPath(2, 5));
+        assertFalse(finder.hasPath(0, 3));
     }
 
     @Test
     public void regular() {
         int n = 5;
         var g = GraphGenerator.complete(n);
-        assertTrue(Graphs.isRegular(g, n - 1));
+        assertTrue(GraphTests.isRegular(g, n - 1));
         g.removeEdge(0, 1);
-        assertFalse(Graphs.isRegular(g));
+        assertFalse(GraphTests.isRegular(g));
     }
-    
+
     @Test
     public void hasOreProperty() {
         int n = 10;
         var g = new RandomOreGraphGenerator(n).createGraph();
-        assertTrue(Graphs.hasOreProperty(g));
+        assertTrue(GraphTests.hasOreProperty(g));
     }
-    
+
 }

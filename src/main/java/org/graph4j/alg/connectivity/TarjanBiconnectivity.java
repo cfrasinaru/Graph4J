@@ -19,12 +19,12 @@ package org.graph4j.alg.connectivity;
 import java.util.ArrayList;
 import java.util.List;
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
 import org.graph4j.util.VertexSet;
 import org.graph4j.util.VertexStack;
-import org.graph4j.traverse.DFSVisitor;
-import org.graph4j.traverse.DFSTraverser;
-import org.graph4j.traverse.SearchNode;
+import org.graph4j.traversal.DFSVisitor;
+import org.graph4j.traversal.DFSTraverser;
+import org.graph4j.traversal.SearchNode;
 import org.graph4j.util.Block;
 
 /**

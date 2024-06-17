@@ -16,10 +16,11 @@
  */
 package org.graph4j;
 
+import java.util.Collection;
 import org.graph4j.util.VertexSet;
 
 /**
- * A directed graph.
+ * Represents a directed graph.
  *
  * @author Cristian Frăsinaru
  * @param <V> the type of vertex labels in this graph.
@@ -28,56 +29,70 @@ import org.graph4j.util.VertexSet;
 public interface Digraph<V, E> extends Graph<V, E> {
 
     /**
+     * Returns the maximum number of edges (arcs) in a directed graph with the
+     * specified number of vertices.
      *
      * @param numVertices a number of vertices.
      * @return the maximum number of edges (arcs) in a digraph with
-     * {@code numVertices}
+     * {@code numVertices} vertices.
+     */
+    /**
+     * Utility method that returns the maximum number of edges a directed graph
+     * with a specified number of vertices can have. A digraph with {@code n}
+     * vertices, without multiple edges or self-loops, can have at most
+     * {@code n*(n-1)} edges.
+     *
+     * @param numVertices a number of vertices.
+     * @return the maximum number of edges a graph of order {@code numVertices}
+     * can have.
      */
     static long maxEdges(int numVertices) {
         return (long) numVertices * (numVertices - 1);
     }
 
     /**
-     * The <i>support graph</i> of a digraph G is an undirected graph containing
-     * all the vertices of G and one edge vu for any pair of vertices v and u of
-     * the digraph that are connected by an arc, in either direction: from v to
-     * u, form u to v or both ways. The resulting graph is unweighted, does not
-     * contain self loops or multiple edges and the labels are all null.
+     * Creates the <em>support graph</em> of this digraph. The support graph of
+     * a digraph G is an undirected graph containing all the vertices of G and
+     * one edge vu for any pair of vertices v and u of the digraph that are
+     * connected by an arc, in either direction: from v to u, form u to v or
+     * both ways. The resulting graph is unweighted, does not contain self loops
+     * or multiple edges and the labels are all {@code null}.
      *
-     * @return a new graph, representing the support graph
+     * @return an undirected graph, representing the support graph.
      */
     Graph<V, E> supportGraph();
 
     /**
+     * Creates an identical copy of the digraph.
      *
-     * @return an identical copy of the digraph
+     * @return an identical copy of the digraph.
      */
     @Override
     Digraph<V, E> copy();
 
     /**
-     * The <i>complement</i> of a digraph G has the same vertex set as G, but
-     * its edge set consists of the edges not present in G.
+     * Creates the <em>complement</em> of the digraph. The complement of a
+     * directed graph G has the same vertex set as G and its edge set consists
+     * of the edges not present in G.
      *
      * @return the complement of the digraph.
      */
     @Override
     Digraph<V, E> complement();
 
-    /**
-     *
-     * @param vertices an array of vertices.
-     * @return the subgraph induced by the given vertices.
-     */
     @Override
-    Digraph<V, E> subgraph(int... vertices);
+    Digraph<V, E> subgraph(VertexSet vertexSet);
 
     @Override
-    default Digraph<V, E> subgraph(VertexSet set) {
-        return subgraph(set.vertices());
+    default Digraph<V, E> subgraph(int... vertices) {
+        return subgraph(new VertexSet(Digraph.this, vertices));
     }
 
+    @Override
+    Digraph<V, E> subgraph(Collection<Edge> edges);
+
     /**
+     * Returns the outdegree of a vertex, i.e. the number of its successors.
      *
      * @param v a vertex number.
      * @return the outdegree of v.
@@ -87,6 +102,7 @@ public interface Digraph<V, E> extends Graph<V, E> {
     }
 
     /**
+     * Creates the outdegree sequence.
      *
      * @return the array of vertex outdegrees.
      */
@@ -95,6 +111,7 @@ public interface Digraph<V, E> extends Graph<V, E> {
     }
 
     /**
+     * Returns the indegree of a vertex, i.e. the number of its predecessors.
      *
      * @param v a vertex number.
      * @return the indegree of v.
@@ -110,6 +127,7 @@ public interface Digraph<V, E> extends Graph<V, E> {
     }
 
     /**
+     * Creates the indegree sequence.
      *
      * @return the array of vertex indegrees.
      */
@@ -123,6 +141,11 @@ public interface Digraph<V, E> extends Graph<V, E> {
     }
 
     /**
+     * Creates an array containing the vertex numbers of the successors of a
+     * specified vertex. If all that is wanted is iterating over the
+     * predecessors of v, {@link #predecessorIterator(int)} method is more
+     * effective in terms of memory and time required to access information
+     * regarding the edges incident to v.
      *
      * @param v a vertex number.
      * @return the successors of v.
@@ -132,18 +155,20 @@ public interface Digraph<V, E> extends Graph<V, E> {
     }
 
     /**
+     * Creates an iterator over the successors of v. The iterator offers in
+     * {@code O(1)} time information regarding the edges incident from v.
      *
      * @param v a vertex number.
      * @return an iterator over the successors of v.
      */
-    default SuccessorIterator successorIterator(int v) {
+    default SuccessorIterator<E> successorIterator(int v) {
         return successorIterator(v, -1);
     }
 
     /**
-     * Iterates over the edges incident from v, returning the successors of v,
-     * starting from a specified position in the successors adjacency list of v,
-     * along with information regarding their edges.
+     * Creates an iterator over the edges incident from v, returning the
+     * successors of v, starting from a specified position in the successors
+     * adjacency list of v, along with information regarding their edges.
      *
      * @param v a vertex number.
      * @param pos a position in the successors adjacency list of v.
@@ -153,6 +178,11 @@ public interface Digraph<V, E> extends Graph<V, E> {
     SuccessorIterator successorIterator(int v, int pos);
 
     /**
+     * Creates an array holding the predecessors of a specified vertex. If all
+     * that is wanted is iterating over the predecessors of v,
+     * {@link #predecessorIterator(int)} method is more effective in terms of
+     * memory and time required to access information regarding the edges
+     * incident to v.
      *
      * @param v a vertex number.
      * @return the predecessors of v.
@@ -170,6 +200,9 @@ public interface Digraph<V, E> extends Graph<V, E> {
     }
 
     /**
+     * Creates an iterator over the predecessors of a specified vertex. The
+     * iterator offers in {@code O(1)} time information regarding the edges
+     * incident to v.
      *
      * @param v a vertex number.
      * @return an iterator over the predecessors of v.
@@ -179,9 +212,10 @@ public interface Digraph<V, E> extends Graph<V, E> {
     }
 
     /**
-     * Iterates over the edges incident to v, returning the predecessors of v,
-     * starting from a specified position in the predecessors adjacency list of
-     * v, along with information regarding their edges.
+     * Creates an iterator over the predecessors of a vertex v, starting from a
+     * specified position in the predecessors adjacency list of v. The iterator
+     * offers in @{code O(1)} time information regarding the edges incident to
+     * v.
      *
      * @param v a vertex number.
      * @param pos a position in the predecessors adjacency list of v.
@@ -190,7 +224,12 @@ public interface Digraph<V, E> extends Graph<V, E> {
      */
     PredecessorIterator predecessorIterator(int v, int pos);
 
+    NeighborIterator neighborIterator(int v, boolean allEdges);
+
     /**
+     * Creates an array holding the edges outgoing from a vertex. If creating
+     * the {@code Edge} objects is not required, a more effective method is
+     * {@link #successorIterator(int)}.
      *
      * @param v a vertex number.
      * @return outgoing edges from v.
@@ -200,6 +239,9 @@ public interface Digraph<V, E> extends Graph<V, E> {
     }
 
     /**
+     * Creates an array holding the edges incoming to a vertex. If creating the
+     * {@code Edge} objects is not required, a more effective method is
+     * {@link #predecessorIterator(int)}.
      *
      * @param v a vertex number.
      * @return incoming edges to v.
@@ -217,19 +259,44 @@ public interface Digraph<V, E> extends Graph<V, E> {
     }
 
     /**
-     * A <i>symmetrical</i> digraph has only pairs of symmetrical edges: if the
-     * edge vu belongs to the digraph, so does uv.
+     * Checks if the digraph is <em>symmetrical</em>. A symmetrical digraph has
+     * only pairs of symmetrical edges, i.e. if the edge (v,u) belongs to the
+     * digraph, so does (u,v).
      *
      * @return {@code true} if the digraph is symmetrical.
      */
     default boolean isSymmetrical() {
         for (int v : vertices()) {
-            for (int u : neighbors(v)) {
+            for (var it = neighborIterator(v); it.hasNext();) {
+                int u = it.next();
                 if (!containsEdge(u, v)) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    /**
+     * Checks if a vertex is a <em>source</em>, meaning that it has no
+     * predecessors.
+     *
+     * @param v a vertex number.
+     * @return {@code true} if {@code v} has indegree 0, {@code false}
+     * otherwise.
+     */
+    default boolean isSource(int v) {
+        return indegree(v) == 0;
+    }
+
+    /**
+     * Checks if a vertex is a <em>sink</em>, meaning that it has no successors.
+     *
+     * @param v a vertex number.
+     * @return {@code true} if {@code v} has outdegree 0, {@code false}
+     * otherwise.
+     */
+    default boolean isSink(int v) {
+        return outdegree(v) == 0;
     }
 }

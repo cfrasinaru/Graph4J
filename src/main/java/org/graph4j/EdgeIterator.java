@@ -22,6 +22,9 @@ import java.util.NoSuchElementException;
 /**
  * An iterator over all the edges of a graph.
  *
+ * In order to iterate over the edges incident with a specific vertex use
+ * {@link Graph#neighborIterator(int)}.
+ *
  * @author Cristian Frăsinaru
  * @param <E> the type of edge labels.
  */
@@ -35,7 +38,7 @@ public interface EdgeIterator<E> extends Iterator<Edge<E>> {
      * @return {@code true} if the iteration has more edges.
      */
     @Override
-    public boolean hasNext();
+    boolean hasNext();
 
     /**
      * Returns the next edge in the iteration.
@@ -44,35 +47,43 @@ public interface EdgeIterator<E> extends Iterator<Edge<E>> {
      * @throws NoSuchElementException if the iteration has no more edges.
      */
     @Override
-    public Edge<E> next();
+    Edge<E> next();
 
     /**
      *
      * @param weight the weight to be set for the current edge.
      */
-    public void setWeight(double weight);
+    void setWeight(double weight);
 
     /**
      *
      * @return the weight of the current edge.
      */
-    public double getWeight();
+    double getWeight();
+
+    void setData(int dataType, double value);
+    
+    void incData(int dataType, double amount);
+
+    double getData(int dataType);
+
+    double getData(int dataType, double defaultValue);
 
     /**
      *
      * @param label the label to be set for the current edge.
      */
-    public void setLabel(E label);
+    void setLabel(E label);
 
     /**
      *
      * @return the label of the current edge.
      */
-    public E getLabel();
+    E getLabel();
 
     /**
      * Removes the current edge from the graph.
      */
     @Override
-    public void remove();
+    void remove();
 }

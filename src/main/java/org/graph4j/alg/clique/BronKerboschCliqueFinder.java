@@ -19,7 +19,7 @@ package org.graph4j.alg.clique;
 import java.util.ArrayList;
 import java.util.List;
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
 import org.graph4j.util.Clique;
 import org.graph4j.util.VertexSet;
 

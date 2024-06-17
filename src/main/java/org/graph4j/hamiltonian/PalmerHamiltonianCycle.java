@@ -17,7 +17,7 @@
 package org.graph4j.hamiltonian;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
 import org.graph4j.util.Cycle;
 import org.graph4j.util.IntArrays;
 

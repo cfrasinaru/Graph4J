@@ -18,7 +18,7 @@ package org.graph4j.alg;
 
 import org.graph4j.GraphBuilder;
 import org.graph4j.measures.TriangleCounter;
-import org.graph4j.generate.GraphGenerator;
+import org.graph4j.generators.GraphGenerator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 

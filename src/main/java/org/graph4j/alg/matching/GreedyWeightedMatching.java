@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import org.graph4j.Edge;
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
+import org.graph4j.GraphAlgorithm;
 import org.graph4j.util.Matching;
 
 /**
@@ -104,7 +104,7 @@ public class GreedyWeightedMatching extends GraphAlgorithm
             return matching;
         }
         int n = graph.numVertices();
-        matching = new Matching(graph, n / 2);
+        matching = new Matching(graph);
         Edge[] edges = graph.edges();
         Arrays.sort(edges, comparator); //expensive
         for (Edge e : edges) {

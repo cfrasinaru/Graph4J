@@ -20,8 +20,8 @@ import java.util.Arrays;
 import org.graph4j.util.Cycle;
 import org.graph4j.Graph;
 import org.graph4j.util.Path;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.util.Validator;
 
 /**
  * Floyd-Warshall's algorithm finds the shortest paths between all pairs of
@@ -47,8 +47,8 @@ public class FloydWarshallShortestPath extends GraphAlgorithm
 
     @Override
     public Path findPath(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         if (before == null) {
             computeAll();
         }
@@ -62,8 +62,8 @@ public class FloydWarshallShortestPath extends GraphAlgorithm
 
     @Override
     public double getPathWeight(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);        
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);        
         if (cost == null) {
             if (directed) {
                 computeAll();
@@ -107,7 +107,7 @@ public class FloydWarshallShortestPath extends GraphAlgorithm
     }
 
     private void computeAll() {
-        this.cost = graph.costMatrix();
+        this.cost = graph.weightMatrix();
         initBefore();
         int n = graph.numVertices();
         //compute shortest paths using only k=0,1,...,n-1 as intermediate vertices
@@ -134,7 +134,7 @@ public class FloydWarshallShortestPath extends GraphAlgorithm
 
     //weights only - optimized for undirected graphs
     private void computeWeights() {
-        this.cost = graph.costMatrix();
+        this.cost = graph.weightMatrix();
         int n = graph.numVertices();
         //compute shortest paths using only k=0,1,...,n-1 as intermediate vertices
         for (int k = 0; k < n; k++) {

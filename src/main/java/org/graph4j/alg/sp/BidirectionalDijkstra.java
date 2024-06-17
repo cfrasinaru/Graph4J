@@ -19,14 +19,15 @@ package org.graph4j.alg.sp;
 import java.util.Arrays;
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.util.Validator;
 import org.graph4j.util.Path;
 import org.graph4j.util.VertexHeap;
 
 /**
- * Performs a forward search starting from a source vertex and a reverse
- * (backward) search on the transpose graph starting from the target vertex.
+ * Determines the shortest path between two vertices. Performs a forward search
+ * starting from a source vertex and a reverse (backward) search on the
+ * transpose graph starting from the target vertex.
  *
  * @author Cristian Frăsinaru
  */
@@ -48,8 +49,8 @@ public class BidirectionalDijkstra extends GraphAlgorithm implements SinglePairS
      */
     public BidirectionalDijkstra(Graph graph, int source, int target) {
         super(graph);
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         this.vertices = graph.vertices();
         this.source = source;
         this.target = target;

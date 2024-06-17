@@ -20,9 +20,9 @@ import java.util.Arrays;
 import org.graph4j.util.Cycle;
 import org.graph4j.Graph;
 import org.graph4j.util.Path;
-import org.graph4j.alg.GraphAlgorithm;
+import org.graph4j.GraphAlgorithm;
 import org.graph4j.util.VertexList;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.util.Validator;
 
 /**
  * Bellman-Ford-Moore's algorithm finds the shortest paths between a source
@@ -50,7 +50,7 @@ public class BellmanFordShortestPath extends GraphAlgorithm
      */
     public BellmanFordShortestPath(Graph graph, int source) {
         super(graph);
-        CheckArguments.graphContainsVertex(graph, source);
+        Validator.containsVertex(graph, source);
         this.source = source;
     }
 
@@ -61,7 +61,7 @@ public class BellmanFordShortestPath extends GraphAlgorithm
 
     @Override
     public Path findPath(int target) {
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, target);
         if (before == null) {
             compute();
         }
@@ -74,7 +74,7 @@ public class BellmanFordShortestPath extends GraphAlgorithm
 
     @Override
     public double getPathWeight(int target) {
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, target);
         if (cost == null) {
             compute();
         }

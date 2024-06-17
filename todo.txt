@@ -1,82 +1,68 @@
+------------------------------------------------------------
+Maximum (Weighted) Independent Set / Clique / Vertex Cover
+------------------------------------------------------------
+Boppana, R., & Halldórsson, M. M. (1992). Approximating maximum independent sets by excluding subgraphs. BIT Numerical Mathematics, 32(2), 180–196. Springer.
+https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.approximation.clique.maximum_independent_set.html
+
+Bar-Yehuda, R., and Even, S. (1985). “A local-ratio theorem for approximating the weighted vertex cover problem.” Annals of Discrete Mathematics, 25, 27–46 
+http://www.cs.technion.ac.il/~reuven/PDF/vc_lr.pdf
+
+Clarkson, Kenneth L. "A modification of the greedy algorithm for vertex cover." Information Processing Letters 16.1 (1983): 23-25.
+https://www.sciencedirect.com/science/article/pii/0020019083900078?via%3Dihub
+
+Algorithms for the maximum weight clique problems
+https://da.lib.kobe-u.ac.jp/da/kernel/D1007301/D1007301.pdf
+
+https://jgrapht.org/javadoc-SNAPSHOT/org.jgrapht.core/org/jgrapht/alg/vertexcover/package-summary.html
+https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.approximation.vertex_cover.min_weighted_vertex_cover.html
+
+
+------------------------------------------------------------
+Planarity
+------------------------------------------------------------
+https://cs.brown.edu/people/rtamassi/gdhandbook/
+
+
+
+------------------------------------------------------------
+Spanning
+------------------------------------------------------------
+Capacitated minimum spanning tree algorithms (CMST)
+https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/spanning/AhujaOrlinSharmaCapacitatedMinimumSpanningTree.html
+https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/spanning/EsauWilliamsCapacitatedMinimumSpanningTree.html
+
+Iterator over all spanning trees of a graph in either increasing or decreasing cost.
+https://www.scielo.br/j/pope/a/XHswBwRwJyrfL88dmMwYNWp/?format=pdf&lang=en
+https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.tree.mst.SpanningTreeIterator.html
+
+
+
+------------------------------------------------------------
+Spanner
+------------------------------------------------------------
+https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/spanning/GreedyMultiplicativeSpanner.html
+
 Parallel Prim
 https://en.wikipedia.org/wiki/Prim%27s_algorithm
 
 
 
-https://github.com/jgrapht/jgrapht
-https://github.com/kevin-wayne/algs4
-https://github.com/jrtom/jung
-https://github.com/google/guava/tree/master/guava/src/com/google/common/graph
-https://github.com/google/guava/wiki/GraphsExplained
-
-https://gephi.org/users/supported-graph-formats/
-https://wiki.sagemath.org/graph_survey
-
-NetworkX
-https://networkx.org/
-https://github.com/networkx/networkx/tree/main/networkx/algorithms
-
-NetworKit
-https://networkit.github.io/index.html
-
-C++
-BGL https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
-KOALA https://github.com/krzysztof-turowski/koala-networkit
-Lemon https://lemon.cs.elte.hu/trac/lemon
-iGraph https://igraph.org/c/doc/
-
-Rust
-https://github.com/petgraph/petgraph
-
-.NET
-https://github.com/YaccConstructor/QuickGraph/tree/master/src/QuickGraph/Algorithms
-
-teexGraph (diameter)
-https://github.com/franktakes/teexgraph
-
-R Plots
-https://sites.harding.edu/fmccown/r/
-
-FastUtils
-https://github.com/vigna/fastutil
-
-Linear regression
-https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearRegression.java.html
-
-
-Stanford Large Network Dataset Collection
-https://snap.stanford.edu/data/
-
-
-A Bloom filter is a space-efficient probabilistic data structure, that is used to test whether an element is a member of a set.
-https://en.m.wikipedia.org/wiki/Bloom_filter
-
-Package .ordering
-vertex orderings: lex-bfs,  maximum cardinality search (?), maximal neighborhood search (?), degeneracy (?)
-
-Package .col
-Chordal Ggraph coloring
-https://en.wikipedia.org/wiki/Chordal_graph
-https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/color/ChordalGraphColoring.java
-
-
+-------------------------------------------------------
 3-coloring
 Wigderson’S Algorithm https://iq.opengenus.org/wigderson-algorithm/
-
-JCOL
-https://github.com/shah314/graphcoloring
-ColPack (C++)
-https://github.com/CSCsw/ColPack
+------------------------------------------------------------
 
 
+------------------------------------------------------------
 Min cutset
+------------------------------------------------------------
 Karger's Algorithm
 https://en.wikipedia.org/wiki/Karger%27s_algorithm
 
 
+------------------------------------------------------------
 Shortest Paths:
-Johnson's algorithm
-	https://en.wikipedia.org/wiki/Johnson%27s_algorithm	
+------------------------------------------------------------
 	
 Finding the k-shortest path between two nodes
 	https://cs.stackexchange.com/questions/18849/finding-the-k-shortest-path-between-two-nodes
@@ -85,13 +71,9 @@ Finding the k-shortest path between two nodes
 Finding and listing induced paths and cycles: https://www.sciencedirect.com/science/article/pii/S0166218X12000327
 Finding an induced path that is not a shortest path: https://web.math.princeton.edu/~pds/papers/shortestpath/paper.pdf
 
-Chordal Graphs
-generation: Linear-Time Generation of Random Chordal Graphs
-recognition: LexBFS
-coloring, maximum clique
-
-For the Assignment Problem
-
+------------------------------------------------------------
+Assignment Problem
+------------------------------------------------------------
 Succesive shortest path algorithm
 https://github.com/kevin-wayne/algs4/blob/master/src/main/java/edu/princeton/cs/algs4/AssignmentProblem.java
 
@@ -106,36 +88,47 @@ https://github.com/yongyanghz/LAPJV-algorithm-c/blob/master/LAPJV/lap.cpp
 https://www.mathworks.com/matlabcentral/fileexchange/26836-lapjv-jonker-volgenant-algorithm-for-linear-assignment-problem-v3-0
 
 
-
-
+------------------------------------------------------------
 PageRank
+------------------------------------------------------------
 https://en.wikipedia.org/wiki/PageRank
 http://infolab.stanford.edu/~backrub/google.html
 https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/scoring/PageRank.html
 
+------------------------------------------------------------
 Scoring algorithms
+------------------------------------------------------------
 https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/scoring/package-summary.html
 
 
 
-Randomized minimum spanning tree algorithm ?
+A Bloom filter is a space-efficient probabilistic data structure, that is used to test whether an element is a member of a set.
+https://en.m.wikipedia.org/wiki/Bloom_filter
 
-
-Metrici si masuri specifice relatiilor sociale
-
+Package .ordering
+vertex orderings: maximal neighborhood search (?), degeneracy (?)
 
 Generaratoare de grafuri
-OK k-regulate
-	https://math.stackexchange.com/questions/142112/how-to-construct-a-k-regular-graph
-	https://mediatum.ub.tum.de/doc/1315533/1315533.pdf
+- care au o anumita secventa (di)grafica folosind fluxuri
 
-- care au o anumita secventa (di)grafica
-	folosind fluxuri
-graph generation for several graph families (cliques, paths, cycles, fans, wheels, caterpillars, complete 
--partite, regular trees) and random graphs models (Erdős–Rényi, Barabási–Albert, Watts–Strogatz),
-
-Planarity
-https://cs.brown.edu/people/rtamassi/gdhandbook/
+Classes of graphs
+Interval
+Indifference
+Unit-disk
+Permutation
+Cograph
+Split
+Threshhold
+Circle, Circular-arc
+String
+Intersection
+Perfect
+Trivially perfect
+Planar
+Caterpillar tree
+Chemical graph generator
+Ptolemaic
+Distance-hereditary
 
 Uniform Cost Search
 Dynamic Connected Components (using Disjoint Sets)

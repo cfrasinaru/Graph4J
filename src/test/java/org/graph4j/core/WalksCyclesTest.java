@@ -23,7 +23,7 @@ import org.graph4j.util.Path;
 import org.graph4j.util.Trail;
 import org.graph4j.util.Walk;
 import org.graph4j.GraphBuilder;
-import org.graph4j.generate.CompleteGraphGenerator;
+import org.graph4j.generators.CompleteGraphGenerator;
 
 /**
  *

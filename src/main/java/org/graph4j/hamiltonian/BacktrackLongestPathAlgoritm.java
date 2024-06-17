@@ -17,8 +17,8 @@
 package org.graph4j.hamiltonian;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.util.Validator;
 import org.graph4j.util.Path;
 
 /**
@@ -65,10 +65,11 @@ public class BacktrackLongestPathAlgoritm extends GraphAlgorithm {
      * vertex.
      *
      * @param source the source vertex number.
-     * @return
+     * @return the longest path in the graph, starting in the {@code source}
+     * vertex.
      */
     public Path getLongestPath(int source) {
-        CheckArguments.graphContainsVertex(graph, source);
+        Validator.containsVertex(graph, source);
         this.source = source;
         this.target = -1;
         return compute();
@@ -80,11 +81,12 @@ public class BacktrackLongestPathAlgoritm extends GraphAlgorithm {
      *
      * @param source the source vertex number.
      * @param target the target vertex number.
-     * @return
+     * @return the longest path in the graph, starting in the {@code source}
+     * vertex and ending in the {@code target} vertex.
      */
     public Path getLongestPath(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         this.source = source;
         this.target = target;
         return compute();
@@ -122,6 +124,7 @@ public class BacktrackLongestPathAlgoritm extends GraphAlgorithm {
         return true;
     }
 
+    @Deprecated
     private boolean initialCheck() {
         int n = graph.numVertices();
         int[] vertices = graph.vertices();
@@ -143,6 +146,7 @@ public class BacktrackLongestPathAlgoritm extends GraphAlgorithm {
         return true;
     }
 
+    @Deprecated
     private int countForced(int v) {
         int count = 0;
         //for undirected graphs

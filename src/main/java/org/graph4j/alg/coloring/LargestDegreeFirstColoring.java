@@ -17,7 +17,7 @@
 package org.graph4j.alg.coloring;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.ordering.VertexOrderings;
+import org.graph4j.ordering.VertexOrderings;
 
 /**
  * {@inheritDoc}

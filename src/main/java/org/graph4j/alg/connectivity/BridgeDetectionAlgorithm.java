@@ -17,18 +17,18 @@
 package org.graph4j.alg.connectivity;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
 import org.graph4j.util.VertexStack;
-import org.graph4j.traverse.DFSVisitor;
-import org.graph4j.traverse.DFSTraverser;
-import org.graph4j.traverse.SearchNode;
+import org.graph4j.traversal.DFSVisitor;
+import org.graph4j.traversal.DFSTraverser;
+import org.graph4j.traversal.SearchNode;
 import org.graph4j.util.EdgeSet;
 
 /**
  * A bridge in an undirected graph is defined as an edge which, when removed,
  * increases the number of connected components in the graph).
  *
- * The algorithm runs in linea time, and is based on depth-first search.
+ * The algorithm runs in linear time, and is based on depth-first search.
  *
  *
  * @author Cristian Frăsinaru

@@ -16,7 +16,9 @@
  */
 package org.graph4j;
 
+import java.util.Collection;
 import java.util.HashSet;
+import org.graph4j.util.VertexSet;
 
 /**
  * Multiple (parallel) edges are allowed.
@@ -44,19 +46,17 @@ public interface Multigraph<V, E> extends Graph<V, E> {
     @Override
     Multigraph<V, E> copy();
 
-    /**
-     *
-     * @param vertices an array of vertices.
-     * @return the subgraph induced by the given vertices.
-     */
     @Override
-    Multigraph<V, E> subgraph(int... vertices);
+    Multigraph<V, E> subgraph(VertexSet vertexSet);
+
+    @Override
+    Multigraph<V, E> subgraph(Collection<Edge> edges);
 
     /**
      *
      * @param v a vertex number.
      * @param u a vertex number.
-     * @return how many times u appears in the ajacency list of v.
+     * @return how many times u appears in the adjacency list of v.
      */
     int multiplicity(int v, int u);
 
@@ -72,8 +72,8 @@ public interface Multigraph<V, E> extends Graph<V, E> {
     @Override
     default boolean isUniversal(int v) {
         var set = new HashSet<>();
-        for (int u : neighbors(v)) {
-            set.add(v);
+        for (var it = neighborIterator(v); it.hasNext();) {
+            set.add(it.next());
         }
         return set.size() == numVertices() - 1;
     }

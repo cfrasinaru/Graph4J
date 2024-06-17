@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.graph4j.Edge;
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
-import org.graph4j.generate.EdgeWeightsGenerator;
+import org.graph4j.generators.EdgeWeightsGenerator;
 
 /**
  *
@@ -60,7 +60,7 @@ public class SimpleTest {
         assertEquals(1, a[3][4]);
         assertEquals(1, a[4][3]);
 
-        double[][] c = g.costMatrix();
+        double[][] c = g.weightMatrix();
         assertEquals(0, c[0][0]);
         assertEquals(Double.POSITIVE_INFINITY, c[0][2]);
         assertEquals(99, c[0][1]);
@@ -86,7 +86,7 @@ public class SimpleTest {
         assertEquals(1, a[2][3]);
         assertEquals(0, a[3][2]);
 
-        double[][] c = g.costMatrix();
+        double[][] c = g.weightMatrix();
         assertEquals(99, c[0][1]);
         assertEquals(0, c[0][0]);
         assertEquals(Double.POSITIVE_INFINITY, c[0][2]);

@@ -19,7 +19,7 @@ package org.graph4j.alg;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
-import org.graph4j.generate.GraphGenerator;
+import org.graph4j.generators.GraphGenerator;
 import org.graph4j.alg.matching.HopcroftKarpMaximumMatching;
 import org.graph4j.util.StableSet;
 

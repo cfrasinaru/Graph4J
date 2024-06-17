@@ -18,7 +18,7 @@ package org.graph4j.measures;
 
 import org.graph4j.Graph;
 import org.graph4j.Multigraph;
-import org.graph4j.alg.UndirectedGraphAlgorithm;
+import org.graph4j.UndirectedGraphAlgorithm;
 import org.graph4j.util.VertexList;
 
 /**
@@ -27,7 +27,7 @@ import org.graph4j.util.VertexList;
  *
  * Complexity <code>O(|E|^{3/2})</code>.
  *
- * See Ullman, Jeffrey: "Mining of Massive Datasets", Chapter 10
+ * See Ullman, Jeffrey: "Mining of Massive Datasets", Chapter 10.
  *
  * @author Cristian Frăsinaru
  * @author Gabriel Ignat

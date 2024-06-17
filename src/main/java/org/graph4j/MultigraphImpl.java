@@ -16,6 +16,9 @@
  */
 package org.graph4j;
 
+import java.util.Collection;
+import org.graph4j.util.VertexSet;
+
 /**
  *
  * @author Cristian Frăsinaru
@@ -26,8 +29,10 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
     }
 
     protected MultigraphImpl(int[] vertices, int maxVertices, int avgDegree,
-            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops,
+            int vertexDataSize, int edgeDataSize) {
+        super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops,
+                vertexDataSize, edgeDataSize);
     }
 
     @Override
@@ -37,8 +42,10 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
 
     @Override
     protected MultigraphImpl newInstance(int[] vertices, int maxVertices, int avgDegree,
-            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        return new MultigraphImpl(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops,
+            int vertexDataSize, int edgeDataSize) {
+        return new MultigraphImpl(vertices, maxVertices, avgDegree, directed,
+                allowingMultipleEdges, allowingSelfLoops, vertexDataSize, edgeDataSize);
     }
 
     @Override
@@ -76,14 +83,19 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
     }
 
     @Override
-    public Multigraph<V, E> subgraph(int... vertices) {
-        return (Multigraph<V, E>) super.subgraph(vertices);
+    public Multigraph<V, E> subgraph(VertexSet vertexSet) {
+        return (Multigraph<V, E>) super.subgraph(vertexSet);
     }
 
     @Override
-    public double[][] costMatrix() {
+    public Multigraph<V, E> subgraph(Collection<Edge> edges) {
+        return (Multigraph<V, E>) super.subgraph(edges);
+    }
+
+    @Override
+    public double[][] weightMatrix() {
         throw new UnsupportedOperationException(
-                "Cost-matrix is not supported for multigraphs and pseudographs.");
+                "Weight-matrix is not supported for multigraphs and pseudographs.");
     }
 
 }

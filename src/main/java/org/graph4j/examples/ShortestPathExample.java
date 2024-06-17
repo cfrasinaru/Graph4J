@@ -101,7 +101,7 @@ public class ShortestPathExample {
                     //get the length of the road between the two locations
                     double length = neighborMap.get(neighbor);
                     //add a weighted edge in the graph
-                    graph.addWeightedEdge(v, u, length);
+                    graph.addEdge(v, u, length);
                 }
             }
         }

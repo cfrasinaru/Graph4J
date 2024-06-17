@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
-import org.graph4j.generate.GraphGenerator;
+import org.graph4j.generators.GraphGenerator;
 
 /**
  *
@@ -113,7 +113,7 @@ public class BuilderTest {
         assertEquals(5.0, g.getEdgeWeight(2, 3));
 
         g.addWeightedVertex(999, 999.0);
-        g.addWeightedEdge(999, 0, 999.0);
+        g.addEdge(999, 0, 999.0);
         assertEquals(999, g.getVertexWeight(999));
         assertEquals(999, g.getEdgeWeight(0, 999));
     }

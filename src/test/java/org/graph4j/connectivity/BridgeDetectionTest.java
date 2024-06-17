@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
 import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;
 import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;
-import org.graph4j.generate.GraphGenerator;
+import org.graph4j.generators.GraphGenerator;
 
 /**
  *

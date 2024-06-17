@@ -66,7 +66,7 @@ public class Path extends Trail {
             return false;
         }
         try {
-            CheckArguments.noDuplicates(vertices());
+            Validator.hasNoDuplicateVertices(vertices());
             return true;
         } catch (IllegalArgumentException e) {
             System.err.println(e.getMessage());
@@ -75,8 +75,9 @@ public class Path extends Trail {
     }
 
     /**
+     * Checks if the path is induced (there is no chord).
      *
-     * @return {@code true} if the path is induced (there is no chord).
+     * @return {@code true} if the path is induced, {@code false} otherwise.
      */
     public boolean isInduced() {
         for (int i = 0; i < numVertices - 2; i++) {
@@ -92,9 +93,9 @@ public class Path extends Trail {
     }
 
     /**
-     * A hamiltonian path contains all vertices in the graph.
+     * A Hamiltonian path contains all vertices in the graph.
      *
-     * @return {@code true} if the path is hamiltonian.
+     * @return {@code true} if the path is Hamiltonian.
      */
     public boolean isHamiltonian() {
         return numVertices == graph.numVertices() && !IntArrays.containsDuplicates(vertices());

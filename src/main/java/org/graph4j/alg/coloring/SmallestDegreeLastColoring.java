@@ -17,15 +17,15 @@
 package org.graph4j.alg.coloring;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.ordering.SmallestDegreeLastOrdering;
-import org.graph4j.alg.ordering.VertexOrderings;
+import org.graph4j.ordering.SmallestDegreeLastOrdering;
+import org.graph4j.ordering.VertexOrderings;
 
 /**
  * {@inheritDoc}
  *
  * <p>
  * The smallest-last greedy algorithm computes the vertex ordering from the end
- * to the begining. At each step, the node of minimum degree in the current
+ * to the beginning. At each step, the node of minimum degree in the current
  * graph is selected and then it is removed from the graph.
  *
  * So, the first vertex to be selected is the one with the smallest degree in

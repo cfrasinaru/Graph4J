@@ -27,8 +27,6 @@ import org.graph4j.alg.connectivity.TarjanBiconnectivity;
  */
 public class Block extends VertexSet {
 
-    private Integer cutVertex;
-
     public Block(Graph graph) {
         super(graph);
     }
@@ -41,11 +39,10 @@ public class Block extends VertexSet {
         super(graph, vertices);
     }
 
-
     /**
      * @return {@code true} if the vertices represent a block.
      */
     public boolean isValid() {
-        return new TarjanBiconnectivity(graph.subgraph(vertices)).isBiconnected();
+        return new TarjanBiconnectivity(graph.subgraph(this)).isBiconnected();
     }
 }

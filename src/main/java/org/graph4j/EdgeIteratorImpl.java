@@ -17,14 +17,10 @@
 package org.graph4j;
 
 import java.util.NoSuchElementException;
+import static org.graph4j.Graph.WEIGHT;
 
 /**
- * Iterates through all the edges of the graph.
  *
- * In order to iterate through all edges incident with a specific vertex use
- * {@link Graph#neighborIterator(int)}.
- *
- * @see NeighborIterator
  * @author Cristian Frăsinaru
  */
 class EdgeIteratorImpl<E> implements EdgeIterator<E> {
@@ -33,8 +29,8 @@ class EdgeIteratorImpl<E> implements EdgeIterator<E> {
     private NeighborIterator<E> neighbors;
     private int index = -1; //the current vertex index
     private Edge currentEdge;
-    private boolean directed;
-    private int numVertices;
+    private final boolean directed;
+    private final int numVertices;
 
     public EdgeIteratorImpl(Graph graph) {
         this.graph = graph;
@@ -105,14 +101,35 @@ class EdgeIteratorImpl<E> implements EdgeIterator<E> {
 
     @Override
     public void setWeight(double weight) {
-        checkCurrentEdge();
-        neighbors.setEdgeWeight(weight);
+        setData(WEIGHT, weight);
     }
 
     @Override
     public double getWeight() {
+        return getData(WEIGHT, Graph.DEFAULT_EDGE_WEIGHT);
+    }
+
+    @Override
+    public void setData(int dataType, double value) {
         checkCurrentEdge();
-        return neighbors.getEdgeWeight();
+        neighbors.setEdgeData(dataType, value);
+    }
+    
+    @Override
+    public void incData(int dataType, double amount) {
+        checkCurrentEdge();
+        neighbors.incEdgeData(dataType, amount);
+    }
+
+    @Override
+    public double getData(int dataType) {
+        return getData(dataType, 0);
+    }
+
+    @Override
+    public double getData(int dataType, double defaultValue) {
+        checkCurrentEdge();
+        return neighbors.getEdgeData(dataType, defaultValue);
     }
 
     @Override

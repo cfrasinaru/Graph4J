@@ -16,8 +16,10 @@
  */
 package org.graph4j;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.graph4j.util.VertexSet;
 
 /**
  *
@@ -31,11 +33,13 @@ class PseudographImpl<V, E> extends MultigraphImpl<V, E> implements Pseudograph<
     }
 
     protected PseudographImpl(int[] vertices, int maxVertices, int avgDegree,
-            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops,
+            int vertexDataSize, int edgeDataSize) {
+        super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops,
+                vertexDataSize, edgeDataSize);
         selfLoops = new HashMap<>();
     }
-   
+
     @Override
     protected PseudographImpl newInstance() {
         return new PseudographImpl();
@@ -43,8 +47,10 @@ class PseudographImpl<V, E> extends MultigraphImpl<V, E> implements Pseudograph<
 
     @Override
     protected PseudographImpl newInstance(int[] vertices, int maxVertices, int avgDegree,
-            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        return new PseudographImpl(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops,
+            int vertexDataSize, int edgeDataSize) {
+        return new PseudographImpl(vertices, maxVertices, avgDegree, directed,
+                allowingMultipleEdges, allowingSelfLoops, vertexDataSize, edgeDataSize);
     }
 
     @Override
@@ -89,8 +95,12 @@ class PseudographImpl<V, E> extends MultigraphImpl<V, E> implements Pseudograph<
     }
 
     @Override
-    public Pseudograph<V, E> subgraph(int... vertices) {
-        return (PseudographImpl) super.subgraph(vertices);
+    public Pseudograph<V, E> subgraph(VertexSet vertexSet) {
+        return (PseudographImpl) super.subgraph(vertexSet);
     }
 
+    @Override
+    public Pseudograph<V, E> subgraph(Collection<Edge> edges) {
+        return (Pseudograph<V, E>) super.subgraph(edges);
+    }
 }

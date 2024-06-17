@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.graph4j.alg.clique.BFSCliqueIterator;
 import org.graph4j.alg.clique.DFSCliqueIterator;
-import org.graph4j.generate.GraphGenerator;
+import org.graph4j.generators.GraphGenerator;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**

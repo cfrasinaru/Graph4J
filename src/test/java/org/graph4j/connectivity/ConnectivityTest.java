@@ -19,12 +19,13 @@ package org.graph4j.connectivity;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
-import org.graph4j.Graphs;
+import org.graph4j.GraphTests;
+import org.graph4j.GraphUtils;
 import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
 import org.graph4j.alg.connectivity.TarjanBiconnectivity;
-import org.graph4j.generate.CycleGenerator;
-import org.graph4j.generate.GraphGenerator;
-import org.graph4j.generate.PathGenerator;
+import org.graph4j.generators.CycleGenerator;
+import org.graph4j.generators.GraphGenerator;
+import org.graph4j.generators.PathGenerator;
 import org.graph4j.util.VertexSet;
 
 /**
@@ -45,11 +46,11 @@ public class ConnectivityTest {
     public void graphConnected2() {
         var g1 = new PathGenerator(0, 9).createGraph();
         var g2 = new CycleGenerator(10, 19).createGraph();
-        var g3 = Graphs.disjointUnion(g1, g2);
-        assertTrue(Graphs.isConnected(g1));
-        assertTrue(Graphs.isConnected(g2));
-        assertFalse(Graphs.isConnected(Graphs.disjointUnion(g1, g2)));
-        assertTrue(Graphs.isConnected(Graphs.join(g1, g2)));
+        var g3 = GraphUtils.disjointUnion(g1, g2);
+        assertTrue(GraphTests.isConnected(g1));
+        assertTrue(GraphTests.isConnected(g2));
+        assertFalse(GraphTests.isConnected(GraphUtils.disjointUnion(g1, g2)));
+        assertTrue(GraphTests.isConnected(GraphUtils.join(g1, g2)));
     }
 
     @Test

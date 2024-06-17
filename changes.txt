@@ -1,11 +1,28 @@
 1.0.8
+	-DinicMaximumFlow algorithm, using custom blocking flow algorithm
+	-Support for transportation (flow) networks: Network data type
+	-PruferTreeEncoder and PruferTreeDecoder
+	-SpanningTreeIterator, WeightedSpanningTreeIterator, MinimumSpanningTreeIterator
+	-Generator for Mycielski graphs: MycielskiGenerator
+	-ChordalGraphSupport contains algorithms for chordals graphs
+	-PathFinder contains method for finding various paths in unweighted graphs
+	-New traversal algorithms: LexBFSIterator, MaximumCardinalityIterator
+	-Improved method for creating the subgraph of a graph
+	-GraphMeasures includes methods for directed graphs
+	-Generator for random arborescences and DAGs
+	-TopologicalOrderIterator offers the level of a vertex in the DAG
+	-GraphTests contains methods that test various graph properties
+	-Graphs class renamed to GraphUtils
+	-Algorithms for general graph isomorphism
+	-Algorithms for forest isomorphism: ForestIsomorphism, RootedForestIsomorphism
+	-Improved methods for determining the diameter, center and periphery of a tree: TreeMetrics
+	-Generator for random forests: RandomForestGenerators
 	-Generator for random Hamiltonian graphs and digraphs
 	-Generator for random graphs that have Ore's property: RandomOreGraphGenerator
 	-Palmer's algorithm for finding a Hamiltonian cycle in a graph that satisfies Ore's condition: PalmerHamiltonianCycle 
-	-Graphs class has a new method: hasOreProperty	
 	
 1.0.7	2024-03-10
-	-Algorithm for tree isomorphism
+	-Algorithms for tree isomorphism: RootedTreeIsomorphism, TreeIsomorphism
 	-Graphs class has a new method: isTree
 	
 1.0.6	2023-10-11

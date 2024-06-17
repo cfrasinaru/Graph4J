@@ -17,7 +17,7 @@
 package org.graph4j.alg.cut;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
 
 /**
  * The vertex separator problem (VSP) is to find a partition of V into nonempty

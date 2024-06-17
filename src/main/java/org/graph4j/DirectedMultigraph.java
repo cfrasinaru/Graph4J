@@ -16,6 +16,9 @@
  */
 package org.graph4j;
 
+import java.util.Collection;
+import org.graph4j.util.VertexSet;
+
 /**
  * Multiple (parallel) edges are allowed.
  *
@@ -32,12 +35,9 @@ public interface DirectedMultigraph<V, E> extends Multigraph<V, E>, Digraph<V, E
     @Override
     DirectedMultigraph<V, E> copy();
 
-    /**
-     *
-     * @param vertices an array of vertex numbers.
-     * @return the subgraph induced by the given vertices
-     */
     @Override
-    DirectedMultigraph<V, E> subgraph(int... vertices);
+    DirectedMultigraph<V, E> subgraph(VertexSet vertexSet);
 
+    @Override
+    DirectedMultigraph<V, E> subgraph(Collection<Edge> edges);
 }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 
 /**
@@ -30,12 +31,11 @@ import java.util.Queue;
  *
  * @author Ignat Gabriel-Andrei
  */
-public class RadixSort {
+public class RadixSort extends SortingAlgorithm {
 
-    private RadixSort() {
-    }
-
-    public static void radixSort(int[] arr) {
+    @Override
+    public void sort(int[] arr) {
+        Objects.requireNonNull(arr);
         // Find the maximum number to know number of digits
         int max = Arrays.stream(arr).max().orElse(0);
 
@@ -45,13 +45,11 @@ public class RadixSort {
             for (int i = 0; i < 10; i++) {
                 buckets.add(new LinkedList<>());
             }
-
             // Place each number in the corresponding bucket
             for (int num : arr) {
                 int bucketIndex = (num / digit) % 10;
                 buckets.get(bucketIndex).add(num);
             }
-
             // Reconstruct the array
             int index = 0;
             for (Queue<Integer> bucket : buckets) {
@@ -62,31 +60,4 @@ public class RadixSort {
         }
     }
 
-    public static void sort(List<Integer> list) {
-        if (list == null) {
-            return;
-        }
-
-        final int n = list.size();
-
-        // if list is small, use Java's sort
-        if (n <= 30) {
-            list.sort(null);
-            return;
-        }
-
-        // transform list to array
-        int[] array = new int[n];
-        for (int i = 0; i < n; i++) {
-            array[i] = list.get(i);
-        }
-
-        radixSort(array);
-
-        // transform array to list
-        list.clear();
-        for (int i = 0; i < n; i++) {
-            list.add(array[i]);
-        }
-    }
 }

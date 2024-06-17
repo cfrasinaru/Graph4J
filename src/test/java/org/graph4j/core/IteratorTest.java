@@ -20,8 +20,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.graph4j.Edge;
 import org.graph4j.GraphBuilder;
-import org.graph4j.traverse.BFSIterator;
-import org.graph4j.traverse.DFSIterator;
+import org.graph4j.generators.GraphGenerator;
+import org.graph4j.traversal.BFSIterator;
+import org.graph4j.traversal.DFSIterator;
+import org.graph4j.traversal.LexBFSIterator;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  *
@@ -54,16 +57,16 @@ public class IteratorTest {
     @Test
     public void predecessorIterator() {
         var g = GraphBuilder.numVertices(5).buildDigraph();
-        g.addWeightedEdge(0, 4, 0);
-        g.addWeightedEdge(1, 4, 10);
-        g.addWeightedEdge(2, 4, 20);
-        g.addWeightedEdge(3, 4, 30);
+        g.addEdge(0, 4, 0);
+        g.addEdge(1, 4, 10);
+        g.addEdge(2, 4, 20);
+        g.addEdge(3, 4, 30);
         int w = 0;
         for (var it = g.predecessorIterator(4); it.hasNext();) {
             it.next();
             assertEquals(w * 10, it.edge().weight());
             w++;
-        }        
+        }
     }
 
     @Test
@@ -92,4 +95,34 @@ public class IteratorTest {
         assertEquals("01352467", sb.toString());
     }
 
+    @Test
+    public void testLexBFS1() {
+        var g = GraphBuilder.edges("0-1,0-2,1-3,1-4,2-5,4-6").buildGraph();
+        int[] levels = {0, 1, 1, 2, 2, 2, 3};
+        int[] parents = {-1, 0, 0, 1, 1, 2, 4};
+        var it = new LexBFSIterator(g, 0);
+        while (it.hasNext()) {
+            var node = it.next();
+            int i = g.indexOf(node.vertex());
+            assertEquals(levels[i], node.level());
+            if (i > 0) {
+                assertEquals(parents[i], node.parent().vertex());
+            } else {
+                assertNull(node.parent());
+            }
+        }
+    }
+
+    @Test
+    public void testLexBFSRandom() {
+        int n = 100;
+        var g = GraphGenerator.randomGnp(n, Math.random());
+        int k = 0;
+        var it = new LexBFSIterator(g);
+        while (it.hasNext()) {
+            it.next();
+            k++;
+        }
+        assertEquals(n, k);
+    }
 }

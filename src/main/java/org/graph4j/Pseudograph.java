@@ -16,6 +16,9 @@
  */
 package org.graph4j;
 
+import java.util.Collection;
+import org.graph4j.util.VertexSet;
+
 /**
  * Self loops and multiple (parallel) edges are allowed.
  *
@@ -39,12 +42,12 @@ public interface Pseudograph<V, E> extends Multigraph<V, E> {
     @Override
     Pseudograph<V, E> copy();
 
-    /**
-     *
-     * @param vertices an array of vertices.
-     * @return the subgraph induced by the given vertices.
-     */
     @Override
-    Pseudograph<V, E> subgraph(int... vertices);
+    Pseudograph<V, E> subgraph(VertexSet vertexSet);
+
+    @Override
+    Pseudograph<V, E> subgraph(Collection<Edge> edges);
+    
+    
 
 }

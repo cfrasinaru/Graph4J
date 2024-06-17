@@ -21,7 +21,7 @@ import org.graph4j.util.Path;
 
 /**
  * Contract for single-source shortest path algorithms. The graph and the source
- * will be specifed by the implementation constructors.
+ * will be specified by the implementation constructors.
  *
  * @author Cristian Frăsinaru
  */
@@ -69,6 +69,9 @@ public interface SingleSourceShortestPath {
     /**
      * Returns the weight of the shortest path from the source to the target.
      *
+     * If the algorithm is designed for unweighted graphs, his method returns
+     * the number of edges in the path.
+     *
      * @param target the number of the target vertex
      * @return the weight of the shortest path from the source to the target, or
      * <code>Double.POSTIVE_INFINITY</code> if no path exist.
@@ -82,6 +85,9 @@ public interface SingleSourceShortestPath {
     /**
      * Returns an array containing the weights of the shortest paths from the
      * source to all vertices.
+     *
+     * If the algorithm is designed for unweighted graphs, his method returns
+     * the number of edges in the each path.
      *
      * @return an array containing the weights of the shortest paths from the
      * source to all vertices.
@@ -106,10 +112,10 @@ public interface SingleSourceShortestPath {
      */
     static SingleSourceShortestPath getInstance(Graph graph, int source) {
         //if the graph has no weights on edges, use BFS
-        if (!graph.isEdgeWeighted()) {
+        if (!graph.hasEdgeWeights()) {
             return new BFSSingleSourceShortestPath(graph, source);
         }
-        
+
         //if it has negative cost edges, should use Bellman-Ford-Moore
         boolean negativeCostEdge = false;
         for (var it = graph.edgeIterator(); it.hasNext();) {
@@ -123,9 +129,6 @@ public interface SingleSourceShortestPath {
             return new BellmanFordShortestPath(graph, source);
         }
         //otherwise Dijkstra
-        //if it is dense, the default impl should perform better (not really)
-        //if it is sparse, the heap-based one should perform better (YES!)
-        //both implementations perform virtually the same for dense graphs          
         return new DijkstraShortestPathHeap(graph, source);
     }
 

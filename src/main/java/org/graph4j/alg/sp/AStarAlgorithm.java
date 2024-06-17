@@ -1,8 +1,8 @@
 package org.graph4j.alg.sp;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.util.Validator;
 import org.graph4j.util.Path;
 import org.graph4j.util.VertexHeap;
 
@@ -42,8 +42,8 @@ public class AStarAlgorithm extends GraphAlgorithm implements SinglePairShortest
      */
     public AStarAlgorithm(Graph graph, int source, int target, AStarEstimator heuristic) {
         super(graph);
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         this.vertices = graph.vertices();
         this.source = source;
         this.target = target;

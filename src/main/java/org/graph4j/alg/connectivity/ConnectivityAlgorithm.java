@@ -21,10 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
 import org.graph4j.util.VertexSet;
-import org.graph4j.traverse.DFSIterator;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.traversal.DFSIterator;
+import org.graph4j.util.Validator;
 
 /**
  * Determines the connected components of a graph. In case of directed graph,
@@ -38,7 +38,14 @@ public class ConnectivityAlgorithm extends SimpleGraphAlgorithm {
     private Boolean connected;
     private List<VertexSet> connectedSets;
     private final Map<Integer, VertexSet> vertexSetMap = new HashMap<>();
+    private List<Graph> components;
+    private final Map<Integer, Graph> componentMap = new HashMap<>();
 
+    /**
+     * Creates an algorithm for analyzing the connectivity of a graph.
+     *
+     * @param graph the input graph.
+     */
     public ConnectivityAlgorithm(Graph graph) {
         super(graph);
     }
@@ -65,11 +72,29 @@ public class ConnectivityAlgorithm extends SimpleGraphAlgorithm {
     }
 
     /**
+     * Determines the number of connected components, without creating the
+     * actual components.
+     *
+     * @return the number of connected components.
+     */
+    public int countConnectedComponents() {
+        if (connectedSets != null) {
+            return connectedSets.size();
+        }
+        var dfs = new DFSIterator(graph);
+        int comp = 0;
+        while (dfs.hasNext()) {
+            comp = dfs.next().component();
+        }
+        return comp + 1;
+    }
+
+    /**
      * Determines if there is a path from v to u in the graph.
      *
      * @param v a vertex number.
      * @param u a vertex number.
-     * @return {@code true} if v and u are connected.
+     * @return {@code true} if v and u are connected, {@code false} otherwise.
      */
     public boolean hasPath(int v, int u) {
         if (connected) {
@@ -93,13 +118,13 @@ public class ConnectivityAlgorithm extends SimpleGraphAlgorithm {
 
     /**
      * Each connected component is represented by its vertices. In order to
-     * obtain the subgraph induced by a connected component vertices, you may
-     * use {@link Graph#subgraph(VertexSet) }.
+     * obtain the subgraph induced by the vertices of a connected component, you
+     * may use {@link Graph#subgraph(VertexSet) }.
      * <pre>
      *   Graph cc = graph.subgraph(set.vertices());
      * </pre>
      *
-     * @return the list of connected sets.
+     * @return the list of the connected sets.
      */
     public List<VertexSet> getConnectedSets() {
         if (connectedSets == null) {
@@ -109,13 +134,14 @@ public class ConnectivityAlgorithm extends SimpleGraphAlgorithm {
     }
 
     /**
-     * Returns the connected component the specified vertex belongs to.
+     * Returns the vertex set of the connected component the specified vertex
+     * belongs to.
      *
      * @param v a vertex number.
-     * @return The connected set of v.
+     * @return the connected set containing v.
      */
     public VertexSet getConnectedSet(int v) {
-        CheckArguments.graphContainsVertex(graph, v);
+        Validator.containsVertex(graph, v);
         var vset = vertexSetMap.get(v);
         if (vset != null) {
             return vset;
@@ -165,4 +191,45 @@ public class ConnectivityAlgorithm extends SimpleGraphAlgorithm {
         connected = connectedSets.size() == 1;
     }
 
+    /**
+     * Returns the connected components of the graph. If only the vertices of
+     * the connected components are needed, the {@link #getConnectedSets()}
+     * method should be used.
+     *
+     *
+     * @return the connected components.
+     */
+    public List<Graph> getConnectedComponents() {
+        if (components != null) {
+            return components;
+        }
+        if (connectedSets == null) {
+            createConnectedSets();
+        }
+        components = new ArrayList<>(connectedSets.size());
+        for (var set : connectedSets) {
+            components.add(graph.subgraph(set));
+        }
+        return components;
+    }
+
+    /**
+     * Returns the connected component the specified vertex belongs to. If only
+     * the vertices of the connected component are needed, the
+     * {@link #getConnectedSet(int)} method should be used.
+     *
+     * @param v a vertex number.
+     * @return the connected component containing v.
+     */
+    public Graph getConnectedComponent(int v) {
+        Validator.containsVertex(graph, v);
+        var vcomp = componentMap.get(v);
+        if (vcomp != null) {
+            return vcomp;
+        }
+        var vset = getConnectedSet(v);
+        vcomp = graph.subgraph(vset);
+        componentMap.put(v, vcomp);
+        return vcomp;
+    }
 }

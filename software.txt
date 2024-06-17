@@ -1,0 +1,48 @@
+Graph libraries and other related software tools
+------------------------------------------------
+https://github.com/jgrapht/jgrapht
+https://github.com/kevin-wayne/algs4
+https://github.com/jrtom/jung
+https://github.com/google/guava/tree/master/guava/src/com/google/common/graph
+https://github.com/google/guava/wiki/GraphsExplained
+
+https://gephi.org/users/supported-graph-formats/
+https://wiki.sagemath.org/graph_survey
+
+NetworkX
+https://networkx.org/
+https://github.com/networkx/networkx/tree/main/networkx/algorithms
+
+NetworKit
+https://networkit.github.io/index.html
+
+C++
+BGL https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
+KOALA https://github.com/krzysztof-turowski/koala-networkit
+Lemon https://lemon.cs.elte.hu/trac/lemon
+iGraph https://igraph.org/c/doc/
+
+Rust
+https://github.com/petgraph/petgraph
+
+.NET
+https://github.com/YaccConstructor/QuickGraph/tree/master/src/QuickGraph/Algorithms
+
+teexGraph (diameter)
+https://github.com/franktakes/teexgraph
+
+Stanford Large Network Dataset Collection
+https://snap.stanford.edu/data/
+
+Nauty, traces (isomorphism)
+https://pallini.di.uniroma1.it/
+https://www3.cs.stonybrook.edu/~algorith/implement/nauty/implement.shtml
+
+R Plots
+https://sites.harding.edu/fmccown/r/
+
+FastUtils
+https://github.com/vigna/fastutil
+
+Linear regression
+https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/LinearRegression.java.html

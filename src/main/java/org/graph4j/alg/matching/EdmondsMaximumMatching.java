@@ -17,10 +17,11 @@
 package org.graph4j.alg.matching;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
 
 /**
  * TODO
+ * Goldberg, p.95
  * @author Cristian Frăsinaru
  */
 public class EdmondsMaximumMatching extends SimpleGraphAlgorithm {

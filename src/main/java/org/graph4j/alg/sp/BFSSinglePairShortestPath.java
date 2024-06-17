@@ -17,45 +17,63 @@
 package org.graph4j.alg.sp;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.traverse.BFSIterator;
-import org.graph4j.traverse.SearchNode;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.traversal.BFSIterator;
+import org.graph4j.traversal.SearchNode;
+import org.graph4j.util.Validator;
 import org.graph4j.util.Path;
 
 /**
- * For unweighted graphs, breadth-first search can be used to find the shortest
- * path from two vertices.
- *
- * Slower than {@link BidirectionalDijkstra}.
+ * Determines the path with the fewest edges connecting two vertices. For
+ * unweighted graphs, breadth-first search can be used to find the shortest path
+ * between two vertices.
  *
  * @author Cristian Frăsinaru
  */
+//Slower than {@link BidirectionalDijkstra}.
 public class BFSSinglePairShortestPath extends GraphAlgorithm
         implements SinglePairShortestPath {
 
     private final int source;
-    private final int target;    
+    private final int target;
+    private final int[] forbiddenVertices;
     private Path bestPath;
     private double bestWeight;
 
     /**
-     * Creates an algorithm to find the shortest path between source and target.
+     * Creates an algorithm to find the path with the fewest edges between two
+     * specified vertices. If the input graph has weights on its edges, they are
+     * ignored.
      *
      * @param graph the input graph.
      * @param source the source vertex number.
      * @param target the target vertex number.
      */
     public BFSSinglePairShortestPath(Graph graph, int source, int target) {
+        this(graph, source, target, null);
+    }
+
+    /**
+     * Creates an algorithm to find the path with the fewest edges between two
+     * specified vertices, not passing through some forbidden vertices.
+     *
+     * @param graph the input graph.
+     * @param source the source vertex number.
+     * @param target the target vertex number.
+     * @param forbiddenVertices vertices that are not allowed in the path; can
+     * be {@code null} if there are no forbidden vertices.
+     */
+    public BFSSinglePairShortestPath(Graph graph, int source, int target, int[] forbiddenVertices) {
         super(graph);
-        if (graph.isEdgeWeighted()) {
+        if (graph.hasEdgeWeights()) {
             throw new IllegalArgumentException(
                     "BFSSinglePairShortestPath should be used only for graphs with unweighted edges.");
         }
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         this.source = source;
         this.target = target;
+        this.forbiddenVertices = forbiddenVertices;
     }
 
     @Override
@@ -106,8 +124,8 @@ public class BFSSinglePairShortestPath extends GraphAlgorithm
         int meeting = -1;
         //
         //use a BFSTraverser
-        var bfs1 = new BFSIterator(graph, source);
-        var bfs2 = new BFSIterator(graph, target, true); //reverse
+        var bfs1 = new BFSIterator(graph, source, forbiddenVertices, false);
+        var bfs2 = new BFSIterator(graph, target, forbiddenVertices, true); //reverse
         int currentLevel = 0;
         SearchNode currentNode1 = null;
         SearchNode currentNode2 = null;
@@ -139,7 +157,7 @@ public class BFSSinglePairShortestPath extends GraphAlgorithm
             }
 
             //bfs from target - scan a level            
-            while (bfs2.hasNext()) {
+            while (meeting < 0 && bfs2.hasNext()) {
                 var node = currentNode2 == null ? bfs2.next() : currentNode2;
                 int vertex = node.vertex();
                 int level = node.level();
@@ -164,11 +182,11 @@ public class BFSSinglePairShortestPath extends GraphAlgorithm
             }
             currentLevel++;
         }
-        
+
         if (meeting < 0) {
             return;
         }
-        
+
         //compute the path
         bestPath = new Path(graph);
         int vi = meeting;
@@ -183,6 +201,6 @@ public class BFSSinglePairShortestPath extends GraphAlgorithm
             ui = before2[ui];
         }
         bestWeight = bestPath.computeEdgesWeight();
+        assert bestWeight == bestPath.length();
     }
-
 }

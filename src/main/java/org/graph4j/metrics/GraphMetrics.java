@@ -16,11 +16,11 @@
  */
 package org.graph4j.metrics;
 
-import org.graph4j.alg.cycle.CycleFinder;
+import org.graph4j.route.CycleFinder;
 import java.util.Arrays;
 import org.graph4j.util.Cycle;
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
+import org.graph4j.GraphAlgorithm;
 import org.graph4j.alg.sp.AllPairsShortestPath;
 import org.graph4j.alg.sp.SinglePairShortestPath;
 import org.graph4j.alg.sp.SingleSourceShortestPath;
@@ -33,15 +33,15 @@ import org.graph4j.util.VertexSet;
  */
 public class GraphMetrics extends GraphAlgorithm {
 
-    private final ExtremaCalculator extremaCalculator;
-    private double dist[][]; //distances
-    private double ecc[]; //eccentricities
-    private Integer girth;
-    private Double diameter;
-    private Double pseudoDiameter;
-    private Double radius;
-    private VertexSet center;
-    private VertexSet periphery;
+    ExtremaCalculator extremaCalculator;
+    protected double dist[][]; //distances
+    protected double ecc[]; //eccentricities
+    protected Integer girth;
+    protected Double diameter;
+    protected Double pseudoDiameter;
+    protected Double radius;
+    protected VertexSet center;
+    protected VertexSet periphery;
 
     /**
      *
@@ -49,17 +49,16 @@ public class GraphMetrics extends GraphAlgorithm {
      */
     public GraphMetrics(Graph graph) {
         super(graph);
-        extremaCalculator = new ExtremaCalculator(graph);
+        extremaCalculator = new GraphExtremaCalculator(graph);
     }
 
+    //https://cstheory.stackexchange.com/questions/10983/optimal-algorithm-for-finding-the-girth-of-a-sparse-graph
     /**
-     * See
-     * https://cstheory.stackexchange.com/questions/10983/optimal-algorithm-for-finding-the-girth-of-a-sparse-graph
      * The girth of a graph is the length of its shortest cycle. Acyclic graphs
      * are considered to have infinite girth.
      *
      * @return the girth of the graph, or <code>Integer.MAX_VALUE</code> if the
-     * graph ia acyclic.
+     * graph is acyclic.
      */
     public int girth() {
         if (girth != null) {
@@ -151,12 +150,12 @@ public class GraphMetrics extends GraphAlgorithm {
 
     /**
      * Computes and stores for later retrieval all the eccentricities of the
-     * graph. If the eccentrities are already computed, it simply returns them.
+     * graph. If the eccentricities are already computed, it simply returns them.
      *
-     * Note that some methods of this class might trigger this compution, in
+     * Note that some methods of this class might trigger this computation, in
      * order to create their response.
      *
-     * @return the eccentricities
+     * @return the eccentricities of the graph vertices.
      */
     public double[] eccentricities() {
         if (ecc != null) {
@@ -213,7 +212,7 @@ public class GraphMetrics extends GraphAlgorithm {
         if (diameter != null) {
             return diameter;
         }
-        if (ecc == null && !graph.isEdgeWeighted()) {
+        if (ecc == null && extremaCalculator != null && !graph.hasEdgeWeights()) {
             diameter = (double) extremaCalculator.getDiameter();
             return diameter;
         }
@@ -284,7 +283,7 @@ public class GraphMetrics extends GraphAlgorithm {
         if (radius != null) {
             return radius;
         }
-        if (ecc == null && !graph.isEdgeWeighted()) {
+        if (ecc == null && extremaCalculator != null && !graph.hasEdgeWeights()) {
             radius = (double) extremaCalculator.getRadius();
             return radius;
         }
@@ -311,7 +310,7 @@ public class GraphMetrics extends GraphAlgorithm {
         if (center != null) {
             return center;
         }
-        if (!graph.isEdgeWeighted()) {
+        if (extremaCalculator != null && !graph.hasEdgeWeights()) {
             center = extremaCalculator.getCenter();
             return center;
         }
@@ -339,7 +338,7 @@ public class GraphMetrics extends GraphAlgorithm {
         if (periphery != null) {
             return periphery;
         }
-        if (!graph.isEdgeWeighted()) {
+        if (extremaCalculator != null && !graph.hasEdgeWeights()) {
             periphery = extremaCalculator.getPeriphery();
             return periphery;
         }

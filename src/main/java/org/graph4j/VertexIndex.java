@@ -18,6 +18,7 @@ package org.graph4j;
 
 /**
  *
+ * @see VertexIndexArray
  * @author Cristian Frăsinaru
  */
 interface VertexIndex {

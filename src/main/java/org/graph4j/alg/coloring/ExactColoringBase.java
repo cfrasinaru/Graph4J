@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
 import org.graph4j.alg.clique.MaximalCliqueFinder;
 import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
 import org.graph4j.util.Clique;
@@ -41,7 +41,7 @@ public abstract class ExactColoringBase extends SimpleGraphAlgorithm
     protected List<VertexSet> components; //connected components
     protected Set<Coloring> solutions;
     protected int solutionsLimit = 1;
-    protected boolean outputEnabled = true;
+    protected boolean outputEnabled = false;
     //
     private Clique maxClique;
 

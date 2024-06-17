@@ -17,6 +17,10 @@
 package org.graph4j.util;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringJoiner;
+import org.graph4j.Edge;
 import org.graph4j.Graph;
 
 /**
@@ -25,55 +29,71 @@ import org.graph4j.Graph;
  *
  * @author Cristian Frăsinaru
  */
-public class Matching extends EdgeSet {
+public class Matching {
 
-    private int mates[];
+    private final Graph graph;
+    private final int mates[];
+    private int size;
+    private Set<Edge> edges;
     //if vu in matching, mates[vi]=ui, mates[ui]=vi
 
     public Matching(Graph graph) {
-        super(graph);
-        createMates();
-    }
-
-    public Matching(Graph graph, int initialCapacity) {
-        super(graph, initialCapacity);
-        createMates();
-    }
-
-    private void createMates() {
+        this.graph = graph;
         mates = new int[graph.numVertices()];
         Arrays.fill(mates, -1);
     }
 
-    @Override
     public boolean add(int v, int u) {
         int vi = graph.indexOf(v);
         int ui = graph.indexOf(u);
         if (mates[vi] == ui) {
             return false;
         }
-        if (!super.add(v, u)) {
-            return false;
-        }
         mates[vi] = ui;
         mates[ui] = vi;
+        size++;
+        edges = null;
         return true;
     }
 
-    @Override
-    protected void removeFromPos(int pos) {
-        int vi = edges[pos][0];
-        int ui = edges[pos][1];
+    protected boolean remove(int v, int u) {
+        int vi = graph.indexOf(v);
+        int ui = graph.indexOf(u);
+        if (mates[vi] != ui) {
+            return false;
+        }
         mates[vi] = -1;
         mates[ui] = -1;
-        super.removeFromPos(pos);
+        size--;
+        edges = null;
+        return true;
     }
 
-    @Override
     public boolean contains(int v, int u) {
         int vi = graph.indexOf(v);
         int ui = graph.indexOf(u);
         return mates[vi] == ui;
+    }
+
+    /**
+     * Returns the number of edges in the matching.
+     *
+     * @return the number of edges in the matching.
+     */
+    public int size() {
+        return size;
+    }
+
+    public Set<Edge> edges() {
+        if (edges != null) {
+            return edges;
+        }
+        edges = new HashSet<>(size);
+        for (int vi = 0, n = mates.length; vi < n; vi++) {
+            int ui = mates[vi];
+            edges.add(graph.edge(graph.vertexAt(vi), graph.vertexAt(ui)));
+        }
+        return edges;
     }
 
     /**
@@ -106,27 +126,75 @@ public class Matching extends EdgeSet {
      * @return {@code true} if the matching is perfect.
      */
     public boolean isPerfect() {
-        return 2 * numEdges == graph.numVertices();
+        return 2 * size == graph.numVertices();
+    }
+
+    /**
+     * Computes the sum of the weights associated with each edge in the
+     * matching.
+     *
+     * @return the sum of all weights of the edges in the collection, including
+     * duplicates.
+     */
+    public double weight() {
+        double weight = 0;
+        for (int vi = 0, n = mates.length; vi < n; vi++) {
+            int ui = mates[vi];
+            if (ui >= 0) {
+                weight += graph.getEdgeWeight(graph.vertexAt(vi), graph.vertexAt(ui));
+            }
+        }
+        return weight;
     }
 
     /**
      * A matching is valid if each vertex of the graph appears in at most one
      * edge of that matching.
      *
-     * @return {@code true} if the matching is valid.
+     * @return {@code true} if the matching is valid, {@code false} otherwise.
      */
     public boolean isValid() {
-        int n = graph.numVertices();
-        int[] count = new int[n];
-        for (int k = 0; k < numEdges; k++) {
-            int vi = edges[k][0];
-            int ui = edges[k][1];
-            count[vi]++;
-            count[ui]++;
-            if (count[vi] > 1 || count[ui] > 1) {
+        for (int vi = 0, n = mates.length; vi < n; vi++) {
+            int ui = mates[vi];
+            if (ui >= 0 && vi != mates[ui]) {
                 return false;
             }
         }
         return true;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Arrays.hashCode(this.mates);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Matching other = (Matching) obj;
+        return Arrays.equals(this.mates, other.mates);
+    }
+
+    @Override
+    public String toString() {
+        var sb = new StringJoiner(", ", "[", "]");
+        for (int vi = 0, n = mates.length; vi < n; vi++) {
+            int ui = mates[vi];
+            if (ui >= 0 && vi < ui) {
+                sb.add(vi + "-" + ui);
+            }
+        }
+        return sb.toString();
+    }
+
 }

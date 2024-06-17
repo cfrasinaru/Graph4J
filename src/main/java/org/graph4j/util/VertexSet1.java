@@ -17,7 +17,6 @@
 package org.graph4j.util;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
 import org.graph4j.Graph;
@@ -27,6 +26,7 @@ import org.graph4j.Graph;
  *
  * @author Cristian Frăsinaru
  */
+@Deprecated
 class VertexSet1 extends VertexCollection {
 
     protected IntHashMap posMap; //positions
@@ -245,7 +245,7 @@ class VertexSet1 extends VertexCollection {
             return false;
         }
         final VertexSet1 other = (VertexSet1) obj;
-        return IntArrays.sameValues(this.vertices(), other.vertices());
+        return IntArrays.haveSameValues(this.vertices(), other.vertices());
     }
 
 }

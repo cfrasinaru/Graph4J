@@ -16,30 +16,40 @@
  */
 package org.graph4j.util;
 
+import java.util.NoSuchElementException;
+
 /**
- * Iterator for a collection of primitive integers.
+ * An iterator over a collection of primitive integers.
  *
  * @author Cristian Frăsinaru
  */
 public interface IntIterator {
 
     /**
-     * Returns {@code true} if there are more values to iterate through.
+     * Returns {@code true} if the iteration has more elements.
      *
-     * @return {@code true} if there are more values to iterate through
+     * @return {@code true} if the iteration has more elements, {@code false}
+     * otherwise.
      */
     boolean hasNext();
 
     /**
-     * Returns the next value. If there are no more values it throws an
-     * exception.
+     * Returns the next element in the iteration.
      *
-     * @return the next value
+     * @return the next element in the iteration.
+     * @throws NoSuchElementException if the iteration has no more elements.
      */
     int next();
 
     /**
-     * Removes the current value.
+     * Removes from the underlying collection the last element returned by this
+     * iterator (optional operation). This method can be called only once per
+     * call to {@link #next}.
+     *
+     * @throws UnsupportedOperationException if the {@code remove} operation is
+     * not supported by this iterator.
      */
-    void remove();
+    default void remove() {
+        throw new UnsupportedOperationException();
+    }
 }

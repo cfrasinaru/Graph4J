@@ -29,7 +29,7 @@ import org.graph4j.util.VertexHeap;
  *
  * Once a new vertex has been colored, the algorithm determines which of the
  * remaining uncolored vertices has the highest number of distinct colors in its
- * neighbourhood and colors this vertex next. This number is called <em>the
+ * neighborhood and colors this vertex next. This number is called <em>the
  * degree of saturation</em> of a given vertex.
  *
  * DSatur produces exact results for bipartite, cycle, and wheel graphs.

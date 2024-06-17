@@ -18,14 +18,14 @@ package org.graph4j.alg.sp;
 
 import java.util.Arrays;
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.traverse.BFSIterator;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.traversal.BFSIterator;
+import org.graph4j.util.Validator;
 import org.graph4j.util.Path;
 
 /**
- * For unweighted graphs, breadth-first search can be used to find the shortest
- * paths from a source vertex to all other vertices.
+ * Determines the shortest paths from a source vertex to all other vertices, in
+ * an unweighted graph, using a breadth-first traversal.
  *
  * @author Cristian Frăsinaru
  */
@@ -37,18 +37,16 @@ public class BFSSingleSourceShortestPath extends GraphAlgorithm
     protected int[] before;
 
     /**
-     * Creates an algorithm to find all shortest paths starting in the source.
+     * Creates an algorithm to find all shortest paths starting in the specified
+     * source, in an unweighted graph. If the input graph has weights on its
+     * edges, they are ignored.
      *
      * @param graph the input graph.
      * @param source the source vertex number.
      */
     public BFSSingleSourceShortestPath(Graph graph, int source) {
         super(graph);
-        if (graph.isEdgeWeighted()) {
-            throw new IllegalArgumentException(
-                    "BFSSingleSourceShortestPath should be used only for graphs with unweighted edges.");
-        }
-        CheckArguments.graphContainsVertex(graph, source);
+        Validator.containsVertex(graph, source);
         this.source = source;
     }
 
@@ -59,14 +57,14 @@ public class BFSSingleSourceShortestPath extends GraphAlgorithm
 
     @Override
     public Path computePath(int target) {
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, target);
         compute(target);
         return createPathEndingIn(target);
     }
 
     @Override
     public Path findPath(int target) {
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, target);
         if (before == null) {
             compute(-1);
         }

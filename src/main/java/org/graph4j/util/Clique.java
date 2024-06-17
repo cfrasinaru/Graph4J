@@ -19,8 +19,8 @@ package org.graph4j.util;
 import org.graph4j.Graph;
 
 /**
- * A <em>clique</em> is a set of vertices of a graph such that any two of them are
- * adjacent.
+ * A <em>clique</em> is a set of vertices of a graph such that any two of them
+ * are adjacent.
  *
  *
  * @author Cristian Frăsinaru
@@ -79,7 +79,9 @@ public class Clique extends VertexSet {
     }
 
     /**
-     * @return {@code true} if the vertices represent a clique.
+     * Checks if the vertices in this set actually represent a clique.
+     *
+     * @return {@code true} if the clique is valid, {@code false} otherwise.
      */
     public boolean isValid() {
         try {
@@ -89,6 +91,31 @@ public class Clique extends VertexSet {
             System.err.println(e.getMessage());
             return false;
         }
+    }
+
+    /**
+     * Checks if the clique is maximal.
+     *
+     * @return {@code true} if the clique is maximal, {@code false} otherwise.
+     */
+    public boolean isMaximal() {
+        for (int v : graph.vertices()) {
+            if (this.contains(v)) {
+                continue;
+            }
+            boolean connectedToAll = true;
+            for (int i = 0; i < numVertices; i++) {
+                int u = vertices[i];
+                if (!graph.containsEdge(v, u)) {
+                    connectedToAll = false;
+                    break;
+                }
+            }
+            if (connectedToAll) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

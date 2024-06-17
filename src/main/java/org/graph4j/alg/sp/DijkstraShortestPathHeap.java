@@ -23,7 +23,7 @@ import org.graph4j.util.VertexHeap;
  * Implementation of Dijkstra's algorithm that uses a heap in order to select
  * the optimal vertex at each step.
  *
- * The complexity of this implmentation is O(m log n), where m is the number of
+ * The complexity of this implementation is O(m log n), where m is the number of
  * edges and n the number of vertices.
  *
  * Suitable for sparse graphs.
@@ -37,7 +37,6 @@ public class DijkstraShortestPathHeap extends DijkstraShortestPathBase {
 
     private VertexHeap heap;
 
-    
     public DijkstraShortestPathHeap(Graph graph, int source) {
         super(graph, source);
     }

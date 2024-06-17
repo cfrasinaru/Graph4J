@@ -21,13 +21,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.graph4j.Graph;
 import org.graph4j.util.Path;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.traverse.BFSIterator;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.traversal.BFSIterator;
+import org.graph4j.util.Validator;
 
 /**
- * For unweighted graphs, breadth-first search can be used to find the shortest
- * paths between all pairs of vertices.
+ * Determines the shortest paths between all pairs of vertices, in an unweighted
+ * graph, using breadth-first traversals.
  *
  * @author Cristian Frăsinaru
  */
@@ -38,9 +38,15 @@ public class BFSAllPairsShortestPath extends GraphAlgorithm
     private int[][] before;
     //before[i][j] = the vertex before j on the shortest path from i to j
 
+    /**
+     * Creates an algorithm for finding all pair shortest paths in an unweighted
+     * graph. If the input graph has weights on its edges, they are ignored.
+     *
+     * @param graph the input graph.
+     */
     public BFSAllPairsShortestPath(Graph graph) {
         super(graph);
-        if (graph.isEdgeWeighted()) {
+        if (graph.hasEdgeWeights()) {
             throw new IllegalArgumentException(
                     "BFSAllPairsShortestPath should be used only for graphs with unweighted edges.");
         }
@@ -48,8 +54,8 @@ public class BFSAllPairsShortestPath extends GraphAlgorithm
 
     @Override
     public Path findPath(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         if (before == null) {
             computeAll();
         }
@@ -63,8 +69,8 @@ public class BFSAllPairsShortestPath extends GraphAlgorithm
 
     @Override
     public double getPathWeight(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         if (dist == null) {
             computeAll();
         }

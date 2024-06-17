@@ -19,7 +19,9 @@ package org.graph4j.util;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Utility methods.
@@ -211,6 +213,7 @@ public class Tools {
     }
 
     /**
+     * Returns the first non-null value.
      *
      * @param <T> a generic type.
      * @param values an array of values.
@@ -224,4 +227,21 @@ public class Tools {
         }
         return null;
     }
+
+    /**
+     * Shuffles the values in the specified array.
+     *
+     * @param <T> a generic type.
+     * @param array an array of values.
+     */
+    public static <T> void shuffle(T[] array) {
+        Random random = new Random();
+        for (int i = 0, n = array.length; i < n; i++) {
+            int j = i + random.nextInt(n - i);
+            T temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+    }
+
 }

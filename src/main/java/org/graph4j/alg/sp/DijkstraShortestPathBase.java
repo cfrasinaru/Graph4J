@@ -19,13 +19,13 @@ package org.graph4j.alg.sp;
 import java.util.Arrays;
 import org.graph4j.Graph;
 import org.graph4j.util.Path;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.util.Validator;
 
 /**
  * Dijkstra's algorithm finds the minimum cost paths between a vertex (called
  * source) and all the other vertices in a graph, with the condition that there
- * are no negative weigthed edges. The cost of a path is the sum of its edges
+ * are no negative weighted edges. The cost of a path is the sum of its edges
  * weights.
  *
  * If the graph contains a negative weighted edge, an exception will be thrown.
@@ -53,7 +53,7 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
      */
     public DijkstraShortestPathBase(Graph graph, int source) {
         super(graph);
-        CheckArguments.graphContainsVertex(graph, source);
+        Validator.containsVertex(graph, source);
         this.vertices = graph.vertices();
         this.source = source;
     }
@@ -65,14 +65,14 @@ public abstract class DijkstraShortestPathBase extends GraphAlgorithm
 
     @Override
     public Path computePath(int target) {
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, target);
         compute(target);
         return createPathEndingIn(target);
     }
 
     @Override
     public Path findPath(int target) {
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, target);
         if (before == null) {
             compute(-1);
         }

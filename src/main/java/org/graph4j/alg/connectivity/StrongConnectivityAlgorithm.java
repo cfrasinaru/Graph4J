@@ -48,7 +48,7 @@ public interface StrongConnectivityAlgorithm {
 
     /**
      * Each strongly connected component is contracted to a single vertex, the
-     * resulting graph is a directed acyclic graph, the <i>condensation</i>.
+     * resulting graph is a directed acyclic graph, the <em>condensation</em>.
      *
      * Each vertex of the condensation is labeled with the corresponding
      * strongly connected component. Each edge vu of the condensation is labeled

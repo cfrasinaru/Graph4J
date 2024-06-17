@@ -17,7 +17,13 @@
 package org.graph4j;
 
 /**
+ * Represents a data structure used for checking if an edge is present in the
+ * graph in constant time.
  *
+ * Normally, the {@link Graph#containsEdge(int, int) } method has time
+ * complexity O(deg(v)).
+ *
+ * @see AdjacencyBitSet
  * @author Cristian Frăsinaru
  */
 interface AdjacencySet {

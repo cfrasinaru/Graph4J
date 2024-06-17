@@ -19,8 +19,8 @@ package org.graph4j.alg;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
-import org.graph4j.support.Tournament;
-import org.graph4j.generate.TournamentGenerator;
+import org.graph4j.support.TournamentSupport;
+import org.graph4j.generators.TournamentGenerator;
 import org.graph4j.util.Path;
 
 /**
@@ -32,7 +32,7 @@ public class TournamentTest {
     @Test
     public void simple() {
         var g = GraphBuilder.numVertices(3).addEdges("0-2,1-0,1-2").buildDigraph();
-        var alg = new Tournament(g);
+        var alg = new TournamentSupport(g);
         assertTrue(alg.isTournament());
         Path path = alg.getHamiltonianPath();
         assertTrue(path.isValid() && path.isHamiltonian());
@@ -41,7 +41,7 @@ public class TournamentTest {
     @Test
     public void random() {
         var g = new TournamentGenerator(10).createRandom();
-        var alg = new Tournament(g);
+        var alg = new TournamentSupport(g);
         assertTrue(alg.isTournament());
         Path path = alg.getHamiltonianPath();
         assertTrue(path.isValid() && path.isHamiltonian());

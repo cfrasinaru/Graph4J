@@ -19,17 +19,13 @@ package org.graph4j.sp;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.util.Path;
-import org.graph4j.alg.sp.BellmanFordShortestPath;
 import org.graph4j.GraphBuilder;
 import org.graph4j.alg.sp.BellmanFordShortestPath;
 import org.graph4j.alg.sp.DijkstraShortestPathDefault;
-import org.graph4j.alg.sp.DijkstraShortestPathDefault;
-import org.graph4j.alg.sp.FloydWarshallShortestPath;
 import org.graph4j.alg.sp.FloydWarshallShortestPath;
 import org.graph4j.alg.sp.JohnsonShortestPath;
-import org.graph4j.alg.sp.JohnsonShortestPath;
-import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.graph4j.generators.EdgeWeightsGenerator;
+import org.graph4j.generators.RandomGnpGraphGenerator;
 
 /**
  *

@@ -18,8 +18,8 @@ package org.graph4j.metrics;
 
 import java.util.Arrays;
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.traverse.BFSIterator;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.traversal.BFSIterator;
 import org.graph4j.util.VertexSet;
 
 /**

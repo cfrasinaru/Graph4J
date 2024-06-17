@@ -28,55 +28,76 @@ interface Labeled<V, E> {
     /**
      * Adds a new vertex to the graph having the specified number and label.
      *
+     * After the execution of this method, the graph is considered
+     * <em>vertex labeled</em>.
+     *
      * @param v a vertex number.
      * @param label a vertex label.
      * @return the index of the added vertex.
+     * @throws InvalidVertexException if {@code v} is negative or it is already
+     * in the graph.
      */
     int addLabeledVertex(int v, V label);
 
-    @Deprecated
-    default int addVertex(int v, V label) {
-        return addLabeledVertex(v, label);
-    }
-
     /**
      * Adds a new vertex to the graph having the number equal to the maximum
-     * vertex number plus one and the specified label.
+     * vertex number plus one, and the specified label.
+     *
+     * After the execution of this method, the graph is considered
+     * <em>vertex labeled</em>.
      *
      * @param label a vertex label.
      * @return the number of the added vertex.
      */
     int addLabeledVertex(V label);
 
-    @Deprecated
-    default int addVertex(V label) {
-        return addLabeledVertex(label);
-    }
-
+    /**
+     * Adds a new weighted and labeled edge to the graph. The endpoints of the
+     * edge are identified using their vertex numbers. See also
+     * {@link Graph#addEdge(int, int)}.
+     *
+     * @param v a vertex number.
+     * @param u a vertex number.
+     * @param weight edge weight.
+     * @param label edge label.
+     * @return the position of {@code u} in the adjacency list of {@code v} if
+     * {@code (v,u)} edge was added, or {@code -1} if the edge was not added.
+     * @throws InvalidVertexException if either of the two vertices is not in
+     * the graph.
+     */
+    int addLabeledEdge(int v, int u, E label, double weight);
+    
     /**
      * Adds a new labeled edge to the graph. The endpoints of the edge are
      * identified using their vertex numbers.
      *
+     * After a successful execution of this method, the graph is considered
+     * <em>edge labeled</em>. See also {@link Graph#addEdge(int, int)}.
+     *
      * @param v a vertex number
      * @param u a vertex number
      * @param label an edge label.
-     * @return the position of u in the adjacency list of v.
+     * @return the position of {@code u} in the adjacency list of {@code v} if
+     * {@code (v,u)} edge was added, or {@code -1} if the edge was not added.
+     * @throws InvalidVertexException if either of the two vertices is not in
+     * the graph.
      */
     int addLabeledEdge(int v, int u, E label);
-
-    @Deprecated
-    default int addEdge(int v, int u, E label) {
-        return addLabeledEdge(v, u, label);
-    }
 
     /**
      * Adds a new labeled edge to the graph. The endpoints of the edge are
      * identified using their uniquely identifiable vertex labels.
      *
+     * After a successful execution of this method, the graph is considered
+     * <em>edge labeled</em>. See also {@link Graph#addEdge(int, int)}.
+     *
      * @param vLabel a vertex label.
      * @param uLabel a vertex label.
      * @param edgeLabel an edge label.
-     * @return the position of u in the adjacency list of v.
+     * @return the position of {@code u} in the adjacency list of {@code v} if
+     * {@code (v,u)} edge was added, or {@code -1} if the edge was not added.
+     * @throws InvalidVertexException if either of the two vertices is not in
+     * the graph.
      */
     default int addLabeledEdge(V vLabel, V uLabel, E edgeLabel) {
         int v = findVertex(vLabel);
@@ -84,16 +105,16 @@ interface Labeled<V, E> {
         return Labeled.this.addLabeledEdge(v, u, edgeLabel);
     }
 
-    @Deprecated
-    default int addEdge(V vLabel, V uLabel, E edgeLabel) {
-        return addLabeledEdge(vLabel, uLabel, edgeLabel);
-    }
-
     /**
-     * Sets the label for the specified vertex.
+     * Sets the label for the specified vertex. If at least one vertex has been
+     * assigned a label, the graph is considered <em>vertex labeled</em>.
+     *
+     * The time complexity of this method is {@code O(1)}.
      *
      * @param v a vertex number.
      * @param label a vertex label.
+     * @throws InvalidVertexException if {@code v} is not in the graph.
+     *
      */
     void setVertexLabel(int v, V label);
 
@@ -101,50 +122,67 @@ interface Labeled<V, E> {
      * Returns the label of the specified vertex or {@code null} if no label has
      * been set.
      *
+     * The time complexity of this method is {@code O(1)}.
+     *
      * @param v a vertex number.
      * @return the label of the specified vertex.
+     * @throws InvalidVertexException if {@code v} is not in the graph.
      */
     V getVertexLabel(int v);
 
     /**
-     * Sets the label for the specified edge.
+     * Sets the label of a specified edge.
+     *
+     * The time complexity of this method is {@code O(degree(v))}. It is more
+     * efficient to set the labels of the edges while iterating over them, see
+     * {@link Graph#neighborIterator(int)} or {@link Graph#edgeIterator()}.
      *
      * @param v a vertex number.
      * @param u a vertex number.
      * @param label an edge label.
+     * @throws InvalidEdgeException if the graph does not contain the edge
+     * {@code (v,u)}.
      */
     void setEdgeLabel(int v, int u, E label);
 
     /**
-     * Returns the label of the specified edge.
+     * Returns the label of a specified edge.
+     *
+     * The time complexity of this method is {@code O(degree(v))}. It is more
+     * efficient to get the weights of the edges while iterating over them, see
+     * {@link Graph#neighborIterator(int)} or {@link Graph#edgeIterator()}.
      *
      * @param v a vertex number.
      * @param u a vertex number.
-     * @return the label of the edge vu.
+     * @return the label of the edge {@code (v,u)}.
+     * @throws InvalidEdgeException if the graph does not contain the edge
+     * {@code (v,u)}.
      */
     E getEdgeLabel(int v, int u);
 
     /**
-     * Returns {@code true} if the graph is edge labeled, that is there is at
-     * least one edge that has been assigned a label.
+     * Checks if the graph has at least one edge that has been assigned a label
+     * (is edge labeled).
      *
-     * @return {@code true}, if labels have been set on edges.
+     * @return {@code true} if labels have been set on edges, {@code false}
+     * otherwise.
      */
-    boolean isEdgeLabeled();
+    boolean hasEdgeLabels();
 
     /**
-     * Returns {@code true} if the graph is vertex labeled, that is there is at
-     * least one vertex that has been assigned a label.
+     * Checks if the graph has at least one vertex that has been assigned a
+     * label (is vertex labeled).
      *
-     * @return {@code true}, if labels have been set on vertices.
+     * @return {@code true} if labels have been set on vertices, {@code false}
+     * otherwise.
      */
-    boolean isVertexLabeled();
+    boolean hasVertexLabels();
 
     /**
      * Returns the number of the vertex having the specified label. If there are
      * more vertices having the specified label, it returns the last one that
      * has been assigned that label. If no vertex has the specified label, it
-     * return {@code -1}.
+     * returns {@code -1}.
      *
      * @param label a vertex label.
      * @return the number of the vertex which has the specified label, or
@@ -153,8 +191,8 @@ interface Labeled<V, E> {
     int findVertex(V label);
 
     /**
-     * Returns a set containing all the numbers of the vertices having the
-     * specified label.
+     * Returns a set containing all the vertex numbers having the specified
+     * label.
      *
      * @param label a vertex label.
      * @return all the vertices of the graph which have been assigned the
@@ -164,10 +202,10 @@ interface Labeled<V, E> {
 
     /**
      * Returns the edge having the specified label. If there are more edges with
-     * the given label, it returns the last one added in the graph.
+     * the specified label, it returns the last one added in the graph.
      *
      * @param label an edge label.
-     * @return the edge with the given label.
+     * @return the edge with the specified label.
      */
     Edge findEdge(E label);
 
@@ -175,7 +213,7 @@ interface Labeled<V, E> {
      * Returns a set containing all the edges having the specified label.
      *
      * @param label an edge label.
-     * @return all the edges with the given label.
+     * @return all the edges with the specified label.
      */
     EdgeSet findAllEdges(E label);
 }

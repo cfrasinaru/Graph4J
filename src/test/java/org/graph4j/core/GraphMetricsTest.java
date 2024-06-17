@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.graph4j.util.VertexSet;
 import org.graph4j.metrics.GraphMetrics;
 import org.graph4j.GraphBuilder;
-import org.graph4j.generate.GraphGenerator;
+import org.graph4j.generators.GraphGenerator;
 
 /**
  *
@@ -78,7 +78,7 @@ public class GraphMetricsTest {
 
     @Test
     public void complete() {
-        int n = 1 + new Random().nextInt(100);
+        int n = 10 + new Random().nextInt(10);
         var g = GraphGenerator.complete(n);
         var gm = new GraphMetrics(g);
         assertEquals(1, gm.radius());

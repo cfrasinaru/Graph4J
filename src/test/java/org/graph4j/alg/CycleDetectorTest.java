@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.util.Cycle;
 import org.graph4j.GraphBuilder;
-import org.graph4j.alg.cycle.CycleFinder;
+import org.graph4j.route.CycleFinder;
 
 /**
  *

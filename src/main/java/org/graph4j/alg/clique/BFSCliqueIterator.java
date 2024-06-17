@@ -20,7 +20,7 @@ import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
 import org.graph4j.util.Clique;
 import org.graph4j.util.IntArrays;
 import org.graph4j.util.VertexSet;

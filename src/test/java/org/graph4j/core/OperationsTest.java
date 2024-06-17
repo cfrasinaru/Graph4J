@@ -20,9 +20,10 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.graph4j.GraphBuilder;
-import org.graph4j.Graphs;
-import org.graph4j.generate.CompleteGraphGenerator;
-import org.graph4j.generate.GraphGenerator;
+import org.graph4j.GraphUtils;
+import org.graph4j.generators.CompleteGraphGenerator;
+import org.graph4j.generators.GraphGenerator;
+import org.graph4j.util.VertexSet;
 
 /**
  *
@@ -57,7 +58,7 @@ public class OperationsTest {
         for (int i = 0; i < k; i++) {
             array[i] = i;
         }
-        var g1 = g.subgraph(array);
+        var g1 = g.subgraph(new VertexSet(g, array));
         assertEquals(k, g1.numVertices());
         assertEquals(k * (k - 1), g1.numEdges());
     }
@@ -115,16 +116,16 @@ public class OperationsTest {
         var g1 = GraphBuilder.vertices(1, 2, 3).addEdges("1-2,1-3,2-3").buildGraph();
         var g2 = GraphBuilder.vertices(4, 5, 6).addEdges("4-5,5-6").buildGraph();
         var g3 = GraphBuilder.vertices(7, 8).addEdges("7-8").buildGraph();
-        var g = Graphs.disjointUnion(g1, g2, g3);
+        var g = GraphUtils.disjointUnion(g1, g2, g3);
         assertEquals(8, g.numVertices());
         assertEquals(6, g.numEdges());
     }
 
     @Test
-    public void join() {
+    public void join2() {
         var g1 = GraphBuilder.vertices(1, 2, 3).addEdges("1-2,1-3,2-3").buildGraph();
         var g2 = GraphBuilder.vertices(4, 5, 6).addEdges("4-5,5-6").buildGraph();
-        var g = Graphs.join(g1, g2);
+        var g = GraphUtils.join(g1, g2);
         int n1 = g1.numVertices();
         int n2 = g2.numVertices();
         assertEquals(n1 + n2, g.numVertices());
@@ -132,10 +133,26 @@ public class OperationsTest {
     }
 
     @Test
+    public void join3() {
+        var g1 = GraphBuilder.vertices(1, 2, 3).addEdges("1-2,1-3,2-3").buildGraph();
+        var g2 = GraphBuilder.vertices(4, 5, 6).addEdges("4-5,5-6").buildGraph();
+        var g3 = GraphBuilder.vertices(7, 8, 9, 10).addEdges("7-8,8-9,9-10,10-7").buildGraph();
+        var g = GraphUtils.join(g1, g2, g3);
+        int n1 = g1.numVertices();
+        int n2 = g2.numVertices();
+        int n3 = g3.numVertices();
+        long m1 = g1.numEdges();
+        long m2 = g2.numEdges();
+        long m3 = g3.numEdges();
+        assertEquals(n1 + n2 + n3, g.numVertices());
+        assertEquals(m1 + m2 + m3 + n1 * n2 + n1 * n3 + n2 * n3, g.numEdges());
+    }
+
+    @Test
     public void union() {
         var g1 = GraphBuilder.vertices(1, 2, 3).addEdges("1-2,2-3").buildGraph();
         var g2 = GraphBuilder.vertices(2, 3, 4).addEdges("2-3,3-4").buildGraph();
-        var g = Graphs.union(g1, g2);
+        var g = GraphUtils.union(g1, g2);
         assertEquals(4, g.numVertices());
         assertEquals(3, g.numEdges());
     }
@@ -155,7 +172,7 @@ public class OperationsTest {
         var g = GraphBuilder.numVertices(4)
                 .addEdges("0-1, 0-2, 0-3, 1-3")
                 .buildDigraph();
-        var t = Graphs.transpose(g);
+        var t = GraphUtils.transpose(g);
         assertEquals(g.numEdges(), t.numEdges());
         assertTrue(t.containsEdge(1, 0));
         assertTrue(t.containsEdge(2, 0));

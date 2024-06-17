@@ -22,7 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import org.graph4j.Edge;
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
+import org.graph4j.GraphAlgorithm;
 import org.graph4j.util.IntArrays;
 import org.graph4j.util.Matching;
 
@@ -115,7 +115,7 @@ public class MaximalCardinalityMatching extends GraphAlgorithm
     //fast and memory efficient
     private void createUnsorted(boolean random) {
         int n = graph.numVertices();
-        matching = new Matching(graph, n / 2);
+        matching = new Matching(graph);
         int[] vertices = graph.vertices();
         if (random) {
             vertices = IntArrays.shuffle(vertices);
@@ -144,7 +144,7 @@ public class MaximalCardinalityMatching extends GraphAlgorithm
     //better results
     private void createSorted(Edge[] edges) {
         int n = graph.numVertices();
-        matching = new Matching(graph, n / 2);
+        matching = new Matching(graph);
         for (Edge e : edges) {
             int v = e.source();
             int u = e.target();

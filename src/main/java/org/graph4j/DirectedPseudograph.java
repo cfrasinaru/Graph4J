@@ -16,6 +16,9 @@
  */
 package org.graph4j;
 
+import java.util.Collection;
+import org.graph4j.util.VertexSet;
+
 /**
  * Multiple (parallel) edges are allowed.
  *
@@ -32,11 +35,10 @@ public interface DirectedPseudograph<V, E> extends Pseudograph<V, E>, DirectedMu
     @Override
     DirectedPseudograph<V, E> copy();
 
-    /**
-     *
-     * @param vertices an array of vertex numbers.
-     * @return the subgraph induced by the given vertices
-     */
     @Override
-    DirectedPseudograph<V, E> subgraph(int... vertices);
+    DirectedPseudograph<V, E> subgraph(VertexSet vertexSet);
+
+    @Override
+    DirectedPseudograph<V, E> subgraph(Collection<Edge> edges);
+
 }

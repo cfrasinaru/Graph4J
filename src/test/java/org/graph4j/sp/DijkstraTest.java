@@ -25,8 +25,8 @@ import org.graph4j.alg.sp.BellmanFordShortestPath;
 import org.graph4j.alg.sp.BidirectionalDijkstra;
 import org.graph4j.alg.sp.DijkstraShortestPathDefault;
 import org.graph4j.alg.sp.DijkstraShortestPathHeap;
-import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.graph4j.generators.EdgeWeightsGenerator;
+import org.graph4j.generators.RandomGnpGraphGenerator;
 
 /**
  *

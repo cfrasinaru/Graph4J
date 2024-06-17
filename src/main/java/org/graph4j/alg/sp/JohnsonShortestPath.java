@@ -20,8 +20,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.graph4j.Graph;
 import org.graph4j.util.Path;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.util.Validator;
 
 /**
  *
@@ -59,7 +59,7 @@ public class JohnsonShortestPath extends GraphAlgorithm
     private void prepare() {
         //Create a copy of the graph
         this.auxGraph = graph.copy();
-        if (!auxGraph.isEdgeWeighted()) {
+        if (!auxGraph.hasEdgeWeights()) {
             //put weight 1.0 on each edge
             for (int v : auxGraph.vertices()) {
                 for (var it = auxGraph.neighborIterator(v); it.hasNext();) {
@@ -71,7 +71,7 @@ public class JohnsonShortestPath extends GraphAlgorithm
         //Add a new auxiliary node connected to all vertices, with weight 0        
         int newNode = auxGraph.addVertex();
         for (int v : graph.vertices()) {
-            auxGraph.addWeightedEdge(newNode, v, 0.0);            
+            auxGraph.addEdge(newNode, v, 0.0);            
         }
         //Use Bellman–Ford algorithm O(nm) from the auxiliary node
         //to find for each vertex the shortest path to it h(v)
@@ -103,8 +103,8 @@ public class JohnsonShortestPath extends GraphAlgorithm
 
     @Override
     public Path findPath(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         if (algs == null) {
             computeAll();
         }
@@ -118,8 +118,8 @@ public class JohnsonShortestPath extends GraphAlgorithm
 
     @Override
     public double getPathWeight(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        Validator.containsVertex(graph, source);
+        Validator.containsVertex(graph, target);
         if (algs == null) {
             computeAll();
         }

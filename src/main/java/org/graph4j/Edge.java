@@ -16,8 +16,10 @@
  */
 package org.graph4j;
 
+import static org.graph4j.Graph.WEIGHT;
+
 /**
- * An edge is a pair of vertices.It may or may not be part of the graph. Edges
+ * An edge is a pair of vertices. It may or may not be part of the graph. Edges
  * are not stored as objects in the graph structure, instead they are created on
  * demand.
  *
@@ -29,7 +31,7 @@ public class Edge<E> implements Comparable<Edge> {
     protected boolean directed;
     protected int source;
     protected int target;
-    protected Double weight;
+    protected Double[] data;
     protected E label;
 
     /**
@@ -38,7 +40,21 @@ public class Edge<E> implements Comparable<Edge> {
      * @param target the target endpoint of the edge.
      */
     public Edge(int source, int target) {
-        this(source, target, false, null, null);
+        this.source = source;
+        this.target = target;
+    }
+
+    /**
+     *
+     * @param source the source endpoint of the edge.
+     * @param target the target endpoint of the edge.
+     * @param directed {@code true} if the edge has a direction (in case of
+     * digraphs).
+     */
+    public Edge(int source, int target, boolean directed) {
+        this.source = source;
+        this.target = target;
+        this.directed = directed;
     }
 
     /**
@@ -46,20 +62,9 @@ public class Edge<E> implements Comparable<Edge> {
      * @param source the source endpoint of the edge.
      * @param target the target endpoint of the edge.
      * @param weight the weight of the edge.
-     * @param label the label of the edge.
      */
-    public Edge(int source, int target, Double weight, E label) {
-        this(source, target, false, weight, label);
-    }
-
-    /**
-     *
-     * @param source the source endpoint of the edge.
-     * @param target the target endpoint of the edge.
-     * @param weight the weight of the edge.
-     */
-    public Edge(int source, int target, Double weight) {
-        this(source, target, false, weight, null);
+    public Edge(int source, int target, double weight) {
+        this(source, target, null, new Double[]{weight});
     }
 
     /**
@@ -69,34 +74,31 @@ public class Edge<E> implements Comparable<Edge> {
      * @param label the label of the edge.
      */
     public Edge(int source, int target, E label) {
-        this(source, target, false, null, label);
+        this(source, target, label, (Double[]) null);
     }
 
     /**
      *
      * @param source the source endpoint of the edge.
-     * @param target target the target endpoint of the edge.
-     * @param directed {@code true} if the edge has a direction (in case of
-     * digraphs).
-     */
-    public Edge(int source, int target, boolean directed) {
-        this(source, target, directed, null, null);
-    }
-
-    /**
-     *
-     * @param source the source endpoint of the edge.
-     * @param target target the target endpoint of the edge.
-     * @param directed {@code true} if the edge has a direction (in case of
-     * digraphs).
+     * @param target the target endpoint of the edge.
      * @param weight the weight of the edge.
      * @param label the label of the edge.
      */
-    public Edge(int source, int target, boolean directed, Double weight, E label) {
+    public Edge(int source, int target, E label, double weight) {
+        this(source, target, label, new Double[]{weight});
+    }
+
+    /**
+     *
+     * @param source the source endpoint of the edge.
+     * @param target target the target endpoint of the edge.
+     * @param data the data associated with the edge.
+     * @param label the label of the edge.
+     */
+    public Edge(int source, int target, E label, Double... data) {
         this.source = source;
         this.target = target;
-        this.directed = directed;
-        this.weight = weight;
+        this.data = data;
         this.label = label;
     }
 
@@ -139,15 +141,21 @@ public class Edge<E> implements Comparable<Edge> {
      */
     public double weight() {
         //tricky, don't invoke this method if you expect null
-        if (weight == null) {
+        if (data == null || data[WEIGHT] == null) {
             return Graph.DEFAULT_EDGE_WEIGHT;
         }
-        return weight;
+        return data[WEIGHT];
     }
 
-    //internal use only
-    public void setWeight(Double weight) {
-        this.weight = weight;
+    public Double data(int dataType) {
+        return data[dataType];
+    }
+
+    public double dataOrDefault(int dataType, int defaultValue) {
+        if (data == null || data[dataType] == null) {
+            return defaultValue;
+        }
+        return data[dataType];
     }
 
     /**
@@ -159,6 +167,7 @@ public class Edge<E> implements Comparable<Edge> {
         return label;
     }
 
+    //internal use only
     void setLabel(E label) {
         this.label = label;
     }
@@ -169,7 +178,9 @@ public class Edge<E> implements Comparable<Edge> {
      * @return a new edge with the direction reversed.
      */
     public Edge<E> flip() {
-        return new Edge(target, source, directed, weight, label);
+        Edge e = new Edge(target, source, label, data);
+        e.directed = directed;
+        return e;
     }
 
     /**
@@ -189,8 +200,16 @@ public class Edge<E> implements Comparable<Edge> {
         if (label != null) {
             sb.append(":").append(label);
         }
-        if (weight != null) {
-            sb.append("=").append(weight);
+        if (data != null) {
+            sb.append("=");
+            for (Double value : data) {
+                if (value != null) {
+                    if (sb.charAt(sb.length() - 1) != '=') {
+                        sb.append(";");
+                    }
+                    sb.append(value);
+                }
+            }
         }
         return sb.toString();
     }
@@ -233,3 +252,53 @@ public class Edge<E> implements Comparable<Edge> {
     }
 
 }
+
+
+/*
+    protected Edge(Builder<E> builder) {
+        this.directed = builder.directed;
+        this.source = builder.source;
+        this.target = builder.target;
+        this.weight = builder.weight;
+        this.label = builder.label;
+    }
+
+    public static class Builder<E> {
+
+        private boolean directed = false;
+        private int source;
+        private int target;
+        private Double weight;
+        private E label;
+
+        public Builder<E> directed(boolean directed) {
+            this.directed = directed;
+            return this;
+        }
+
+        public Builder<E> source(int source) {
+            this.source = source;
+            return this;
+        }
+
+        public Builder<E> target(int target) {
+            this.target = target;
+            return this;
+        }
+
+        public Builder<E> weight(Double weight) {
+            this.weight = weight;
+            return this;
+        }
+
+        public Builder<E> label(E label) {
+            this.label = label;
+            return this;
+        }
+
+        public Edge<E> build() {
+            return new Edge<>(this);
+        }
+    }
+
+ */

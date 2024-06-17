@@ -18,13 +18,14 @@ package org.graph4j.alg.connectivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.graph4j.Digraph;
 import org.graph4j.Graph;
-import org.graph4j.Graphs;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.alg.flow.MaximumFlowAlgorithm;
-import org.graph4j.generate.EdgeWeightsGenerator;
-import org.graph4j.util.CheckArguments;
+import org.graph4j.GraphUtils;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.Network;
+import static org.graph4j.Network.CAPACITY;
+import static org.graph4j.Network.FLOW;
+import org.graph4j.flow.MaximumFlowAlgorithm;
+import org.graph4j.generators.EdgeDataGenerator;
 import org.graph4j.util.EdgeSet;
 import org.graph4j.util.Path;
 import org.graph4j.util.VertexQueue;
@@ -38,7 +39,7 @@ import org.graph4j.util.VertexQueue;
  */
 public class EdgeConnectivityAlgorithm extends GraphAlgorithm {
 
-    private Digraph network;
+    private Network network;
 
     /**
      * Creates an algorithm for determining the edge connectivity of a graph.
@@ -51,13 +52,9 @@ public class EdgeConnectivityAlgorithm extends GraphAlgorithm {
     }
 
     private void createNetwork() {
-        if (graph.isDirected()) {
-            network = (Digraph) graph.copy();
-        } else {
-            network = Graphs.toDigraph(graph);
-        }
+        network = GraphUtils.toNetwork(graph);
         //capacity of each arc is 1
-        EdgeWeightsGenerator.fill(network, 1);
+        new EdgeDataGenerator(network, CAPACITY).fill(1);
     }
 
     /**
@@ -71,10 +68,10 @@ public class EdgeConnectivityAlgorithm extends GraphAlgorithm {
      * source and the target.
      */
     public int countMaximumDisjointPaths(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
-        return (int) MaximumFlowAlgorithm.getInstance(network, source, target)
-                .getValue();
+        network.setSource(source);
+        network.setSink(target);
+        network.resetEdgeData(FLOW, 0);
+        return (int) MaximumFlowAlgorithm.getInstance(network).getMaximumFlowValue();
     }
 
     /**
@@ -88,10 +85,10 @@ public class EdgeConnectivityAlgorithm extends GraphAlgorithm {
      * source and the target.
      */
     public EdgeSet getMinimumCut(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
-        return MaximumFlowAlgorithm.getInstance(network, source, target)
-                .getCutEdges();
+        network.setSource(source);
+        network.setSink(target);
+        network.resetEdgeData(FLOW, 0);
+        return MaximumFlowAlgorithm.getInstance(network).getMinimumCutEdges();
     }
 
     /**
@@ -104,12 +101,13 @@ public class EdgeConnectivityAlgorithm extends GraphAlgorithm {
      * the target.
      */
     public List<Path> getMaximumDisjointPaths(int source, int target) {
-        CheckArguments.graphContainsVertex(graph, source);
-        CheckArguments.graphContainsVertex(graph, target);
+        network.setSource(source);
+        network.setSink(target);
+        network.resetEdgeData(FLOW, 0);
 
         //solve the maximum flow problem
-        var maxFlowAlg = MaximumFlowAlgorithm.getInstance(network, source, target);
-        int flowValue = (int) maxFlowAlg.getValue();
+        var maxFlowAlg = MaximumFlowAlgorithm.getInstance(network);
+        int flowValue = (int) maxFlowAlg.getMaximumFlowValue();
 
         //the maximum flow can be expressed as a sum of flows of value 1
         //each of these flows corresponds to a path from source to target
@@ -121,7 +119,7 @@ public class EdgeConnectivityAlgorithm extends GraphAlgorithm {
             int v = network.vertexAt(i);
             for (var it = network.successorIterator(v); it.hasNext();) {
                 int u = it.next();
-                if (maxFlowAlg.getValue(v, u) == 1) {
+                if (maxFlowAlg.getFlowValue(v, u) == 1) {
                     sat[i].add(u);
                 }
             }

@@ -87,7 +87,7 @@ public interface AllPairsShortestPath {
      * @return the default implementation of this interface.
      */
     static AllPairsShortestPath getInstance(Graph graph) {
-        if (!graph.isEdgeWeighted()) {
+        if (!graph.hasEdgeWeights()) {
             return new BFSAllPairsShortestPath(graph);
         }
         return new JohnsonShortestPath(graph);

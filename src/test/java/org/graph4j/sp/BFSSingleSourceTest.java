@@ -22,7 +22,7 @@ import org.graph4j.alg.sp.BFSSingleSourceShortestPath;
 import org.graph4j.alg.sp.DijkstraShortestPathHeap;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.graph4j.generators.RandomGnpGraphGenerator;
 import org.graph4j.util.Path;
 
 /**

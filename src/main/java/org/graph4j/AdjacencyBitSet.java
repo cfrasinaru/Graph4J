@@ -19,37 +19,37 @@ package org.graph4j;
 import java.util.BitSet;
 
 /**
- * Does not scale.
+ * Represents the neighbors of a vertex using a BitSet. 
  *
  * @author Cristian Frăsinaru
  */
 class AdjacencyBitSet implements AdjacencySet {
-    
+
     final BitSet bitSet;
-    
+
     public AdjacencyBitSet() {
         this.bitSet = new BitSet();
     }
-    
+
     public AdjacencyBitSet(BitSet bitSet) {
         this.bitSet = (BitSet) bitSet.clone();
     }
-    
+
     @Override
     public AdjacencyBitSet copy() {
         return new AdjacencyBitSet(bitSet);
     }
-    
+
     @Override
     public void add(int u) {
         bitSet.set(u, true);
     }
-    
+
     @Override
     public void remove(int u) {
         bitSet.set(u, false);
     }
-    
+
     @Override
     public boolean contains(int u) {
         return bitSet.get(u);

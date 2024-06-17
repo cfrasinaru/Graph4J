@@ -19,8 +19,8 @@ package org.graph4j.util;
 import org.graph4j.Graph;
 
 /**
- * A <i>stable set</i> is a set of vertices of a graph, no two of which are
- * adjacent. It is also called an <i>independent set</i> of vertices.
+ * A <em>stable set</em> is a set of vertices of a graph, no two of which are
+ * adjacent. It is also called an <em>independent set</em> of vertices.
  *
  * @author Cristian Frăsinaru
  */
@@ -37,7 +37,6 @@ public class StableSet extends VertexSet {
     public StableSet(Graph graph, int[] vertices) {
         super(graph, vertices);
     }
-        
 
     protected void checkEdge(int v, int u) {
         if (v == u) {
@@ -59,7 +58,9 @@ public class StableSet extends VertexSet {
     }
 
     /**
-     * @return {@code true} if the vertices represent a stable set.
+     * Checks if the vertices in this set actually represent a stable set.
+     *
+     * @return {@code true} if the stable set is valid, {@code false} otherwise.
      */
     public boolean isValid() {
         try {
@@ -71,12 +72,30 @@ public class StableSet extends VertexSet {
         }
     }
 
-    /*
-    @Override
-    public boolean add(int v) {
-        for (int i = 0; i < numVertices; i++) {
-            checkEdge(v, vertices[i]);
+    /**
+     * Checks if the stable set is maximal.
+     *
+     * @return {@code true} if the stable set is maximal, {@code false}
+     * otherwise.
+     */
+    public boolean isMaximal() {
+        for (int v : graph.vertices()) {
+            if (this.contains(v)) {
+                continue;
+            }
+            boolean connectedToNone = true;
+            for (int i = 0; i < numVertices; i++) {
+                int u = vertices[i];
+                if (graph.containsEdge(v, u)) {
+                    connectedToNone = false;
+                    break;
+                }
+            }
+            if (connectedToNone) {
+                return false;
+            }
         }
-        return super.add(v);
-    }*/
+        return true;
+    }
+
 }

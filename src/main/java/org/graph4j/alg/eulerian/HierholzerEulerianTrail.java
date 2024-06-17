@@ -18,7 +18,7 @@ package org.graph4j.alg.eulerian;
 
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
+import org.graph4j.GraphAlgorithm;
 import org.graph4j.util.Trail;
 
 /**

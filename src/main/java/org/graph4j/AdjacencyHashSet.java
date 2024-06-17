@@ -19,6 +19,10 @@ package org.graph4j;
 import java.util.HashSet;
 
 /**
+ * Represents the neighbors of a vertex using a HashSet. Intended for large
+ * sparse graphs.
+ *
+ * NOT USED.
  *
  * @author Cristian Frăsinaru
  */
@@ -34,7 +38,6 @@ class AdjacencyHashSet implements AdjacencySet {
     public AdjacencyHashSet(HashSet<Integer> hashSet) {
         this.hashSet = new HashSet<>(hashSet);
     }
-
 
     @Override
     public AdjacencyHashSet copy() {

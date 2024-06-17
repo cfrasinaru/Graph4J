@@ -78,7 +78,7 @@ public interface SinglePairShortestPath {
      * @return the default implementation of this interface.
      */
     static SinglePairShortestPath getInstance(Graph graph, int source, int target) {
-        if (!graph.isEdgeWeighted()) {
+        if (!graph.hasEdgeWeights()) {
             return new BFSSinglePairShortestPath(graph, source, target);
         }
         return new BidirectionalDijkstra(graph, source, target);

@@ -243,7 +243,7 @@ public class VertexSet extends VertexCollection {
             return false;
         }
         final VertexSet other = (VertexSet) obj;
-        return IntArrays.sameValues(this.vertices(), other.vertices());
+        return IntArrays.haveSameValues(this.vertices(), other.vertices());
     }
 
 }

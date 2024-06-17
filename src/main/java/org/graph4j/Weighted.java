@@ -25,52 +25,55 @@ interface Weighted {
     /**
      * Adds a new vertex to the graph having the specified number and weight.
      *
+     * After the execution of this method, the graph is considered
+     * <em>vertex weighted</em>.
+     *
      * @param v a vertex number.
-     * @param weight the weight to be set for vertex v.
+     * @param weight the weight to be set for vertex {@code v}.
      * @return the index of the added vertex.
+     * @throws InvalidVertexException if {@code v} is negative or it is already
+     * in the graph.
      */
     int addWeightedVertex(int v, double weight);
 
-    @Deprecated
-    default int addVertex(int v, double weight) {
-        return addWeightedVertex(v, weight);
-    }
-
     /**
      * Adds a new vertex to the graph having the number equal to the maximum
-     * vertex number plus one and the specified weight.
+     * vertex number plus one, and the specified weight.
+     *
+     * After the execution of this method, the graph is considered
+     * <em>vertex weighted</em>.
      *
      * @param weight the weight to be set for the added vertex.
      * @return the number of the added vertex.
      */
     int addWeightedVertex(double weight);
 
-    @Deprecated
-    default int addVertex(double weight) {
-        return addWeightedVertex(weight);
-    }
-
     /**
      * Adds a new weighted edge to the graph. The endpoints of the edge are
-     * identified using their vertex numbers.
+     * specified using their vertex numbers.
+     *
+     * After a successful execution of this method, the graph is considered
+     * <em>edge weighted</em>. See also {@link Graph#addEdge(int, int)}.
      *
      * @param v a vertex number
      * @param u a vertex number
-     * @param weight the weigth to be set for the edge vu.
-     * @return the position of u in the adjacency list of v.
+     * @param weight the weight to be set for the edge {@code (v,u)}.
+     * @return the position of {@code u} in the adjacency list of {@code v} if
+     * {@code (v,u)} edge was added, or {@code -1} if the edge was not added.
+     * @throws InvalidVertexException if either of the two vertices is not in
+     * the graph.
      */
-    int addWeightedEdge(int v, int u, double weight);
-
-    @Deprecated
-    default int addEdge(int v, int u, double weight) {
-        return addWeightedEdge(v, u, weight);
-    }
+    int addEdge(int v, int u, double weight);
 
     /**
-     * Sets the weight of a vertex.
+     * Sets the weight of a vertex. If at least one vertex has been assigned a
+     * weight, the graph is considered <em>vertex weighted</em>.
+     *
+     * The time complexity of this method is {@code O(1)}.
      *
      * @param v a vertex number.
      * @param weight the weight to be set for vertex v.
+     * @throws InvalidVertexException if {@code v} is not in the graph.
      */
     void setVertexWeight(int v, double weight);
 
@@ -79,17 +82,26 @@ interface Weighted {
      * vertex unweighted) it returns {@link Graph#DEFAULT_VERTEX_WEIGHT}, which
      * is 1.
      *
+     * The time complexity of this method is {@code O(1)}.
+     *
      * @param v a vertex number.
      * @return the weight of the vertex, 1 if the graph is unweighted.
+     * @throws InvalidVertexException if {@code v} is not in the graph.
      */
     double getVertexWeight(int v);
 
     /**
      * Sets the weight of an edge.
      *
+     * The time complexity of this method is {@code O(degree(v))}. It is more
+     * efficient to set the weights of the edges while iterating over them, see
+     * {@link Graph#neighborIterator(int)} or {@link Graph#edgeIterator()}.
+     *
      * @param v a vertex number.
      * @param u a vertex number.
-     * @param weight the weigth to be set for the edge vu.
+     * @param weight the weight to be set for the edge {@code (v,u)}.
+     * @throws InvalidEdgeException if the graph does not contain the edge
+     * {@code (v,u)}.
      */
     void setEdgeWeight(int v, int u, double weight);
 
@@ -99,25 +111,76 @@ interface Weighted {
      * which is 1. If the endpoints v and u do not represent an edge, it returns
      * {@link Double#POSITIVE_INFINITY}.
      *
+     * The time complexity of this method is {@code O(degree(v))}. It is more
+     * efficient to get the weights of the edges while iterating over them, see
+     * {@link Graph#neighborIterator(int)} or {@link Graph#edgeIterator()}.
+     *
      * @param v a vertex number.
      * @param u a vertex number.
-     * @return the weight of the edge vu.
+     * @return the weight of the edge {@code (v,u)}.
+     * @throws InvalidEdgeException if the graph does not contain the edge
+     * {@code (v,u)}.
      */
     double getEdgeWeight(int v, int u);
 
     /**
-     * Returns {@code true} if the graph is edge weighted, that is there is at
-     * least one edge that has been assigned a weight.
+     * Returns the weight of an edge. If no weights have been set on edges (the
+     * graph is edge unweighted) it returns {@link Graph#DEFAULT_EDGE_WEIGHT},
+     * which is 1. If the argument does not represent an edge, it returns
+     * {@link Double#POSITIVE_INFINITY}.
      *
-     * @return {@code true}, if weights have been set on edges.
+     * The time complexity of this method is {@code O(degree(v))}. It is more
+     * efficient to get the weights of the edges while iterating over them, see
+     * {@link Graph#neighborIterator(int)} or {@link Graph#edgeIterator()}.
+     *
+     * @param e an edge.
+     * @return the weight of the edge {@code e}.
+     * @throws InvalidEdgeException if the graph does not contain the edge
+     * {@code e}.
      */
-    boolean isEdgeWeighted();
+    default double getEdgeWeight(Edge e) {
+        return getEdgeWeight(e.source(), e.target());
+    }
 
     /**
-     * Returns {@code true} if the graph is vertex weighted, that is there is at
-     * least one vertex that has been assigned a weight.
+     * Checks if the graph is has at least one edge that has been assigned a
+     * weight (is edge weighted).
      *
-     * @return {@code true}, if weights have been set on vertices.
+     * @return {@code true} if weights have been set on edges, {@code false}
+     * otherwise.
      */
-    boolean isVertexWeighted();
+    boolean hasEdgeWeights();
+
+    /**
+     * Checks if the graph has at least one vertex that has been assigned a
+     * weight (is vertex weighted).
+     *
+     * @return {@code true} if weights have been set on vertices, {@code false}
+     * otherwise.
+     */
+    boolean hasVertexWeights();
+
+    double getEdgeData(int dataType, int v, int u, double defaultValue);
+
+    default double getEdgeData(int dataType, int v, int u) {
+        return getEdgeData(dataType, v, u, 0);
+    }
+
+    default double getEdgeData(int dataType, Edge e, double defaultValue) {
+        return getEdgeData(dataType, e.source(), e.target(), defaultValue);
+    }
+
+    default double getEdgeData(int dataType, Edge e) {
+        return getEdgeData(dataType, e, 0);
+    }
+
+    void setEdgeData(int dataType, int v, int u, double value);
+
+    void incEdgeData(int dataType, int v, int u, double amount);
+
+    //void incEdgeDataAt(int dataType, int vi, int pos, double amount);
+
+    boolean hasEdgeData(int dataType);
+
+    void resetEdgeData(int dataType, double value);
 }

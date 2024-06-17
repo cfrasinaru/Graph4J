@@ -19,9 +19,10 @@ package org.graph4j.measures;
 import java.util.stream.IntStream;
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
+import org.graph4j.util.Validator;
 
 /**
- * Various <em>sizes</em> related to a graph.
+ * Various <em>sizes</em> related to graphs.
  *
  * @author Cristian Frăsinaru
  */
@@ -29,37 +30,37 @@ public class GraphMeasures {
 
     /**
      *
-     * @param graph the input graph (directed or undirected).
+     * @param graph the input graph.
      * @return the density of the graph.
      */
     public static double density(Graph graph) {
+        Validator.requireUndirected(graph);
         int n = graph.numVertices();
         if (n == 0) {
             return 0;
         }
-        double m = graph.numVertices();
-        if (graph instanceof Digraph) {
-            return m / Digraph.maxEdges(n);
-        } else {
-            return m / Graph.maxEdges(n);
-        }
+        return (double) graph.numEdges() / Graph.maxEdges(n);
     }
 
     /**
+     * Determines the minimum degree of the vertices.
      *
      * @param graph the input graph.
      * @return the minimum degree of the vertices.
      */
     public static int minDegree(Graph graph) {
+        Validator.requireUndirected(graph);
         return graph.degree(minDegreeVertex(graph));
     }
 
     /**
+     * Determines a vertex with minimum degree.
      *
      * @param graph the input graph.
      * @return a vertex number of minimum degree.
      */
     public static int minDegreeVertex(Graph graph) {
+        Validator.requireUndirected(graph);
         int minVertex = -1;
         int minDeg = Integer.MAX_VALUE;
         for (int v : graph.vertices()) {
@@ -78,6 +79,7 @@ public class GraphMeasures {
      * @return the maximum degree of the vertices.
      */
     public static int maxDegree(Graph graph) {
+        Validator.requireUndirected(graph);
         return graph.degree(maxDegreeVertex(graph));
     }
 
@@ -87,6 +89,7 @@ public class GraphMeasures {
      * @return a vertex number of maximum degree.
      */
     public static int maxDegreeVertex(Graph graph) {
+        Validator.requireUndirected(graph);
         int maxVertex = -1;
         int maxDeg = -1;
         for (int v : graph.vertices()) {
@@ -105,8 +108,27 @@ public class GraphMeasures {
      * @return the average degree of the vertices.
      */
     public double avgDegree(Graph graph) {
+        Validator.requireUndirected(graph);
         return IntStream.of(graph.vertices())
                 .map(v -> graph.degree(v)).average().orElse(0);
+    }
+
+    /**
+     * The <em>degree histogram</em> counts how many vertices have a specific
+     * degree in the graph. If {@code degreeHistogram(g)[i]=k} then there are k
+     * vertices having the degree i.
+     *
+     * @param graph the input graph.
+     * @return the degree histogram of the graph.
+     */
+    public static int[] degreeHistogram(Graph graph) {
+        Validator.requireUndirected(graph);
+        int n = graph.numVertices();
+        int[] count = new int[n];
+        for (int v : graph.vertices()) {
+            count[graph.degree(v)]++;
+        }
+        return count;
     }
 
     /**
@@ -118,6 +140,7 @@ public class GraphMeasures {
      * @return the degree distribution of the graph.
      */
     public static double[] degreeDistribution(Graph graph) {
+        Validator.requireUndirected(graph);
         int n = graph.numVertices();
         double[] p = new double[n];
         if (n == 0) {
@@ -140,7 +163,7 @@ public class GraphMeasures {
      * @return the number of triangles in the graph.
      * @see TriangleCounter
      */
-    public static long numberOfTriangles(Graph graph) {
+    public static long numberOfTriangles(Graph graph) {        
         return new TriangleCounter(graph).count();
     }
 
@@ -154,9 +177,7 @@ public class GraphMeasures {
      * @return the number of triplets in an undirected graph.
      */
     public static long numberOfTriplets(Graph graph) {
-        if (graph.isDirected()) {
-            throw new UnsupportedOperationException();
-        }
+        Validator.requireUndirected(graph);
         long count = 0;
         for (int v : graph.vertices()) {
             int deg = graph.degree(v);
@@ -184,4 +205,191 @@ public class GraphMeasures {
         return count;
     }
      */
+    
+    
+    /**
+     *
+     * @param digraph the input digraph.
+     * @return the density of the digraph.
+     */
+    public static double density(Digraph digraph) {
+        int n = digraph.numVertices();
+        if (n == 0) {
+            return 0;
+        }
+        return (double) digraph.numEdges() / Digraph.maxEdges(n);
+    }
+
+    /**
+     * Determines the minimum indegree of the vertices.
+     *
+     * @param digraph the input digraph.
+     * @return the minimum indegree of the vertices.
+     */
+    public static int minIndegree(Digraph digraph) {
+        return digraph.indegree(minIndegreeVertex(digraph));
+    }
+
+    /**
+     * Determines a vertex with minimum indegree.
+     *
+     * @param digraph the input digraph.
+     * @return a vertex number of minimum indegree.
+     */
+    public static int minIndegreeVertex(Digraph digraph) {
+        int minVertex = -1;
+        int minDeg = Integer.MAX_VALUE;
+        for (int v : digraph.vertices()) {
+            int deg = digraph.indegree(v);
+            if (deg < minDeg) {
+                minDeg = deg;
+                minVertex = v;
+            }
+        }
+        return minVertex;
+    }
+
+    /**
+     * Determines the maximum indegree of the vertices.
+     *
+     * @param digraph the input digraph.
+     * @return the maximum indegree of the vertices.
+     */
+    public static int maxIndegree(Digraph digraph) {
+        return digraph.indegree(maxIndegreeVertex(digraph));
+    }
+
+    /**
+     * Determines a vertex with maximum indegree.
+     *
+     * @param digraph the input digraph.
+     * @return a vertex number of maximum indegree.
+     */
+    public static int maxIndegreeVertex(Digraph digraph) {
+        int maxVertex = -1;
+        int maxDeg = -1;
+        for (int v : digraph.vertices()) {
+            int deg = digraph.indegree(v);
+            if (deg > maxDeg) {
+                maxDeg = deg;
+                maxVertex = v;
+            }
+        }
+        return maxVertex;
+    }
+
+    /**
+     * Determines the average indegree of vertices.
+     *
+     * @param digraph the input digraph.
+     * @return the average indegree of the vertices.
+     */
+    public double avgIndegree(Digraph digraph) {
+        return IntStream.of(digraph.vertices())
+                .map(v -> digraph.indegree(v)).average().orElse(0);
+    }
+
+    /**
+     * The <em>indegree histogram</em> counts how many vertices have a specific
+     * indegree in the digraph. If {@code indegreeHistogram(g)[i]=k} then there
+     * are k vertices having the indegree i.
+     *
+     * @param digraph the input digraph.
+     * @return the indegree histogram of the digraph.
+     */
+    public static int[] indegreeHistogram(Digraph digraph) {
+        int n = digraph.numVertices();
+        int[] count = new int[n];
+        for (int v : digraph.vertices()) {
+            count[digraph.indegree(v)]++;
+        }
+        return count;
+    }
+
+    /**
+     * Determines the minimum outdegree of the vertices.
+     *
+     * @param digraph the input digraph.
+     * @return the minimum outdegree of the vertices.
+     */
+    public static int minOutdegree(Digraph digraph) {
+        return digraph.outdegree(minOutdegreeVertex(digraph));
+    }
+
+    /**
+     * Determines a vertex with minimum outdegree.
+     *
+     * @param digraph the input digraph.
+     * @return a vertex number of minimum outdegree.
+     */
+    public static int minOutdegreeVertex(Digraph digraph) {
+        int minVertex = -1;
+        int minDeg = Integer.MAX_VALUE;
+        for (int v : digraph.vertices()) {
+            int deg = digraph.outdegree(v);
+            if (deg < minDeg) {
+                minDeg = deg;
+                minVertex = v;
+            }
+        }
+        return minVertex;
+    }
+
+    /**
+     * Determines the maximum outdegree of the vertices.
+     *
+     * @param digraph the input digraph.
+     * @return the maximum outdegree of the vertices.
+     */
+    public static int maxOutdegree(Digraph digraph) {
+        return digraph.outdegree(maxOutdegreeVertex(digraph));
+    }
+
+    /**
+     * Determines a vertex with maximum outdegree.
+     *
+     * @param digraph the input digraph.
+     * @return a vertex number of maximum outdegree.
+     */
+    public static int maxOutdegreeVertex(Digraph digraph) {
+        int maxVertex = -1;
+        int maxDeg = -1;
+        for (int v : digraph.vertices()) {
+            int deg = digraph.outdegree(v);
+            if (deg > maxDeg) {
+                maxDeg = deg;
+                maxVertex = v;
+            }
+        }
+        return maxVertex;
+    }
+
+    /**
+     * Determines the average outdegree of vertices.
+     *
+     * @param digraph the input digraph.
+     * @return the average outdegree of the vertices.
+     */
+    public double avgOutdegree(Digraph digraph) {
+        return IntStream.of(digraph.vertices())
+                .map(v -> digraph.outdegree(v)).average().orElse(0);
+    }
+
+    /**
+     * The <em>outdegree histogram</em> counts how many vertices have a specific
+     * outdegree in the digraph. If {@code outdegreeHistogram(g)[i]=k} then there
+     * are k vertices having the outdegree i.
+     *
+     * @param digraph the input digraph.
+     * @return the outdegree histogram of the digraph.
+     */
+    public static int[] outdegreeHistogram(Digraph digraph) {
+        int n = digraph.numVertices();
+        int[] count = new int[n];
+        for (int v : digraph.vertices()) {
+            count[digraph.outdegree(v)]++;
+        }
+        return count;
+    }
+
 }

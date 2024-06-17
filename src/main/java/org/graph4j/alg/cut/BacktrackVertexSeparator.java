@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import org.graph4j.Graph;
-import org.graph4j.Graphs;
+import org.graph4j.GraphUtils;
 import org.graph4j.measures.GraphMeasures;
 
 /**
@@ -74,8 +74,8 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
         if (root == null) {
             return;
         }
-        int cores = 1;
-        //int cores = Runtime.getRuntime().availableProcessors();
+        //int cores = 1;
+        int cores = Runtime.getRuntime().availableProcessors();
         this.workers = new ArrayList<>(cores);
         for (int i = 0; i < cores; i++) {
             var worker = new Worker(root);
@@ -95,7 +95,7 @@ public class BacktrackVertexSeparator extends VertexSeparatorBase {
         if (startTime == 0) {
             startTime = System.currentTimeMillis();
         }
-        vertexConnectivity = Graphs.vertexConnectivity(graph);
+        vertexConnectivity = GraphUtils.computeVertexConnectivity(graph);
         greedySepSize = new GreedyVertexSeparator(graph, maxShoreSize).getSeparator().separator().size();
 
         int[] values = {SEP, RIGHT, LEFT}; //reverse order for poll

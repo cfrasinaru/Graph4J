@@ -17,8 +17,7 @@
 package org.graph4j;
 
 import java.io.FileNotFoundException;
-import org.graph4j.generate.RandomGnpHamiltonianGenerator;
-import org.graph4j.hamiltonian.BacktrackLongestPathAlgoritm;
+import java.util.Arrays;
 
 /**
  *
@@ -36,42 +35,59 @@ class Main {
     }
 
     private void test() {
-        int n = 30;
-        double p = 0.2;
-        //var g = new RandomGnpGraphGenerator(n, p).createGraph();
-        var g = new RandomGnpHamiltonianGenerator(n, p).createGraph();
-        //var g = GraphBuilder.numVertices(n).buildGraph();
-        var path = new BacktrackLongestPathAlgoritm(g).getLongestPath(0, n-1);
-        System.out.println(path);
-        System.out.println(path.isHamiltonian());
 
-        //var g = new DimacsIO().read("d:/datasets/coloring/instances/" + "queen8_8.col");
-        //var g = GraphBuilder.numVertices(5).addEdges("0-1,1-2,2-3,3-4").buildGraph();
-        //var g = GraphBuilder.numVertices(5).addEdges("0-1,0-2,1-2,2-3,2-4,3-4").buildGraph();
-        //var g = GraphBuilder.numVertices(10).addClique(0,1,2,3,4,5).addClique(0,6,7,8,9).buildGraph();
-        //var g = GraphBuilder.numVertices(10).addEdges("0-1,1-2,2-3,3-0,3-4,4-1,2-5,5-6,6-7,7-5,5-8,8-9,9-5").buildGraph();
-        //var g = GraphGenerator.complete(5);
-        //var g = GraphGenerator.empty(5);
+        Graph g = GraphBuilder.empty().estimatedNumVertices(5).buildGraph();
+
+        g.addVertex(); // v = 0
+        g.addVertex(); // v = 1
+        g.addVertex(); // v = 2
+        g.addVertex(); // v = 3
+        g.addVertex(); // v = 4
+
+        g.addEdge(1, 2);
+        g.addEdge(2, 3);
+        g.addEdge(3, 4);
+
+        System.out.println("edges: " + Arrays.toString(g.edges()));
+
+        g.removeVertex(2);
+
+        System.out.println("edges: " + Arrays.toString(g.edges()));
+
+        g.addVertex(); // v = 5
+
+        System.out.println("edges: " + Arrays.toString(g.edges()));
+        //var g = GraphGenerator.mycielski(5);
+        //System.out.println(g);
+        //[0-1, 0-4, 0-6, 0-9, 1-2, 1-5, 1-7, 2-3, 2-6, 2-8, 3-4, 3-7, 3-9, 4-5, 4-8, 5-10, 6-10, 7-10, 8-10, 9-10]}
+        //var g = NetworkBuilder.edges("0-1, 0-4, 0-6, 0-9, 1-2, 1-5, 1-7, 2-3, 2-6, 2-8, 3-4, 3-7, 3-9, 4-5, 4-8, 5-10, 6-10, 7-10, 8-10, 9-10").buildNetwork();
+        //new EdgeDataGenerator(g, CAPACITY).fill(Double.POSITIVE_INFINITY);
+
         /*
-        var alg = BiconnectivityAlgorithm.getInstance(g);
-        System.out.println(alg.getBlocks());
-        System.out.println(alg.getCutVertices());
-        System.out.println(alg.computeBlockGraph());
-        System.out.println(alg.computeBlockCutTree());
+        int n = 2000;
+        Network g = new RandomGnpGraphGenerator(n, 0.5).createNetwork();
+        var alg1 = new DinicMaximumFlow(g);
+        new EdgeDataGenerator(g, CAPACITY).randomDoubles(0, 1);
+        //new EdgeDataGenerator(g, CAPACITY).randomIntegers(0, n);
+        alg1.computeMaximumFlow();
          */
-        /*
-        int n = 100;
+ /*
+        int n = 1000;
         for (int i = 0; i < 100; i++) {
-            var g = new RandomOreGraphGenerator(n).createGraph();
-            System.out.println(GraphMeasures.density(g));
-            if (!Graphs.hasOreProperty(g)) {
-                System.err.println("Oops - Ore property!");
-                break;
-            }
-            var alg = new PalmerHamiltonianCycle(g);
-            var c = alg.findCycle();
-            if (!c.isValid()) {
-                System.err.println("Not a cycle!");
+            Network g = new RandomGnpGraphGenerator(n, Math.random()).createNetwork();
+            new EdgeDataGenerator(g, CAPACITY).randomIntegers(0, n);
+            var alg1 = new EdmondsKarpMaximumFlow(g);
+            var alg2 = new DinicMaximumFlow(g);
+            //var alg2 = new EdmondsKarpMaximumFlow1(g);
+            //var alg2 = new PushRelabelMaximumFlow(g);
+            //var alg1 = new EdmondsKarpMaximumFlow1(g, 0, n-1);
+            //var alg2 = new PushRelabelMaximumFlow1(g, 0, n-1);
+            double x = alg1.getMaximumFlowValue();
+            double y = alg2.getMaximumFlowValue();
+            if (x != y) {
+                System.out.println("OOPS: " + g);
+                System.out.println(x);
+                System.out.println(y);
                 break;
             }
         }*/

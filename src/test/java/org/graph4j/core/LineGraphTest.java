@@ -19,8 +19,8 @@ package org.graph4j.core;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.Graph;
-import org.graph4j.Graphs;
-import org.graph4j.generate.GraphGenerator;
+import org.graph4j.GraphUtils;
+import org.graph4j.generators.GraphGenerator;
 
 /**
  *
@@ -34,7 +34,7 @@ public class LineGraphTest {
     @Test
     public void cycle() {
         Graph g = GraphGenerator.cycle(5);
-        var lg = Graphs.lineGraph(g);
+        var lg = GraphUtils.createLineGraph(g);
         assertEquals(5, lg.numVertices());
         assertEquals(5, lg.numEdges());
     }
@@ -42,7 +42,7 @@ public class LineGraphTest {
     @Test
     public void complete() {
         Graph g = GraphGenerator.complete(4);
-        var lg = Graphs.lineGraph(g);
+        var lg = GraphUtils.createLineGraph(g);
         assertEquals(6, lg.numVertices());
         assertEquals(12, lg.numEdges()); //total(15)-3
     }

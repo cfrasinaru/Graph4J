@@ -17,10 +17,19 @@
 package org.graph4j;
 
 /**
- * Enables iteration through the edges incident from a source vertex, returning
- * one by one the neighbors of the source along with information regarding the
+ * Enables iteration over the edges incident with a source vertex, returning one
+ * by one the neighbors of the source along with information regarding the
  * corresponding edge.
  *
+ * In case of undirected graphs, it iterates over all the neighbors.
+ *
+ * In case of directed graphs, the default behavior is to iterate over the
+ * successors of the source vertex, returning the information regarding the
+ * edges outgoing from it.
+ *
+ *
+ * @see SuccessorIterator
+ * @see PredecessorIterator
  * @author Cristian Frăsinaru
  * @param <E> the type of edge labels.
  */
@@ -58,18 +67,20 @@ public interface NeighborIterator<E> {
     int previous();
 
     /**
-     * Returns the position of the current vertex in the adjacency list of the source.
+     * Returns the position of the current vertex in the adjacency list of the
+     * source.
      *
-     * @return the position of the current vertex in the adjacency list of the source.
+     * @return the position of the current vertex in the adjacency list of the
+     * source.
      */
     int adjListPos();
 
     /**
-     * 
+     *
      * @return the current edge;
      */
     Edge edge();
-    
+
     /**
      * Returns the weight of the current edge.
      *
@@ -85,6 +96,14 @@ public interface NeighborIterator<E> {
      * vertex to the current vertex
      */
     void setEdgeWeight(double weight);
+
+    void setEdgeData(int dataType, double value);
+
+    void incEdgeData(int dataType, double amount);
+
+    double getEdgeData(int dataType);
+
+    double getEdgeData(int dataType, double defaultValue);
 
     /**
      * Sets the label of the current edge.
@@ -107,4 +126,12 @@ public interface NeighborIterator<E> {
      * current edge becomes the previously one.
      */
     void removeEdge();
+
+    default boolean isSuccessor() {
+        return true;
+    }
+
+    default boolean isPredecessor() {
+        return false;
+    }
 }

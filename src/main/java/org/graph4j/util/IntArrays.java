@@ -21,22 +21,44 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Utility class for working with arrays of integers.
+ * Utility class for working with arrays of integers. Most methods assume that
+ * the values in the arrays are vertex numbers.
  *
  * @author Cristian Frăsinaru
  */
 public class IntArrays {
 
     /**
+     * Returns the minimum value in an array.
      *
      * @param array an array of integers.
-     * @return a opy of the array.
+     * @return the minimum value in the array.
+     */
+    public static int min(int[] array) {
+        return Arrays.stream(array).min().orElseThrow();
+    }
+
+    /**
+     * Returns the maximum value in an array.
+     *
+     * @param array an array of integers.
+     * @return the maximum value in the array.
+     */
+    public static int max(int[] array) {
+        return Arrays.stream(array).max().orElseThrow();
+    }
+
+    /**
+     *
+     * @param array an array of integers.
+     * @return a copy of the array.
      */
     public static int[] copyOf(int[] array) {
         return Arrays.copyOf(array, array.length);
@@ -90,12 +112,7 @@ public class IntArrays {
      * @return {@code true} if the array contains duplicate values.
      */
     public static boolean containsDuplicates(int[] array) {
-        for (int i = 0, n = array.length; i < n - 1; i++) {
-            if (contains(array, array[i], i + 1)) {
-                return true;
-            }
-        }
-        return false;
+        return findDuplicate(array) != null;
     }
 
     /**
@@ -104,11 +121,32 @@ public class IntArrays {
      * @return a duplicate value, or {@code null} if none exists.
      */
     public static Integer findDuplicate(int[] array) {
+        if (array == null || array.length < 2) {
+            return null;
+        }
+        /*
         for (int i = 0, n = array.length; i < n - 1; i++) {
             if (contains(array, array[i], i + 1)) {
                 return array[i];
             }
+        }*/
+        /*
+        int max = IntArrays.max(array);
+        boolean[] exists = new boolean[max + 1];
+        for (int a : array) {
+            if (exists[a]) {
+                return a;
+            }
+            exists[a] = true;
+        }*/
+        Set<Integer> values = new HashSet<>(array.length);
+        for (int a : array) {
+            if (values.contains(a)) {
+                return a;
+            }
+            values.add(a);
         }
+
         return null;
     }
 
@@ -223,14 +261,21 @@ public class IntArrays {
      * @return {@code true}, if the two arrays have the same values, regardless
      * of order.
      */
-    public static boolean sameValues(int[] array1, int[] array2) {
+    public static boolean haveSameValues(int[] array1, int[] array2) {
+        Objects.requireNonNull(array1);
+        Objects.requireNonNull(array2);
         if (array1 == array2) {
             return true;
         }
         if (array1.length != array2.length) {
             return false;
         }
-        return contains(array1, array2) && contains(array2, array1);
+        var clone1 = array1.clone();
+        var clone2 = array2.clone();
+        Arrays.sort(clone1);
+        Arrays.sort(clone2);
+        return Arrays.equals(clone1, clone2);
+        //return contains(array1, array2) && contains(array2, array1);
     }
 
     /**
@@ -295,6 +340,38 @@ public class IntArrays {
     }
 
     /**
+     * Checks if an array is sorted in ascending order.
+     *
+     * @param array an array of integers.
+     * @return {@code true} if the array is sorted in ascending order,
+     * {@code false} otherwise.
+     */
+    public static boolean isSortedAscending(int[] array) {
+        for (int i = 0, n = array.length; i < n - 1; i++) {
+            if (array[i] > array[i + 1]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if an array is sorted in descending order.
+     *
+     * @param array an array of integers.
+     * @return {@code true} if the array is sorted in descending order,
+     * {@code false} otherwise.
+     */
+    public static boolean isSortedDescending(int[] array) {
+        for (int i = 0, n = array.length; i < n - 1; i++) {
+            if (array[i] < array[i + 1]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      *
      * @param array an array of integers.
      * @param fromPos a position in the array.
@@ -313,4 +390,37 @@ public class IntArrays {
         sb.append("]");
         return sb.toString();
     }
+
+    /**
+     * Creates a new array with the elements of the specified array reversed.
+     *
+     * @param array an array of integers.
+     * @return the reversed array.
+     */
+    public static int[] reverse(int[] array) {
+        int n = array.length;
+        int[] reversed = new int[n];
+        for (int i = 0; i < n; i++) {
+            reversed[i] = array[n - i - 1];
+        }
+        return reversed;
+    }
+
+    /**
+     * Creates a new array containing the positions (indices) of the elements in
+     * the specified array. It assumes that the values in the specified array
+     * are all distinct.
+     *
+     * @param array an array of distinct integers.
+     * @return the positions of elements in the array.
+     */
+    public static int[] positions(int[] array) {
+        int max = Arrays.stream(array).max().orElse(0);
+        int pos[] = new int[max + 1];
+        for (int i = 0, n = array.length; i < n; i++) {
+            pos[array[i]] = i;
+        }
+        return pos;
+    }
+
 }

@@ -22,8 +22,8 @@ import java.util.Objects;
  * Utility class describing a generic pair of values.
  *
  * @author Cristian Frăsinaru
- * @param <K>
- * @param <V>
+ * @param <K> the type of the first element.
+ * @param <V> the type of the second element
  */
 public class Pair<K, V> {
 

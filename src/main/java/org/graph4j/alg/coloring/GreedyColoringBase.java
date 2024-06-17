@@ -19,7 +19,7 @@ package org.graph4j.alg.coloring;
 import java.util.Arrays;
 import java.util.BitSet;
 import org.graph4j.Graph;
-import org.graph4j.alg.SimpleGraphAlgorithm;
+import org.graph4j.SimpleGraphAlgorithm;
 
 /**
  * Greedy coloring is a simple heuristic algorithm that assigns colors to the

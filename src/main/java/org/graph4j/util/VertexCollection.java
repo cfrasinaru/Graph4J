@@ -31,7 +31,7 @@ import org.graph4j.Graph;
  * @see VertexStack
  * @author Cristian Frăsinaru
  */
-abstract class VertexCollection implements Iterable<Integer> {
+public abstract class VertexCollection implements Iterable<Integer> {
 
     protected Graph graph;
     protected int[] vertices;
@@ -305,6 +305,50 @@ abstract class VertexCollection implements Iterable<Integer> {
         first = 0;
     }
 
+    /**
+     * Checks if the specified vertices represent a clique, meaning that the
+     * subgraph induced by them is complete.
+     *
+     * @return {@code true} if the vertices form a clique, {@code false}
+     * otherwise.
+     * @throws IllegalArgumentException if the graph is directed.
+     */
+    public boolean isClique() {
+        Validator.requireUndirected(graph);
+        for (int i = 0; i < numVertices - 1; i++) {
+            int v = vertices[i];
+            for (int j = i + 1; j < numVertices; j++) {
+                int u = vertices[j];
+                if (!graph.containsEdge(v, u)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the specified vertices represent a stable set, meaning that the
+     * subgraph induced by them is empty.
+     *
+     * @return {@code true} if the vertices form a stable set, {@code false}
+     * otherwise.
+     * @throws IllegalArgumentException if the graph is directed.
+     */
+    public boolean isStableSet() {
+        Validator.requireUndirected(graph);
+        for (int i = 0; i < numVertices - 1; i++) {
+            int v = vertices[i];
+            for (int j = i + 1; j < numVertices; j++) {
+                int u = vertices[j];
+                if (graph.containsEdge(v, u)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     @Override
     public int hashCode() {
         int hash = 5;
@@ -336,13 +380,13 @@ abstract class VertexCollection implements Iterable<Integer> {
         StringBuilder sb = new StringBuilder();
         int v = vertices[first + i];
         sb.append(v);
-        if (graph.isVertexLabeled()) {
+        if (graph.hasVertexLabels()) {
             var label = graph.getVertexLabel(v);
             if (label != null) {
                 sb.append(":").append(label);
             }
         }
-        if (graph.isVertexWeighted()) {
+        if (graph.hasVertexWeights()) {
             double weight = graph.getVertexWeight(v);
             sb.append("=").append(weight);
         }

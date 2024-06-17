@@ -19,8 +19,8 @@ package org.graph4j.alg;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.alg.clique.MaximalCliqueFinder;
-import org.graph4j.generate.GraphGenerator;
-import org.graph4j.generate.RandomGnpGraphGenerator;
+import org.graph4j.generators.GraphGenerator;
+import org.graph4j.generators.RandomGnpGraphGenerator;
 
 /**
  *

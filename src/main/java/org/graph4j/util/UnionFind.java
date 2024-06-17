@@ -37,6 +37,7 @@ import java.util.Arrays;
 public class UnionFind {
 
     private final int numVertices;
+    private boolean pathCompression;
     private final int[] parent;
     private int numSets;
 
@@ -48,7 +49,21 @@ public class UnionFind {
      * @param numVertices the number of vertices in the graph.
      */
     public UnionFind(int numVertices) {
+        this(numVertices, true);
+    }
+
+    /**
+     * Creates a union-find data structures having <code>numVertices</code>
+     * singleton sets, each containing one vertex index, from <code>0</code> to
+     * <code>numVertices-1</code>.
+     *
+     * @param numVertices the number of vertices in the graph.
+     * @param pathCompression {@code true} if the find method should use the
+     * path compression.
+     */
+    public UnionFind(int numVertices, boolean pathCompression) {
         this.numVertices = numVertices;
+        this.pathCompression = pathCompression;
         this.numSets = numVertices;
         parent = new int[numVertices];
         Arrays.fill(parent, -1);
@@ -72,11 +87,13 @@ public class UnionFind {
             root = parent[root];
         }
         //path compression
-        int j = vi;
-        while (parent[j] >= 0) {
-            int temp = parent[j];
-            parent[j] = root;
-            j = temp;
+        if (pathCompression) {
+            int j = vi;
+            while (parent[j] >= 0) {
+                int temp = parent[j];
+                parent[j] = root;
+                j = temp;
+            }
         }
         return root;
     }
@@ -110,5 +127,13 @@ public class UnionFind {
      */
     public int numSets() {
         return numSets;
+    }
+
+    public int getParent(int vi) {
+        return parent[vi];
+    }
+
+    protected void setParent(int vi, int parentId) {
+        parent[vi] = parentId;
     }
 }

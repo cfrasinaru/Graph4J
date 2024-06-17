@@ -21,13 +21,13 @@ import java.util.Iterator;
 import java.util.List;
 import org.graph4j.Digraph;
 import org.graph4j.Edge;
-import org.graph4j.alg.DirectedGraphAlgorithm;
+import org.graph4j.DirectedGraphAlgorithm;
 import org.graph4j.GraphBuilder;
 import org.graph4j.util.VertexSet;
 import org.graph4j.util.VertexStack;
-import org.graph4j.traverse.DFSVisitor;
-import org.graph4j.traverse.DFSTraverser;
-import org.graph4j.traverse.SearchNode;
+import org.graph4j.traversal.DFSVisitor;
+import org.graph4j.traversal.DFSTraverser;
+import org.graph4j.traversal.SearchNode;
 
 /**
  * Tarjan's strongly connected components algorithm is an algorithm in graph
@@ -71,7 +71,7 @@ public class TarjanStrongConnectivity
     public List<Digraph> getStronglyConnectedComponents() {
         List<Digraph> subgraphs = new ArrayList<>();
         for (var set : compSets) {
-            subgraphs.add(graph.subgraph(set.vertices()));
+            subgraphs.add(graph.subgraph(set));
         }
         return subgraphs;
     }
@@ -106,7 +106,7 @@ public class TarjanStrongConnectivity
             int scu = vertexComp[graph.indexOf(u)];
             if (scu != scv) {
                 if (!condensation.containsEdge(scv, scu)) {
-                    condensation.addWeightedEdge(scv, scu, 1);
+                    condensation.addEdge(scv, scu, 1);
                 } else {
                     condensation.setEdgeLabel(scv, scu, 1 + condensation.getEdgeLabel(scv, scu));
                 }

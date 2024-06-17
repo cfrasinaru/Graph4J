@@ -16,6 +16,9 @@
  */
 package org.graph4j;
 
+import java.util.Collection;
+import org.graph4j.util.VertexSet;
+
 /**
  *
  * @author Cristian Frăsinaru
@@ -26,8 +29,10 @@ class DirectedMultigraphImpl<V, E> extends DigraphImpl<V, E> implements Directed
     }
 
     protected DirectedMultigraphImpl(int[] vertices, int maxVertices, int avgDegree,
-            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops,
+            int vertexDataSize, int edgeDataSize) {
+        super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops,
+                vertexDataSize, edgeDataSize);
     }
 
     @Override
@@ -37,8 +42,10 @@ class DirectedMultigraphImpl<V, E> extends DigraphImpl<V, E> implements Directed
 
     @Override
     protected DirectedMultigraphImpl newInstance(int[] vertices, int maxVertices, int avgDegree,
-            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        return new DirectedMultigraphImpl(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops,
+            int vertexDataSize, int edgeDataSize) {
+        return new DirectedMultigraphImpl(vertices, maxVertices, avgDegree, directed,
+                allowingMultipleEdges, allowingSelfLoops, vertexDataSize, edgeDataSize);
     }
 
     @Override
@@ -52,8 +59,13 @@ class DirectedMultigraphImpl<V, E> extends DigraphImpl<V, E> implements Directed
     }
 
     @Override
-    public DirectedMultigraph<V, E> subgraph(int... vertices) {
-        return (DirectedMultigraph<V, E>) super.subgraph(vertices);
+    public DirectedMultigraph<V, E> subgraph(VertexSet vertexSet) {
+        return (DirectedMultigraph<V, E>) super.subgraph(vertexSet);
+    }
+
+    @Override
+    public DirectedMultigraph<V, E> subgraph(Collection<Edge> edges) {
+        return (DirectedMultigraph<V, E>) super.subgraph(edges);
     }
 
     @Override

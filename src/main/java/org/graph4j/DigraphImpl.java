@@ -17,8 +17,11 @@
 package org.graph4j;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.NoSuchElementException;
+import static org.graph4j.GraphImpl.WEIGHT;
 import org.graph4j.util.IntArrays;
+import org.graph4j.util.VertexSet;
 
 /**
  *
@@ -31,13 +34,16 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     protected int[][] predList; //predecessors
     protected int[][] predPos; //positions of a predecessor in the adjList
     protected int[] indegree;
+    //outdegree is GraphImpl.degree
 
     protected DigraphImpl() {
     }
 
     protected DigraphImpl(int[] vertices, int maxVertices, int avgDegree,
-            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops,
+            int vertexDataSize, int edgeDataSize) {
+        super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops,
+                vertexDataSize, edgeDataSize);
         indegree = new int[maxVertices];
         predList = new int[maxVertices][];
         predPos = new int[maxVertices][];
@@ -50,8 +56,10 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
 
     @Override
     protected GraphImpl newInstance(int[] vertices, int maxVertices, int avgDegree,
-            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops) {
-        return new DigraphImpl(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops);
+            boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops,
+            int vertexDataSize, int edgeDataSize) {
+        return new DigraphImpl(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops,
+                vertexDataSize, edgeDataSize);
     }
 
     @Override
@@ -63,7 +71,7 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     public boolean isComplete() {
         return numEdges == Digraph.maxEdges(numVertices);
     }
-    
+
     @Override
     public Digraph<V, E> copy() {
         return copy(true, true, true, true, true);
@@ -187,17 +195,6 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     }
 
     @Override
-    public SuccessorIterator successorIterator(int v, int pos) {
-        return new SuccessorIteratorImpl(v, pos);
-
-    }
-
-    @Override
-    public PredecessorIterator predecessorIterator(int v, int pos) {
-        return new PredecessorIteratorImpl(v, pos);
-    }
-
-    @Override
     protected void growVertices() {
         super.growVertices();
         indegree = Arrays.copyOf(indegree, vertices.length);
@@ -219,8 +216,13 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
     }
 
     @Override
-    public Digraph<V, E> subgraph(int... vertices) {
-        return (Digraph<V, E>) super.subgraph(vertices);
+    public Digraph<V, E> subgraph(VertexSet vertexSet) {
+        return (Digraph<V, E>) super.subgraph(vertexSet);
+    }
+
+    @Override
+    public Digraph<V, E> subgraph(Collection<Edge> edges) {
+        return (Digraph<V, E>) super.subgraph(edges);
     }
 
     @Override
@@ -228,7 +230,27 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
         return (Digraph<V, E>) super.complement();
     }
 
-    //just for name
+    @Override
+    public SuccessorIterator successorIterator(int v, int pos) {
+        return new SuccessorIteratorImpl(v, pos);
+
+    }
+
+    @Override
+    public PredecessorIterator predecessorIterator(int v, int pos) {
+        return new PredecessorIteratorImpl(v, pos);
+    }
+
+    @Override
+    public NeighborIterator<E> neighborIterator(int v, boolean allEdges) {
+        if (allEdges) {
+            return new SuccessorPredecessorIteratorImpl(v);
+        }
+        return super.neighborIterator(v);
+
+    }
+
+    //successors: same as NeighborIterator
     protected class SuccessorIteratorImpl extends NeighborIteratorImpl
             implements SuccessorIterator<E> {
 
@@ -242,11 +264,12 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
 
     }
 
+    //predecessors
     protected class PredecessorIteratorImpl implements PredecessorIterator<E> {
 
-        private final int v;
-        private final int vi;
-        private int pos;
+        protected final int v;
+        protected final int vi;
+        protected int pos;
 
         public PredecessorIteratorImpl(int v) {
             this(v, -1);
@@ -275,7 +298,7 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
 
         @Override
         public int next() {
-            if (!hasNext()) {
+            if (pos >= indegree[vi] - 1) {
                 throw new NoSuchElementException();
             }
             return predList[vi][++pos];
@@ -283,7 +306,7 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
 
         @Override
         public int previous() {
-            if (!hasPrevious()) {
+            if (pos <= 0) {
                 throw new NoSuchElementException();
             }
             return predList[vi][--pos];
@@ -291,24 +314,44 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
 
         @Override
         public void setEdgeWeight(double weight) {
-            checkPos();
-            if (edgeWeight == null) {
-                initEdgeWeights();
-            }
-            int u = predList[vi][pos]; //u -> v
-            int ui = indexOf(u);
-            edgeWeight[ui][predPos[vi][pos]] = weight;
+            setEdgeData(WEIGHT, weight);
         }
 
         @Override
         public double getEdgeWeight() {
+            return getEdgeData(WEIGHT, DEFAULT_EDGE_WEIGHT);
+        }
+
+        @Override
+        public void setEdgeData(int dataType, double value) {
             checkPos();
-            if (edgeWeight == null) {
-                return DEFAULT_EDGE_WEIGHT;
+            int u = predList[vi][pos]; //u -> v
+            int ui = indexOf(u);
+            setEdgeDataAt(dataType, ui, predPos[vi][pos], value);
+        }
+
+        @Override
+        public void incEdgeData(int dataType, double amount) {
+            checkPos();
+            int u = predList[vi][pos]; //u -> v
+            int ui = indexOf(u);
+            incEdgeDataAt(dataType, ui, predPos[vi][pos], amount);
+        }
+
+        @Override
+        public double getEdgeData(int dataType) {
+            return getEdgeData(dataType, 0);
+        }
+
+        @Override
+        public double getEdgeData(int dataType, double defaultValue) {
+            checkPos();
+            if (!hasEdgeData(dataType)) {
+                return defaultValue;
             }
             int u = predList[vi][pos]; //u -> v
             int ui = indexOf(u);
-            return edgeWeight[ui][predPos[vi][pos]];
+            return edgeData[dataType][ui][predPos[vi][pos]];
         }
 
         @Override
@@ -350,11 +393,136 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
             return edgeAt(ui, predPos[vi][pos]);
         }
 
-        private void checkPos() {
+        protected void checkPos() {
             if (pos < 0) {
                 throw new NoSuchElementException();
             }
         }
+
+        @Override
+        public boolean isSuccessor() {
+            return false;
+        }
+
+        @Override
+        public boolean isPredecessor() {
+            return true;
+        }
     }
 
+    //successors and predecessors
+    //SLOWER THAN IT SHOULD BE
+    protected class SuccessorPredecessorIteratorImpl implements NeighborIterator {
+
+        NeighborIterator currentIterator;
+        SuccessorIterator succIterator;
+        PredecessorIterator predIterator;
+
+        public SuccessorPredecessorIteratorImpl(int v) {
+            succIterator = successorIterator(v);
+            predIterator = predecessorIterator(v);
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (succIterator.hasNext()) {
+                currentIterator = succIterator;
+                return true;
+            }
+            if (predIterator.hasNext()) {
+                currentIterator = predIterator;
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public int next() {
+            return currentIterator.next();
+        }
+
+        @Override
+        public boolean hasPrevious() {
+            if (predIterator.hasPrevious()) {
+                currentIterator = predIterator;
+                return true;
+            }
+            if (succIterator.hasPrevious()) {
+                currentIterator = succIterator;
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public int previous() {
+            return currentIterator.previous();
+        }
+
+        @Override
+        public int adjListPos() {
+            return currentIterator.adjListPos();
+        }
+
+        @Override
+        public Edge edge() {
+            return currentIterator.edge();
+        }
+
+        @Override
+        public double getEdgeWeight() {
+            return currentIterator.getEdgeWeight();
+        }
+
+        @Override
+        public void setEdgeWeight(double weight) {
+            currentIterator.setEdgeWeight(weight);
+        }
+
+        @Override
+        public void setEdgeData(int dataType, double value) {
+            currentIterator.setEdgeData(dataType, value);
+        }
+
+        @Override
+        public void incEdgeData(int dataType, double amount) {
+            currentIterator.incEdgeData(dataType, amount);
+        }
+
+        @Override
+        public double getEdgeData(int dataType) {
+            return currentIterator.getEdgeData(dataType);
+        }
+
+        @Override
+        public double getEdgeData(int dataType, double defaultValue) {
+            return currentIterator.getEdgeData(dataType, defaultValue);
+        }
+
+        @Override
+        public Object getEdgeLabel() {
+            return currentIterator.getEdgeLabel();
+        }
+
+        @Override
+        public void setEdgeLabel(Object label) {
+            currentIterator.setEdgeLabel(label);
+        }
+
+        @Override
+        public void removeEdge() {
+            currentIterator.removeEdge();
+        }
+
+        @Override
+        public boolean isSuccessor() {
+            return currentIterator == succIterator;
+        }
+
+        @Override
+        public boolean isPredecessor() {
+            return currentIterator == predIterator;
+        }
+
+    }
 }

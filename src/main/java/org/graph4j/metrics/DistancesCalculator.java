@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import org.graph4j.Graph;
-import org.graph4j.alg.GraphAlgorithm;
-import org.graph4j.traverse.BFSIterator;
+import org.graph4j.GraphAlgorithm;
+import org.graph4j.traversal.BFSIterator;
 
 /**
  * Uses BFS from each vertex to compute the distances between all pairs of

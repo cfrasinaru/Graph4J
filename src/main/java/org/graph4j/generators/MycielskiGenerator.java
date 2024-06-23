@@ -57,7 +57,7 @@ public class MycielskiGenerator extends AbstractGraphGenerator {
             return myciel;
         }
         for (int i = 3; i < chromaticNumber; i++) {
-            myciel = create(myciel, i);
+            myciel = createFrom(myciel, i);
         }
         return myciel;
         //TODO: implement Grötzsch graph
@@ -73,7 +73,7 @@ public class MycielskiGenerator extends AbstractGraphGenerator {
      * @return a new triangle-free graph having the chromatic number
      * {@code chromaticNumber + 1}.
      */
-    public Graph create(Graph graph, int chromaticNumber) {
+    public Graph createFrom(Graph graph, int chromaticNumber) {
         Validator.requireNonEmpty(graph);
         int n = graph.numVertices();
         if (chromaticNumber < 1 || chromaticNumber > n) {

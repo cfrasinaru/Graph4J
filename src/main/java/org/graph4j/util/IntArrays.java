@@ -130,7 +130,7 @@ public class IntArrays {
                 return array[i];
             }
         }*/
-        /*
+ /*
         int max = IntArrays.max(array);
         boolean[] exists = new boolean[max + 1];
         for (int a : array) {
@@ -180,6 +180,24 @@ public class IntArrays {
             }
         }
         return k == inter.length ? inter : Arrays.copyOf(inter, k);
+    }
+
+    /**
+     *
+     * @param array1 an array of integers.
+     * @param array2 an array of integers.
+     * @return a new array containing the values in {@code array1} that are not
+     * in {@code array2}.
+     */
+    public static int[] difference(int[] array1, int[] array2) {
+        int[] diff = new int[array1.length];
+        int k = 0;
+        for (int a : array1) {
+            if (!contains(array2, a)) {
+                diff[k++] = a;
+            }
+        }
+        return k == diff.length ? diff : Arrays.copyOf(diff, k);
     }
 
     /**

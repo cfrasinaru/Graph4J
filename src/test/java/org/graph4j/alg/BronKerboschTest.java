@@ -19,7 +19,7 @@ package org.graph4j.alg;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
-import org.graph4j.alg.clique.BronKerboschCliqueIterator;
+import org.graph4j.clique.BronKerboschCliqueIterator;
 import org.graph4j.generators.GraphGenerator;
 
 /**
@@ -68,31 +68,4 @@ public class BronKerboschTest {
         }
         assertEquals(5, count);
     }
-
-    /*
-    private void test() {
-        int n = 50;
-        double p = 0.1;
-        for (int i = 0; i < 100; i++) {
-            var g = new RandomGnpGraphGenerator(n, p).createGraph();
-            int c1 = 0;
-            var alg1 = new BronKerboschCliqueIterator(g);
-            while (alg1.hasNext()) {
-                alg1.next();
-                c1++;
-            }
-            int c2 = 0;
-            var jg = Converter.createJGraphT(g);
-            var alg2 = new BronKerboschCliqueFinder(jg);
-            Iterator<Set<Integer>> it = alg2.iterator();
-            while (it.hasNext()) {
-                it.next();
-                c2++;
-            }
-            if (c1 != c2) {
-                System.out.println("Ooops!");
-            }
-        }
-    }
-    */
 }

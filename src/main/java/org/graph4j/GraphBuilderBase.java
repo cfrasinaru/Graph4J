@@ -95,8 +95,8 @@ abstract class GraphBuilderBase {
      * @return a reference to this object.
      */
     public GraphBuilderBase estimatedAvgDegree(int avgDegree) {
-        if (avgDegree <= 0) {
-            throw new IllegalArgumentException("Average degree must be positive.");
+        if (avgDegree < 0) {
+            throw new IllegalArgumentException("Average degree must be non-negative.");
         }
         this.avgDegree = avgDegree;
         return this;

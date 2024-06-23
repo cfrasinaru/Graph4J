@@ -21,8 +21,6 @@ import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
 import org.graph4j.GraphTests;
 import org.graph4j.GraphUtils;
-import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
-import org.graph4j.alg.connectivity.TarjanBiconnectivity;
 import org.graph4j.generators.CycleGenerator;
 import org.graph4j.generators.GraphGenerator;
 import org.graph4j.generators.PathGenerator;

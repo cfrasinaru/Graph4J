@@ -35,47 +35,58 @@ public class GraphGenerator {
      * Creates a graph with a specified number of vertices and no edges.
      *
      * @see GraphBuilder
-     * @param n the number of vertices
+     * @param numVertices the number of vertices
      * @return a graph with n vertices and no edges.
      */
-    public static Graph empty(int n) {
-        Validator.checkNumVertices(n);
-        return GraphBuilder.numVertices(n).named("N" + n).buildGraph();
+    public static Graph empty(int numVertices) {
+        Validator.checkNumVertices(numVertices);
+        return GraphBuilder.numVertices(numVertices).named("N" + numVertices).buildGraph();
+    }
+
+    /**
+     * Creates a graph with a single vertex having the specified number.
+     *
+     * @see GraphBuilder
+     * @param vertexNumber the number of the vertex.
+     * @return a graph with a single vertex and no edges.
+     */
+    public static Graph trivial(int vertexNumber) {
+        return GraphBuilder.vertices(vertexNumber).buildGraph();
     }
 
     /**
      * Generates a complete graph.
      *
      * @see CompleteGraphGenerator
-     * @param n the number of vertices.
+     * @param numVertices the number of vertices.
      * @return a complete graph with n vertices.
      */
-    public static Graph complete(int n) {
-        return new CompleteGraphGenerator(n).createGraph();
+    public static Graph complete(int numVertices) {
+        return new CompleteGraphGenerator(numVertices).createGraph();
     }
 
     /**
-     * Generates a random Gnp graph.
+     * Generates a random G(n,p) graph.
      *
      * @see RandomGnpGraphGenerator
-     * @param n the number of vertices.
+     * @param numVertices the number of vertices.
      * @param edgeProbability the probability that an edge belongs to the graph.
      * @return a random graph.
      */
-    public static Graph randomGnp(int n, double edgeProbability) {
-        return new RandomGnpGraphGenerator(n, edgeProbability).createGraph();
+    public static Graph randomGnp(int numVertices, double edgeProbability) {
+        return new RandomGnpGraphGenerator(numVertices, edgeProbability).createGraph();
     }
 
     /**
-     * Generates a random Gnm graph.
+     * Generates a random G(n,m) graph.
      *
      * @see RandomGnmGraphGenerator
-     * @param n the number of vertices.
-     * @param m the number of edges.
+     * @param numVertices the number of vertices.
+     * @param numEdges the number of edges.
      * @return a random graph.
      */
-    public static Graph randomGnm(int n, int m) {
-        return new RandomGnmGraphGenerator(n, m).createGraph();
+    public static Graph randomGnm(int numVertices, int numEdges) {
+        return new RandomGnmGraphGenerator(numVertices, numEdges).createGraph();
     }
 
     /**
@@ -102,7 +113,7 @@ public class GraphGenerator {
     }
 
     /**
-     * Generates a random Gnp bipartite graph.
+     * Generates a random G(n,p) bipartite graph.
      *
      * @see RandomGnpBipartiteGenerator
      * @param n1 the number of vertices in the first partition set.
@@ -131,11 +142,11 @@ public class GraphGenerator {
      * Generates a random tree.
      *
      * @see RandomTreeGenerator
-     * @param n the number of vertices.
+     * @param numVertices the number of vertices.
      * @return a random tree.
      */
-    public static Graph randomTree(int n) {
-        return new RandomTreeGenerator(n).createTree();
+    public static Graph randomTree(int numVertices) {
+        return new RandomTreeGenerator(numVertices).createTree();
     }
 
     /**
@@ -144,77 +155,77 @@ public class GraphGenerator {
      * {@link GraphMeasures#minIndegreeVertex(org.graph4j.Digraph)}.
      *
      * @see RandomTreeGenerator
-     * @param n the number of vertices.
+     * @param numVertices the number of vertices.
      * @return a random arborescence.
      */
-    public static Digraph randomArborescence(int n) {
-        return new RandomTreeGenerator(n).createArborescence();
+    public static Digraph randomArborescence(int numVertices) {
+        return new RandomTreeGenerator(numVertices).createArborescence();
     }
 
     /**
      * Generates a random forest.
      *
      * @see RandomForestGenerator
-     * @param n the number of vertices.
+     * @param numVertices the number of vertices.
      * @return a random forest.
      */
-    public static Graph randomForest(int n) {
-        return new RandomForestGenerator(n).createForest();
+    public static Graph randomForest(int numVertices) {
+        return new RandomForestGenerator(numVertices).createForest();
     }
 
     /**
      * Generates a random chordal graph.
      *
      * @see RandomChordalGraphGenerator
-     * @param n the number of vertices.
+     * @param numVertices the number of vertices.
      * @return a random chordal graph.
      */
-    public static Graph randomChordalGraph(int n) {
-        return new RandomChordalGraphGenerator(n).create();
+    public static Graph randomChordalGraph(int numVertices) {
+        return new RandomChordalGraphGenerator(numVertices).create();
     }
 
     /**
      * Generates a random path graph.
      *
      * @see PathGenerator
-     * @param n the number of vertices.
+     * @param numVertices the number of vertices.
      * @return a path graph.
      */
-    public static Graph path(int n) {
-        return new PathGenerator(n).createGraph();
+    public static Graph path(int numVertices) {
+        return new PathGenerator(numVertices).createGraph();
     }
 
     /**
      * Generates a random cycle graph.
      *
      * @see CycleGenerator
-     * @param n the number of vertices.
+     * @param numVertices the number of vertices.
      * @return a cycle graph.
      */
-    public static Graph cycle(int n) {
-        return new CycleGenerator(n).createGraph();
+    public static Graph cycle(int numVertices) {
+        return new CycleGenerator(numVertices).createGraph();
     }
 
     /**
      * Generates a random wheel graph.
      *
      * @see WheelGenerator
-     * @param n the number of vertices.
+     * @param numVertices the number of vertices.
      * @return a wheel graph.
      */
-    public static Graph wheel(int n) {
-        return new WheelGenerator(n).createGraph();
+    public static Graph wheel(int numVertices) {
+        return new WheelGenerator(numVertices).createGraph();
     }
 
     /**
      * Generates a random star graph.
      *
      * @see StarGenerator
-     * @param n the number of vertices
+     * @param numVertices the number of vertices
      * @return a star graph.
      */
-    public static Graph star(int n) {
-        return new StarGenerator(n).createGraph();
+    public static Graph star(int numVertices) {
+        return new StarGenerator(numVertices).createGraph();
     }
 
     /**
@@ -233,12 +244,12 @@ public class GraphGenerator {
      * Generates a regular graph.
      *
      * @see RegularGraphGenerator
-     * @param n the number of vertices.
+     * @param numVertices the number of vertices.
      * @param degree the degree of all vertices.
      * @return a regular graph.
      */
-    public static Graph regular(int n, int degree) {
-        return new RegularGraphGenerator(n, degree).createGraph();
+    public static Graph regular(int numVertices, int degree) {
+        return new RegularGraphGenerator(numVertices, degree).createGraph();
     }
 
     /**
@@ -257,23 +268,23 @@ public class GraphGenerator {
      * Generates a random directed acyclic graph (DAG).
      *
      * @see RandomDAGGenerator
-     * @param n number of vertices.
+     * @param numVertices number of vertices.
      * @param edgeProbability the probability that an edge belongs to the graph.
      * @return a random DAG.
      */
-    public static Digraph randomDAG(int n, double edgeProbability) {
-        return new RandomDAGGenerator(n, edgeProbability).createDAG();
+    public static Digraph randomDAG(int numVertices, double edgeProbability) {
+        return new RandomDAGGenerator(numVertices, edgeProbability).createDAG();
     }
 
     /**
      * Generates a random tournament graph.
      *
      * @see TournamentGenerator
-     * @param n the number of vertices.
+     * @param numVertices the number of vertices.
      * @return a randomly generated tournament.
      */
-    public static Digraph randomTournament(int n) {
-        return new TournamentGenerator(n).createRandom();
+    public static Digraph randomTournament(int numVertices) {
+        return new TournamentGenerator(numVertices).createRandom();
     }
 
     /**

@@ -24,22 +24,22 @@ import org.graph4j.util.VertexSet;
  * @author Cristian Frăsinaru
  */
 class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
-
+    
     protected MultigraphImpl() {
     }
-
+    
     protected MultigraphImpl(int[] vertices, int maxVertices, int avgDegree,
             boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops,
             int vertexDataSize, int edgeDataSize) {
         super(vertices, maxVertices, avgDegree, directed, allowingMultipleEdges, allowingSelfLoops,
                 vertexDataSize, edgeDataSize);
     }
-
+    
     @Override
     protected MultigraphImpl newInstance() {
         return new MultigraphImpl();
     }
-
+    
     @Override
     protected MultigraphImpl newInstance(int[] vertices, int maxVertices, int avgDegree,
             boolean directed, boolean allowingMultipleEdges, boolean allowingSelfLoops,
@@ -47,7 +47,7 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
         return new MultigraphImpl(vertices, maxVertices, avgDegree, directed,
                 allowingMultipleEdges, allowingSelfLoops, vertexDataSize, edgeDataSize);
     }
-
+    
     @Override
     public boolean isComplete() {
         for (int i = 0; i < numVertices - 1; i++) {
@@ -61,41 +61,41 @@ class MultigraphImpl<V, E> extends GraphImpl<V, E> implements Multigraph<V, E> {
         }
         return true;
     }
-
+    
     @Override
     public void setEdgeLabel(int v, int u, E label) {
         throw new UnsupportedOperationException("Cannot set labels on individual edges in a multigraph or pseudograph.");
     }
-
+    
     @Override
     public void setEdgeWeight(int v, int u, double weight) {
         throw new UnsupportedOperationException("Cannot set weights on individual edges in a multigraph or pseudograph.");
     }
-
+           
     @Override
     public Multigraph<V, E> copy() {
         return (Multigraph<V, E>) super.copy();
     }
-
+    
     @Override
     public Multigraph<V, E> copy(boolean vertexWeights, boolean vertexLabels, boolean edges, boolean edgeWeights, boolean edgeLabels) {
         return (Multigraph<V, E>) super.copy(vertexWeights, vertexLabels, edges, edgeWeights, edgeLabels);
     }
-
+    
     @Override
     public Multigraph<V, E> subgraph(VertexSet vertexSet) {
         return (Multigraph<V, E>) super.subgraph(vertexSet);
     }
-
+    
     @Override
     public Multigraph<V, E> subgraph(Collection<Edge> edges) {
         return (Multigraph<V, E>) super.subgraph(edges);
     }
-
+    
     @Override
     public double[][] weightMatrix() {
         throw new UnsupportedOperationException(
                 "Weight-matrix is not supported for multigraphs and pseudographs.");
     }
-
+    
 }

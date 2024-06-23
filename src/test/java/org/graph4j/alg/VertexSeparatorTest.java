@@ -20,7 +20,7 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.GraphTests;
-import org.graph4j.alg.cut.GreedyVertexSeparator;
+import org.graph4j.vsp.GreedyVertexSeparator;
 import org.graph4j.generators.GraphGenerator;
 import org.graph4j.util.VertexSet;
 

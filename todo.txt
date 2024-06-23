@@ -1,3 +1,4 @@
+
 ------------------------------------------------------------
 Maximum (Weighted) Independent Set / Clique / Vertex Cover
 ------------------------------------------------------------
@@ -21,7 +22,8 @@ https://networkx.org/documentation/stable/reference/algorithms/generated/network
 Planarity
 ------------------------------------------------------------
 https://cs.brown.edu/people/rtamassi/gdhandbook/
-
+https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.planarity.check_planarity.html
+https://jgrapht.org/javadoc-SNAPSHOT/org.jgrapht.core/org/jgrapht/alg/planar/BoyerMyrvoldPlanarityInspector.html
 
 
 ------------------------------------------------------------
@@ -54,11 +56,15 @@ Wigderson’S Algorithm https://iq.opengenus.org/wigderson-algorithm/
 
 
 ------------------------------------------------------------
-Min cutset
+Connectivity
 ------------------------------------------------------------
 Karger's Algorithm
 https://en.wikipedia.org/wiki/Karger%27s_algorithm
 
+Edge/Vertex [min]cut iterators
+Gusfield-Gomory-Hu cut-tree / flow-tree
+https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/flow/GusfieldGomoryHuCutTree.java
+https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/flow/GusfieldEquivalentFlowTree.java
 
 ------------------------------------------------------------
 Shortest Paths:
@@ -101,6 +107,16 @@ Scoring algorithms
 https://jgrapht.org/javadoc/org.jgrapht.core/org/jgrapht/alg/scoring/package-summary.html
 
 
+------------------------------------------------------------
+Min-Cut
+------------------------------------------------------------
+Stoer-Wagner DONE
+https://github.com/kevin-wayne/algs4/blob/master/src/main/java/edu/princeton/cs/algs4/GlobalMincut.java
+https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/StoerWagnerMinimumCut.java
+
+Nagamochi-Ibaraki Algorithm?
+
+
 
 A Bloom filter is a space-efficient probabilistic data structure, that is used to test whether an element is a member of a set.
 https://en.m.wikipedia.org/wiki/Bloom_filter
@@ -108,8 +124,15 @@ https://en.m.wikipedia.org/wiki/Bloom_filter
 Package .ordering
 vertex orderings: maximal neighborhood search (?), degeneracy (?)
 
+------------------------------------------------------------
 Generaratoare de grafuri
+------------------------------------------------------------
 - care au o anumita secventa (di)grafica folosind fluxuri
+Graph/Digraph/Bipartite realization problem
+DegreeSequenceGraphGenerator
+Havel-Hakimi
+https://networkx.org/documentation/stable/reference/generated/networkx.generators.degree_seq.random_degree_sequence_graph.html
+
 
 Classes of graphs
 Interval

@@ -16,8 +16,6 @@
  */
 package org.graph4j;
 
-import org.graph4j.util.WorkInProgress;
-
 /**
  * Represents a data structure used for storing positions in the adjacency
  * lists, such that the method {@link Graph#adjListPos(int, int)} is performed
@@ -29,12 +27,11 @@ import org.graph4j.util.WorkInProgress;
  * @see AdjacencyBitSet
  * @author Cristian Frăsinaru
  */
-@WorkInProgress
 interface AdjacencyMap {
 
     AdjacencyMap copy();
 
-    void add(int u);
+    void add(int u, int pos);
 
     void remove(int u);
 

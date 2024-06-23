@@ -25,7 +25,7 @@ import java.util.BitSet;
  */
 class AdjacencyBitSet implements AdjacencySet {
 
-    final BitSet bitSet;
+    private final BitSet bitSet;
 
     public AdjacencyBitSet() {
         this.bitSet = new BitSet();

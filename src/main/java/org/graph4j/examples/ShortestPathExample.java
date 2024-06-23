@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
-import org.graph4j.alg.sp.SinglePairShortestPath;
+import org.graph4j.shortestpath.SinglePairShortestPath;
 import org.graph4j.util.Path;
 
 /**

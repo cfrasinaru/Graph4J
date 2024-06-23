@@ -16,8 +16,7 @@
  */
 package org.graph4j;
 
-import org.graph4j.Digraph;
-import org.graph4j.alg.connectivity.StrongConnectivityAlgorithm;
+import org.graph4j.connectivity.StrongConnectivityAlgorithm;
 
 /**
  * Abstract class for algorithms that accept only directed graphs as input.

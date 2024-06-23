@@ -226,6 +226,15 @@ public class VertexSet extends VertexCollection {
         return result;
     }
 
+    /**
+     *
+     * @param other a set of vertex numbers.
+     * @return a new set containing vertices belonging to this set or the other.
+     */
+    public VertexSet union(VertexSet other) {
+        return this.union(other.vertices());
+    }
+
     @Override
     public int hashCode() {
         return IntStream.of(vertices).sum();

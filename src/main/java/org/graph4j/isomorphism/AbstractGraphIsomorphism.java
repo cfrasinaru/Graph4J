@@ -8,19 +8,19 @@ import java.util.Optional;
 import org.graph4j.Digraph;
 import org.graph4j.Graph;
 import org.graph4j.GraphUtils;
-import org.graph4j.isomorphism.Isomorphism;
-
 
 /**
  * Abstract class for finding the isomorphism between two graphs.
  *
  * <p>
- *     It provides a method for finding all the mappings between two graphs and a method for finding the first mapping.
+ * It provides a method for finding all the mappings between two graphs and a
+ * method for finding the first mapping.
  * </p>
  *
  * @author Ignat Gabriel-Andrei
  */
 public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
+
     protected final Digraph dg1;
     protected final Digraph dg2;
     protected final boolean cache;
@@ -30,7 +30,8 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
      *
      * @param g1 the first graph - it is converted to a digraph
      * @param g2 the second graph - it is converted to a digraph
-     * @param cache if true, the algorithm will cache the successors, predecessors, the adjacency relations
+     * @param cache if true, the algorithm will cache the successors,
+     * predecessors, the adjacency relations
      */
     public AbstractGraphIsomorphism(Graph g1, Graph g2, boolean cache) {
         validateGraphs(g1, g2);
@@ -45,28 +46,35 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
 
     /**
      * Validates the graphs.
+     *
      * @param g1 the first graph
      * @param g2 the second graph
      * @throws NullPointerException if the graphs are null
      * @throws IllegalArgumentException if the graphs have different types
      */
-    private void validateGraphs(Graph<?,?> g1, Graph<?,?> g2) {
-        if(g1 == null || g2 == null)
+    private void validateGraphs(Graph<?, ?> g1, Graph<?, ?> g2) {
+        if (g1 == null || g2 == null) {
             throw new NullPointerException("Graphs cannot be null");
+        }
 
         // they must have the same type(directed, pseudo graph, multi graph, graph)
-        if(g1.isDirected() != g2.isDirected())
+        if (g1.isDirected() != g2.isDirected()) {
             throw new IllegalArgumentException("Graphs must have the same type");
+        }
 
-        if(g1.isAllowingSelfLoops() != g2.isAllowingSelfLoops())
+        if (g1.isAllowingSelfLoops() != g2.isAllowingSelfLoops()) {
             throw new IllegalArgumentException("Graphs must have the same type");
+        }
 
-        if(g1.isAllowingMultipleEdges() != g2.isAllowingMultipleEdges())
+        if (g1.isAllowingMultipleEdges() != g2.isAllowingMultipleEdges()) {
             throw new IllegalArgumentException("Graphs must have the same type");
+        }
     }
 
     /**
-     * Checks if the two graphs are isomorphic by computing the first mapping, if it exists.
+     * Checks if the two graphs are isomorphic by computing the first mapping,
+     * if it exists.
+     *
      * @return true if the graphs are isomorphic, false otherwise
      */
     @Override
@@ -94,21 +102,23 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
 
     /**
      * Computes the mappings between the two graphs.
-     * @param onlyFirstMapping if true, the method will return only the first mapping
+     *
+     * @param onlyFirstMapping if true, the method will return only the first
+     * mapping
      * @return a list of all the mappings between the two graphs
      */
-    private List<Isomorphism> match(boolean onlyFirstMapping){
+    private List<Isomorphism> match(boolean onlyFirstMapping) {
         return matchIterative(onlyFirstMapping);
     }
 
-
     /**
-     * An iterative version of the match method, it simulates the recursive approach.
-     * By doing this,we might gain some performance, because we avoid the overhead of the recursive calls.
+     * An iterative version of the match method, it simulates the recursive
+     * approach. By doing this,we might gain some performance, because we avoid
+     * the overhead of the recursive calls.
      *
      * @return a list of the mappings between the two graphs
      */
-    private List<Isomorphism> matchIterative(boolean onlyFirstMapping){
+    private List<Isomorphism> matchIterative(boolean onlyFirstMapping) {
         List<Isomorphism> mappings = new ArrayList<>();
 
         // stack for simulating the recursive calls
@@ -118,15 +128,15 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
         State s = getStateInstance(this.dg1, this.dg2, this.cache);
 
         // while there are more states to explore
-        while(true){
+        while (true) {
             // while for the current state, there are more candidate pairs
-            while(s.nextPair()){
+            while (s.nextPair()) {
 
                 // if the pair is feasible, we continue, otherwise we truncate the branch
-                if(s.isFeasiblePair()){
+                if (s.isFeasiblePair()) {
 
                     // if the state is dead, we continue with the next pair
-                    if(s.isDead()) {
+                    if (s.isDead()) {
                         continue;
                     }
 
@@ -138,20 +148,22 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
                     s.addPair();
 
                     // if this state is a goal(complete solution), we add the mapping to the list
-                    if(s.isGoal()) {
+                    if (s.isGoal()) {
                         mappings.add(s.getMapping());
 
                         // if we need only the first mapping, we return it
-                        if(onlyFirstMapping)
+                        if (onlyFirstMapping) {
                             return mappings;
+                        }
                     }
 
                     s.resetPreviousVertices();
                 }
             }
 
-            if(stack.isEmpty())
+            if (stack.isEmpty()) {
                 break;
+            }
 
             // if we have no more pairs to explore, we backtrack(get to the previous state)
             s.backTrack();
@@ -161,7 +173,7 @@ public abstract class AbstractGraphIsomorphism implements GraphIsomorphism {
         return mappings;
     }
 
-     //Instantiates a new empty state.
+    //Instantiates a new empty state.
     protected abstract State getStateInstance(Digraph g1, Digraph g2, boolean cache);
 
     //Instantiates a new state with the same properties as the given state.

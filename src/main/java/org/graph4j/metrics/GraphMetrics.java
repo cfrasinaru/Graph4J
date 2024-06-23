@@ -21,9 +21,9 @@ import java.util.Arrays;
 import org.graph4j.util.Cycle;
 import org.graph4j.Graph;
 import org.graph4j.GraphAlgorithm;
-import org.graph4j.alg.sp.AllPairsShortestPath;
-import org.graph4j.alg.sp.SinglePairShortestPath;
-import org.graph4j.alg.sp.SingleSourceShortestPath;
+import org.graph4j.shortestpath.AllPairsShortestPath;
+import org.graph4j.shortestpath.SinglePairShortestPath;
+import org.graph4j.shortestpath.SingleSourceShortestPath;
 import org.graph4j.util.VertexSet;
 
 /**

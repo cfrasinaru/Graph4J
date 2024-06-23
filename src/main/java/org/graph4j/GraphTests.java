@@ -16,15 +16,15 @@
  */
 package org.graph4j;
 
-import org.graph4j.alg.connectivity.BiconnectivityAlgorithm;
-import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;
-import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
-import org.graph4j.alg.connectivity.StrongConnectivityAlgorithm;
-import org.graph4j.alg.connectivity.TarjanBiconnectivity;
-import org.graph4j.alg.connectivity.TarjanStrongConnectivity;
+import org.graph4j.connectivity.BiconnectivityAlgorithm;
+import org.graph4j.connectivity.BridgeDetectionAlgorithm;
+import org.graph4j.connectivity.ConnectivityAlgorithm;
+import org.graph4j.connectivity.StrongConnectivityAlgorithm;
+import org.graph4j.connectivity.TarjanBiconnectivity;
+import org.graph4j.connectivity.TarjanStrongConnectivity;
 import org.graph4j.route.CycleFinder;
-import org.graph4j.alg.eulerian.EulerianCircuitAlgorithm;
-import org.graph4j.alg.eulerian.HierholzerEulerianCircuit;
+import org.graph4j.eulerian.EulerianCircuitAlgorithm;
+import org.graph4j.eulerian.HierholzerEulerianCircuit;
 import org.graph4j.ordering.TopologicalOrdering;
 import org.graph4j.measures.GraphMeasures;
 import org.graph4j.measures.TriangleCounter;

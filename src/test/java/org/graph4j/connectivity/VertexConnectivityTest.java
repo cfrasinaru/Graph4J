@@ -19,7 +19,6 @@ package org.graph4j.connectivity;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
-import org.graph4j.alg.connectivity.VertexConnectivityAlgorithm;
 import org.graph4j.generators.GraphGenerator;
 
 /**

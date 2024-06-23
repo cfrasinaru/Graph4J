@@ -53,10 +53,10 @@ public interface Digraph<V, E> extends Graph<V, E> {
     /**
      * Creates the <em>support graph</em> of this digraph. The support graph of
      * a digraph G is an undirected graph containing all the vertices of G and
-     * one edge vu for any pair of vertices v and u of the digraph that are
+     * one edge (v,u) for any pair of vertices v and u of the digraph that are
      * connected by an arc, in either direction: from v to u, form u to v or
-     * both ways. The resulting graph is unweighted, does not contain self loops
-     * or multiple edges and the labels are all {@code null}.
+     * both ways. The resulting graph has no data on its edges, does not contain
+     * self loops or multiple edges and the labels are all {@code null}.
      *
      * @return an undirected graph, representing the support graph.
      */

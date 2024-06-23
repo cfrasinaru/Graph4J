@@ -73,7 +73,7 @@ public abstract class MaximumFlowBase
         graph.resetEdgeData(FLOW, 0);
         if (initialFlow != null) {
             for (var e : initialFlow.edges()) {
-                graph.setEdgeData(FLOW, e.source(), e.target(), e.data(FLOW));
+                graph.setEdgeData(FLOW, e.source(), e.target(), initialFlow.get(e));
             }
         }
     }
@@ -127,7 +127,6 @@ public abstract class MaximumFlowBase
         if (!computed) {
             computeMaximumFlow();
         }
-        System.out.println(computed);
         if (ekAlg == null) {
             ekAlg = new EdmondsKarpMaximumFlow(graph, getMaximumFlowData());
         }

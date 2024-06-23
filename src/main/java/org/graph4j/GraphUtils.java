@@ -28,8 +28,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import static org.graph4j.Graph.WEIGHT;
 import org.graph4j.ordering.AcyclicOrientation;
-import org.graph4j.alg.connectivity.EdgeConnectivityAlgorithm;
-import org.graph4j.alg.connectivity.VertexConnectivityAlgorithm;
+import org.graph4j.connectivity.EdgeConnectivityAlgorithm;
+import org.graph4j.connectivity.VertexConnectivityAlgorithm;
 import org.graph4j.util.IntArrays;
 import org.graph4j.util.Validator;
 import org.graph4j.util.VertexCollection;
@@ -408,7 +408,7 @@ public class GraphUtils {
      * the specified values, while preserving the edges. The new graph is
      * isomorphic with the original one.
      *
-     * @param graph the input graph to be shuffled.
+     * @param graph the input graph.
      * @param vertices a mapping between the indices of the graph and their new
      * numbers.
      * @return a new graph created by mapping the vertex numbers.

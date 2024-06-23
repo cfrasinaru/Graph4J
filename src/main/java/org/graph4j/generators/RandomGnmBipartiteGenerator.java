@@ -57,8 +57,8 @@ public class RandomGnmBipartiteGenerator extends AbstractBipartiteGenerator {
     @Override
     protected void addEdges(Graph g, Boolean leftToRight) {
         //in case of graphs, leftToRight is true
+        //don't use safe mode
         checkMaxEdges(g);
-        g.setSafeMode(false);
         while (g.numEdges() < numEdges) {
             int v = first1 + random.nextInt(last1 - first1 + 1);
             int u = first2 + random.nextInt(last2 - first2 + 1);
@@ -74,7 +74,6 @@ public class RandomGnmBipartiteGenerator extends AbstractBipartiteGenerator {
                 g.addEdge(u, v);
             }
         }
-        g.setSafeMode(true);
     }
 
     private void checkMaxEdges(Graph g) {

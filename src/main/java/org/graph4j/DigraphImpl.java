@@ -214,7 +214,7 @@ class DigraphImpl<V, E> extends GraphImpl<V, E> implements Digraph<V, E> {
             predPos[vi] = new int[newLen];
         }
     }
-
+    
     @Override
     public Digraph<V, E> subgraph(VertexSet vertexSet) {
         return (Digraph<V, E>) super.subgraph(vertexSet);

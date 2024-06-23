@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 import org.graph4j.Graph;
 import org.graph4j.GraphBuilder;
-import org.graph4j.alg.clique.MaximalCliqueIterator;
+import org.graph4j.clique.MaximalCliqueIterator;
 import org.graph4j.util.Clique;
 
 /**

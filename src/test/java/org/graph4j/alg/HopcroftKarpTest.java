@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
 import org.graph4j.generators.GraphGenerator;
-import org.graph4j.alg.matching.HopcroftKarpMaximumMatching;
+import org.graph4j.matching.HopcroftKarpMaximumMatching;
 import org.graph4j.util.StableSet;
 
 /**
@@ -87,23 +87,4 @@ public class HopcroftKarpTest {
         }
     }
 
-    /*
-        for (int i = 0; i < 100; i++) {
-            var g = GraphGenerator.randomBipartite(10, 10, 0.1);
-            var jg = Tools.createJGraphT(g);
-            var gg = Tools.createAlgs4Graph(g);
-            var bip = BipartitionAlgorithm.getInstance(g);
-            var left = bip.getLeftSide();
-            var right = bip.getRightSide();
-            var alg1 = new HopkroftKarpBipartiteMatching(g);
-            var alg2 = new HopcroftKarp(gg);
-            var alg3 = new HopcroftKarpMaximumCardinalityBipartiteMatching(jg,IntArrays.asSet(left.vertices()), IntArrays.asSet(right.vertices()));
-            int m1 = alg1.getMatching().size();            
-            int m2 = alg2.size();
-            int m3 = alg3.getMatching().getEdges().size();
-            if (m1 != m2 || m1 != m3) {
-                System.out.println(g);
-                break;
-            }
-     */
 }

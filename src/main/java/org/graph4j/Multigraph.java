@@ -32,8 +32,9 @@ public interface Multigraph<V, E> extends Graph<V, E> {
     /**
      * The <i>support graph</i> of a multigraph or a pseudograph G is an
      * undirected graph containing all the vertices of G, self loops are removed
-     * and multiple edges are merged into a single one. The resulting graph is
-     * unweighted and the labels are all null.
+     * and multiple edges are merged into a single one. The edge labels are all
+     * set to null. In case of directed multigraphs graphs, edge data is
+     * removed. For undirected multigraphs, edge data is cumulated.
      *
      * @return a new graph, representing the support graph.
      */

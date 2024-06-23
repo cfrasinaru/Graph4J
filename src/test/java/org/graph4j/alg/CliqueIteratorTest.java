@@ -18,8 +18,8 @@ package org.graph4j.alg;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import org.graph4j.alg.clique.BFSCliqueIterator;
-import org.graph4j.alg.clique.DFSCliqueIterator;
+import org.graph4j.clique.BFSCliqueIterator;
+import org.graph4j.clique.DFSCliqueIterator;
 import org.graph4j.generators.GraphGenerator;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

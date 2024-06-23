@@ -30,15 +30,13 @@ import org.graph4j.util.VertexHeap;
  */
 public class PrimMinimumSpanningTree extends MinimumSpanningTreeBase {
 
-    private VertexHeap heap;
-    private final int[] vertices;
+    private VertexHeap minHeap;
     private boolean solved[];
-    private double[] cost;
+    private double[] weight;
     private int[] peer;
 
     public PrimMinimumSpanningTree(Graph graph) {
         super(graph);
-        this.vertices = graph.vertices();
     }
 
     @Override
@@ -50,6 +48,7 @@ public class PrimMinimumSpanningTree extends MinimumSpanningTreeBase {
             compute();
         }
         int n = graph.numVertices();
+        int[] vertices = graph.vertices();
         treeEdges = new EdgeSet(graph, n - 1);
         for (int i = 0; i < n; i++) {
             int u = vertices[i];
@@ -64,20 +63,20 @@ public class PrimMinimumSpanningTree extends MinimumSpanningTreeBase {
     @Override
     protected void compute() {
         int n = graph.numVertices();
-        this.cost = new double[n];
+        this.weight = new double[n];
         this.peer = new int[n];
         this.solved = new boolean[n];
         int numSolved = 0;
-        Arrays.fill(cost, Double.POSITIVE_INFINITY);
+        Arrays.fill(weight, Double.POSITIVE_INFINITY);
         Arrays.fill(peer, -1);
         //
-        this.heap = new VertexHeap(graph, (i, j) -> (int) Math.signum(cost[i] - cost[j]));
+        this.minHeap = new VertexHeap(graph, (i, j) -> (int) Math.signum(weight[i] - weight[j]));
         this.minWeight = 0.0;
         while (numSolved < n) {
-            int vi = heap.poll();
+            int vi = minHeap.poll();
             int v = graph.vertexAt(vi);
-            if (cost[vi] < Double.POSITIVE_INFINITY) {
-                minWeight += cost[vi];
+            if (weight[vi] < Double.POSITIVE_INFINITY) {
+                minWeight += weight[vi];
             }
             solved[vi] = true;
             numSolved++;
@@ -86,11 +85,11 @@ public class PrimMinimumSpanningTree extends MinimumSpanningTreeBase {
                 if (solved[ui]) {
                     continue;
                 }
-                double weight = it.getEdgeWeight();
-                if (cost[ui] > weight) {
-                    cost[ui] = weight;
+                double edgeWeight = it.getEdgeWeight();
+                if (weight[ui] > edgeWeight) {
+                    weight[ui] = edgeWeight;
                     peer[ui] = v;
-                    heap.update(ui);
+                    minHeap.update(ui);
                 }
             }
         }

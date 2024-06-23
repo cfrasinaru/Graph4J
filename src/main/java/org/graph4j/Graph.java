@@ -521,7 +521,9 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
 
     /**
      * Creates a new vertex that will replace the specified vertices, being
-     * connected to all their neighbors.
+     * connected to all their neighbors. If the graph has weights on its edges,
+     * the edges that form between the new vertex and its neighbors cumulate the
+     * weights of the corresponding edges that are removed from the graph.
      *
      * @param vertices the vertices which will be contracted.
      * @return the number of the newly created vertex.

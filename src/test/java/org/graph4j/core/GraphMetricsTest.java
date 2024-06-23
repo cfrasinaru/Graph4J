@@ -84,25 +84,5 @@ public class GraphMetricsTest {
         assertEquals(1, gm.radius());
         assertEquals(1, gm.diameter());
     }
-
-    /*
-    private void testDiam() {
-        int n = 10;
-        for (int i = 0; i < 100; i++) {
-            //var g = new RandomGnpGraphGenerator(n, Math.random()).createGraph();
-            var g = GraphGenerator.path(n);
-            //var g = GraphGenerator.randomTree(n);
-            //var g = GraphGenerator.cycle(n);
-            int d1 = new ExtremaCalculator(g).getDiameter();
-            double d2 = org.jgrapht.GraphMetrics.getDiameter(Converter.createJGraphT(g));
-            if (d2 == Double.POSITIVE_INFINITY) {
-                d2 = Integer.MAX_VALUE;
-            }
-            if (d1 != d2) {
-                System.out.println("NO! " + d1 + ", " + d2);
-                System.out.println(g);
-                break;
-            }
-        }
-    }*/
+   
 }

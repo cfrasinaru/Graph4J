@@ -112,28 +112,4 @@ public class PushRelabelTest {
         assertEquals(x, y);
     }
 
-    /*
-    public void crossTest() {
-        int n = 50;
-        double p = Math.random();
-        for (int i = 0; i < 200; i++) {
-            var g = new GnpGraphGenerator(n, p).createDigraph();
-            EdgeWeightsGenerator.randomIntegers(g, 0, n - 1);
-            //EdgeWeightsGenerator.fill(g, 1);
-            //System.out.println(g);
-            var alg1 = new PushRelabelMaximumFlow(g, 0, n - 1);
-            var alg2 = new PushRelabelMFImpl(Converter.createJGraphT(g));
-            //var alg3 = new FordFulkerson(Converter.createAlgs4Network(g), 0, n - 1);
-            var alg3 = new EdmondsKarpMaximumFlow(g, 0, n - 1);
-            //System.out.println("Valid: " + alg1.getMaximumFlowData().isValid());
-            double m1 = alg1.getFlowValue();
-            double m2 = alg2.calculateMaximumFlow(0, n - 1);
-            double m3 = alg3.getFlowValue();
-            if (m1 != m2 || m1 != m3) {
-                System.out.println("Oops! m1=" + m1 + ", m2=" + m2 + ", m3=" + m3);
-                System.out.println(g);
-                break;
-            }
-        }
-    }*/
 }

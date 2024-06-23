@@ -19,7 +19,7 @@ package org.graph4j.route;
 import org.graph4j.Graph;
 import org.graph4j.InvalidVertexException;
 import org.graph4j.GraphAlgorithm;
-import org.graph4j.alg.sp.BFSSinglePairShortestPath;
+import org.graph4j.shortestpath.BFSSinglePairShortestPath;
 import org.graph4j.traversal.DFSIterator;
 import org.graph4j.util.Path;
 
@@ -40,7 +40,7 @@ public class PathFinder extends GraphAlgorithm {
      * orientations. The path is found using a BFS iterator, therefore it is an
      * induced path. The weights of the edges (if the graph is edge-weighted)
      * are not taken in consideration. For determining a shortest path in an
-     * edge-weighted graph (see {@link org.graph4j.alg.sp} package).
+     * edge-weighted graph (see {@link org.graph4j.shortestpath} package).
      *
      * @see BFSSinglePairShortestPath
      * @param graph the input graph.

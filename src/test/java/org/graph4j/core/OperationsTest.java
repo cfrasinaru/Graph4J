@@ -86,6 +86,18 @@ public class OperationsTest {
     }
 
     @Test
+    public void contractVerticesWeighted() {
+        var g = GraphBuilder.numVertices(4).buildGraph();
+        g.addEdge(0, 1, 10);
+        g.addEdge(0, 2, 20);
+        g.addEdge(0, 3, 30);
+        g.contractVertices(1,2,3); //becomes 4
+        assertTrue(g.containsVertex(4));//new vertex
+        assertEquals(2, g.numVertices()); //0-4
+        assertEquals(60, g.getEdgeWeight(0, 4));
+    }
+    
+    @Test
     public void duplicateVertex() {
         int n = 5;
         var g = GraphBuilder.numVertices(n)
@@ -167,6 +179,23 @@ public class OperationsTest {
         assertEquals(2, g2.supportGraph().numEdges());
     }
 
+    @Test
+    public void supportWeightedMultigraph() {
+        //cumulates weights
+        var g = GraphBuilder.numVertices(4).buildMultigraph();
+        g.addEdge(0,1,10);
+        g.addEdge(0,1,10);
+        g.addEdge(0,1,10);
+        g.addEdge(0,2,10);
+        g.addEdge(0,2,10);
+        g.addEdge(0,3,10);        
+        var support = g.supportGraph();
+        assertEquals(3, support.numEdges());
+        assertEquals(30, support.getEdgeWeight(0, 1));        
+        assertEquals(20, support.getEdgeWeight(0, 2));        
+        assertEquals(10, support.getEdgeWeight(0, 3));        
+    }
+    
     @Test
     public void transpose() {
         var g = GraphBuilder.numVertices(4)

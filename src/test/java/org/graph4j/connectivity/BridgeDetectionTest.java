@@ -19,8 +19,6 @@ package org.graph4j.connectivity;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.graph4j.GraphBuilder;
-import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;
-import org.graph4j.alg.connectivity.BridgeDetectionAlgorithm;
 import org.graph4j.generators.GraphGenerator;
 
 /**
@@ -59,20 +57,5 @@ public class BridgeDetectionTest {
         var alg = new BridgeDetectionAlgorithm(g);
         assertEquals(1, alg.getBridges().size()); //1-3
     }
-
-    /*
-    int n = 100;
-    for (int i = 0; i < 100; i++) {
-        var g = new RandomGnpGraphGenerator(n, 0.01).createGraph();
-        var alg1 = new BridgeDetectionAlgorithm(g);
-        var alg2 = new BiconnectivityInspector(Converter.createJGraphT(g));
-        double x1 = alg1.getBridges().size();
-        double x2 = alg2.getBridges().size();
-        if (x1 != x2) {
-            System.out.println(g);
-            System.out.println(x1);
-            System.out.println(x2);
-            break;
-        }
-    }*/
+    
 }

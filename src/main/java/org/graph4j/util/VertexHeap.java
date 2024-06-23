@@ -19,6 +19,7 @@ package org.graph4j.util;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import org.graph4j.Graph;
 
 /**
@@ -53,10 +54,8 @@ public class VertexHeap implements Iterable<Integer> {
      * @param addAll add all graph vertices in the heap.
      */
     public VertexHeap(Graph graph, boolean addAll, IntComparator comparator) {
-        if (comparator == null) {
-            throw new IllegalArgumentException(
-                    "The comparator cannot be null");
-        }
+        Objects.nonNull(graph);
+        Objects.nonNull(comparator);
         this.graph = graph;
         int n = graph.numVertices();
         this.keys = new int[1 + n]; //min is at keys[1]
@@ -261,13 +260,6 @@ public class VertexHeap implements Iterable<Integer> {
     }
 
     private int compareTo(int pos1, int pos2) {
-        /*
-        if (pos1 > size) {
-            return 1; //??
-        }
-        if (pos2 > size) {
-            return -1;//??
-        }*/
         return comparator.compareTo(keys[pos1], keys[pos2]);
     }
 

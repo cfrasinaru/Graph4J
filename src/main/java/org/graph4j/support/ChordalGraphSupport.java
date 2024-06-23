@@ -27,7 +27,7 @@ import org.graph4j.GraphUtils;
 import org.graph4j.UndirectedGraphAlgorithm;
 import org.graph4j.alg.coloring.Coloring;
 import org.graph4j.alg.coloring.GreedyColoring;
-import org.graph4j.alg.sp.BFSSinglePairShortestPath;
+import org.graph4j.shortestpath.BFSSinglePairShortestPath;
 import org.graph4j.generators.RandomChordalGraphGenerator;
 import org.graph4j.ordering.VertexOrderings;
 import org.graph4j.util.Clique;

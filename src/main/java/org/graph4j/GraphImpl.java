@@ -28,7 +28,6 @@ import static org.graph4j.Graph.WEIGHT;
 import org.graph4j.util.Validator;
 import org.graph4j.util.IntArrays;
 import org.graph4j.util.EdgeSet;
-import org.graph4j.util.IntPair;
 import org.graph4j.util.VertexSet;
 
 /**
@@ -54,9 +53,6 @@ class GraphImpl<V, E> implements Graph<V, E> {
     protected int[][] adjPos; //adjPos[i][j]=the position of v=vertices[i] in the adjacency list of u=adjList[i][j]
     //adjPos should be null if the graph is directed
 
-    //adjPosMap[e=vu] is the position of u in the adjacency list of v
-    protected Map<Edge, Integer> adjMap; 
-    
     protected double[] vertexWeight;
     protected int vertexDataSize = 1;
 
@@ -65,13 +61,14 @@ class GraphImpl<V, E> implements Graph<V, E> {
     protected V[] vertexLabel;
     protected E[][] edgeLabel;
 
-    private VertexIndex vertexIndex; //to find the index of a vertex
-    private AdjacencySet[] adjSet;  //for fast check if an edge is present in the graph
+    protected VertexIndex vertexIndex; //to find the index of a vertex
+    protected AdjacencySet[] adjSet; //for fast check if an edge is present in the graph    
+    protected AdjacencyMap[] adjMap;
 
     protected Integer maxVertexNumber;
     protected Map<V, Integer> labelVertexMap;
     protected Map<E, Edge> labelEdgeMap;
-    
+
     protected boolean directed;
     protected boolean allowingMultipleEdges;
     protected boolean allowingSelfLoops;
@@ -207,6 +204,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
         if (adjSet != null) {
             copy.adjSet = new AdjacencySet[numVertices];
         }
+        if (adjMap != null) {
+            copy.adjMap = new AdjacencyMap[numVertices];
+        }
         if (edgeData != null && copyEdgeData) {
             copy.edgeData = new double[edgeData.length][][];
             for (int k = 0; k < edgeData.length; k++) {
@@ -238,6 +238,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
                 }
                 if (adjSet != null && adjSet[i] != null) {
                     copy.adjSet[i] = adjSet[i].copy();
+                }
+                if (adjMap != null && adjMap[i] != null) {
+                    copy.adjMap[i] = adjMap[i].copy();
                 }
             }
         }
@@ -303,6 +306,8 @@ class GraphImpl<V, E> implements Graph<V, E> {
                 }
             }
         }
+        adjSet = null;
+        adjMap = null;
     }
 
     @Override
@@ -335,7 +340,11 @@ class GraphImpl<V, E> implements Graph<V, E> {
 
     @Override
     public int vertexAt(int index) {
-        Validator.checkVertexIndex(this, index);
+        //Validator.checkVertexIndex(this, index);
+        if (index < 0 || index >= numVertices) {
+            throw new IllegalArgumentException(
+                    "Index must be in the range [0," + (numVertices - 1) + "]: " + index);
+        }
         return vertices[index];
     }
 
@@ -371,8 +380,6 @@ class GraphImpl<V, E> implements Graph<V, E> {
     public int addVertex() {
         int v = 1 + maxVertexNumber();
         addVertex(v);
-        System.out.println(Arrays.toString(vertices));
-        System.out.println(Arrays.toString(degree));
         return v;
     }
 
@@ -413,9 +420,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
         }
         //swap with the last pos
         boolean isLastPos = vi == numVertices - 1;
-        if (!isLastPos) {
-            swapVertexWithLast(vi);
-        }
+        //if (!isLastPos) {
+        swapVertexWithLast(vi);
+        //}
         numVertices--;
         maxVertexNumber = null;
         //
@@ -446,11 +453,20 @@ class GraphImpl<V, E> implements Graph<V, E> {
             adjSet[i] = adjSet[lastPos];
             adjSet[lastPos] = null;
         }
+        if (adjMap != null) {
+            adjMap[i] = adjMap[lastPos];
+            adjMap[lastPos] = null;
+        }
         if (vertexWeight != null) {
             vertexWeight[i] = vertexWeight[lastPos];
         }
         if (edgeData != null) {
-            edgeData[i] = edgeData[lastPos];
+            for (int k = 0; k < edgeData.length; k++) {
+                if (edgeData[k] != null) {
+                    edgeData[k][i] = edgeData[k][lastPos];
+                    edgeData[k][lastPos] = null;
+                }
+            }
         }
         if (vertexLabel != null) {
             vertexLabel[i] = vertexLabel[lastPos];
@@ -570,6 +586,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
         if (adjSet != null && adjSet[vi] != null) {
             adjSet[vi].add(u);
         }
+        if (adjMap != null && adjMap[vi] != null) {
+            adjMap[vi].add(u, pos);
+        }
         degree[vi]++;
         return pos;
     }
@@ -650,6 +669,11 @@ class GraphImpl<V, E> implements Graph<V, E> {
                 adjSet[vi].remove(u);
             }
         }
+        if (adjMap != null && adjMap[vi] != null) {
+            if (!allowingMultipleEdges || multiplicity(v, u) == 0) {
+                adjMap[vi].remove(u);
+            }
+        }
     }
 
     protected void swapNeighborWithLast(int vi, int pos) {
@@ -669,7 +693,11 @@ class GraphImpl<V, E> implements Graph<V, E> {
             }
         }
         if (edgeData != null) {
-            edgeData[vi][pos] = edgeData[vi][degree[vi] - 1];
+            for (int k = 0; k < edgeData.length; k++) {
+                if (edgeData[k] != null) {
+                    edgeData[k][vi][pos] = edgeData[k][vi][degree[vi] - 1];
+                }
+            }
         }
         if (edgeLabel != null) {
             edgeLabel[vi][pos] = edgeLabel[vi][degree[vi] - 1];
@@ -677,22 +705,25 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     //Returns the first position of u in the neighbor list of v.
-    @Override
     public int adjListPos(int v, int u) {
         int vi = indexOf(v);
-        if (adjList[vi] == null) {
+        int deg = degree[vi];
+        if (deg == 0) {
             return -1;
         }
         /*
         if (adjListMatrix != null) {
             return adjListMatrix[vi][indexOf(u)];
         }*/
-        for (int pos = 0, deg = degree[vi]; pos < deg; pos++) {
-            if (adjList[vi][pos] == u) {
-                return pos;
+        //if the degree of v is small enough, just iterate
+        if (deg < numVertices / deg) {
+            for (int pos = 0; pos < deg; pos++) {
+                if (adjList[vi][pos] == u) {
+                    return pos;
+                }
             }
         }
-        return -1;
+        return getAdjMap(vi).position(u);
     }
 
     @Override
@@ -787,7 +818,6 @@ class GraphImpl<V, E> implements Graph<V, E> {
         return adjList[vi];
     }
 
-    //lazy
     private AdjacencySet getAdjSet(int vi) {
         if (adjSet == null) {
             adjSet = new AdjacencySet[vertices.length];
@@ -801,6 +831,19 @@ class GraphImpl<V, E> implements Graph<V, E> {
         return adjSet[vi];
     }
 
+    private AdjacencyMap getAdjMap(int vi) {
+        if (adjMap == null) {
+            adjMap = new AdjacencyMap[vertices.length];
+        }
+        if (adjMap[vi] == null) {
+            adjMap[vi] = new AdjacencyIntHashMap();
+            for (int pos = 0; pos < degree[vi]; pos++) {
+                adjMap[vi].add(adjList[vi][pos], pos);
+            }
+        }
+        return adjMap[vi];
+    }
+
     @Override
     public boolean containsEdge(int v, int u) {
         int vi = checkVertex(v);
@@ -811,7 +854,7 @@ class GraphImpl<V, E> implements Graph<V, E> {
         }
         //if the degree of v is small enough, just iterate
         if (deg < numVertices / deg) {
-            //return adjListPos(v, u) >= 0
+            //return adjListPos(v, u) >= 0;
             for (int pos = 0; pos < deg; pos++) {
                 if (adjList[vi][pos] == u) {
                     return true;
@@ -858,13 +901,12 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     protected void initEdgeData() {
-        //only for WEIGHT
         this.edgeData = new double[edgeDataSize][][];
     }
 
     protected void initEdgeData(int dataType) {
         if (edgeData == null) {
-            GraphImpl.this.initEdgeData();
+            initEdgeData();
         }
         this.edgeData[dataType] = new double[vertices.length][];
         for (int i = 0; i < numVertices; i++) {
@@ -1168,6 +1210,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
         if (adjSet != null) {
             adjSet = Arrays.copyOf(adjSet, newLen);
         }
+        if (adjMap != null) {
+            adjMap = Arrays.copyOf(adjMap, newLen);
+        }
         if (vertexWeight != null) {
             vertexWeight = Arrays.copyOf(vertexWeight, newLen);
         }
@@ -1320,12 +1365,31 @@ class GraphImpl<V, E> implements Graph<V, E> {
     }
 
     public Graph<V, E> supportGraph() {
-        var copy = GraphBuilder.verticesFrom(this).buildGraph();
+        GraphImpl copy = (GraphImpl) GraphBuilder.verticesFrom(this).buildGraph();
         copy.setSafeMode(false);
         for (var it = edgeIterator(); it.hasNext();) {
             Edge e = it.next();
-            if (!e.isSelfLoop() && !copy.containsEdge(e)) {
-                copy.addEdge(e);
+            if (e.isSelfLoop()) {
+                continue;
+            }
+            if (edgeData == null || directed) {
+                if (!copy.containsEdge(e)) {
+                    copy.addEdge(e);
+                }
+            } else {
+                //cumulate edge data            
+                int v = e.source();
+                int u = e.target();
+                int pos = copy.adjListPos(v, u);
+                if (pos < 0) {
+                    pos = copy.addEdge(v, u);
+                }
+                int vi = indexOf(v); //same as in copy
+                for (int k = 0; k < edgeData.length; k++) {
+                    if (edgeData[k][vi] != null) {
+                        copy.incEdgeDataAt(k, vi, pos, it.getData(k));
+                    }
+                }
             }
         }
         copy.setSafeMode(true);
@@ -1357,9 +1421,17 @@ class GraphImpl<V, E> implements Graph<V, E> {
     @Override
     public int duplicateVertex(int v) {
         int newVertex = addVertex();
+        int newVertexId = indexOf(newVertex);
         int vi = indexOf(v);
         for (int pos = 0, deg = degree[vi]; pos < deg; pos++) {
-            addEdge(newVertex, adjList[vi][pos]);
+            int newPos = addEdge(newVertex, adjList[vi][pos]);
+            if (edgeData != null) {
+                for (int k = 0; k < edgeData.length; k++) {
+                    if (edgeData[k][vi] != null) {
+                        setEdgeDataAt(k, newVertexId, newPos, edgeData[k][vi][pos]);
+                    }
+                }
+            }
             if (vertexWeight != null) {
                 setVertexWeight(v, getVertexWeight(v));
             }
@@ -1373,12 +1445,29 @@ class GraphImpl<V, E> implements Graph<V, E> {
     @Override
     public int contractVertices(int... vertices) {
         int newVertex = addVertex();
+        int newVertexId = numVertices - 1;
         for (int v : vertices) {
             int vi = indexOf(v);
             for (int pos = 0, deg = degree[vi]; pos < deg; pos++) {
                 int u = adjList[vi][pos];
-                if (!IntArrays.contains(vertices, u) && !containsEdge(newVertex, u)) {
-                    addEdge(newVertex, u);
+                if (IntArrays.contains(vertices, u)) {
+                    continue;
+                }
+                if (directed || edgeData == null) {
+                    if (!containsEdge(newVertex, u)) {
+                        addEdge(newVertex, u);
+                    }
+                } else {
+                    int newPos = adjListPos(newVertex, u);
+                    if (newPos == -1) {
+                        newPos = addEdge(newVertex, u);
+                    }
+                    //cumulate edge data                    
+                    for (int k = 0; k < edgeData.length; k++) {
+                        if (edgeData[k][vi] != null) {
+                            incEdgeDataAt(k, newVertexId, newPos, edgeData[k][vi][pos]);
+                        }
+                    }
                 }
             }
         }

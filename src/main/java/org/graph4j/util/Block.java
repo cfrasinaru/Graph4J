@@ -17,7 +17,7 @@
 package org.graph4j.util;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.connectivity.TarjanBiconnectivity;
+import org.graph4j.connectivity.TarjanBiconnectivity;
 
 /**
  * A <em>block</em> of a graph is a maximal 2-connected subgraph (it has no cut

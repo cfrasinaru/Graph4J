@@ -17,7 +17,13 @@
 package org.graph4j;
 
 import java.io.FileNotFoundException;
-import java.util.Arrays;
+import org.graph4j.connectivity.StoerWagnerMinimumCut;
+import org.graph4j.connectivity.VertexConnectivityAlgorithm;
+import org.graph4j.generators.EdgeWeightsGenerator;
+import org.graph4j.generators.GraphGenerator;
+import org.graph4j.generators.RandomForestGenerator;
+import org.graph4j.generators.RandomGnpGraphGenerator;
+import org.graph4j.spanning.PrimMinimumSpanningTree;
 
 /**
  *
@@ -35,62 +41,11 @@ class Main {
     }
 
     private void test() {
-
-        Graph g = GraphBuilder.empty().estimatedNumVertices(5).buildGraph();
-
-        g.addVertex(); // v = 0
-        g.addVertex(); // v = 1
-        g.addVertex(); // v = 2
-        g.addVertex(); // v = 3
-        g.addVertex(); // v = 4
-
-        g.addEdge(1, 2);
-        g.addEdge(2, 3);
-        g.addEdge(3, 4);
-
-        System.out.println("edges: " + Arrays.toString(g.edges()));
-
-        g.removeVertex(2);
-
-        System.out.println("edges: " + Arrays.toString(g.edges()));
-
-        g.addVertex(); // v = 5
-
-        System.out.println("edges: " + Arrays.toString(g.edges()));
-        //var g = GraphGenerator.mycielski(5);
-        //System.out.println(g);
-        //[0-1, 0-4, 0-6, 0-9, 1-2, 1-5, 1-7, 2-3, 2-6, 2-8, 3-4, 3-7, 3-9, 4-5, 4-8, 5-10, 6-10, 7-10, 8-10, 9-10]}
-        //var g = NetworkBuilder.edges("0-1, 0-4, 0-6, 0-9, 1-2, 1-5, 1-7, 2-3, 2-6, 2-8, 3-4, 3-7, 3-9, 4-5, 4-8, 5-10, 6-10, 7-10, 8-10, 9-10").buildNetwork();
-        //new EdgeDataGenerator(g, CAPACITY).fill(Double.POSITIVE_INFINITY);
-
-        /*
-        int n = 2000;
-        Network g = new RandomGnpGraphGenerator(n, 0.5).createNetwork();
-        var alg1 = new DinicMaximumFlow(g);
-        new EdgeDataGenerator(g, CAPACITY).randomDoubles(0, 1);
-        //new EdgeDataGenerator(g, CAPACITY).randomIntegers(0, n);
-        alg1.computeMaximumFlow();
-         */
- /*
-        int n = 1000;
-        for (int i = 0; i < 100; i++) {
-            Network g = new RandomGnpGraphGenerator(n, Math.random()).createNetwork();
-            new EdgeDataGenerator(g, CAPACITY).randomIntegers(0, n);
-            var alg1 = new EdmondsKarpMaximumFlow(g);
-            var alg2 = new DinicMaximumFlow(g);
-            //var alg2 = new EdmondsKarpMaximumFlow1(g);
-            //var alg2 = new PushRelabelMaximumFlow(g);
-            //var alg1 = new EdmondsKarpMaximumFlow1(g, 0, n-1);
-            //var alg2 = new PushRelabelMaximumFlow1(g, 0, n-1);
-            double x = alg1.getMaximumFlowValue();
-            double y = alg2.getMaximumFlowValue();
-            if (x != y) {
-                System.out.println("OOPS: " + g);
-                System.out.println(x);
-                System.out.println(y);
-                break;
-            }
-        }*/
+        int numVertices = 10_000;
+       var graph = GraphUtils.join(
+                new RandomForestGenerator(numVertices, 2).createForest(),
+                GraphGenerator.trivial(numVertices));
+        System.out.println(GraphTests.isBiconnected(graph));
     }
 
     protected void run(Runnable snippet) {

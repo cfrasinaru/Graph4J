@@ -3,7 +3,7 @@ package org.graph4j.isomorphism;
 import java.util.ArrayList;
 import java.util.List;
 import org.graph4j.Graph;
-import org.graph4j.alg.connectivity.ConnectivityAlgorithm;
+import org.graph4j.connectivity.ConnectivityAlgorithm;
 import org.graph4j.metrics.TreeExtremaCalculator;
 import org.graph4j.util.RootedTree;
 import org.graph4j.util.Validator;

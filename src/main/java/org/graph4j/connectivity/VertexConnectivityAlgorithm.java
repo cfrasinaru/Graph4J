@@ -278,32 +278,10 @@ public class VertexConnectivityAlgorithm extends GraphAlgorithm {
     }
 
     /**
-     * Computes a minimum vertex cut, that is a set of vertices of minimum size
-     * whose removal disconnects the graph. Complete graphs have no vertex cuts.
-     *
-     * @return a set of vertices of minimum size whose removal disconnects the
-     * graph or {@code null} if no such set exists.
-     */
-    /*
-    public VertexSet getMinimumCut() {
-        if (computed) {
-            //return globalMinCut;
-        }
-        var temp = GraphBuilder.numVertices(2 * graph.numVertices()).buildGraph();
-        temp.setSafeMode(false);
-        //HOW?
-        EdgeCut edgeCut = new StoerWagnerMinimumCut(temp).getMinimumCut();
-        globalMinCut = new VertexSet(graph);
-        for (var e : edgeCut.edges()) {
-            globalMinCut.add(Math.min(e.source(), e.target()));
-        }
-        return globalMinCut;
-    }*/
-    /**
-     * Computes the edge connectivity number, that is the minimum size of a set
-     * of edges whose removal disconnects the graph. If the graph is complete,
-     * it returns {@code n-1}, where {@code n} is the number of vertices in the
-     * graph.
+     * Computes the vertex connectivity number, that is the minimum size of a
+     * set of vertices whose removal disconnects the graph. If the graph is
+     * complete, it returns {@code n-1}, where {@code n} is the number of
+     * vertices in the graph.
      *
      * @return the edge connectivity number.
      */

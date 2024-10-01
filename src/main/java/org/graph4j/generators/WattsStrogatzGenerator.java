@@ -110,8 +110,6 @@ public class WattsStrogatzGenerator extends AbstractGraphGenerator {
     }
 
     private void addEdges(Graph g) {
-        boolean safeMode = g.isSafeMode();
-        g.setSafeMode(false);
         int n = vertices.length;
         int k = averageDegree;
         var rand = new Random();
@@ -144,6 +142,5 @@ public class WattsStrogatzGenerator extends AbstractGraphGenerator {
 
             }
         }
-        g.setSafeMode(safeMode);
     }
 }

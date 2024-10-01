@@ -62,6 +62,7 @@ public abstract class AbstractGraphGenerator {
      * @param vertices the vertices of the generated graph.
      */
     public AbstractGraphGenerator(int[] vertices) {
+        Validator.checkVertices(vertices);
         this.vertices = vertices;
     }
 

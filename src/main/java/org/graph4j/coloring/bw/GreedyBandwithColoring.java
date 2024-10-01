@@ -17,8 +17,8 @@
 package org.graph4j.coloring.bw;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.coloring.GreedyColoring;
-import org.graph4j.alg.coloring.Coloring;
+import org.graph4j.coloring.Coloring;
+import org.graph4j.coloring.GreedyColoring;
 
 /**
  *

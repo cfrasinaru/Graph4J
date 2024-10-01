@@ -165,7 +165,8 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
     /**
      * Returns the index corresponding to a vertex number. The index of a vertex
      * represents the position where it is stored in the array returned by the
-     * method {@link #vertices()}.
+     * method {@link #vertices()}. The index of a vertex may change if other
+     * vertices are removed from the graph.
      *
      * @param v a vertex number.
      * @return the index of the specified vertex number.
@@ -588,6 +589,24 @@ public interface Graph<V, E> extends Weighted, Labeled<V, E> {
      * @return an identical copy of the graph.
      */
     Graph<V, E> copy();
+
+    /**
+     * Creates and returns an identical copy of the graph, as a
+     * {@link Multigraph} object. If the input graph is directed, so it will be
+     * the result.
+     *
+     * @return a multigraph, identical with this graph.
+     */
+    Multigraph<V, E> copyAsMultigraph();
+
+    /**
+     * Creates and returns an identical copy of the graph, as a
+     * {@link Pseudograph} object. If the input graph is directed, so it will be
+     * the result.
+     *
+     * @return a pseudograph, identical with this graph.
+     */
+    Multigraph<V, E> copyAsPseudograph();
 
     /**
      * Creates and returns a copy of the graph. Vertices are copied by default.

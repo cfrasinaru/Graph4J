@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.graph4j.alg.coloring;
+package org.graph4j.coloring;
 
 import java.util.HashSet;
 import java.util.List;
@@ -122,7 +122,9 @@ public abstract class ExactColoringBase extends SimpleGraphAlgorithm
                     i--;
                 }
             } else {
-                System.out.println("\tSolution found");
+                if (outputEnabled) {
+                    System.out.println("\tSolution found");
+                }
                 coloring = c;
                 i = c.maxColorNumber();
                 if (isOptimalityEnsured()) {

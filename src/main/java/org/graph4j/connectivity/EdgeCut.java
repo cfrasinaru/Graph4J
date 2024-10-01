@@ -22,7 +22,6 @@ import org.graph4j.Graph;
 import org.graph4j.GraphTests;
 import org.graph4j.util.EdgeSet;
 import org.graph4j.util.IntArrays;
-import org.graph4j.util.VertexSet;
 
 /**
  * Utility class for representing an edge cut. An <em>edge cut</em> is a set of
@@ -34,8 +33,8 @@ import org.graph4j.util.VertexSet;
 public class EdgeCut {
 
     private final Graph graph;
-    private final VertexSet leftSide;
-    private final VertexSet rightSide;
+    private final int[] leftSide;
+    private final int[] rightSide;
     private Double weight;
     private EdgeSet edges;
 
@@ -45,7 +44,7 @@ public class EdgeCut {
      * @param graph the graph the cut belongs to.
      */
     public EdgeCut(Graph graph) {
-        this(graph, new VertexSet(graph), 0.0);
+        this(graph, new int[]{}, 0.0);
     }
 
     /**
@@ -55,12 +54,11 @@ public class EdgeCut {
      * @param leftSide the vertices in one side of the cut.
      * @param weight the precomputed weight of the cut, or {@code null}.
      */
-    public EdgeCut(Graph graph, VertexSet leftSide, Double weight) {
+    public EdgeCut(Graph graph, int[] leftSide, Double weight) {
         Objects.requireNonNull(leftSide);
         this.graph = graph;
         this.leftSide = leftSide;
-        this.rightSide = new VertexSet(graph,
-                IntArrays.difference(graph.vertices(), leftSide.vertices()));
+        this.rightSide = IntArrays.difference(graph.vertices(), leftSide);
         this.weight = weight;
     }
 
@@ -75,11 +73,14 @@ public class EdgeCut {
         Objects.requireNonNull(edges);
         this.graph = graph;
         this.edges = edges;
-        this.leftSide = new VertexSet(graph, edges.size());
-        this.rightSide = new VertexSet(graph, edges.size());
+        int k = edges.size();
+        this.leftSide = new int[k];
+        this.rightSide = new int[k];
+        int i = 0;
         for (var e : edges) {
-            leftSide.add(e.source());
-            rightSide.add(e.target());
+            leftSide[i] = e.source();
+            rightSide[i] = e.target();
+            i++;
         }
         this.weight = weight;
 
@@ -90,7 +91,7 @@ public class EdgeCut {
      *
      * @return the vertices in the left side of the cut.
      */
-    public VertexSet leftSide() {
+    public int[] leftSide() {
         return leftSide;
     }
 
@@ -99,7 +100,7 @@ public class EdgeCut {
      *
      * @return the vertices in the right side of the cut.
      */
-    public VertexSet rightSide() {
+    public int[] rightSide() {
         return rightSide;
     }
 
@@ -134,11 +135,11 @@ public class EdgeCut {
         if (edges != null) {
             return edges;
         }
-        edges = new EdgeSet(graph, leftSide.size());
-        for (int v : leftSide.vertices()) {
+        edges = new EdgeSet(graph, leftSide.length);
+        for (int v : leftSide) {
             for (var it = graph.neighborIterator(v); it.hasNext();) {
                 int u = it.next();
-                if (!leftSide.contains(u)) {
+                if (!IntArrays.contains(leftSide, u)) {
                     edges.add(graph.edge(v, u));
                 }
             }
@@ -152,12 +153,8 @@ public class EdgeCut {
      * @return {@code true} if the cut is valid, {@code false} otherwise.
      */
     public boolean isValid() {
-        edges();
-        if (edges.weight() != weight) {
-            return false;
-        }
         var g = graph.copy();
-        for (Edge e : edges) {
+        for (Edge e : edges()) {
             g.removeEdge(e);
         }
         boolean connected = GraphTests.isConnected(g);
@@ -166,7 +163,7 @@ public class EdgeCut {
 
     @Override
     public String toString() {
-        return edges().toString();
+        return edges().toString() + "\n\tleft: " + leftSide + "\n\tright:" + rightSide;
     }
 
 }

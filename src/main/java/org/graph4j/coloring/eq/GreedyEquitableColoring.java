@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.graph4j.Graph;
 import org.graph4j.SimpleGraphAlgorithm;
-import org.graph4j.alg.coloring.Coloring;
 import org.graph4j.util.VertexSet;
-import org.graph4j.alg.coloring.ColoringAlgorithm;
+import org.graph4j.coloring.Coloring;
+import org.graph4j.coloring.ColoringAlgorithm;
 
 /**
  *

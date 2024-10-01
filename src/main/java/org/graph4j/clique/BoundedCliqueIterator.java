@@ -16,32 +16,28 @@
  */
 package org.graph4j.clique;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.NoSuchElementException;
 import org.graph4j.Graph;
 import org.graph4j.SimpleGraphAlgorithm;
+import org.graph4j.util.BoundedSubsetIterator;
 import org.graph4j.util.Clique;
-import org.graph4j.util.IntArrays;
-import org.graph4j.util.VertexSet;
 
 /**
- * Iterates over all cliques in a graph in a DFS manner. The cliques are ordered
- * lexicographically by their sequence of numbers.
+ * Uses BronKerboschCliqueIterator in order to iterate through the cliques of
+ * specified sizes. Slower than {@link DFSCliqueIterator}.
  *
  * @author Cristian Frăsinaru
  */
-public class DFSCliqueIterator extends SimpleGraphAlgorithm
+@Deprecated
+public class BoundedCliqueIterator extends SimpleGraphAlgorithm
         implements CliqueIterator {
 
     private final int minSize, maxSize;
     private final long timeout;
-    private final Deque<Node> stack;
     private Clique currentClique;
-
-    public DFSCliqueIterator(Graph graph) {
-        this(graph, 1, graph.numVertices());
-    }
+    private final BronKerboschCliqueIterator bkIterator;
+    private BoundedSubsetIterator subsetIterator;
+    private boolean timeExpired;
 
     /**
      *
@@ -49,7 +45,7 @@ public class DFSCliqueIterator extends SimpleGraphAlgorithm
      * @param minSize the minimum size of a clique.
      * @param maxSize the maximum size of a clique.
      */
-    public DFSCliqueIterator(Graph graph, int minSize, int maxSize) {
+    public BoundedCliqueIterator(Graph graph, int minSize, int maxSize) {
         this(graph, minSize, maxSize, 0);
     }
 
@@ -60,26 +56,15 @@ public class DFSCliqueIterator extends SimpleGraphAlgorithm
      * @param maxSize the maximum size of a clique.
      * @param timeout timeout in milliseconds.
      */
-    public DFSCliqueIterator(Graph graph, int minSize, int maxSize, long timeout) {
+    public BoundedCliqueIterator(Graph graph, int minSize, int maxSize, long timeout) {
         super(graph);
+        if (minSize <= 0 || minSize > maxSize || maxSize > graph.numVertices()) {
+            throw new IllegalArgumentException();
+        }
         this.minSize = minSize;
         this.maxSize = maxSize;
         this.timeout = timeout;
-        stack = new ArrayDeque<>((int) graph.numEdges());
-        stack.add(new Node(new Clique(graph),
-                new VertexSet(graph, IntArrays.sortDesc(graph.vertices()))));
-        //the candidates are sorted descending for polling them easily
-    }
-
-    //find the neighbors with higher numbers
-    private VertexSet neighbors(int v, int[] cand) {
-        var nbrs = new VertexSet(graph, cand.length);
-        for (int u : cand) {
-            if (u > v && graph.containsEdge(v, u)) {
-                nbrs.add(u);
-            }
-        }
-        return nbrs;
+        bkIterator = new BronKerboschCliqueIterator(graph);
     }
 
     @Override
@@ -100,43 +85,31 @@ public class DFSCliqueIterator extends SimpleGraphAlgorithm
         if (currentClique != null) {
             return true;
         }
+        if (timeExpired) {
+            return false;
+        }
         long t0 = System.currentTimeMillis();
-        while (!stack.isEmpty()) {
+        while (subsetIterator == null) {
             if (timeout > 0 && System.currentTimeMillis() - t0 > timeout) {
+                timeExpired = true;
                 return false;
             }
-            var node = stack.peek();
-            if (node.cand == null || node.cand.isEmpty()) {
-                stack.pop();
+            if (!bkIterator.hasNext()) {
+                return false;
+            }
+            var maximalClique = bkIterator.next();
+            if (maximalClique.size() < minSize) {
                 continue;
             }
-
-            //make a new clique
-            int v = node.cand.pop();
-            var newClique = new Clique(node.clique);
-            newClique.add(v);
-            var newCand = newClique.size() == maxSize ? null : neighbors(v, node.cand.vertices());
-            stack.push(new Node(newClique, newCand));
-
-            if (newClique.size() >= minSize) {
-                currentClique = newClique;
-                assert currentClique.isValid();
-                return true;
-            }
-
+            subsetIterator = new BoundedSubsetIterator(maximalClique.vertices(), minSize);
+            break;
         }
-        return false;
-
+        int[] vertices = subsetIterator.next();
+        currentClique = new Clique(graph, vertices);
+        if (!subsetIterator.hasNext()) {
+            subsetIterator = null;
+        }
+        return true;
     }
 
-    private class Node {
-
-        final Clique clique;
-        final VertexSet cand;
-
-        public Node(Clique clique, VertexSet cand) {
-            this.clique = clique;
-            this.cand = cand;
-        }
-    }
 }

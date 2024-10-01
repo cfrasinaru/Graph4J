@@ -17,9 +17,10 @@
 package org.graph4j.coloring.bw;
 
 import org.graph4j.util.Domain;
-import org.graph4j.alg.coloring.*;
 import org.graph4j.Graph;
-import org.graph4j.alg.coloring.Node;
+import org.graph4j.coloring.BacktrackColoringBase;
+import org.graph4j.coloring.Coloring;
+import org.graph4j.coloring.Node;
 
 //https://mat.gsia.cmu.edu/COLOR02/
 /**

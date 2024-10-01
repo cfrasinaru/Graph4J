@@ -226,6 +226,16 @@ public abstract class VertexCollection implements Iterable<Integer> {
     }
 
     /**
+     * Removes the last element in the collection.
+     */
+    public void removeLast() {
+        if (numVertices == 0) {
+            throw new NoSuchElementException("The collection is empty");
+        }
+        numVertices--;
+    }
+
+    /**
      *
      * @param vertices an array of vertex numbers.
      * @return {@code true} if the collection was modified as a result of this

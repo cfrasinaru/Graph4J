@@ -17,6 +17,7 @@
 package org.graph4j.connectivity;
 
 import org.graph4j.GraphBuilder;
+import org.graph4j.generators.EdgeWeightsGenerator;
 import org.graph4j.generators.GraphGenerator;
 import org.graph4j.util.EdgeSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +34,7 @@ public class StoerWagnerTest {
         var g = GraphBuilder.numVertices(10).buildGraph();
         var alg = new StoerWagnerMinimumCut(g);
         assertEquals(0, alg.getMinimumCutWeight());
+        assertEquals(alg.getMinimumCutWeight(), alg.getMinimumCut().weight());
     }
 
     @Test
@@ -40,9 +42,10 @@ public class StoerWagnerTest {
         int n = 10;
         var g = GraphGenerator.complete(n);
         var alg = new StoerWagnerMinimumCut(g);
-        assertEquals(n-1, alg.getMinimumCutWeight());
+        assertEquals(n - 1, alg.getMinimumCutWeight());
+        assertEquals(alg.getMinimumCutWeight(), alg.getMinimumCut().weight());
     }
-    
+
     @Test
     public void simple1() {
         var g = GraphBuilder.numVertices(6).buildGraph();
@@ -54,12 +57,13 @@ public class StoerWagnerTest {
 
         var alg = new StoerWagnerMinimumCut(g);
         assertEquals(1, alg.getMinimumCutWeight());
+        assertEquals(alg.getMinimumCutWeight(), alg.getMinimumCut().weight());
 
         EdgeSet sol = new EdgeSet(g);
         sol.add(2, 3);
         assertEquals(sol, alg.getMinimumCut().edges());
-        assertEquals(3, alg.getMinimumCut().leftSide().size());
-        assertEquals(3, alg.getMinimumCut().rightSide().size());
+        assertEquals(3, alg.getMinimumCut().leftSide().length);
+        assertEquals(3, alg.getMinimumCut().rightSide().length);
     }
 
     @Test
@@ -72,16 +76,17 @@ public class StoerWagnerTest {
 
         var alg = new StoerWagnerMinimumCut(g);
         assertEquals(2, alg.getMinimumCutWeight());
+        assertEquals(alg.getMinimumCutWeight(), alg.getMinimumCut().weight());
 
         EdgeSet sol = new EdgeSet(g);
         sol.add(0, 1);
         sol.add(2, 3);
         assertEquals(sol, alg.getMinimumCut().edges());
-        assertEquals(2, alg.getMinimumCut().leftSide().size());
-        assertEquals(2, alg.getMinimumCut().rightSide().size());
+        assertEquals(2, alg.getMinimumCut().leftSide().length);
+        assertEquals(2, alg.getMinimumCut().rightSide().length);
     }
-    
-@Test
+
+    @Test
     public void infinity() {
         var g = GraphBuilder.numVertices(4).buildGraph();
         g.addEdge(0, 1, Double.POSITIVE_INFINITY);
@@ -91,7 +96,8 @@ public class StoerWagnerTest {
 
         var alg = new StoerWagnerMinimumCut(g);
         assertEquals(Double.POSITIVE_INFINITY, alg.getMinimumCutWeight());
-    }    
+        assertEquals(alg.getMinimumCutWeight(), alg.getMinimumCut().weight());
+    }
 
     @Test
     public void paper() {
@@ -112,6 +118,18 @@ public class StoerWagnerTest {
         g.addEdge(7, 8, 3); //12 edges
         var alg = new StoerWagnerMinimumCut(g);
         assertEquals(4, alg.getMinimumCutWeight());
+        assertEquals(alg.getMinimumCutWeight(), alg.getMinimumCut().weight());
+    }
+
+    @Test
+    public void random() {
+        int numVertices = 10;
+        for (int i = 0; i < 1; i++) {
+            var g = GraphGenerator.randomGnp(numVertices, Math.random());
+            EdgeWeightsGenerator.randomDoubles(g, 0, 1);
+            var alg = new StoerWagnerMinimumCut(g);
+            assertEquals(alg.getMinimumCutWeight(), alg.getMinimumCut().weight());
+        }
     }
 
 }

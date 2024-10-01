@@ -181,7 +181,7 @@ public class GraphGenerator {
      * @return a random chordal graph.
      */
     public static Graph randomChordalGraph(int numVertices) {
-        return new RandomChordalGraphGenerator(numVertices).create();
+        return new RandomChordalGraphGenerator(numVertices).createGraph();
     }
 
     /**

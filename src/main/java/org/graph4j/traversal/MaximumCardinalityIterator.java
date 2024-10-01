@@ -23,6 +23,7 @@ import org.graph4j.util.IntIterator;
 import org.graph4j.util.Validator;
 import org.graph4j.util.VertexHeap;
 
+//why is this implementation faster than the one with buckets?
 /**
  * Implements an iterator that performs Maximum Cardinality Search (MCS)
  * algorithm on an undirected graph.
@@ -43,6 +44,7 @@ public class MaximumCardinalityIterator implements IntIterator {
     private VertexHeap heap;
     private int[] count; //the cardinality of vertices
     private int numIterations;
+    private int currentVertex, currentVertexId;
 
     /**
      * Creates an iterator starting with the first vertex of the graph (the one
@@ -80,6 +82,7 @@ public class MaximumCardinalityIterator implements IntIterator {
         //max heap for selecting a vertex with maximum cardinality
         this.heap = new VertexHeap(graph, true,
                 (i, j) -> (int) Math.signum(count[j] - count[i]));
+        currentVertex = currentVertexId = -1;
     }
 
     @Override
@@ -92,17 +95,16 @@ public class MaximumCardinalityIterator implements IntIterator {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        int v, vi;
         if (numIterations++ == 0) {
-            v = startVertex;
-            vi = graph.indexOf(v);
-            heap.remove(vi);
+            currentVertex = startVertex;
+            currentVertexId = graph.indexOf(currentVertex);
+            heap.remove(currentVertexId);
         } else {
-            vi = heap.poll();
-            v = graph.vertexAt(vi);
+            currentVertexId = heap.poll();
+            currentVertex = graph.vertexAt(currentVertexId);
         }
-        visited[vi] = true;
-        for (var it = graph.neighborIterator(v); it.hasNext();) {
+        visited[currentVertexId] = true;
+        for (var it = graph.neighborIterator(currentVertex); it.hasNext();) {
             int u = it.next();
             int ui = graph.indexOf(u);
             if (!visited[ui]) {
@@ -110,6 +112,17 @@ public class MaximumCardinalityIterator implements IntIterator {
                 heap.update(ui);
             }
         }
-        return v;
+        return currentVertex;
+    }
+
+    public int currentVertexId() {
+        return currentVertexId;
+    }
+
+    public int cardinality() {
+        if (currentVertexId == -1) {
+            throw new NoSuchElementException();
+        }
+        return count[currentVertexId];
     }
 }

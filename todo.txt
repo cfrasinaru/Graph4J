@@ -1,3 +1,4 @@
+give a real world, practical example, that involves computing the Capacitated minimum spanning tree  (CMST) of a graph
 
 ------------------------------------------------------------
 Maximum (Weighted) Independent Set / Clique / Vertex Cover
@@ -66,6 +67,9 @@ Gusfield-Gomory-Hu cut-tree / flow-tree
 https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/flow/GusfieldGomoryHuCutTree.java
 https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/flow/GusfieldEquivalentFlowTree.java
 
+k-vertex-connected
+https://en.wikipedia.org/wiki/K-vertex-connected_graph
+
 ------------------------------------------------------------
 Shortest Paths:
 ------------------------------------------------------------
@@ -117,6 +121,10 @@ https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jg
 Nagamochi-Ibaraki Algorithm?
 
 
+Coloring
+Welsh Powell Graph colouring Algorithm
+https://graphstream-project.org/doc/Algorithms/Welsh-Powell/
+
 
 A Bloom filter is a space-efficient probabilistic data structure, that is used to test whether an element is a member of a set.
 https://en.m.wikipedia.org/wiki/Bloom_filter
@@ -152,6 +160,10 @@ Caterpillar tree
 Chemical graph generator
 Ptolemaic
 Distance-hereditary
+
+K-Nearest Neighbor Graph (K-NNG)
+Efficient k-nearest neighbor graph construction for generic similarity measures.
+
 
 Uniform Cost Search
 Dynamic Connected Components (using Disjoint Sets)

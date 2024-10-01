@@ -16,13 +16,7 @@
  */
 package org.graph4j.generators;
 
-import java.util.Arrays;
-import java.util.Random;
-import java.util.stream.IntStream;
 import org.graph4j.Graph;
-import org.graph4j.GraphBuilder;
-import org.graph4j.util.StableSet;
-import org.graph4j.util.Validator;
 
 /**
  *
@@ -35,10 +29,7 @@ import org.graph4j.util.Validator;
  *
  * @author Cristian Frăsinaru
  */
-public class CompleteMultipartiteGenerator extends AbstractGraphGenerator {
-
-    private final int[] numVertices;
-    private StableSet[] stableSets;
+public class CompleteMultipartiteGenerator extends RandomMultipartiteGenerator {
 
     /**
      * Creates a generator for a complete multipartite graph, where the number
@@ -47,12 +38,7 @@ public class CompleteMultipartiteGenerator extends AbstractGraphGenerator {
      * @param numVertices the number of vertices in each stable set.
      */
     public CompleteMultipartiteGenerator(int... numVertices) {
-        for (int i = 0; i < numVertices.length; i++) {
-            Validator.checkNumVertices(numVertices[i]);
-        }
-        this.numVertices = numVertices;
-        int n = IntStream.of(numVertices).sum();
-        this.vertices = IntStream.range(0, n).toArray();
+        super(1.0, numVertices);
     }
 
     /**
@@ -60,43 +46,18 @@ public class CompleteMultipartiteGenerator extends AbstractGraphGenerator {
      *
      * @return a complete multipartite graph
      */
+    @Override
     public Graph create() {
-        var g = GraphBuilder.vertices(vertices).buildGraph();
-        g.setSafeMode(false);
-        int k = numVertices.length;
-        stableSets = new StableSet[k];
+        var g = super.create();
         var name = new StringBuilder("K");
-        int firstVertex = 0, lastVertex;
-        for (int i = 0; i < k; i++) {
-            int size = numVertices[i];
-            lastVertex = firstVertex + size - 1;
-            stableSets[i] = new StableSet(g, IntStream.rangeClosed(firstVertex, lastVertex).toArray());
-            firstVertex += size;
+        for (int i = 0; i < numVertices.length; i++) {
             if (i > 0) {
                 name.append(",");
             }
-            name.append(size);
+            name.append(numVertices[i]);
         }
         g.setName(name.toString());
-        for (int i = 0; i < k - 1; i++) {
-            for (int j = i + 1; j < k; j++) {
-                for (int v : stableSets[i].vertices()) {
-                    for (int u : stableSets[j].vertices()) {
-                        g.addEdge(v, u);
-                    }
-                }
-            }
-        }
-        g.setSafeMode(true);
         return g;
     }
 
-    /**
-     * Returns the stable sets of the multipartite graph.
-     *
-     * @return the stable sets of the multipartite graph.
-     */
-    public StableSet[] getStableSets() {
-        return stableSets;
-    }
 }

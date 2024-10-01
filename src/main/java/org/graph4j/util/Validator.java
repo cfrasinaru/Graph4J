@@ -112,6 +112,26 @@ public class Validator {
     }
 
     /**
+     * Checks if the numbers in the specified array are valid as the vertices
+     * for a graph.
+     *
+     * @param vertices an array of vertex numbers.
+     * @throws IllegalArgumentException if the vertices are invalid.
+     */
+    public static void checkVertices(int[] vertices) {
+        Objects.requireNonNull(vertices);
+        for (int v : vertices) {
+            if (v < 0) {
+                throw new IllegalArgumentException("Vertex numbers must be non-negative: " + v);
+            }
+        }
+        Integer u = IntArrays.findDuplicate(vertices);
+        if (u != null) {
+            throw new IllegalArgumentException("Vertices must not contain duplicates: " + u);
+        }
+    }
+
+    /**
      * Checks if a specified integer is a valid index in a graph, i.e. it is in
      * the range {@code 0} to {@code graph.numVertices()-1}.
      *

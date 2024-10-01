@@ -16,12 +16,12 @@
  */
 package org.graph4j.alg;
 
-import org.graph4j.alg.coloring.BacktrackColoring;
-import org.graph4j.alg.coloring.DSaturGreedyColoring;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import org.graph4j.alg.coloring.GreedyColoring;
-import org.graph4j.alg.coloring.Coloring;
+import org.graph4j.coloring.BacktrackColoring;
+import org.graph4j.coloring.Coloring;
+import org.graph4j.coloring.DSaturGreedyColoring;
+import org.graph4j.coloring.GreedyColoring;
 import org.graph4j.generators.GraphGenerator;
 
 /**

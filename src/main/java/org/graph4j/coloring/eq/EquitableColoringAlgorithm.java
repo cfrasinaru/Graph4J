@@ -17,9 +17,9 @@
 package org.graph4j.coloring.eq;
 
 import org.graph4j.Graph;
-import org.graph4j.alg.coloring.Coloring;
-import org.graph4j.alg.coloring.ColoringAlgorithm;
-import org.graph4j.alg.coloring.RecursiveLargestFirstColoring;
+import org.graph4j.coloring.Coloring;
+import org.graph4j.coloring.ColoringAlgorithm;
+import org.graph4j.coloring.RecursiveLargestFirstColoring;
 
 /**
  *

@@ -16,9 +16,10 @@
  */
 package org.graph4j.coloring.eq;
 
-import org.graph4j.alg.coloring.*;
 import org.graph4j.Graph;
-import org.graph4j.alg.coloring.Node;
+import org.graph4j.coloring.BacktrackColoringBase;
+import org.graph4j.coloring.Coloring;
+import org.graph4j.coloring.Node;
 
 /**
  * Attempts at finding an optimum equitable coloring of the vertices of a graph

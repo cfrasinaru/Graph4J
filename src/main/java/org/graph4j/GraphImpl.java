@@ -177,6 +177,16 @@ class GraphImpl<V, E> implements Graph<V, E> {
             copyEdgeLabels = false;
         }
         var copy = newInstance();
+        copyTo(copy, copyVertexData, copyVertexLabels, copyEdges, copyEdgeData, copyEdgeLabels);
+        return copy;
+    }
+
+    protected void copyTo(GraphImpl copy, boolean copyVertexData, boolean copyVertexLabels,
+            boolean copyEdges, boolean copyEdgeData, boolean copyEdgeLabels) {
+        if (!copyEdges) {
+            copyEdgeData = false;
+            copyEdgeLabels = false;
+        }
         copy.numVertices = numVertices;
         copy.maxVertices = maxVertices;
         copy.numEdges = copyEdges ? numEdges : 0;
@@ -255,6 +265,26 @@ class GraphImpl<V, E> implements Graph<V, E> {
         }
         //stuff
         copy.maxVertexNumber = maxVertexNumber;
+    }
+
+    @Override
+    public Multigraph copyAsMultigraph() {
+        if (this instanceof Pseudograph) {
+            throw new UnsupportedOperationException(
+                    "A pseudograph cannot be transformed into a multigraph");
+        }
+        var copy = directed ? new DirectedMultigraphImpl() : new MultigraphImpl();
+        copyTo(copy, true, true, true, true, true);
+        copy.allowingMultipleEdges = true;
+        return copy;
+    }
+
+    @Override
+    public Multigraph copyAsPseudograph() {
+        var copy = directed ? new DirectedPseudographImpl() : new PseudographImpl();
+        copyTo(copy, true, true, true, true, true);
+        copy.allowingMultipleEdges = true;
+        copy.allowingSelfLoops = true;
         return copy;
     }
 
@@ -306,8 +336,16 @@ class GraphImpl<V, E> implements Graph<V, E> {
                 }
             }
         }
+        resetCache();
+    }
+
+    private void resetCache() {
         adjSet = null;
         adjMap = null;
+        labelVertexMap = null;
+        maxVertexNumber = null;
+        labelVertexMap = null;
+        labelEdgeMap = null;
     }
 
     @Override
@@ -340,7 +378,6 @@ class GraphImpl<V, E> implements Graph<V, E> {
 
     @Override
     public int vertexAt(int index) {
-        //Validator.checkVertexIndex(this, index);
         if (index < 0 || index >= numVertices) {
             throw new IllegalArgumentException(
                     "Index must be in the range [0," + (numVertices - 1) + "]: " + index);
@@ -1453,7 +1490,9 @@ class GraphImpl<V, E> implements Graph<V, E> {
                 if (IntArrays.contains(vertices, u)) {
                     continue;
                 }
-                if (directed || edgeData == null) {
+                if (allowingMultipleEdges) {
+                    addEdge(newVertex, u);
+                } else if (directed || edgeData == null) {
                     if (!containsEdge(newVertex, u)) {
                         addEdge(newVertex, u);
                     }

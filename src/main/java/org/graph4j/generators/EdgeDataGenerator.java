@@ -16,6 +16,7 @@
  */
 package org.graph4j.generators;
 
+import java.util.Objects;
 import java.util.Random;
 import org.graph4j.Graph;
 import org.graph4j.util.Validator;
@@ -39,6 +40,7 @@ public class EdgeDataGenerator {
      * @param dataType the id of an edge data type.
      */
     public EdgeDataGenerator(Graph graph, int dataType) {
+        Objects.requireNonNull(graph);
         this.dataType = dataType;
         this.graph = graph;
     }

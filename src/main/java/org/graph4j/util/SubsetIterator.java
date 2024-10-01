@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
+ * Iterates over all subsets of the set {0,1,...,n-1}.
  *
  * @author Cristian Frăsinaru
  */

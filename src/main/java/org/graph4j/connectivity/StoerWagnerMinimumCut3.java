@@ -19,11 +19,10 @@ package org.graph4j.connectivity;
 import java.util.HashMap;
 import java.util.Map;
 import org.graph4j.Graph;
-import org.graph4j.GraphTests;
 import org.graph4j.SimpleGraphAlgorithm;
 import org.graph4j.generators.EdgeWeightsGenerator;
 import org.graph4j.util.VertexHeap;
-import org.graph4j.util.VertexList;
+import org.graph4j.util.VertexSet;
 
 /**
  * Provides a method to find the minimum weighted cut of an undirected graph
@@ -38,7 +37,7 @@ import org.graph4j.util.VertexList;
  *
  * @author Cristian Frăsinaru
  */
-public class StoerWagnerMinimumCut extends SimpleGraphAlgorithm {
+public class StoerWagnerMinimumCut3 extends SimpleGraphAlgorithm {
 
     private boolean ignoreWeights;
     private Graph workGraph;
@@ -46,7 +45,8 @@ public class StoerWagnerMinimumCut extends SimpleGraphAlgorithm {
     private boolean processed[];
     private double[] weight;
 
-    private Map<Integer, VertexList> vertexMap;
+    private final int startId = 0;
+    private Map<Integer, VertexSet> map;
     private Double minWeight;
     private Integer minCutVertex;
     private EdgeCut minCut;
@@ -58,7 +58,7 @@ public class StoerWagnerMinimumCut extends SimpleGraphAlgorithm {
      *
      * @param graph the input graph.
      */
-    public StoerWagnerMinimumCut(Graph graph) {
+    public StoerWagnerMinimumCut3(Graph graph) {
         this(graph, !graph.hasEdgeWeights());
     }
 
@@ -68,7 +68,7 @@ public class StoerWagnerMinimumCut extends SimpleGraphAlgorithm {
      * @param graph the input graph.
      * @param ignoreWeights if {@code true}
      */
-    public StoerWagnerMinimumCut(Graph graph, boolean ignoreWeights) {
+    public StoerWagnerMinimumCut3(Graph graph, boolean ignoreWeights) {
         super(graph);
         this.ignoreWeights = ignoreWeights;
         //support for multigraphs?
@@ -86,7 +86,7 @@ public class StoerWagnerMinimumCut extends SimpleGraphAlgorithm {
             return minCut;
         }
         compute();
-        minCut = new EdgeCut(graph, vertexMap.get(minCutVertex).vertices(), minWeight);
+        minCut = new EdgeCut(graph, map.get(minCutVertex).vertices(), minWeight);
         assert minCut.isValid();
         return minCut;
     }
@@ -105,22 +105,16 @@ public class StoerWagnerMinimumCut extends SimpleGraphAlgorithm {
     }
 
     private void compute() {
-        if (!ignoreWeights) {
-            checkForNegativeEdges();
-        }
-        if (graph.isEmpty() || !GraphTests.isConnected(graph)) {
-            minCut = new EdgeCut(graph);
-            minWeight = 0.0;
-            return;
-        }
         this.workGraph = graph.copy();
         if (ignoreWeights) {
             EdgeWeightsGenerator.fill(workGraph, Graph.DEFAULT_EDGE_WEIGHT);
+        } else {
+            checkForNegativeEdges();
         }
         int n = workGraph.numVertices();
-        this.vertexMap = new HashMap<>(2 * n);
+        this.map = new HashMap<>(2 * n);
         for (int v : graph.vertices()) {
-            vertexMap.put(v, new VertexList(workGraph, new int[]{v}));
+            map.put(v, new VertexSet(workGraph, new int[]{v}));
         }
         this.minWeight = Double.POSITIVE_INFINITY;
         while (workGraph.numVertices() > 1) {
@@ -141,19 +135,27 @@ public class StoerWagnerMinimumCut extends SimpleGraphAlgorithm {
                 (i, j) -> (int) Math.signum(weight[j] - weight[i]));
         int[] vertices = workGraph.vertices();
         while (!maxHeap.isEmpty()) {
-            int vi = maxHeap.poll(); //0 is always first
+            int vi;
+            if (last == -1) {
+                vi = startId;
+                maxHeap.remove(startId);
+            } else {
+                vi = maxHeap.poll();
+            }
             processed[vi] = true;
             beforeLast = last;
             last = vertices[vi];
             for (var it = workGraph.neighborIterator(last); it.hasNext();) {
                 int ui = workGraph.indexOf(it.next());
-                if (!processed[ui]) {
-                    weight[ui] += it.getEdgeWeight();
-                    maxHeap.update(ui);
+                if (processed[ui]) {
+                    continue;
                 }
+                weight[ui] += it.getEdgeWeight();
+                maxHeap.update(ui);
             }
         }
-
+        
+        
         //update minimum
         double cutWeight = weight[workGraph.indexOf(last)]; //cut-of-the-phase
         if (minCutVertex == null || cutWeight < minWeight) {
@@ -164,8 +166,8 @@ public class StoerWagnerMinimumCut extends SimpleGraphAlgorithm {
         //shrink the work graph by merging the last two vertices
         //contracting the vertices cumulates the weights of the edges
         int newVertex = workGraph.contractVertices(last, beforeLast);
-        vertexMap.put(newVertex, vertexMap.get(last).union(vertexMap.get(beforeLast)));
-        vertexMap.remove(beforeLast);
+        map.put(newVertex, map.get(last).union(map.get(beforeLast)));
+        map.remove(beforeLast);
 
         return !ignoreWeights || (minWeight > 1);
     }

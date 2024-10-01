@@ -107,7 +107,7 @@ public class GraphMeasures {
      * @param graph the input graph.
      * @return the average degree of the vertices.
      */
-    public double avgDegree(Graph graph) {
+    public static double avgDegree(Graph graph) {
         Validator.requireUndirected(graph);
         return IntStream.of(graph.vertices())
                 .map(v -> graph.degree(v)).average().orElse(0);
@@ -284,7 +284,7 @@ public class GraphMeasures {
      * @param digraph the input digraph.
      * @return the average indegree of the vertices.
      */
-    public double avgIndegree(Digraph digraph) {
+    public static double avgIndegree(Digraph digraph) {
         return IntStream.of(digraph.vertices())
                 .map(v -> digraph.indegree(v)).average().orElse(0);
     }
@@ -370,7 +370,7 @@ public class GraphMeasures {
      * @param digraph the input digraph.
      * @return the average outdegree of the vertices.
      */
-    public double avgOutdegree(Digraph digraph) {
+    public static double avgOutdegree(Digraph digraph) {
         return IntStream.of(digraph.vertices())
                 .map(v -> digraph.outdegree(v)).average().orElse(0);
     }

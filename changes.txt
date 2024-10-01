@@ -1,4 +1,5 @@
 1.0.8
+	-RandomUnitDiskGenerator, RandomLayeredGenerator, RandomKNNGenerator
 	-StoerWagnerMinimumCut: computing a minimum weighted edge cut
 	-HavelHakimiBipartiteRealization: generator for bipartite graphs having a specified left/right degree sequence
 	-KleitmanWangDigraphRealization: generator for directed graphs having a specified (in-degree, out-degree) sequence

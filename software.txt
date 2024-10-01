@@ -20,7 +20,9 @@ C++
 BGL https://www.boost.org/doc/libs/1_80_0/libs/graph/doc/index.html
 KOALA https://github.com/krzysztof-turowski/koala-networkit
 Lemon https://lemon.cs.elte.hu/trac/lemon
-iGraph https://igraph.org/c/doc/
+
+iGraph C https://igraph.org/c/doc/
+iGraph R https://igraph.org/r/doc/
 
 Rust
 https://github.com/petgraph/petgraph

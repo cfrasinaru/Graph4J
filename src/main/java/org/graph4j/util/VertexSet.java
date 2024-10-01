@@ -60,7 +60,7 @@ public class VertexSet extends VertexCollection {
 
     //lazy creation
     private void createPosMap() {
-        this.posMap = new IntHashMap();
+        this.posMap = new IntHashMap(numVertices);
         //this.posMap = new HashMap<>(numVertices);
         for (int pos = 0; pos < numVertices; pos++) {
             posMap.put(vertices[pos], pos);
@@ -118,8 +118,11 @@ public class VertexSet extends VertexCollection {
 
     @Override
     protected int indexOf(int v) {
-        //for smaller sets, just iterate        
-        //if (numVertices * numVertices < graph.numVertices()) {
+        if (numVertices == 0) {
+            return -1;
+        }
+        //for smaller sets, just iterate                
+        //if (numVertices < graph.numVertices() / numVertices) {
         if (numVertices <= DEFAULT_CAPACITY) {
             return super.indexOf(v);
         }
@@ -233,7 +236,7 @@ public class VertexSet extends VertexCollection {
      */
     public VertexSet union(VertexSet other) {
         return this.union(other.vertices());
-    }
+    }        
 
     @Override
     public int hashCode() {

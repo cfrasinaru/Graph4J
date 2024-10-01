@@ -76,7 +76,7 @@ public class RandomChordalGraphGenerator extends AbstractGraphGenerator {
      *
      * @return a random chordal graph.
      */
-    public Graph create() {
+    public Graph createGraph() {
         //create a random tree
         //create n distinct subtrees
         //create the intersection graph of the subtrees

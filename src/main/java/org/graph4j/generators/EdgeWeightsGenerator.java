@@ -16,6 +16,7 @@
  */
 package org.graph4j.generators;
 
+import java.util.Objects;
 import java.util.Random;
 import org.graph4j.Graph;
 import org.graph4j.util.Validator;
@@ -35,6 +36,7 @@ public class EdgeWeightsGenerator {
      * @param max maximum weight (inclusive).
      */
     public static void randomIntegers(Graph graph, int min, int max) {
+        Objects.requireNonNull(graph);
         Validator.checkRange(min, max);
         Random rnd = new Random();
         for (var it = graph.edgeIterator(); it.hasNext();) {
@@ -50,6 +52,7 @@ public class EdgeWeightsGenerator {
      * @param graph the input graph.
      */
     public static void consecutiveIntegers(Graph graph) {
+        Objects.requireNonNull(graph);
         int weight = 0;
         for (var it = graph.edgeIterator(); it.hasNext();) {
             it.next();
@@ -64,6 +67,7 @@ public class EdgeWeightsGenerator {
      * @param max maximum weight (inclusive).
      */
     public static void randomDoubles(Graph graph, double min, double max) {
+        Objects.requireNonNull(graph);
         Validator.checkRange(min, max);
         Random rnd = new Random();
         for (var it = graph.edgeIterator(); it.hasNext();) {
@@ -79,6 +83,7 @@ public class EdgeWeightsGenerator {
      * @param value the weight of all edges.
      */
     public static void fill(Graph graph, double value) {
+        Objects.requireNonNull(graph);
         for (var it = graph.edgeIterator(); it.hasNext();) {
             it.next();
             it.setWeight(value);

@@ -28,16 +28,17 @@ import org.graph4j.NetworkBuilder;
 import org.graph4j.util.Validator;
 
 /**
- * Erdős–Rényi G(n,p) model. Each possible edge is added cosidering a given
- * probability. The time complexity of the algorithm is O(n^2), since it
- * iterates through all possible edges, so it is not efficient for large sparse
- * graphs.
+ * Generator for Erdős–Rényi G(n,p) model.
+ *
+ * Each possible edge is added considering a given probability. The time
+ * complexity of the algorithm is O(n^2), since it iterates through all possible
+ * edges, so it is not efficient for large sparse graphs.
  *
  * @see RandomGnmGraphGenerator
  * @author Cristian Frăsinaru
  */
 public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
-
+    
     private final double edgeProbability;
 
     /**
@@ -60,6 +61,17 @@ public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
         Validator.checkProbability(edgeProbability);
         this.edgeProbability = edgeProbability;
     }
+
+    /**
+     *
+     * @param vertices the vertices of the graph.
+     * @param edgeProbability probability that two vertices are connected.
+     */
+    public RandomGnpGraphGenerator(int[] vertices, double edgeProbability) {
+        super(vertices);
+        Validator.checkProbability(edgeProbability);
+        this.edgeProbability = edgeProbability;
+    }    
 
     private GraphBuilder builder() {
         return GraphBuilder.vertices(vertices).estimatedDensity(edgeProbability);
@@ -94,7 +106,7 @@ public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
         createEdges(g);
         return g;
     }
-    
+
     /**
      *
      * @return a random multigraph.
@@ -134,11 +146,11 @@ public class RandomGnpGraphGenerator extends AbstractGraphGenerator {
         createEdges(g);
         return g;
     }
-
+    
     private void createEdges(Graph g) {
         g.setSafeMode(false);
         addRandomEdges(g, edgeProbability);
         g.setSafeMode(true);
     }
-
+    
 }

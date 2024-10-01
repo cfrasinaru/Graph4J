@@ -130,4 +130,26 @@ public class VertexList extends VertexCollection {
         }
     }
 
+    /**
+     *
+     * @param other an array of vertex numbers.
+     * @return a new list containing vertices belonging to this list or the
+     * other array.
+     */
+    public VertexList union(int... other) {
+        VertexList result = new VertexList(graph, this.size() + other.length);
+        union(this, other, result);
+        return result;
+    }
+
+    /**
+     *
+     * @param other a list of vertex numbers.
+     * @return a new list containing vertices belonging to this list or the
+     * other.
+     */
+    public VertexList union(VertexList other) {
+        return this.union(other.vertices());
+    }
+
 }

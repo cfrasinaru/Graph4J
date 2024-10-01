@@ -441,4 +441,13 @@ public class IntArrays {
         return pos;
     }
 
+    public static int[] createMockVertices(int n, int k) {
+        int[] arr = new int[n];
+        var rand = new Random();
+        for (int i = 0; i < n; i++) {
+            arr[i] = (i > 0 ? arr[i - 1] : 0) + rand.nextInt(k) + 1;
+        }
+        return arr;
+    }
+
 }

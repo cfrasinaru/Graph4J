@@ -188,6 +188,7 @@ public class GraphUtils {
         } else {
             digraph = GraphBuilder.verticesFrom(graph).buildDigraph();
         }
+        digraph.setSafeMode(false);
         for (var it = graph.edgeIterator(); it.hasNext();) {
             Edge e = it.next();
             digraph.addEdge(e);
@@ -195,6 +196,7 @@ public class GraphUtils {
                 digraph.addEdge(e.flip());
             }
         }
+        digraph.setSafeMode(true);
         return digraph;
     }
 

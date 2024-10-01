@@ -19,7 +19,7 @@ package org.graph4j.support;
 import org.graph4j.exceptions.NotBipartiteException;
 import org.graph4j.Graph;
 import org.graph4j.SimpleGraphAlgorithm;
-import org.graph4j.alg.coloring.Coloring;
+import org.graph4j.coloring.Coloring;
 import org.graph4j.matching.HopcroftKarpMaximumMatching;
 import org.graph4j.traversal.BFSTraverser;
 import org.graph4j.traversal.BFSVisitor;
